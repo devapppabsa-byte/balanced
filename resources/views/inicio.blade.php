@@ -29,6 +29,12 @@
 
                 <div class="col-12 mb-2 mb-4">
                     <h1>Inicio de Sesión</h1>
+                    @if (session("error"))
+                        <span class="text-danger fw-bold">
+                            <i class="fa fa-exclamation-circle"></i>
+                            {{session("error")}}
+                        </span>
+                    @endif
                 </div>
 
                 <form action="{{route('login.user')}}" method="POST">

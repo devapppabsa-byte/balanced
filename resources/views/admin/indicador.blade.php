@@ -86,12 +86,19 @@
 
 <div class="container-fluid">
     <div class="row justify-content-around mt-4">
-        <div class="col-12 text-center">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-7  text-center">
             @if (session('deleted'))
-                <h4>
+                <div class="text-danger fw-bold border border-danger h5 p-2">
                     <i class="fa fa-exclamation-circle text-danger "></i>
                     {{session('deleted')}}
-                </h4>
+                </div>
+                
+            @endif
+            @if (session('error_input'))
+                <div class="text-danger fw-bold border border-danger h5 p-2">
+                    <i class="fa fa-exclamation-circle mx-2"></i>
+                    {{session('error_input')}}
+                </div>
             @endif
         </div>
         <div class="col-12 col-sm-12 col-md-12 col-lg-7  table-responsive">
@@ -112,21 +119,6 @@
 
         </div>
     </div>
-
-
-    <div class="row justify-content-center ">
-
-        <div class="col-1 text-center text-white bg-dark">
-            <h3>Cumplimiento: </h3>
-        </div>
-
-        <div class="col-auto p-auto  text-white bg-dark">
-            <h3 id="resultado"></h3>
-        </div>
-
-    </div>
-
-
 </div>
 
 
@@ -160,7 +152,13 @@
 
                 </div>
                 <div class="modal-footer">
-                    <div class="btn-group">
+                    <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
+
+                        <div class="form-check mt-2">
+                            <input class="form-check-input form-check-input-lg" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
+                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                        </div>
+
                         <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
                             Crear Campo Promedio
                         </button>
@@ -169,9 +167,9 @@
                         </a> --}}
                     </div>
                 </div>
+            </div>
         </div>
     </div>
-</div>
 </div>
 
 
@@ -306,8 +304,10 @@
                     @csrf @method('DELETE')
 
                     <div class="form-group">
-                        <input type="hidden" name="campo_vacio" value="{{$campo->tipo}}" class="form-control">
-                        <input type="hidden" name="campo_precargado" value="{{$campo->tipo_dato}}" class="form-control" >
+                        <input type="hidden" name="id_input" value="{{$campo->id_input}}" >
+                        <input type="hidden" name="campo_vacio" value="{{$campo->tipo}}">
+                        <input type="hidden" name="campo_precargado" value="{{$campo->informacion_precargada}}">
+                        <input type="hidden" name="campo_calculado" value="{{$campo->operacion}}">
                     </div>
 
                     <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
@@ -353,6 +353,7 @@
             input1.classList.add("form-control", "w-100");
             input1.placeholder = campo.nombre;
             input1.id = campo.id_input;
+            input1.disabled = true;
             input1.name = "input_promedio[]";
             if(campo.tipo) input1.type = campo.tipo;
             if(campo.tipo_dato) input1.type = campo.tipo_dato;
@@ -519,6 +520,12 @@
                     const inputs_valores = Array.from(inputs);
                     const input_vista_previa = document.createElement("input"); //es para generar el input que vera el usuario, innecesario en la pratica pero le ayuda al user
                     const nombre_nuevo_campo = document.createElement("input"); //Es para insertar el nombre del nuevo input, que repetitivo es esto :p
+                    const descripcion_nuevo_campo = document.createElement("textarea");
+                    descripcion_nuevo_campo.classList.add("form-control", "form-control-sm", "mb-1", "no-drop", "w-100"); 
+                    descripcion_nuevo_campo.placeholder = "Insertar Descripción";
+                    descripcion_nuevo_campo.name = "descripcion";   
+                    descripcion_nuevo_campo.setAttribute("form", "promedio_container");
+                    descripcion_nuevo_campo.required = true;
 
                     nombre_nuevo_campo.classList.add("form-control", "form-control-sm", "mb-1");
                     nombre_nuevo_campo.placeholder = "Insertar Nombre";
@@ -555,6 +562,7 @@
                     // input_vista_previa.disabled = true;
                     div_columna.appendChild(nombre_nuevo_campo);
                     div_columna.appendChild(input_vista_previa);
+                    div_columna.appendChild(descripcion_nuevo_campo);
                     contenedor_vista_previa.appendChild(div_columna);
 
                 }

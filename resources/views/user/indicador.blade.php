@@ -60,7 +60,11 @@
         </div>
     </div>
 
-    <div class="row justify-content-start border py-4 m-1" id="contenedor_campos">
+    <div class="row justify-content-center gap-4  py-4 my-5" id="contenedor_campos" >
+
+    </div>
+
+    <div class="row justify-content-center gap-4  py-4 my-5" id="contenedor_resultado_final">
 
     </div>
 
@@ -72,6 +76,14 @@
 
 
 
+
+
+
+
+
+
+
+
 @section('scripts')
 <script>
     let mostrar_fecha = document.getElementById("fecha");
@@ -79,6 +91,23 @@
     mostrar_fecha.innerHTML = " <i class='fa fa-calendar'></i>  " + fecha.toLocaleDateString("es-Es", {month: 'long'}) +" "+ fecha.getFullYear();
 </script>
 
+<script>
+    const campo_resultado_final = @json($campo_resultado_final);
+    const campo_resultado_final_array = Object.values(campo_resultado_final);
+    
+    const contenedor_resultado_final = document.getElementById('contenedor_resultado_final');
+    const columna_resultado_final = document.createElement('div');
+    columna_resultado_final.classList.add("col-8", "col-sm-8", "col-md-3", "col-lg-2" , "text-start", "border", "mb-4", "py-3", "shadow-sm", "bg-light");
+    
+    const input_resultado_final = document.createElement("input");
+    input_resultado_final.name = campo_resultado_final_array[0].nombre;
+    input_resultado_final.placeholder = campo_resultado_final_array[0].nombre;
+    input_resultado_final.classList.add("form-control");
+    input_resultado_final.disabled = true;
+     
+
+
+</script>
 
 
 <script>
@@ -90,7 +119,7 @@
     campos.forEach(campo => {
         
         const columna = document.createElement('div');
-        columna.classList.add("col-12", "col-sm-8", "col-md-3", "col-lg-2", "text-start", "border", "mb-2", "p-2", "border-3");
+        columna.classList.add("col-8", "col-sm-8", "col-md-3", "col-lg-2" , "text-start", "border", "mb-4", "py-3", "shadow-sm");
            // 
 
         const form_outline = document.createElement('div');
@@ -106,7 +135,17 @@
         if(campo.informacion_precargada){
             input.value = campo.informacion_precargada;
             input.disabled = true;
+            columna.classList.add("bg-light");
         } 
+
+        //pongo en diable la edicion del campo que viene precargado.
+        if(campo.operacion) {
+
+            columna.classList.add("bg-light");
+            input.disabled = true;
+
+        }
+
 
         if(campo.tipo) input.type = campo.tipo;
         if(campo.tipo_dato) input.type = campo.tipo_dato;
@@ -118,6 +157,7 @@
 
         const label = document.createElement("label");
         label.textContent = campo.nombre;
+        label.classList.add("fw-bold");
 
         columna.appendChild(label)
         columna.appendChild(input)

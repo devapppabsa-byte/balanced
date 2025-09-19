@@ -16,6 +16,10 @@ class userController extends Controller
     }
 
 
+
+
+
+
     public function login_user(Request $request){
 
         $request->validate([
@@ -35,7 +39,13 @@ class userController extends Controller
 
         }
 
+        else{
+            return back()->with("error", 'Error de usuario o contraseña');
+        }
+
     }
+
+
 
 
     public function perfil_user(){   
@@ -46,6 +56,8 @@ class userController extends Controller
         return view('user.perfil_user', compact('indicadores'));
 
     }
+
+
 
 
     public function eliminar_usuario(User $usuario){

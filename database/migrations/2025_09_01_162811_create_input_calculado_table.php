@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('input_calculado', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            $table->string('id_input');
             $table->string('informacion')->nullable();
+            $table->string('descripcion')->nullable()->default('Sin descripción');
             $table->string('tipo');
             $table->string('operacion');
+            $table->string('resultado_final')->nullable();
 
             $table->unsignedBigInteger('id_indicador');
             $table->foreign('id_indicador')
