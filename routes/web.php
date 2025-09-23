@@ -3,6 +3,7 @@
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\campoPrecargadoController;
 use App\Http\Controllers\campoVacioController;
+use App\Http\Controllers\cuestionarioController;
 use App\Http\Controllers\departamentoController;
 use App\Http\Controllers\indicadorController;
 use App\Http\Controllers\indicadoresLlenosController;
@@ -99,6 +100,10 @@ Route::post('/perfil_admin', [userController::class, 'cerrar_session'])->name('c
 
 
 
+
+//Aui van las rutas de los cuestionarios de los clientes
+
+Route::get('/login_cliente',[cuestionarioController::class, 'login_cliente'])->name('login.cliente');
 
 
 

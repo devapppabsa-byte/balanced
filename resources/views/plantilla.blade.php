@@ -18,6 +18,12 @@
             padding: 0px;
         }
 
+        .input.activo {
+            border: 2px solid blue;
+            background-color: #e0f0ff;
+        }
+
+
     </style>
 
 </head>

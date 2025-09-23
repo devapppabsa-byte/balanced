@@ -54,19 +54,91 @@
 
 <div class="container-fluid">
 
-    <div class="row mb-5 mt-2">
+
+    <div class="row mb-5 mt-2 gap-3 justify-content-center">
         <div class="col-12">
-            <h2>Rellenado del indicador de {{$indicador->nombre}}</h2>
+            <h3>Campos a rellenar</h3>
         </div>
+
+        <div class="row gap-3 justify-content-center" id="campos_vacios">
+            @forelse ($campos_vacios as $campo_vacio)
+                <div class="col-11 col-sm-11 col-md-3 col-lg-3 text-start border mb-4 p-3 shadow-sm campos_vacios">
+                    <label for="">{{$campo_vacio->nombre}}</label>
+                    <input type="{{$campo_vacio->tipo}}" min="1" class="form-control input" name="{{$campo_vacio->id_input}}" id="{{$campo_vacio->id_input}}"
+                    placeholder="{{$campo_vacio->nombre}}">
+                </div>  
+            @empty
+                <li>No hay campos vacios :p</li>
+            @endforelse
+        </div>
+        
     </div>
+
+
+
+
+
+
+
+
+    <div class="row mb-5 mt-2 gap-3 justify-content-center">
+
+        <div class="col-12">
+            <h4>Campos Calculados</h4>
+        </div>
+    
+        
+        @forelse ($campos_calculados as $campo_calculado)
+            <div class="col-11 col-sm-11 col-md-3 col-lg-3 text-start border mb-4 py-3 shadow-sm campo_calculado">
+                    <label for="">{{$campo_calculado->nombre}}</label>
+                    <input type="{{$campo_calculado->tipo}}" class="form-control input_padre" id="{{$campo_calculado->id_input}}"
+                        placeholder="0" disabled>
+
+                @forelse ($campo_calculado->campo_involucrado as $involucrado)
+        
+                        <input type="text" value="{{$involucrado->id_input}}" class="form-control form-control-sm input_hijo" >
+                                
+                @empty
+                    
+                @endforelse
+                    
+            </div> 
+        @empty
+
+            <li>No hay campos</li>
+            
+        @endforelse
+    </div>
+
+
+
+
+
 
     <div class="row justify-content-center gap-4  py-4 my-5" id="contenedor_campos" >
 
     </div>
 
+
+@if ($campo_resultado_final)
     <div class="row justify-content-center gap-4  py-4 my-5" id="contenedor_resultado_final">
+        <h3 class="">Cumplimiento</h3>
+        
+        <div class="form-group">
+            <label for="{{$campo_resultado_final->id_input}}">{{$campo_resultado_final->nombre}}</label>
+            <input type="{{$campo_resultado_final->tipo}}"  class="form-control w-25" id="{{$campo_resultado_final->id_input}}" >
+        </div>
+
 
     </div>
+    @endif
+    
+    
+        <div class="form-group">
+            <button class="btn btn-success" id="suma" >
+                iam a button
+            </button>
+        </div>
 
 </div>
 
@@ -85,89 +157,69 @@
 
 
 @section('scripts')
+
 <script>
     let mostrar_fecha = document.getElementById("fecha");
     let fecha = new Date();
     mostrar_fecha.innerHTML = " <i class='fa fa-calendar'></i>  " + fecha.toLocaleDateString("es-Es", {month: 'long'}) +" "+ fecha.getFullYear();
 </script>
 
+
+
+
+
 <script>
-    const campo_resultado_final = @json($campo_resultado_final);
-    const campo_resultado_final_array = Object.values(campo_resultado_final);
-    
-    const contenedor_resultado_final = document.getElementById('contenedor_resultado_final');
-    const columna_resultado_final = document.createElement('div');
-    columna_resultado_final.classList.add("col-8", "col-sm-8", "col-md-3", "col-lg-2" , "text-start", "border", "mb-4", "py-3", "shadow-sm", "bg-light");
-    
-    const input_resultado_final = document.createElement("input");
-    input_resultado_final.name = campo_resultado_final_array[0].nombre;
-    input_resultado_final.placeholder = campo_resultado_final_array[0].nombre;
-    input_resultado_final.classList.add("form-control");
-    input_resultado_final.disabled = true;
-     
+
+document.getElementById("suma").addEventListener('click', function(){
+        
+  
+
+
+    const campos_calculados = @json($campos_calculados);
+
+
+    //console.log(calculado.id_input); //necesito agrupar  los inputs consus
+    let inputs_involucrados = [];
+    let suma =0;
+    let contador = 0;
+
+
+    campos_calculados.forEach(calculado => { //recorro todos los inputs calculados
+
+
+
+
+        calculado.campo_involucrado.forEach(involucrado =>{ //recorro los campos involucrados, ew el ciclo dentro de otro ciclo.
+
+            inputs_involucrados.push(document.getElementById(involucrado.id_input).value);
+            //aqui arriba se agregan los iputs involucrados a un array, este array se va  a imprimir al ultimo.
+
+            suma = Number(suma) + Number(document.getElementById(involucrado.id_input).value);
+
+
+            
+            
+        });
+
+        
+        console.log(document.getElementById(calculado.id_input).value = suma);
+
+        contador++;
+        //console.log(document.getElementById(calculado.id_input).value = suma)
+        console.log(suma)        
+
+    });
+});   
 
 
 </script>
 
 
+
 <script>
-    const campos_ = @json($campos_unidos);
-    const campos = Object.values(campos_);
-    const contenedor = document.getElementById('contenedor_campos')
-    
-    
-    campos.forEach(campo => {
-        
-        const columna = document.createElement('div');
-        columna.classList.add("col-8", "col-sm-8", "col-md-3", "col-lg-2" , "text-start", "border", "mb-4", "py-3", "shadow-sm");
-           // 
 
-        const form_outline = document.createElement('div');
-        form_outline.classList.add("form-outline");
-        form_outline.setAttribute('data-mdb-input-init', '');
+</script>
 
 
-        const input = document.createElement("input");
-        input.name = campo.nombre;
-        input.placeholder = campo.nombre;
-        input.classList.add("form-control");
-
-        if(campo.informacion_precargada){
-            input.value = campo.informacion_precargada;
-            input.disabled = true;
-            columna.classList.add("bg-light");
-        } 
-
-        //pongo en diable la edicion del campo que viene precargado.
-        if(campo.operacion) {
-
-            columna.classList.add("bg-light");
-            input.disabled = true;
-
-        }
-
-
-        if(campo.tipo) input.type = campo.tipo;
-        if(campo.tipo_dato) input.type = campo.tipo_dato;
-
-        const small = document.createElement("small");
-        small.textContent = campo.descripcion; 
-            
-
-
-        const label = document.createElement("label");
-        label.textContent = campo.nombre;
-        label.classList.add("fw-bold");
-
-        columna.appendChild(label)
-        columna.appendChild(input)
-        columna.appendChild(small)
-        contenedor.appendChild(columna);
-
-
-    });
-
-
-</script>    
 
 @endsection

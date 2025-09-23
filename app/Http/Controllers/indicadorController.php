@@ -183,17 +183,19 @@ public function show_indicador_user(Indicador $indicador){
 
 
     $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
-    $campo_llenos = CampoPrecargado::where('id_indicador', $indicador->id)->get();
-    $campo_calculado = CampoCalculado::where('id_indicador', $indicador->id)->where(function ($q) {
+    $campos_llenos = CampoPrecargado::where('id_indicador', $indicador->id)->get();
+
+    $campos_calculados = CampoCalculado::with('campo_involucrado')->where('id_indicador', $indicador->id)->where(function ($q) {
             $q->whereNull('resultado_final')
             ->orWhere('resultado_final', '');
         })->get();
 
+
     $campo_resultado_final = CampoCalculado::where('id_indicador', $indicador->id)->whereNotNull('resultado_final')->where('resultado_final', '!=', '')->first();
 
 
-    $campos_unidos = $campos_vacios->concat($campo_llenos)
-                                    ->concat($campo_calculado)
+    $campos_unidos = $campos_vacios->concat($campos_llenos)
+                                    ->concat($campos_calculados)
                                     ->sortBy('created_at')
                                     ->values()
                                     ->map(function($item, $index){
@@ -204,7 +206,7 @@ public function show_indicador_user(Indicador $indicador){
 
 
 
-    return view('user.indicador', compact('indicador', 'campos_unidos', 'campo_resultado_final'));
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios'));
 }
 
 
