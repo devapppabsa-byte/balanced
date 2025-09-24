@@ -11,6 +11,7 @@ use App\Models\InformacionForanea;
 use Illuminate\Http\Request;
 use App\Models\Departamento;
 use App\Models\Indicador;
+use App\Models\Encuesta;
 use App\Models\User;
 
 class indicadorController extends Controller
@@ -22,6 +23,8 @@ class indicadorController extends Controller
         $indicadores = Indicador::where('id_departamento', $departamento->id)->get();
 
         $usuarios = User::with('departamento')->where('id_departamento', $departamento->id)->get();
+
+        $encuestas = Encuesta::where("id_departamento", $departamento->id)->get();
         
 
 
@@ -33,7 +36,7 @@ class indicadorController extends Controller
 
 
 
-        return view('admin.agregar_indicadores', compact('departamento','indicadores', 'usuarios', 'departamentos' ));
+        return view('admin.agregar_indicadores', compact('departamento','indicadores', 'usuarios', 'departamentos', 'encuestas' ));
 
     }
 

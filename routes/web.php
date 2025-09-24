@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\campoPrecargadoController;
+use App\Http\Controllers\encuestaController;
 use App\Http\Controllers\campoVacioController;
 use App\Http\Controllers\cuestionarioController;
 use App\Http\Controllers\departamentoController;
@@ -101,9 +102,17 @@ Route::post('/perfil_admin', [userController::class, 'cerrar_session'])->name('c
 
 
 
-//Aui van las rutas de los cuestionarios de los clientes
+//Aui van las rutas de las encuestas para los clientes
+Route::post('/perfil_admin/agregar_indicadores/agregar_encuesta/{departamento}', [encuestaController::class, 'encuesta_store'])->name('encuesta.store');
+Route::delete('/perfil_admin/agregar_indicadores/eliminar_encuesta/{encuesta}', [encuestaController::class, 'encuesta_delete'])->name('encuesta.delete');
+Route::patch('/perfil_admin/agregar_indicadores/editar_encuesta/{encuesta}', [encuestaController::class, 'encuesta_edit'])->name('encuesta.edit');
 
-Route::get('/login_cliente',[cuestionarioController::class, 'login_cliente'])->name('login.cliente');
+Route::get('/perfil_admin/agregar_indicadores/encuesta/{encuesta}', [encuestaController::class, 'encuesta_index'])->name('encuesta.index');
+Route::post('/perfil_admin/agregar_indicadores/encuesta/agregar_pregunta/{encuesta}', [encuestaController::class, 'pregunta_store'])->name('pregunta.store');
+Route::delete('/perfil_admin/agregar_indicadores/encuesta/eliminar_pregunta/{pregunta}', [encuestaController::class, 'pregunta_delete'])->name('pregunta.delete');
+
+
+Route::get('/login_cliente',[encuestaController::class, 'login_cliente'])->name('login.cliente');
 
 
 

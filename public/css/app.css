@@ -7,3 +7,16 @@
   font-size: 20px;
   font-style: normal;
 }
+
+
+/* .bad_notifications{
+  text-shadow: 1px 1px  rgba(255, 255, 255);
+  
+} */
+
+
+.flotante-encuesta{
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+}

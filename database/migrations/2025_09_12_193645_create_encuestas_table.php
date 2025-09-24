@@ -14,6 +14,14 @@ return new class extends Migration
         Schema::create('encuestas', function (Blueprint $table) {
             $table->id();
             $table->string("nombre");
+
+            $table->unsignedBigInteger("id_departamento");
+
+            $table->foreign("id_departamento")
+                  ->references('id')
+                  ->on("departamentos")
+                  ->onDelete("cascade");
+
             $table->text("descripcion")->nullable();
             $table->timestamps();
         });

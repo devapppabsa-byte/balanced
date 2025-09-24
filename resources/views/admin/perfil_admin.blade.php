@@ -6,9 +6,9 @@
 @section('contenido')
 
 <div class="container-fluid">
-    <div class="row bg-primary d-flex align-items-center">
+    <div class="row bg-primary d-flex align-items-center justify-content-around">
 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-5  py-4 ">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto  py-4 ">
             <h1 class="text-white">Perfil del administrador</h1>
 
             @if (session('success'))
@@ -37,7 +37,7 @@
 
         <div class="col-5"></div>
         
-        <div class="col-2 text-center ">
+        <div class="col-auto text-center ">
             <form action="{{route('cerrar.session')}}" method="POST">
                 @csrf 
                 <button  class="btn btn-primary text-danger text-white fw-bold">
@@ -55,21 +55,21 @@
 <div class="container-fluid">
     <div class="row border py-2">
 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-2 my-1">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
                 <i class="fa fa-plus"></i>
                 Agregar Usuarios
             </button>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-2 my-1">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_departamento">
                 <i class="fa fa-plus"></i>
                 Agregar Departamentos
             </button>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-2 my-1">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#precargar_campos">
                 <i class="fa fa-plus"></i>
                 Precargar Campos - para pruebas
@@ -96,7 +96,7 @@
                 </div>
                 @forelse ($departamentos as $departamento)
 
-                    <div class="col-10 col-sm-10 col-md-4 col-lg-2 m-2 text-center border border-3 shadow shadow-3 py-3">
+                    <div class="col-10 col-sm-10 col-md-4 col-lg-auto m-2 text-center border border-3 shadow shadow-3 py-3">
 
                         <div class="row justify-content-center">
                             <div class="col-12">
