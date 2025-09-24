@@ -40,6 +40,10 @@ Route::post('/admin_login/ingreso_perfil_admin', [adminController::class, 'ingre
 
 
 Route::get('/perfil_admin', [adminController::class, 'perfil_admin'])->name('perfil.admin');
+
+Route::post('/perfil_admin/agregar_cliente', [adminController::class, 'agregar_cliente'])->name('agregar.cliente');
+
+
 Route::post('/perfil_admin/agregar_usuario', [adminController::class, 'agregar_usuario'])->name('agregar.usuario');
 Route::post('/perfil_admin/agregar_departamento', [adminController::class, 'agregar_departamento'])->name('agregar.departamento');
 

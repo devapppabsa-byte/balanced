@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Cliente;
 use App\Models\User;
 use App\Models\Departamento;
 use App\Http\Controllers\Controller;
@@ -46,9 +46,10 @@ class adminController extends Controller
     public function perfil_admin(){
 
         $departamentos = Departamento::get();
+        $clientes = Cliente::get();
 
 
-        return view('admin.perfil_admin', compact('departamentos'));
+        return view('admin.perfil_admin', compact('departamentos', 'clientes'));
 
 
     }
@@ -104,6 +105,44 @@ class adminController extends Controller
 
 
         return back()->with('success', 'Nuevo departamento creado!');
+
+    }
+
+
+
+    public function agregar_cliente(Request $request){
+
+        
+         $request->validate([
+             "id_cliente" => "required|unique:clientes,id_interno",
+             "nombre_cliente" => "required",
+             "correo_cliente" => "required",
+             "telefono_cliente" => "required",
+             "password_cliente" => "required",
+             "linea" => "required"
+
+         ]);
+
+         $password = bcrypt($request->password_cliente);
+
+
+         Cliente::create([
+
+            "id_interno" => $request->id_cliente,
+            "nombre" => $request->nombre_cliente,
+            "linea" => $request->linea,
+            "password" => $password,
+            "email" => $request->correo_cliente,
+            "telefono" => $request->telefono_cliente
+
+         ]);
+
+
+
+         return back()->with("success", "El cliente fue agregado");
+
+
+
 
     }
 

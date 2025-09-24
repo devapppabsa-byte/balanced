@@ -109,7 +109,7 @@
                         <thead class="table-primary border">
                             <th scope="col">Pregunta</th>
                             <th scope="col">Cuantificable</th>
-                            <th scope="col">Acciones</th>
+                            <th scope="col">Eliminar</th>
                             
                         </thead>
                         <tbody class="">
@@ -120,9 +120,6 @@
                                     <td class="form-group shadow-0">
                                         <button class="btn btn-danger btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#elim{{$pregunta->id}}">
                                             <i class="fa fa-trash"></i>
-                                        </button>
-                                        <button class="btn btn-secondary btn-sm">
-                                            <i class="fa fa-edit"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -186,7 +183,7 @@
             </div> --}}
             </div>
         </div>
-    </div>
+    </div>   
 
 @empty
     

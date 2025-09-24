@@ -522,49 +522,49 @@
     </div>
 
 
-<div class="modal fade" id="edit_en{{$encuesta->id}}"" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header bg-primary py-4">
-        <h3 class="text-white" id="exampleModalLabel">Editando Encuesta</h3>
-        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body py-4">
-        <form action="{{route('encuesta.edit', $encuesta->id)}}" method="post">
-            @csrf @method("PATCH")
-            <div class="row">
-                <div class="col-12 text-center">
-                    <div class="form-group mt-2">
-                        <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_encuesta_edit') ? 'is-invalid' : '' }} " id="nombre_encuesta" value="{{$encuesta->nombre}}" name="nombre_encuesta_edit" required>
-                            <label class="form-label" for="nombre_encuesta_edit" >Nombre para la Encuesta</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 text-center">
-                    <div class="form-group mt-3">
-                        <div class="form-outline" data-mdb-input-init>
+    <div class="modal fade" id="edit_en{{$encuesta->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <div class="modal-header bg-primary py-4">
+            <h3 class="text-white" id="exampleModalLabel">Editando Encuesta</h3>
+            <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-4">
+            <form action="{{route('encuesta.edit', $encuesta->id)}}" method="post">
+                @csrf @method("PATCH")
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="form-group mt-2">
                             <div class="form-outline" data-mdb-input-init>
-                                <textarea class="form-control w-100 {{ $errors->first('descripcion_encuesta_edit') ? 'is-invalid' : '' }}" id="descrpcion_encuesta" name="descripcion_encuesta_edit" required >{{$encuesta->descripcion}}</textarea>
-                                <label class="form-label" for="descrpcion_encuesta_edit">Descripción del la Encuesta</label>
+                                <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_encuesta_edit') ? 'is-invalid' : '' }} " id="nombre_encuesta" value="{{$encuesta->nombre}}" name="nombre_encuesta_edit" required>
+                                <label class="form-label" for="nombre_encuesta_edit" >Nombre para la Encuesta</label>
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-12 text-center">
+                        <div class="form-group mt-3">
+                            <div class="form-outline" data-mdb-input-init>
+                                <div class="form-outline" data-mdb-input-init>
+                                    <textarea class="form-control w-100 {{ $errors->first('descripcion_encuesta_edit') ? 'is-invalid' : '' }}" id="descrpcion_encuesta" name="descripcion_encuesta_edit" required >{{$encuesta->descripcion}}</textarea>
+                                    <label class="form-label" for="descrpcion_encuesta_edit">Descripción del la Encuesta</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-
             </div>
-        </div>
-        <div class="modal-footer">
-            <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
-                <h6>Guardar</h6>
-            </button>
-        </form>
+            <div class="modal-footer">
+                <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+                    <h6>Guardar</h6>
+                </button>
+            </form>
 
-      </div>
+        </div>
+        </div>
     </div>
-  </div>
-</div>
+    </div>
 
 
 

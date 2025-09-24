@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("id_interno");
             $table->string("nombre");
+            $table->string("telefono");
             $table->string("password");
             $table->string("email");
             $table->string("linea");

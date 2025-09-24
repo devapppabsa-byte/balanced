@@ -76,6 +76,13 @@
             </button>
         </div>
 
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cliente">
+                <i class="fa fa-plus"></i>
+                Agregar Clientes
+            </button>
+        </div>
+
     </div>
 </div>
 
@@ -83,7 +90,7 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
 
-        <div class="col-12 ">
+        <div class="col-2 mx-3">
             <div class="row justify-content-center">
                 <div class="col-12 text-center my-3">
                     <h2>Departamentos</h2>
@@ -96,7 +103,7 @@
                 </div>
                 @forelse ($departamentos as $departamento)
 
-                    <div class="col-10 col-sm-10 col-md-4 col-lg-auto m-2 text-center border border-3 shadow shadow-3 py-3">
+                    <div class="col-12 m-2 text-center border border-3 shadow shadow-3 py-3">
 
                         <div class="row justify-content-center">
                             <div class="col-12">
@@ -128,6 +135,73 @@
                     <li>No hay datos disponibles</li>
                 @endforelse
             </div>
+        </div>
+
+
+        <div class="col-4 border mx-5">
+            <table class="table mb-0 bg-primary">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Linea</th>
+                        <th>Acciones</th>
+                        <th>Teléfono</th>
+                        </tr>
+                    </thead>
+                <tbody>
+
+                @forelse ($clientes as $cliente)
+                    <tr>
+                        <td>
+                           {{$cliente->nombre}}
+                        </td>
+
+                        <td>
+                            {{$cliente->email}}
+                        </td>
+                        <td>
+                            {{$cliente->linea}}
+                        </td>
+
+                        <td>
+                            {{$cliente->telefono}}
+                        </td>
+
+                        <td class="">
+                            <a class="text-danger cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_en{{$cliente->id}}" style="cursor: pointer">
+                                <i class="fa fa-trash"></i> 
+                            </a>
+
+                            <a class="text-primary cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_en{{$cliente->id}}"  style="cursor: pointer">
+                                <i class="fa fa-edit"></i> 
+                            </a>
+
+                        </td>
+                    </tr>
+                @empty
+                    <div class="col-12 p-5 text-center p-5 border">
+
+                        <div class="row">
+                            
+                            <div class="col-12">
+                                <i class="fa fa-exclamation-circle text-danger"></i>
+                                No cuenta con indicadores, pero los puedes agregar aqui
+                            </div>
+                            
+                            <div class="col-12">
+                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
+                                    Agregar Cuestionario
+                                </a>
+                            </div>
+
+                        </div>
+                        <h5>
+                        </h5>
+                    </div>
+                @endforelse
+                </tbody>
+                </table>
         </div>
 
 
@@ -383,6 +457,90 @@
     </div>
   </div>
 </div>
+
+
+
+
+<div class="modal fade" id="agregar_cliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary py-4">
+        <h3 class="text-white" id="exampleModalLabel">Agregar Cliente</h3>
+        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        <form action="{{route('agregar.cliente')}}"  method="post" onkeydown="return event.key !='Enter';">
+            @csrf
+
+            <div class="row">
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('id_cliente') ? 'is-invalid' : '' }} " value="{{old("id_cliente")}}" id="id_cliente" name="id_cliente">
+                            <label class="form-label" for="id_cliente" >ID Interno </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_cliente') ? 'is-invalid' : '' }} " id="nombre_usuario" value="{{old("nombre_cliente")}}" name="nombre_cliente">
+                            <label class="form-label" for="nombre_cliente" >Nombre del cliente </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('correo_cliente') ? 'is-invalid' : '' }} "  name="correo_cliente" value="{{old("correo_cliente")}}">
+                            <label class="form-label" for="correo_cliente" >Correo del cliente</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('telefono_cliente') ? 'is-invalid' : '' }}" name="telefono_cliente" value="{{old("telefono_cliente")}}">
+                            <label class="form-label" for="telefono_cliente" >Teléfono del cliente</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('password_cliente') ? 'is-invalid' : '' }}" name="password_cliente" value="{{old("password_cliente")}}">
+                            <label class="form-label" for="password" >Contraseña </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="form-group mt-3">
+                        <select name="linea" class="form-control form-control-lg" id="">
+                            <option value="" disabled selected>Linea</option>
+                            <option value="mascotas" {{old("linea")  == 'mascotas' ? 'selected' : '' }} >Pecuarios</option>
+                            <option value="pecuarios" {{old("linea") == 'pecuarios' ? 'selected' : '' }} >Mascotas</option>
+                            <option value="ambos" {{old("linea")  == 'ambos' ? 'selected' :'' }} >Pecuarios y Mascotas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button  class="btn btn-primary w-100 pt-3" data-mdb-ripple-init>
+                <h6>Guardar Cliente</h6>
+            </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 
