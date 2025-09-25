@@ -5,12 +5,31 @@
 @section('contenido')
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-12 py-2" style="background: #528053; color:white;">
-            <h1>Inicio de Sesión</h1>
+    <div class="row bg-primary  d-flex align-items-center px-4">
+        <div class="col-auto py-4 text-white">
+            <h1 class="mt-1">Inicio de Sesión Cliente</h1>
+            @if (session('success'))
+                <div class="text-white fw-bold ">
+                    <i class="fa fa-check-circle mx-2"></i>
+                    {{session('success')}}
+                </div>
+            @endif
+            @if (session('editado'))
+                <div class="text-white fw-bold ">
+                    <i class="fa fa-check-circle mx-2"></i>
+                    {{session('editado')}}
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="text-white fw-bold bad_notifications">
+                    <i class="fa fa-xmark-circle mx-2"></i>
+                    {{$errors->first()}}
+                </div>
+            @endif
         </div>
     </div>
 </div>
+
 
 
 <div class="container ">
@@ -28,7 +47,7 @@
                     @endif
                 </div>
 
-                <form action="#" method="POST">
+                <form action="{{route("index.cliente")}}" method="POST">
                     @csrf
                     <div class="col-12">
     
@@ -47,7 +66,7 @@
                         </div>
     
                         <div class="form-group mt-4">
-                            <button class="btn w-100 w-lg-25 btn-lg" style="background: #528053; color:white;">
+                            <button class="btn w-100 w-lg-25 btn-lg btn-primary">
                                 Ingresar
                             </button>
                         </div>

@@ -11,15 +11,6 @@ use App\Models\Pregunta;
 class encuestaController extends Controller
 {
 
-    public function login_cliente(){
-
-
-        return view('client.login');
-
-
-
-    }
-
 
 
     public function encuesta_index(Encuesta $encuesta){
@@ -126,8 +117,6 @@ class encuestaController extends Controller
         return back()->with("deleted", "La pregunta fue eliminada");
 
     }
-
-
 
 
 

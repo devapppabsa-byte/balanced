@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\clienteController;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\campoPrecargadoController;
 use App\Http\Controllers\encuestaController;
@@ -118,8 +119,12 @@ Route::post('/perfil_admin/agregar_indicadores/encuesta/agregar_pregunta/{encues
 Route::delete('/perfil_admin/agregar_indicadores/encuesta/eliminar_pregunta/{pregunta}', [encuestaController::class, 'pregunta_delete'])->name('pregunta.delete');
 
 
-Route::get('/login_cliente',[encuestaController::class, 'login_cliente'])->name('login.cliente');
 
 
 
+Route::get('/login_cliente',[clienteController::class, 'login'])->name('login.cliente');
+Route::get('/login_cliente/ingreso_cliente', [clienteController::class, 'perfil_cliente'])->name('perfil.cliente');
+Route::post('/perfil_cliente', [clienteController::class, 'index_cliente'])->name('index.cliente');
 
+//Para contestar los cuestionarios
+Route::get('/perfil_cliente/cuestionario/{encuesta}', [clienteController::class, 'contestar_encuesta'])->name("contestar.encuesta");
