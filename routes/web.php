@@ -42,6 +42,8 @@ Route::post('/admin_login/ingreso_perfil_admin', [adminController::class, 'ingre
 Route::get('/perfil_admin', [adminController::class, 'perfil_admin'])->name('perfil.admin');
 
 Route::post('/perfil_admin/agregar_cliente', [adminController::class, 'agregar_cliente'])->name('agregar.cliente');
+Route::delete('/perfil_admin/eliminar_cliente/{cliente}', [adminController::class, 'eliminar_cliente'])->name('eliminar.cliente');
+Route::patch('/perfil_admin/editar_cliente/{cliente}', [adminController::class, 'editar_cliente'])->name('editar.cliente');
 
 
 Route::post('/perfil_admin/agregar_usuario', [adminController::class, 'agregar_usuario'])->name('agregar.usuario');

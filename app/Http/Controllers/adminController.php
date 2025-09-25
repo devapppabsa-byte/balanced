@@ -147,6 +147,45 @@ class adminController extends Controller
     }
 
 
+    public function eliminar_cliente(Cliente $cliente){
+
+
+        $cliente->delete();
+        
+        return back()->with("eliminado", "El cliente fue eliminado");
+
+
+    }
+
+    public function editar_cliente(Cliente $cliente, Request $request){
+
+
+        $password = bcrypt($request->password_cliente_edit);
+
+        
+        $request->validate([
+            "id_cliente_edit" => "required",
+            "nombre_cliente_edit" => "required",
+            "linea_edit" => "required",
+            "correo_cliente_edit" => "required",
+            "telefono_cliente_edit" => "required" 
+        ]);
+
+
+        $cliente->id_interno = $request->id_cliente_edit;
+        $cliente->nombre = $request->nombre_cliente_edit;
+        if($request->password_cliente_edit) $cliente->password = $password;
+        $cliente->email = $request->correo_cliente_edit;
+        $cliente->linea = $request->linea_edit;
+        $cliente->telefono = $request->telefono_cliente_edit;
+
+        $cliente->update();
+
+        return  back()->with("actualizado", "El cliente fue editado");
+
+    }
+
+
 
 
 

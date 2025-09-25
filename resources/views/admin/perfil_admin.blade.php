@@ -25,6 +25,13 @@
                 </div>
             @endif
 
+            @if (session('eliminado'))
+                <div class="text-white fw-bold ">
+                    <i class="fa fa-check-circle mx-2"></i>
+                    {{session('eliminado')}}
+                </div>
+            @endif
+
             @if ($errors->any())
                 <div class="bg-white  fw-bold p-2 rounded">
                     <i class="fa fa-xmark-circle mx-2  text-danger"></i>
@@ -87,11 +94,11 @@
 </div>
 
 
-<div class="container-fluid">
+<div class="container-fluid border">
     <div class="row justify-content-center">
 
-        <div class="col-2 mx-3">
-            <div class="row justify-content-center">
+        <div class="col-2">
+            <div class="row justify-content-around">
                 <div class="col-12 text-center my-3">
                     <h2>Departamentos</h2>
                     @if (session('eliminado'))
@@ -138,21 +145,35 @@
         </div>
 
 
-        <div class="col-4 border mx-5">
-            <table class="table mb-0 bg-primary">
+        <div class="col-7  mx-5">
+            <div class="col-12 text-center my-3">
+                <h2>Clientes</h2>
+                @if (session('eliminado'))
+                    <h5 class="">
+                        <i class="fa fa-exclamation-circle text-danger"></i>
+                        {{session('eliminado')}}
+                    </h5>
+                @endif
+            </div>
+            <table class="table mb-0 mt-5 bg-primary border">
                     <thead class="bg-primary text-white">
                         <tr>
+                        <th>Id</th>
                         <th>Nombre</th>
                         <th>Correo</th>
                         <th>Linea</th>
-                        <th>Acciones</th>
                         <th>Teléfono</th>
+                        <th>Acciones</th>
                         </tr>
                     </thead>
                 <tbody>
 
                 @forelse ($clientes as $cliente)
                     <tr>
+                        <td>
+                            {{$cliente->id_interno}}
+                        </td>
+
                         <td>
                            {{$cliente->nombre}}
                         </td>
@@ -169,11 +190,11 @@
                         </td>
 
                         <td class="">
-                            <a class="text-danger cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_en{{$cliente->id}}" style="cursor: pointer">
+                            <a class="text-danger cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_client{{$cliente->id}}" style="cursor: pointer">
                                 <i class="fa fa-trash"></i> 
                             </a>
 
-                            <a class="text-primary cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_en{{$cliente->id}}"  style="cursor: pointer">
+                            <a class="text-primary cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_client{{$cliente->id}}"  style="cursor: pointer">
                                 <i class="fa fa-edit"></i> 
                             </a>
 
@@ -190,8 +211,8 @@
                             </div>
                             
                             <div class="col-12">
-                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
-                                    Agregar Cuestionario
+                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cliente">
+                                    Agregar Cliente
                                 </a>
                             </div>
 
@@ -285,6 +306,122 @@
 
 
 
+
+{{-- Ciclos de los modales de los clientes --}}
+
+@forelse ($clientes as $cliente)
+
+<div class="modal fade" id="del_client{{$cliente->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-danger py-4">
+                <h3 class="text-white" id="exampleModalLabel">¿Eliminar {{$cliente->nombre}} ?</h3>
+                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <form action="{{route('eliminar.cliente', $cliente->id)}}" method="POST">
+                    @csrf @method('DELETE')
+                    <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
+                        <h6>Eliminar</h6>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="edit_client{{$cliente->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary py-4">
+        <h3 class="text-white" id="exampleModalLabel">Editar Cliente</h3>
+        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        <form action="{{route('editar.cliente', $cliente->id)}}"  method="post" onkeydown="return event.key !='Enter';">
+            @csrf @method('PATCH')
+
+            <div class="row">
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('id_cliente_edit') ? 'is-invalid' : '' }} " value="{{old("id_cliente_edit", $cliente->id_interno)}}" id="id_cliente_edit" name="id_cliente_edit">
+                            <label class="form-label" for="id_cliente_edit" >ID Interno </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_cliente_edit') ? 'is-invalid' : '' }} " id="nombre_usuario_edit" value="{{old("nombre_cliente_edit", $cliente->nombre)}}" name="nombre_cliente_edit">
+                            <label class="form-label" for="nombre_cliente_edit" >Nombre del cliente </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('correo_cliente_edit') ? 'is-invalid' : '' }} "  name="correo_cliente_edit" value="{{old("correo_cliente_edit", $cliente->email)}}">
+                            <label class="form-label" for="correo_cliente_edit" >Correo del cliente</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('telefono_cliente_edit') ? 'is-invalid' : '' }}" name="telefono_cliente_edit" value="{{old("telefono_cliente_edit", $cliente->telefono)}}">
+                            <label class="form-label" for="telefono_cliente_edit" >Teléfono del cliente</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('password_cliente_edit') ? 'is-invalid' : '' }}" name="password_cliente_edit" value="{{old("password_cliente_edit")}}">
+                            <label class="form-label" for="password" >Contraseña </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="form-group mt-3">
+                        <select name="linea_edit" class="form-control form-control-lg" id="">
+                            <option value="" disabled selected>Linea</option>
+                            <option value="Mascotas" {{old("linea_edit", $cliente->linea)  == 'Mascotas' ? 'selected' : '' }} >Mascotas</option>
+                            <option value="Pecuarios" {{old("linea_edit", $cliente->linea) == 'Pecuarios' ? 'selected' : '' }} >Pecuarios</option>
+                            <option value="Pecuarios y Mascotas" {{old("linea_edit", $cliente->linea)  == 'Pecuarios y Mascotas' ? 'selected' :'' }} >Pecuarios y Mascotas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button  class="btn btn-primary w-100 pt-3" data-mdb-ripple-init>
+                <h6>Guardar Cliente</h6>
+            </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+@empty
+    
+@endforelse
 
 
 
@@ -517,15 +654,15 @@
                             <label class="form-label" for="password" >Contraseña </label>
                         </div>
                     </div>
-                </div>
+                </div> 
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="form-group mt-3">
                         <select name="linea" class="form-control form-control-lg" id="">
                             <option value="" disabled selected>Linea</option>
-                            <option value="mascotas" {{old("linea")  == 'mascotas' ? 'selected' : '' }} >Pecuarios</option>
-                            <option value="pecuarios" {{old("linea") == 'pecuarios' ? 'selected' : '' }} >Mascotas</option>
-                            <option value="ambos" {{old("linea")  == 'ambos' ? 'selected' :'' }} >Pecuarios y Mascotas</option>
+                            <option value="Mascotas" {{old("linea")  == 'Mascotas' ? 'selected' : '' }} >Mascotas</option>
+                            <option value="Pecuarios" {{old("linea") == 'Pecuarios' ? 'selected' : '' }} >Pecuarios</option>
+                            <option value="Pecuarios y Mascotas" {{old("linea")  == 'Pecuarios y Mascotas' ? 'selected' :'' }} >Pecuarios y Mascotas</option>
                         </select>
                     </div>
                 </div>
@@ -574,10 +711,6 @@
     </div>
   </div>
 </div>
-
-
-
-
 
 @endsection
 
