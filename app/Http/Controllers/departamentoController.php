@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 class departamentoController extends Controller
 {
 
+
+
     public function eliminar_departamento(Departamento $departamento){
 
             $departamento_borrar = Departamento::findOrFail($departamento->id);
@@ -19,6 +21,8 @@ class departamentoController extends Controller
 
     
 
+
+
     public function actuliza_departamento(Departamento $departamento, Request $request){
 
 
@@ -27,8 +31,15 @@ class departamentoController extends Controller
 
         return back()->with('actualizado', 'El departamento '.$departamento->nombre. ' fue actualizado ');
 
+    }
 
 
+    public function departamentos_show_admin(){
+        
+        $departamentos = Departamento::get();
+
+
+        return view('admin.gestionar_departamentos', compact("departamentos"));
     }
 
 

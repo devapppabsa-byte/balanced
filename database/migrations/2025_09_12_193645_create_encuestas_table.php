@@ -23,6 +23,7 @@ return new class extends Migration
                   ->onDelete("cascade");
 
             $table->text("descripcion")->nullable();
+            $table->string("contestado")->default('no_contestado');
             $table->timestamps();
         });
     }

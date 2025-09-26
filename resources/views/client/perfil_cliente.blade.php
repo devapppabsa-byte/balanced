@@ -19,6 +19,12 @@
                     {{session('editado')}}
                 </div>
             @endif
+            @if (session('contestado'))
+                <div class="text-white fw-bold ">
+                    <i class="fa fa-check-circle mx-2"></i>
+                    {{session('contestado')}}
+                </div>
+            @endif
             @if ($errors->any())
                 <div class="text-white fw-bold bad_notifications">
                     <i class="fa fa-xmark-circle mx-2"></i>
@@ -42,15 +48,35 @@
             <div class="row mt-5 d-flex  justify-content-center">
 
                 @forelse ($encuestas as $encuesta) 
-                <div class="col-3  p-4 gap-2 m-2 bg-primary text-white text-center">
-                    <a href="{{route('contestar.encuesta', $encuesta->id)}}" class="text-white">
+
+                @if ($encuesta->contestado == Auth::guard("cliente")->user()->id)
+
+                    <div class="col-3  p-4 gap-2 m-2 bg-light border shadow-sm  text-center">
                         <div class="row">
                             <div class="col-12">
                                 <h4>{{$encuesta->nombre}}</h4>
                             </div>
-                        </div>
-                    </a>               
-                </div>
+                            <div class="col-12">
+                                <small>
+                                    <i class="fa fa-check"></i>
+                                    Contestada
+                                </small>
+                            </div>
+                        </div>             
+                    </div>  
+                    
+                @else
+                    <div class="col-3  p-4 gap-2 m-2 bg-primary text-white text-center">
+                        <a href="{{route('index.encuesta', $encuesta->id)}}" class="text-white">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>{{$encuesta->nombre}}</h4>
+                                </div>
+                            </div>
+                        </a>               
+                    </div>
+                @endif
+
                 @empty
                     
                 @endforelse

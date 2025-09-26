@@ -17,7 +17,7 @@ class encuestaController extends Controller
 
         $preguntas = Pregunta::where('id_encuesta', $encuesta->id)->get();
 
-        return view('client.encuesta', compact('encuesta', 'preguntas'));
+        return view('admin.gestionar_preguntas', compact('encuesta', 'preguntas'));
 
     }
 
@@ -115,6 +115,25 @@ class encuestaController extends Controller
         $pregunta->delete();
 
         return back()->with("deleted", "La pregunta fue eliminada");
+
+    }
+
+
+
+    public function cuestionario_contestado(){
+
+
+
+    }
+
+
+    public function encuestas_show_admin(){
+
+
+        $encuestas = Encuesta::get();
+
+        return view ('admin.gestionar_encuestas', compact('encuestas'));
+
 
     }
 

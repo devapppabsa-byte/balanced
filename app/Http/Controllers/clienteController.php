@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Pregunta;
+use App\Models\Respuesta;
 use App\Models\Encuesta;
+use App\Models\Cliente;
 class clienteController extends Controller
 {
 
@@ -53,7 +55,7 @@ class clienteController extends Controller
     }
 
 
-    public function contestar_encuesta(Encuesta $encuesta){
+    public function index_encuesta(Encuesta $encuesta){
 
         
         $preguntas = Pregunta::where('id_encuesta', $encuesta->id)->get();
@@ -63,6 +65,48 @@ class clienteController extends Controller
 
     }
 
+
+    public function contestar_encuesta(Request $request, Encuesta $encuesta){
+
+        $respuestas = $request->input('respuestas');
+
+
+
+        foreach($respuestas as $respuesta){
+
+            Respuesta::create([
+
+                "respuesta" => $respuesta,
+                "id_pregunta" => $request->id,
+                "id_cliente" => Auth::guard('cliente')->user()->id
+
+            ]);
+
+        }
+
+        //Agregando el registro a la tabla auxiliar
+        ClienteEncuesta::create([
+
+            "id_cliente" => Auth::guard('cliente')->user()->id,
+            "id_encuesta" => $encuesta->id
+
+        ]);
+
+        
+        return redirect()->route('perfil.cliente')->with("contestado", 'El cuestionario fue contestado');
+
+
+    }
+
+
+
+    public function clientes_show_admin(){
+
+        $clientes = Cliente::get();
+
+        return view('admin.gestionar_clientes', compact('clientes'));
+
+    }
 
     
 

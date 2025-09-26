@@ -26,6 +26,12 @@
                     {{session('editado')}}
                 </div>
             @endif
+            @if (session('encuesta_eliminada'))
+                <div class="text-danger fw-bold ">
+                    <i class="fa fa-check-circle mx-2"></i>
+                    {{session('encuesta_eliminada')}}
+                </div>
+            @endif
             @if ($errors->any())
                 <div class="text-white fw-bold bad_notifications">
                     <i class="fa fa-xmark-circle mx-2"></i>
@@ -34,6 +40,9 @@
             @endif
         </div>
     </div>
+
+    @include('admin.assets.nav')
+
 </div>
 
 
@@ -128,30 +137,24 @@
 
         <div class="col-12 col-sm-12 col-md-10 col-lg-6 mx-1 mt-5">
             <div class="row">
-                <div class="col-12">
-                    @if (session('encuesta_eliminada'))
-                        <h4>
-                            <i class="fa-solid fa-triangle-exclamation text-danger"></i>
-                            {{session('encuesta_eliminada')}}
-                        </h4>
-                    @endif
-                </div>
                 <div class="col-12 text-center">
                     <h4>Cuestionarios de {{$departamento->nombre}}</h4>
                 </div>
                 <div class="col-12">
                     <div class="row  border">
 
-                
-                        <table class="table mb-0 bg-primary">
-                            <thead class="bg-primary text-white">
-                                <tr>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th>Acciones</th>
-                                </tr>
-                            </thead>
-                        <tbody>
+                        @if ($encuestas->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
+                        @else
+                            <table class="table mb-0 bg-primary">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                            <tbody>
+                        @endif
 
                         @forelse ($encuestas as $encuesta)
                             <tr>

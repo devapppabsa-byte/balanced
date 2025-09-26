@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Departamento;
 use App\Models\Indicador;
 
 class userController extends Controller
@@ -100,6 +101,17 @@ class userController extends Controller
 
 
     }
+
+
+    public function usuarios_show_admin(){
+
+        $usuarios = User::get();
+        $departamentos = Departamento::get();
+
+        return view('admin.gestionar_usuarios', compact('usuarios', 'departamentos'));
+
+    }
+
 
 
 

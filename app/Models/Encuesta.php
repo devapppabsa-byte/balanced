@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Encuesta extends Model
 {
     protected $table = "encuestas";
-    protected $fillable = ["nombre", "descripcion", "id_departamento"];
+    protected $fillable = ["nombre", "descripcion", "id_departamento", 'contestado'];
 
 
 

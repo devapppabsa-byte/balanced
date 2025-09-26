@@ -13,9 +13,12 @@ class Pregunta extends Model
 
 
     public function encuesta(){
+        $this->belongsTo(Encuesta::class);
 
-        $this->hasMany(Encuesta::class);
+    }
 
+    public function respuestas(){
+        $this->hasMany(Respuesta::class);
     }
 
 

@@ -36,33 +36,54 @@
     <div class="row justify-content-center mt-3">
         <div class="col-12">
             <div class="row">
-                <div class="col-12 text-center my-4">
-                    <h2>Preguntas</h2>
+                <div class="col-12 text-center my-2">
+                    <h2>Preguntas de {{$encuesta->nombre}}</h2>
                 </div>
             </div>
-            <div class="row mt-5 d-flex  justify-content-center">
+            <form action="{{route('contestar.encuesta', $encuesta->id)}}" method="POST" class="row mt-2 d-flex  justify-content-center">
+                @csrf
+                
+                @php
+                    $contador_preguntas = 0;
+                @endphp
 
                 @forelse ($preguntas as $pregunta) 
-                <div class="col-11  p-4 gap-2 m-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <h4>{{$pregunta->id}}</h4>
-                        </div>
-                        <div class="col-9">
-                            <select name="" class="form-select" id="">
-                                <option value="" disabled selected>Seleccione una Opción</option>
-                                <option value="0" >En Desacuerdo</option>
-                                <option value="5" >Medianamente de acuerdo</option>
-                                <option value="10" >Completamente de acuerdo</option>
-                            </select>
-                        </div>
-                    </div>            
-                </div>
+                @php
+                    $contador_preguntas ++;
+                @endphp
+                    <div class="col-11  p-2 gap-2 mb-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <h4>{{$pregunta->id}}</h4>
+                            </div>
+                            @if ($pregunta->cuantificable)
+                                <div class="col-9">
+                                    <select name="respuestas[]" class="form-select" id="" required>
+                                        <option value="" disabled selected>Seleccione una Opción</option>
+                                        <option value="0" >En Desacuerdo</option>
+                                        <option value="5" >Medianamente de acuerdo</option>
+                                        <option value="10" >Completamente de acuerdo</option>
+                                    </select>
+                                </div>
+                            @endif
+                            @if(!$pregunta->cuantificable)
+                                <div class="col-9">
+                                    <input type="text" value="{{old($contador_preguntas)}}" name="respuestas[]" placeholder="Por favor anote su respuesta" class="form-control" name="{{$pregunta->id}}" required>
+                                </div>
+                            @endif
+                                <input type="hidden" name="id" value="{{$pregunta->id}}">
+                        </div>            
+                    </div>
                 @empty
                     
                 @endforelse
-
-            </div>
+                    <div class="col-4">
+                        <button class="btn btn-primary btn-lg py-2">
+                            <i class=" fa fa-paper-plane"></i>
+                            Enviar
+                        </button>
+                    </div>
+            </form>
         </div>
     </div>
 

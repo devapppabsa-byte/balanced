@@ -93,6 +93,7 @@
             @endif
         </div>
     </div>
+    @include('admin.assets.nav')
 </div>
 
 
@@ -102,11 +103,13 @@
 <div class="container">
 
     <div class="row justify-content-center">
-
+            <div class="col-12 text-center mt-5">
+                <h3>Preguntas de la encuesta {{$encuesta->nombre}}</h3>
+            </div>
         
-            <div class="col-10 mt-5">
+            <div class="col-10 mt-2">
                     <table class="table border shadow-sm">
-                        <thead class="table-primary border">
+                        <thead class="table-secondary border">
                             <th scope="col">Pregunta</th>
                             <th scope="col">Cuantificable</th>
                             <th scope="col">Eliminar</th>

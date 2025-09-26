@@ -57,6 +57,11 @@ Route::get('/perfil_admin/agregar_indicadores/{departamento}', [indicadorControl
 Route::post('/perfil_admin/agregar_indicadores/agregar_indicador/{departamento}', [indicadorController::class, 'agregar_indicadores_store'])->name('agregar.indicadores.store');
 
 
+
+
+
+
+
 Route::patch('/perfil_admin/agregar_indicadores/editar_usuario/{usuario}', [userController::class, 'editar_usuario'])->name('editar.usuario');
 
 
@@ -114,17 +119,25 @@ Route::post('/perfil_admin/agregar_indicadores/agregar_encuesta/{departamento}',
 Route::delete('/perfil_admin/agregar_indicadores/eliminar_encuesta/{encuesta}', [encuestaController::class, 'encuesta_delete'])->name('encuesta.delete');
 Route::patch('/perfil_admin/agregar_indicadores/editar_encuesta/{encuesta}', [encuestaController::class, 'encuesta_edit'])->name('encuesta.edit');
 
-Route::get('/perfil_admin/agregar_indicadores/encuesta/{encuesta}', [encuestaController::class, 'encuesta_index'])->name('encuesta.index');
 Route::post('/perfil_admin/agregar_indicadores/encuesta/agregar_pregunta/{encuesta}', [encuestaController::class, 'pregunta_store'])->name('pregunta.store');
 Route::delete('/perfil_admin/agregar_indicadores/encuesta/eliminar_pregunta/{pregunta}', [encuestaController::class, 'pregunta_delete'])->name('pregunta.delete');
 
 
 
+//Reacomodando los HTML
+Route::get('/perfil_admin/departamentos', [departamentoController::class, "departamentos_show_admin"])->name('departamentos.show.admin');
+Route::get('/perfil_admin/clientes', [clienteController::class, 'clientes_show_admin'])->name('clientes.show.admin');
+Route::get('/perfil_admin/usuarios', [userController::class, 'usuarios_show_admin'])->name("usuarios.show.admin");
+Route::get('/perfil_admin/encuestas', [encuestaController::class, 'encuestas_show_admin'])->name('encuestas.show.admin');
+Route::get('/perfil_admin/encuestas/preguntas/{encuesta}', [encuestaController::class, 'encuesta_index'])->name('encuesta.index');
+
+
 
 
 Route::get('/login_cliente',[clienteController::class, 'login'])->name('login.cliente');
-Route::get('/login_cliente/ingreso_cliente', [clienteController::class, 'perfil_cliente'])->name('perfil.cliente');
 Route::post('/perfil_cliente', [clienteController::class, 'index_cliente'])->name('index.cliente');
+Route::get('/login_cliente/ingreso_cliente', [clienteController::class, 'perfil_cliente'])->name('perfil.cliente');
 
 //Para contestar los cuestionarios
-Route::get('/perfil_cliente/cuestionario/{encuesta}', [clienteController::class, 'contestar_encuesta'])->name("contestar.encuesta");
+Route::get('/perfil_cliente/cuestionario/{encuesta}', [clienteController::class, 'index_encuesta'])->name("index.encuesta");
+Route::post('/perfil_cliente/cuestionario/contestando/{encuesta}', [clienteController::class, 'contestar_encuesta'])->name("contestar.encuesta");
