@@ -116,6 +116,7 @@ Route::post('/perfil_admin', [userController::class, 'cerrar_session'])->name('c
 
 //Aui van las rutas de las encuestas para los clientes
 Route::post('/perfil_admin/agregar_indicadores/agregar_encuesta/{departamento}', [encuestaController::class, 'encuesta_store'])->name('encuesta.store');
+Route::post('/perfil_admin/encuestas/', [encuestaController::class, 'encuesta_store_two'])->name('encuesta.store.two');
 Route::delete('/perfil_admin/agregar_indicadores/eliminar_encuesta/{encuesta}', [encuestaController::class, 'encuesta_delete'])->name('encuesta.delete');
 Route::patch('/perfil_admin/agregar_indicadores/editar_encuesta/{encuesta}', [encuestaController::class, 'encuesta_edit'])->name('encuesta.edit');
 
@@ -130,7 +131,7 @@ Route::get('/perfil_admin/clientes', [clienteController::class, 'clientes_show_a
 Route::get('/perfil_admin/usuarios', [userController::class, 'usuarios_show_admin'])->name("usuarios.show.admin");
 Route::get('/perfil_admin/encuestas', [encuestaController::class, 'encuestas_show_admin'])->name('encuestas.show.admin');
 Route::get('/perfil_admin/encuestas/preguntas/{encuesta}', [encuestaController::class, 'encuesta_index'])->name('encuesta.index');
-
+Route::get('/perfil_admin/encuestas/respuestas_clientes/{cliente}/{encuesta}', [clienteController::class, 'show_respuestas'])->name('show.respuestas');
 
 
 

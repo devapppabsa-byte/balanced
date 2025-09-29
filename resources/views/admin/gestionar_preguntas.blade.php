@@ -3,9 +3,17 @@
     
 @section('contenido')
 
-<button class="btn btn-primary  flotante-encuesta" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
-    <i class="fa fa-plus fa-2x"></i>
-</button>
+@if ($existe->isEmpty())
+    <button class="btn btn-primary  flotante-encuesta" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
+        <i class="fa fa-plus fa-2x"></i>
+    </button>
+@else
+
+    <button class="btn btn-dark  flotante-encuesta" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#encuesta_contestada">
+        <i class="fa fa-plus fa-2x"></i>
+    </button>
+
+@endif
 
 <div class="modal fade" id="agregar_pregunta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
   <div class="modal-dialog modal-lg">
@@ -56,6 +64,31 @@
 </div>
 
 
+<div class="modal fade" id="encuesta_contestada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-danger py-4">
+        <h3 class="text-white" id="exampleModalLabel">La encuesta ya tiene respuestas.</h3>
+        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+
+            <div class="row justify-content-center">
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-10 text-center mt-3">
+                    <i class="fa fa-exclamation-circle fa-4x text-danger"></i>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-10 text-justify  text-justify mt-3">
+                    <p class="">La encuesta ya fue respondida por lo que para mantener la integridad de los datos no se puede modificar la encuesta.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
 
 
 <div class="container-fluid">
@@ -100,20 +133,17 @@
 
 
 
-<div class="container">
+<div class="container-fluid">
 
-    <div class="row justify-content-center">
-            <div class="col-12 text-center mt-5">
-                <h3>Preguntas de la encuesta {{$encuesta->nombre}}</h3>
-            </div>
-        
-            <div class="col-10 mt-2">
+    <div class="row justify-content-around">
+            <div class="col-12 col-sm-12 col-md-10 col-lg-4 mt-5">
+                <h3 class="text-center">Preguntas de la encuesta {{$encuesta->nombre}}</h3>
+
                     <table class="table border shadow-sm">
                         <thead class="table-secondary border">
                             <th scope="col">Pregunta</th>
                             <th scope="col">Cuantificable</th>
                             <th scope="col">Eliminar</th>
-                            
                         </thead>
                         <tbody class="">
                             @forelse ($preguntas as $pregunta)
@@ -121,9 +151,15 @@
                                     <th>{{$pregunta->pregunta}}</th>
                                     <td>{{$pregunta->cuantificable === 0 ? 'No' : 'Si' }}</td>
                                     <td class="form-group shadow-0">
-                                        <button class="btn btn-danger btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#elim{{$pregunta->id}}">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+                                        @if ($existe->isEmpty())
+                                            <button class="btn btn-danger btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#elim{{$pregunta->id}}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>                                            
+                                        @else
+                                            <button class="btn btn-dark btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#encuesta_contestada">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -149,7 +185,57 @@
                             @endforelse
                         </tbody>
                     </table>
-            </div>        
+            </div>
+            
+            <div class="col-12 col-sm-12 col-md-6 col-lg-5 mt-5">
+                <h3 class="text-center">Respuestas de los Clientes</h3>
+                    <table class="table border shadow-sm">
+                        <thead class="table-secondary border">
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Linea</th>
+                            <th scope="col">Respuestas</th>
+                            
+                        </thead>
+                        <tbody class="">
+                            @forelse ($clientes as $cliente)
+                                <tr>
+                                        <th>{{$cliente->nombre}}</th>
+                                        <td>{{$cliente->linea}}</td>
+
+                                        <td class="form-group shadow-0">
+                                            <a class="btn btn-light btn-sm" href="{{route('show.respuestas', ['cliente' => $cliente->id, 'encuesta' => $encuesta->id])}}">
+                                                <i class="fa fa-eye mx-1"></i>
+                                                Ver Respuestas
+                                            </a>
+                                        </td>
+                                    
+
+                                </tr>
+                            @empty
+
+                                <tr>
+                                    <td>
+                                        <div class="row justify-content-center">
+ 
+                                            <div class="col-auto">
+                                                <i class="fa fa-exclamation-circle text-danger"></i>
+                                                No cuenta con preguntas, pero las puedes agregar aqui.
+                                            </div>
+                                            
+                                            <div class="col-auto">
+                                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
+                                                    Agregar Pregunta
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+            </div>
+            
     </div>
 </div>
 

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Pregunta;
 use App\Models\Respuesta;
+use App\Models\ClienteEncuesta;
 use App\Models\Encuesta;
 use App\Models\Cliente;
 class clienteController extends Controller
@@ -23,6 +24,7 @@ class clienteController extends Controller
     public function perfil_cliente(){
 
         $encuestas = Encuesta::get();  //
+        
 
         return view("client.perfil_cliente", compact('encuestas'));
     }
@@ -57,6 +59,18 @@ class clienteController extends Controller
 
     public function index_encuesta(Encuesta $encuesta){
 
+        //protegiendo la URL de las encuestas, la consulta esta es para verificar si el cliente aun no contesta 
+        //la encuesta o si ya la contesto. Todo eso sobre la tabla Aux. 
+        $existe = ClienteEncuesta::where('id_cliente', Auth::guard('cliente')->user()->id)
+        ->where('id_encuesta', $encuesta->id)
+        ->exists();
+
+        if($existe){
+
+            return back()->with('contestada','Esta encuesta ya fue contestada por el usuario!');
+
+        }
+
         
         $preguntas = Pregunta::where('id_encuesta', $encuesta->id)->get();
 
@@ -66,10 +80,32 @@ class clienteController extends Controller
     }
 
 
+    public function clientes_show_admin(){
+
+        $clientes = Cliente::get();
+
+        return view('admin.gestionar_clientes', compact('clientes'));
+
+    }
+
+
+
+
+
+
+
     public function contestar_encuesta(Request $request, Encuesta $encuesta){
+
+
 
         $respuestas = $request->input('respuestas');
 
+
+        //Guardando los ID en las tabla auxiliar
+        ClienteEncuesta::create([
+            "id_cliente" => Auth::guard('cliente')->user()->id,
+            "id_encuesta" => $encuesta->id
+        ]);
 
 
         foreach($respuestas as $respuesta){
@@ -78,20 +114,10 @@ class clienteController extends Controller
 
                 "respuesta" => $respuesta,
                 "id_pregunta" => $request->id,
-                "id_cliente" => Auth::guard('cliente')->user()->id
 
             ]);
 
         }
-
-        //Agregando el registro a la tabla auxiliar
-        ClienteEncuesta::create([
-
-            "id_cliente" => Auth::guard('cliente')->user()->id,
-            "id_encuesta" => $encuesta->id
-
-        ]);
-
         
         return redirect()->route('perfil.cliente')->with("contestado", 'El cuestionario fue contestado');
 
@@ -100,13 +126,23 @@ class clienteController extends Controller
 
 
 
-    public function clientes_show_admin(){
 
-        $clientes = Cliente::get();
 
-        return view('admin.gestionar_clientes', compact('clientes'));
+    public function show_respuestas(Cliente $cliente, Encuesta $encuesta){
 
+        return $preguntas = Pregunta::where('id_encuesta', $encuesta->id)->value('id');
+
+        return $repuestas = Respuesta::whereIn('id_pregunta', $preguntas);
+        //se necesitan las respuestas de las encuestas, es decir, consultar las preguntas con su respuesta, todo estom vendra de la tabla auxiliar.
+        return $encuestas = Encuesta::with('preguntas.respuestas')->get();
+
+        
+
+        return view("admin.respuestas_cliente_encuestas", compact('preguntas'));
+    
     }
+
+
 
     
 

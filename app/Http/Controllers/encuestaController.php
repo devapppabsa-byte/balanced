@@ -6,20 +6,37 @@ use Illuminate\Http\Request;
 use App\Models\Encuesta;
 use App\Models\Departamento;
 use App\Models\Pregunta;
+use App\Models\Cliente;
+use App\Models\ClienteEncuesta;
 
 
 class encuestaController extends Controller
 {
 
-
-
     public function encuesta_index(Encuesta $encuesta){
 
         $preguntas = Pregunta::where('id_encuesta', $encuesta->id)->get();
+        $existe = ClienteEncuesta::where('id_encuesta', $encuesta->id)->get();
 
-        return view('admin.gestionar_preguntas', compact('encuesta', 'preguntas'));
+        $cliente_arr = [];
+        foreach($existe as $cliente ){
+
+            array_push($cliente_arr, $cliente->id_cliente);
+
+        }
+
+        $cliente_arr;
+
+        $clientes = Cliente::whereIn('id', $cliente_arr)->get();
+
+
+
+
+        return view('admin.gestionar_preguntas', compact('encuesta', 'preguntas', 'existe', 'clientes'));
 
     }
+
+
 
 
     public function encuesta_store(Request $request, Departamento $departamento){
@@ -40,11 +57,36 @@ class encuestaController extends Controller
         ]);
 
 
-        return back()->with("success", "El cuestionario fue agregado!");
+        return back()->with("success", "La encuesta fue agregada!");
+
 
     
-    
     }
+
+
+    public function encuesta_store_two(Request $request){
+
+        $request->validate([
+
+            "nombre_encuesta" => "required|unique:encuestas,nombre",
+            "descripcion_encuesta" => "required"
+
+        ]);
+
+
+        Encuesta::create([
+            "nombre" => $request->nombre_encuesta,
+            "descripcion" => $request->descripcion_encuesta,
+            "id_departamento" => $request->departamento
+        ]);
+
+
+
+        return back()->with('success', 'La encuesta fue agregada!');
+
+
+    }
+
 
 
 
@@ -130,9 +172,10 @@ class encuestaController extends Controller
     public function encuestas_show_admin(){
 
 
-        $encuestas = Encuesta::get();
+        $encuestas = Encuesta::with('departamento')->get();
+        $departamentos = Departamento::get();
 
-        return view ('admin.gestionar_encuestas', compact('encuestas'));
+        return view ('admin.gestionar_encuestas', compact('encuestas', 'departamentos'));
 
 
     }

@@ -25,5 +25,10 @@ class Departamento extends Model
     }
 
 
+    public function departamento(){
+        return $this->hasMany(Encuesta::class, "id_departamento");
+    }
+
+
 
 }
