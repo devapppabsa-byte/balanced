@@ -15,26 +15,33 @@ class encuestaController extends Controller
 
     public function encuesta_index(Encuesta $encuesta){
 
-        $preguntas = Pregunta::where('id_encuesta', $encuesta->id)->get();
+        //checo si la encuesta ya fue contestada
         $existe = ClienteEncuesta::where('id_encuesta', $encuesta->id)->get();
+        
+        //Esto me trae todas las preguntas de la encuesta con sus respuestas 
+        $preguntas = Pregunta::with('respuestas')->where('id_encuesta', $encuesta->id)->get();
 
+
+        //me ayuda a agregar los clientes que ya respondieron las preguntas
         $cliente_arr = [];
         foreach($existe as $cliente ){
-
             array_push($cliente_arr, $cliente->id_cliente);
-
         }
-
-        $cliente_arr;
-
+        //los clientes que ya contestaron la encuesta.
         $clientes = Cliente::whereIn('id', $cliente_arr)->get();
 
+
+        
 
 
 
         return view('admin.gestionar_preguntas', compact('encuesta', 'preguntas', 'existe', 'clientes'));
 
     }
+
+
+
+
 
 
 

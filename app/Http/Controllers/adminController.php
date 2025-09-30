@@ -60,7 +60,7 @@ class adminController extends Controller
         
         $request->validate([
             'nombre_usuario' => 'required',
-            'correo_usuario' => 'required',
+            'correo_usuario' => 'required|email|unique:users,email',
             'puesto_usuario' => 'required',
             'planta' => 'required',
             'departamento' =>'required',

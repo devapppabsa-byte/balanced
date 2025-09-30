@@ -14,13 +14,13 @@ class Pregunta extends Model
 
     public function encuesta(){
     
-        $this->belongsTo(Encuesta::class, 'id_encuesta');
+       return  $this->belongsTo(Encuesta::class, 'id_encuesta');
 
     }
 
     public function respuestas(){
 
-        $this->hasMany(Respuesta::class, 'id_encuesta');
+       return  $this->hasMany(Respuesta::class, 'id_pregunta');
     
     }
 

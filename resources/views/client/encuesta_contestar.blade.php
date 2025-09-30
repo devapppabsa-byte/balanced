@@ -72,7 +72,7 @@
                                         <input type="text" value="{{old($contador_preguntas)}}" name="respuestas[]" placeholder="Por favor anote su respuesta" class="form-control" name="{{$pregunta->id}}" required>
                                     </div>
                                 @endif
-                                    <input type="hidden" name="id" value="{{$pregunta->id}}">
+                                    <input type="hidden" name="id[]" value="{{$pregunta->id}}">
                             </div>            
                         </div>
                     @empty

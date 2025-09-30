@@ -94,10 +94,9 @@ class clienteController extends Controller
 
 
 
-    public function contestar_encuesta(Request $request, Encuesta $encuesta){
+public function contestar_encuesta(Request $request, Encuesta $encuesta){
 
-
-
+   
         $respuestas = $request->input('respuestas');
 
 
@@ -107,15 +106,18 @@ class clienteController extends Controller
             "id_encuesta" => $encuesta->id
         ]);
 
-
+        $contador=0;
         foreach($respuestas as $respuesta){
 
             Respuesta::create([
 
                 "respuesta" => $respuesta,
-                "id_pregunta" => $request->id,
+                "id_pregunta" => $request->input('id')[$contador],
+                "id_cliente" => Auth::guard('cliente')->user()->id
 
             ]);
+
+            $contador++;
 
         }
         
@@ -128,19 +130,25 @@ class clienteController extends Controller
 
 
 
-    public function show_respuestas(Cliente $cliente, Encuesta $encuesta){
 
-        return $preguntas = Pregunta::where('id_encuesta', $encuesta->id)->value('id');
 
-        return $repuestas = Respuesta::whereIn('id_pregunta', $preguntas);
+public function show_respuestas(Cliente $cliente, Encuesta $encuesta){
+
+        $clienteId = $cliente->id;
+        $encuestaId = $encuesta->id;
+
+
+        $preguntas = Pregunta::with(['respuestas' => function ($q) use ($clienteId) {
+                $q->where('id_cliente', $clienteId);
+            }])
+            ->where('id_encuesta', $encuestaId)
+            ->get();
+
+
         //se necesitan las respuestas de las encuestas, es decir, consultar las preguntas con su respuesta, todo estom vendra de la tabla auxiliar.
-        return $encuestas = Encuesta::with('preguntas.respuestas')->get();
-
-        
-
-        return view("admin.respuestas_cliente_encuestas", compact('preguntas'));
+        return view("admin.respuestas_cliente_encuestas", compact('preguntas', 'cliente'));
     
-    }
+}
 
 
 

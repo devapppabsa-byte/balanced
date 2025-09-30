@@ -146,10 +146,28 @@
                             <th scope="col">Eliminar</th>
                         </thead>
                         <tbody class="">
+                            @php
+                                $numero_preguntas_cuantificables = 0;
+                                $total_obtenido = 0;
+                            @endphp
                             @forelse ($preguntas as $pregunta)
                                 <tr>
+
                                     <th>{{$pregunta->pregunta}}</th>
-                                    <td>{{$pregunta->cuantificable === 0 ? 'No' : 'Si' }}</td>
+                                    @if ($pregunta->cuantificable === 0)
+                                        <td>No</td>
+                                    @else
+                                        <td>Si</td>
+                                        @forelse ($pregunta->respuestas as $respuesta)
+                                            @php
+                                                $numero_preguntas_cuantificables = $numero_preguntas_cuantificables + 1;
+                                                $total_obtenido = $total_obtenido + $respuesta->respuesta ;
+                                            @endphp
+                                        @empty
+                                            
+                                        @endforelse
+                                    @endif
+
                                     <td class="form-group shadow-0">
                                         @if ($existe->isEmpty())
                                             <button class="btn btn-danger btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#elim{{$pregunta->id}}">
@@ -213,21 +231,13 @@
                                 </tr>
                             @empty
 
-                                <tr>
+                                <tr  class="col-2">
                                     <td>
                                         <div class="row justify-content-center">
- 
                                             <div class="col-auto">
                                                 <i class="fa fa-exclamation-circle text-danger"></i>
-                                                No cuenta con preguntas, pero las puedes agregar aqui.
+                                                Aun no se cuenta con respuestas.
                                             </div>
-                                            
-                                            <div class="col-auto">
-                                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
-                                                    Agregar Pregunta
-                                                </a>
-                                            </div>
-
                                         </div>
                                     </td>
                                 </tr>
@@ -237,6 +247,32 @@
             </div>
             
     </div>
+
+    <div class="row justify-content-center mt-5 ">
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-8 mt-5 text-center bg-light border">
+            <div class="row justify-content-around">
+                
+                <div class="col-auto  p-3">
+                    <h3 class="fw-bold">Puntuación Maxima</h3>
+                    <h3 id="puntuacion_maxima">{{ ($numero_preguntas_cuantificables != 0) ? $numero_preguntas_cuantificables * 10 : 'Aún no hay respuestas' }}</h3>
+                </div>
+                
+                <div class="col-auto p-3">
+                    <h3 class="fw-bold">Puntuación General Obtenida </h3>
+                    <h3 id="puntuacion_obtenida">{{($total_obtenido != 0)  ? $total_obtenido : 'Aún no hay respuestas' }}</h3>
+                </div>
+
+                <div class="col-auto p-3">
+                    <h3 class="fw-bold">% Cumplimiento</h3>
+                    <h3 id="cumplimiento">{{ ($total_obtenido != 0 ) ?  (( $total_obtenido) /($numero_preguntas_cuantificables * 10)) * 100 : 'Aún no hay respuestas' }} </h3>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </div>
 
 

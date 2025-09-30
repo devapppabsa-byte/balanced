@@ -11,9 +11,6 @@ class Respuesta extends Model
     protected $fillable = ["respuesta", "id_pregunta", "id_cliente"];
 
 
-    public function cliente(){
-        $this->belongsTo(Cliente::class, 'id_cliente');
-    }
 
     public function pregunta(){
         $this->belongsTo(Pregunta::class, 'id_pregunta');

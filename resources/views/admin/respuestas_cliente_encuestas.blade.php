@@ -37,48 +37,48 @@
 
 
 <div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-7 mt-5">
-            <h3 class="text-center">Respuestas de los Clientes</h3>
+    <div class="row justify-content-center d-flex aligns-items-center">
+
+        <div class="col-12 col-sm-12 col-md-10 col-lg-8 mt-5 mb-0">
+            <h3 class="text-center">Respuestas de {{$cliente->nombre}}</h3>
                 <table class="table border shadow-sm">
                     <thead class="table-secondary border">
-                        <th scope="col">Cliente</th>
-                        <th scope="col">Linea</th>
-                        <th scope="col">Respuestas</th>
-                        
+                        <th scope="col">Pregunta</th>
+                        <th scope="col">Respuesta</th>
+                      
                     </thead>
                     <tbody class="">
                         @forelse ($preguntas as $pregunta)
                             <tr>
-                                    <th>{{$pregunta->pregunta}}</th>
-                                    <td>{{$pregunta->pregunta}}</td>
+                                <th>{{$pregunta->pregunta}}</th>
+                                    @foreach ($pregunta->respuestas as $respuesta)
 
-                                    <td class="form-group shadow-0">
-                                        <a class="btn btn-light btn-sm" href="#">
-                                            <i class="fa fa-eye mx-1"></i>
-                                            Ver Respuestas
-                                        </a>
-                                    </td>
-                                
-
+                                        @if ($pregunta->cuantificable === 1 )
+                                            <td >
+                                                {{ match($respuesta->respuesta) {
+                                                    '0' => "En Desacuerdo",
+                                                    '5' => "Parcialmente de Acuerdo",
+                                                    '10' => "Completamente de Acuerdo",
+                                                    default => 'null'    
+                                                } }}
+                                                <input type="hidden" value="{{$respuesta->respuesta}}" class="sumar">
+                                            </td>
+                                            
+                                        @else
+                                            <td>
+                                                {{$respuesta->respuesta}}
+                                            </td>
+                                        @endif
+                                    @endforeach
                             </tr>
                         @empty
-
                             <tr>
                                 <td>
                                     <div class="row justify-content-center">
-
                                         <div class="col-auto">
                                             <i class="fa fa-exclamation-circle text-danger"></i>
-                                            No cuenta con preguntas, pero las puedes agregar aqui.
+                                            No cuenta con respuestas.
                                         </div>
-                                        
-                                        <div class="col-auto">
-                                            <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
-                                                Agregar Pregunta
-                                            </a>
-                                        </div>
-
                                     </div>
                                 </td>
                             </tr>
@@ -86,12 +86,54 @@
                     </tbody>
                 </table>
         </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-8 mt-0 text-center bg-light border">
+            <div class="row justify-content-around">
+                
+                <div class="col-auto  p-3">
+                    <h3 class="fw-bold">Puntuación Maxima </h3>
+                    <h3 id="puntuacion_maxima">1</h3>
+                </div>
+                
+                <div class="col-auto p-3">
+                    <h3 class="fw-bold">Puntuación Obtenida </h3>
+                    <h3 id="puntuacion_obtenida"></h3>
+                </div>
+
+                <div class="col-auto p-3">
+                    <h3 class="fw-bold">Cumplimiento</h3>
+                    <h3 id="cumplimiento"></h3>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
-
-
-
-
-
 @endsection
     
+
+
+
+@section('scripts')
+<script>
+
+    let suma = 0;
+    const celdas = document.querySelectorAll('.sumar');
+    const cumplimiento = document.getElementById("cumplimiento");
+    const puntuacion_maxima = document.getElementById("puntuacion_maxima");
+    const puntuacion_obtenida = document.getElementById("puntuacion_obtenida"); 
+
+    console.log(celdas)
+    
+    celdas.forEach(input => {
+        const valor = parseFloat(input.value.trim()) || 0;
+        suma += valor;
+    });
+
+    //Esto me ayuda a sacar el porcentaje de las respuestas gardadas por el usurio
+    puntuacion_maxima.textContent = celdas.length*10;
+    puntuacion_obtenida.textContent = suma/celdas.length;
+    cumplimiento.textContent =  (Number(puntuacion_obtenida.textContent) / Number(puntuacion_maxima.textContent)) * 100 + "%";  
+
+</script>
+@endsection
