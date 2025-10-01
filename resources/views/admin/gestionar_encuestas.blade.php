@@ -60,7 +60,7 @@
                                     <th>Descripción</th>
                                     <th>Departamento</th>
                                     <th>Acciones</th>
-                                    <th>Puntaje Obtenido</th>
+                                    <th>Porcentaje de cumplimiento</th>
                                     </tr>
                                 </thead>
                             <tbody>
@@ -91,8 +91,42 @@
                                 
                                 </td>
 
-                                <td class="text-start">
-                                    50%
+                                <td class="text-center">
+
+                                    @php  $suma=0; $contador=0;    @endphp
+
+                                    @forelse ($encuesta->preguntas as $pregunta)
+
+                                        @if ($pregunta->cuantificable === 1)
+
+                                            @forelse ($pregunta->respuestas as $respuesta)
+                                                @php
+                                                    $suma = $suma + $respuesta->respuesta;
+                                                @endphp
+                                                @php $contador++;  @endphp {{--Este contador me ayuda a saber cuantas preguntas del cuestionario con cuantificables --}}
+                                                
+                                            @empty
+                                                @if ($loop->first)
+                                                    <span>No hay respuestas disponibles.</span>
+                                                @endif
+                                            @endforelse
+
+                                        @else
+                                        {{-- si no son cuantificables no las muestra --}}
+                                        @endif
+
+                                    @empty
+                                        <span>Aún no hay respuestas.</span>                                        
+                                    @endforelse
+
+                                    @if ($suma>0)
+                                        {{-- Aqui esta el porcentaje de cumplimiento --}}
+                                        <h4 class="{{($suma/($contador*10)*100 > 50) ? "text-success" : "text-danger" }}" >
+                                            {{round(($suma/($contador*10))*100, 3) }} %
+                                            <i class="fa {{($suma/($contador*10)*100 > 50) ? "fa-check-circle" : "fa-xmark-circle" }} "></i>
+                                        </h4>
+                                        @endif
+                                
                                 </td>
 
                             </tr>

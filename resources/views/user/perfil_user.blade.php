@@ -64,10 +64,6 @@
 
 @section('scripts')
 
-    {{-- <script>
-        const campos = @json($campos)
-        console.log(campos);
-    </script> --}}
 
 
 @endsection

@@ -70,9 +70,9 @@
 
 
 <div class="container-fluid m-3 mt-5">
-    <div class="row justify-content-center px-4">
-        <div class="col-12 col-sm-12 col-md-10 col-lg-4 mx-1 mt-5 ">
-            <div class="row">
+    <div class="row justify-content-around px-4">
+        <div class="col-12 col-sm-12 col-md-10 col-lg-3 mx-1 mt-5 ">
+
                 <div class="col-12 text-center">
                     <h4>Indicadores de {{$departamento->nombre}}</h4>
                     @if (session('eliminado'))
@@ -82,33 +82,43 @@
                         </h4>
                     @endif
                 </div>
+
                 <div class="col-12">
                     <div class="row  border">
+                        <div class="col-12">
+                        @if ($indicadores->isEmpty())
+                        @else
+                            <table class="table mb-0 ">
+                                <thead class=" text-white">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                    </tr>
+                                </thead>
+                            <tbody>
+                        @endif
+                        
                         @forelse ($indicadores as $indicador)
-                            <div class="col-12 m-2 p-3">
-                                <div class="row d-flex align-items-center">
-                                    
-                                    <div class="col-12 col-sm-12 col-md-7 col-lg-9">
-                                        <a href="{{route('indicador.index', $indicador->id)}}" class="btn btn-outline-dark w-100 h-100 d-block py-4">
-                                            {{$indicador->nombre}}
-                                        </a>
-                                    </div>
+                            <tr>
+                                <td>
+                                    <a href="{{route('indicador.index', $indicador->id)}}" class="">
+                                        {{$indicador->nombre}}
+                                    </a>
+                                </td>
 
 
-                                    <div class="col-12 col-sm-12 col-md-4 col-lg-2">
-                                        <div class="form-group mt-1">
-                                            <button class="btn btn-sm w-100 btn-outline-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#bo{{$indicador->id}}">
-                                                <i class="fa fa-trash"></i> 
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
+                                <td class="">
+                                    <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#bo{{$indicador->id}}">
+                                        <i class="fa fa-trash"></i> 
+                                    </a>
+                                    <a href="{{route('indicador.index', $indicador->id)}}" class="text-dark">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
                         @empty
 
-                        <div class="col-12 p-5 text-center p-5 border">
+                        <div class="col-12 p-5 text-center p-5">
 
                             <div class="row">
                                 
@@ -129,8 +139,10 @@
                         </div>
                             
                         @endforelse
+                        </tbody>
+                        </table>
+                        </div>
                     </div>
-                </div>
             </div>
         </div>
 
@@ -219,58 +231,66 @@
                             {{session('eliminado_user')}}
                         </h5>
                     @endif
-                </div>
-
-                
+                </div>                
                 <div class="col-12 table-responsive">
-                    <table class="table border">
-                        <thead class="table-secondary border">
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Correo</th>
-                            <th scope="col">Puesto</th>
-                            <th scope="col">Departamento</th>
-                            <th scope="col">Acciones</th>
-                        </thead>
-                        <tbody class="">
-                            @forelse ($usuarios as $usuario)
-                                <tr>
-                                    <th>{{$usuario->name}}</th>
-                                    <td>{{$usuario->email}}</td>
-                                    <td>{{$usuario->puesto}}</td>
-                                    <td>{{$usuario->departamento->nombre}}</td>
 
-                                    <td class="btn-group shadow-0 border-0"> 
-                                        <button class="btn btn-outline-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                        <button class="btn btn-outline-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
+                    <div class="row  border">
 
-                                <tr>
-                                    <td>
-                                        <div class="row justify-content-center">
- 
-                                            <div class="col-auto">
-                                                <i class="fa fa-exclamation-circle text-danger"></i>
-                                                No cuenta con usuaios, pero los puedes agregar aqui
-                                            </div>
-                                            
-                                            <div class="col-auto">
-                                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
-                                                    Agregar Usuario
-                                                </a>
-                                            </div>
+                        @if ($usuarios->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
+                        @else
+                            <table class="table mb-0">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th scope="col">Nombre</th>
+                                        <th scope="col">Correo</th>
+                                        <th scope="col">Puesto</th>
+                                        <th scope="col">Departamento</th>
+                                        <th scope="col">Acciones</th>
+                                    </tr>
+                                </thead>
+                            <tbody>
+                        @endif
 
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
+                        @forelse ($usuarios as $usuario)
+                            <tr>
+                                <th>{{$usuario->name}}</th>
+                                <td>{{$usuario->email}}</td>
+                                <td>{{$usuario->puesto}}</td>
+                                <td>{{$usuario->departamento->nombre}}</td>
+
+                                <td class="btn-group shadow-0 border-0"> 
+                                    <button class="btn btn-outline-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                    <button class="btn btn-outline-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <div class="col-12 p-5 text-center p-5 border">
+
+                                <div class="row">
+                                    
+                                    <div class="col-12">
+                                        <i class="fa fa-exclamation-circle text-danger"></i>
+                                        No cuenta con usuarios, pero los puedes agregar aqui
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
+                                            Agregar Usuario
+                                        </a>
+                                    </div>
+
+                                </div>
+                                <h5>
+                                </h5>
+                            </div>
+                        @endforelse
                         </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -390,7 +410,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_usuario') ? 'is-invalid' : '' }} " id="nombre_usuario" name="nombre_usuario">
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_usuario') ? 'is-invalid' : '' }} " id="nombre_usuario" name="nombre_usuario" required>
                             <label class="form-label" for="nombre_usuario" >Nombre </label>
                         </div>
                     </div>
@@ -399,7 +419,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('correo_usuario') ? 'is-invalid' : '' }} "  name="correo_usuario">
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('correo_usuario') ? 'is-invalid' : '' }} "  name="correo_usuario" required>
                             <label class="form-label" for="correo_usuario" >Correo </label>
                         </div>
                     </div>
@@ -408,7 +428,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-3">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="password" class="form-control form-control-lg {{ $errors->first('password_usuario') ? 'is-invalid' : '' }}" name="password_usuario">
+                            <input type="password" class="form-control form-control-lg {{ $errors->first('password_usuario') ? 'is-invalid' : '' }}" name="password_usuario" required>
                             <label class="form-label" for="password" >Contraseña </label>
                         </div>
                     </div>
@@ -417,7 +437,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-3">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="puesto" class="form-control form-control-lg {{ $errors->first('puesto_usuario') ? 'is-invalid' : '' }}" name="puesto_usuario">
+                            <input type="puesto" class="form-control form-control-lg {{ $errors->first('puesto_usuario') ? 'is-invalid' : '' }}" name="puesto_usuario" required>
                             <label class="form-label" for="puesto" >Puesto </label>
                         </div>
                     </div>
@@ -425,7 +445,7 @@
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div class="form-group mt-3">
-                        <select name="planta" class="form-control form-control-lg" id="">
+                        <select name="planta" class="form-control form-control-lg" id="" required>
                             <option value="" disabled selected>Selecciona la planta a la que pertenece</option>
                             <option value="Planta 1">Planta 1</option>
                             <option value="Planta 2">Planta 2</option>

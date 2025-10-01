@@ -15,53 +15,7 @@
 
 @endif
 
-<div class="modal fade" id="agregar_pregunta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header bg-primary py-4">
-        <h3 class="text-white" id="exampleModalLabel">Agregar Pregunta</h3>
-        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body py-4">
-        <form action="{{route('pregunta.store', $encuesta->id)}}" method="post">
-            @csrf
-            <div class="row justify-content-center">
-                <div class="col-12 text-center">
 
-                    <div class="form-group mt-2">
-                        <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('pregunta') ? 'is-invalid' : '' }} " id="pregunta" name="pregunta" required>
-                            <label class="form-label" for="pregunta" >Escribe tu pregunta</label>
-                        </div>
-                    </div>
-
-                    <div class="form-check mt-3 text-start">
-                        <label for="cuantificable">Es cuantificable</label>
-                        <input type="checkbox" name="cuantificable"  class="form-check-input" id="cuantificable">
-                    </div>
-
-                </div>
-
-                <div class="col-12 text-justify  bg-light mt-3">
-                    <small class="m-2">
-                        <i class="fa fa-exclamation-circle mx-1"></i>
-                        Recuerda que las preguntas de las encuestas para los clientes se evaluaran con: <b> De acuerdo, parcialmente de acuerdo, en desacuerdo.</b>
-                        Por lo que se deben poner preguntas que se puedan contestar.
-                    </small>
-                </div>
-
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
-                <h6>Guardar</h6>
-            </button>
-        </form>
-
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <div class="modal fade" id="encuesta_contestada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
@@ -136,7 +90,7 @@
 <div class="container-fluid">
 
     <div class="row justify-content-around">
-            <div class="col-12 col-sm-12 col-md-10 col-lg-4 mt-5">
+            <div class="col-12 col-sm-12 col-md-10 col-lg-4 mt-5 table-responsive">
                 <h3 class="text-center">Preguntas de la encuesta {{$encuesta->nombre}}</h3>
 
                     <table class="table border shadow-sm">
@@ -205,7 +159,7 @@
                     </table>
             </div>
             
-            <div class="col-12 col-sm-12 col-md-6 col-lg-5 mt-5">
+            <div class="col-12 col-sm-12 col-md-6 col-lg-5 mt-5 table-responsive">
                 <h3 class="text-center">Respuestas de los Clientes</h3>
                     <table class="table border shadow-sm">
                         <thead class="table-secondary border">
@@ -250,22 +204,22 @@
 
     <div class="row justify-content-center mt-5 ">
 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-8 mt-5 text-center bg-light border">
+        <div class="col-11 col-sm-11 col-md-11 col-lg-8 mt-5 text-center bg-light border">
             <div class="row justify-content-around">
                 
                 <div class="col-auto  p-3">
-                    <h3 class="fw-bold">Puntuación Maxima</h3>
-                    <h3 id="puntuacion_maxima">{{ ($numero_preguntas_cuantificables != 0) ? $numero_preguntas_cuantificables * 10 : 'Aún no hay respuestas' }}</h3>
+                    <h5 class="fw-bold">Puntuación Maxima</h5>
+                    <h5 id="puntuacion_maxima">{{ ($numero_preguntas_cuantificables != 0) ? $numero_preguntas_cuantificables * 10 : 'Aún no hay respuestas' }}</h5>
                 </div>
                 
                 <div class="col-auto p-3">
-                    <h3 class="fw-bold">Puntuación General Obtenida </h3>
-                    <h3 id="puntuacion_obtenida">{{($total_obtenido != 0)  ? $total_obtenido : 'Aún no hay respuestas' }}</h3>
+                    <h5 class="fw-bold">Puntuación General Obtenida </h5>
+                    <h5 id="puntuacion_obtenida">{{($total_obtenido != 0)  ? $total_obtenido : 'Aún no hay respuestas' }}</h5>
                 </div>
 
                 <div class="col-auto p-3">
-                    <h3 class="fw-bold">% Cumplimiento</h3>
-                    <h3 id="cumplimiento">{{ ($total_obtenido != 0 ) ?  (( $total_obtenido) /($numero_preguntas_cuantificables * 10)) * 100 : 'Aún no hay respuestas' }} </h3>
+                    <h5 class="fw-bold">% Cumplimiento</h5>
+                    <h5 id="cumplimiento">{{ ($total_obtenido != 0 ) ?  round((( $total_obtenido) /($numero_preguntas_cuantificables * 10)) * 100, 3) : 'Aún no hay respuestas' }} </h5>
                     
                 </div>
 
@@ -314,6 +268,59 @@
     
 @endforelse
 
+
+
+
+
+
+
+<div class="modal fade" id="agregar_pregunta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary py-4">
+        <h3 class="text-white" id="exampleModalLabel">Agregar Pregunta</h3>
+        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        <form action="{{route('pregunta.store', $encuesta->id)}}" method="post">
+            @csrf
+            <div class="row justify-content-center">
+                <div class="col-12 text-center">
+
+                    <div class="form-group mt-2">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('pregunta') ? 'is-invalid' : '' }} " id="pregunta" name="pregunta" required>
+                            <label class="form-label" for="pregunta" >Escribe tu pregunta</label>
+                        </div>
+                    </div>
+
+                    <div class="form-check mt-3 text-start">
+                        <label for="cuantificable">Es cuantificable</label>
+                        <input type="checkbox" name="cuantificable"  class="form-check-input" id="cuantificable">
+                    </div>
+
+                </div>
+
+                <div class="col-12 text-justify  bg-light mt-3">
+                    <small class="m-2">
+                        <i class="fa fa-exclamation-circle mx-1"></i>
+                        Recuerda que las preguntas de las encuestas para los clientes se evaluaran con: <b> De acuerdo, parcialmente de acuerdo, en desacuerdo.</b>
+                        Por lo que se deben poner preguntas que se puedan contestar.
+                    </small>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+                <h6>Guardar</h6>
+            </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

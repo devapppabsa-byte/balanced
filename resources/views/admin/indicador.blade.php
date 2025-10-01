@@ -6,17 +6,9 @@
 
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center">
-        <div class="col-auto text-center">
-            <a href="{{route('perfil.admin')}}">
-                <i class="fa fa-arrow-back fa-2x text-white"></i>
-            </a>
-        </div>
         <div class="col-auto py-4 text-white">
 
             <h1 class="mt-1">
-                <a href="#" onclick="window.history.back()" class="text-white">
-                    <i class="fa-solid fa-arrow-left "></i>
-                </a>
                 {{$indicador->nombre}}
             </h1>
             <span class="mx-5">
@@ -36,6 +28,7 @@
             @endif
         </div>
     </div>
+    @include('admin.assets.nav')
 </div>
 
 

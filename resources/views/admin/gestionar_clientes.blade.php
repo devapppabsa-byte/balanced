@@ -40,7 +40,7 @@
 <div class="container-fluid border">
     <div class="row justify-content-center">
 
-        <div class="col-7  mx-5">
+        <div class="col-12 col-sm-12 col-md-10 col-lg-9  mx-5">
             <div class="row">
                 <div class="col-12 text-center my-3">
                     <h2>Clientes</h2>

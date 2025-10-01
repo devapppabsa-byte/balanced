@@ -87,8 +87,8 @@
                 </table>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-8 mt-0 text-center bg-light border">
-            <div class="row justify-content-around">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-8 mt-0 text-center  border">
+            <div class="row justify-content-around bg-light">
                 
                 <div class="col-auto  p-3">
                     <h3 class="fw-bold">Puntuación Maxima </h3>

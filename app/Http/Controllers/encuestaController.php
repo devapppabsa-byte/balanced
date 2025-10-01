@@ -179,8 +179,11 @@ class encuestaController extends Controller
     public function encuestas_show_admin(){
 
 
-        $encuestas = Encuesta::with('departamento')->get();
+
+        $encuestas = Encuesta::with(['departamento', 'preguntas', 'respuestas'])->get();
         $departamentos = Departamento::get();
+
+
 
         return view ('admin.gestionar_encuestas', compact('encuestas', 'departamentos'));
 

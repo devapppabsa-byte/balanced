@@ -11,7 +11,7 @@
 
         <div class="col-8 col-sm-8 col-md-6 col-lg-9  py-4  py-4 ">
             <h1 class="text-white"> {{$indicador->nombre}} </h1>
-            <h3 class="text-white" id="fecha"></h3>
+            <h3 class="text-white text-uppercase" id="fecha"></h3>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -55,93 +55,121 @@
 <div class="container-fluid">
 
 
-    <div class="row mb-5 mt-2 gap-3 justify-content-center">
+
+    <div class="row gap-4 p-2 justify-content-start border-bottom pb-5 mt-3">
         <div class="col-12">
-            <h3>Campos a rellenar</h3>
+            <h5>Información para este indicador</h5>
         </div>
-
-        <div class="row gap-3 justify-content-center" id="campos_vacios">
-            @forelse ($campos_vacios as $campo_vacio)
-                <div class="col-11 col-sm-11 col-md-3 col-lg-3 text-start border mb-4 p-3 shadow-sm campos_vacios">
-                    <label for="">{{$campo_vacio->nombre}}</label>
-                    <input type="{{$campo_vacio->tipo}}" min="1" class="form-control input" name="{{$campo_vacio->id_input}}" id="{{$campo_vacio->id_input}}"
-                    placeholder="{{$campo_vacio->nombre}}">
-                </div>  
-            @empty
-                <li>No hay campos vacios :p</li>
-            @endforelse
+        @forelse ($campos_llenos as $campo_lleno)
+        <div class="col-auto border border-4 p-2 text-center shadow-sm">
+            <span>{{$campo_lleno->nombre}}</span>
+            <h6>{{$campo_lleno->informacion_precargada}}</h6>
+            <small>{{$campo_lleno->descripcion}}</small>
         </div>
-        
-    </div>
-
-
-
-
-
-
-
-
-    <div class="row mb-5 mt-2 gap-3 justify-content-center">
-
-        <div class="col-12">
-            <h4>Campos Calculados</h4>
-        </div>
-    
-        
-        @forelse ($campos_calculados as $campo_calculado)
-            <div class="col-11 col-sm-11 col-md-3 col-lg-3 text-start border mb-4 py-3 shadow-sm campo_calculado">
-                    <label for="">{{$campo_calculado->nombre}}</label>
-                    <input type="{{$campo_calculado->tipo}}" class="form-control input_padre" id="{{$campo_calculado->id_input}}"
-                        placeholder="0" disabled>
-
-                @forelse ($campo_calculado->campo_involucrado as $involucrado)
-        
-                        <input type="text" value="{{$involucrado->id_input}}" class="form-control form-control-sm input_hijo" >
-                                
-                @empty
-                    
-                @endforelse
-                    
-            </div> 
         @empty
-
-            <li>No hay campos</li>
-            
+            <div class="col-11 border border-4 p-5 text-center">
+                <h2>
+                    <i class="fa fa-exclamation-circle text-danger"></i>
+                    No se encontraron datos
+                </h2>
+            </div>
         @endforelse
     </div>
 
 
-
-
-
-
-    <div class="row justify-content-center gap-4  py-4 my-5" id="contenedor_campos" >
-
+    <div class="row gap-4 p-2 mt-4  border-bottom pb-5">
+        <div class="col-12">
+            <h2>Llenar Indicador</h2>
+        </div>
+        @forelse ($campos_vacios as $campo_vacio)
+            <div class="col-11  col-sm-11 col-md-3 col-lg-2 text-start border border-4 mb-4 p-3 shadow-sm campos_vacios">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <label for="" class="fw-bold">{{$campo_vacio->nombre}}</label>
+                    </div>
+                    <div class="col-12">
+                        <input type="{{$campo_vacio->tipo}}" min="1" class="form-control input" name="{{$campo_vacio->id_input}}" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}">
+                    </div>
+                    <div class="col-11 bg-light m-4">
+                        <small>{{$campo_vacio->descripcion}}</small>
+                    </div>
+                </div>
+                
+            </div>  
+        @empty
+            <div class="col-11 border border-4 p-5 text-center">
+                <h2>
+                    <i class="fa fa-exclamation-circle text-danger"></i>
+                    No se encontraron datos
+                </h2>
+            </div>
+        @endforelse
+        @if (!$campos_vacios->isEmpty())
+            <div class="col-12 text-center">
+                <div class="row justify-content-center">
+                    <div class="col-10 col-sm-10 col-md-4  col-lg-2">
+                        <button class="btn btn-primary py-3 w-100">
+                            <i class="fa fa-save mx-2"></i>
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 
 
-@if ($campo_resultado_final)
-    <div class="row justify-content-center gap-4  py-4 my-5" id="contenedor_resultado_final">
-        <h3 class="">Cumplimiento</h3>
-        
-        <div class="form-group">
-            <label for="{{$campo_resultado_final->id_input}}">{{$campo_resultado_final->nombre}}</label>
-            <input type="{{$campo_resultado_final->tipo}}"  class="form-control w-25" id="{{$campo_resultado_final->id_input}}" >
+    <div class="row justify-content-center pb-5 mt-5 border-bottom">
+        <div class="col-12 mb-5">
+            <h2>Tabla de seguimiento del indicador</h2>
         </div>
 
+        <div class="col-10 col-sm-10 col-md-9 col-lg-8 border shadow-sm">
+            <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Mes</th>
+                    <th scope="col">Toneladas Presupuestadas</th>
+                    <th scope="col">Toneladas Producidas</th>
+                    <th scope="col">% Cumplimiento</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr>
+                    <th scope="row">Julio</th>
+                    <td>4000</td>
+                    <td>3950</td>
+                    <td class="text-success fw-bold">98.75%</td>
+                </tr>                    
+
+                <tr>
+                    <th scope="row">Agosto</th>
+                    <td>4000</td>
+                    <td>3950</td>
+                    <td class="text-success fw-bold">98.75%</td>
+                </tr>
+                <tr>
+                    <th scope="row">Septiembre</th>
+                    <td>4000</td>
+                    <td>3950</td>
+                    <td class="text-success fw-bold">98.75%</td>
+                </tr>
+                <tr>
+                    <th scope="row">Octubre</th>
+                    <td>4000</td>
+                    <td>3950</td>
+                    <td class="text-success fw-bold">98.75%</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+
+
+        </div>
 
     </div>
-    @endif
-    
-    
-        <div class="form-group">
-            <button class="btn btn-success" id="suma" >
-                iam a button
-            </button>
-        </div>
-
-</div>
-
 
 
 @endsection
@@ -172,11 +200,8 @@
 
 document.getElementById("suma").addEventListener('click', function(){
         
-  
-
 
     const campos_calculados = @json($campos_calculados);
-
 
     //console.log(calculado.id_input); //necesito agrupar  los inputs consus
     let inputs_involucrados = [];
@@ -185,9 +210,6 @@ document.getElementById("suma").addEventListener('click', function(){
 
 
     campos_calculados.forEach(calculado => { //recorro todos los inputs calculados
-
-
-
 
         calculado.campo_involucrado.forEach(involucrado =>{ //recorro los campos involucrados, ew el ciclo dentro de otro ciclo.
 

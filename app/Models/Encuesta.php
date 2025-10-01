@@ -18,6 +18,13 @@ class Encuesta extends Model
     
     }
 
+    //relacion con las respuestas a traves de las preguntas
+    public function respuestas(){
+        return $this->hasManyThrough(Respuesta::class, Pregunta::class, 'id_encuesta', 'id_pregunta');
+    }
+
+
+
     public function departamento(){
 
         return $this->belongsTo(Departamento::class, "id_departamento");

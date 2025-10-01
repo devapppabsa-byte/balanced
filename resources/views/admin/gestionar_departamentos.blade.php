@@ -55,7 +55,7 @@
         </div>
         @forelse ($departamentos as $departamento)
 
-        <div class="col-4">
+        <div class="col-12 col-sm-12 col-md-5 col-lg-4">
                 <div class="row justify-content-center m-2 text-center border border-3 shadow shadow-3 py-3">
                     <div class="col-12">
                         <a href="{{route('agregar.indicadores.index', $departamento->id)}}" class="btn btn-outline-secondary w-100 h-100 d-block h5 py-4">

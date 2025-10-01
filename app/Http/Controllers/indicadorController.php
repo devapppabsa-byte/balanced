@@ -206,10 +206,12 @@ public function show_indicador_user(Indicador $indicador){
                                     return $item;
     });
 
+  
 
-
+   
 
     return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios'));
+    
 }
 
 
