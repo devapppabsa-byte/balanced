@@ -91,7 +91,7 @@
                                 
                                 </td>
 
-                                <td class="text-center">
+                                <td class="text-start">
 
                                     @php  $suma=0; $contador=0;    @endphp
 
@@ -116,7 +116,7 @@
                                         @endif
 
                                     @empty
-                                        <span>Aún no hay respuestas.</span>                                        
+                                        <span>Aún no se han registrado preguntas.</span>                                        
                                     @endforelse
 
                                     @if ($suma>0)

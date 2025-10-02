@@ -20,4 +20,8 @@
         <a href="{{route("encuestas.show.admin")}}" class="text-white text-decoration-none fw-bold">Encuestas</a>
     </div>
 
+    <div class="col-auto">
+        <a href="{{route("proveedores.show.admin")}}" class="text-white text-decoration-none fw-bold">Proveedores</a>
+    </div>
+
 </div>

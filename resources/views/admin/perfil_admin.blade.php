@@ -82,6 +82,63 @@
 </div>
 
 
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h2>Departamentos de la empresa</h2>
+        </div>
+    </div>
+    <div class="row border py-2">
+        <div class="col-auto p-2  text-white text-center mx-2" style="background-color: rgb(155, 0, 0)">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Atencion a clientes</h3>
+                </div>
+                <div class="col-12">
+                    <h2>60%</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-auto p-2 text-white text-center mx-2" style="background-color: rgb(34, 138, 34)">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Producción</h3>
+                </div>
+                <div class="col-12">
+                    <h2>80%</h2>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-auto p-2 text-white text-center mx-2" style="background-color: rgb(155, 0, 0)">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Atencion a clientes</h3>
+                </div>
+                <div class="col-12">
+                    <h2>60%</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-auto p-2  text-white text-center mx-2" style="background-color: rgb(34, 138, 34)">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Costos e Inventarios</h3>
+                </div>
+                <div class="col-12">
+                    <h2>90%</h2>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
 
 
 
@@ -145,17 +202,6 @@
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 

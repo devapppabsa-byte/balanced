@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("fecha");
             $table->string("calificacion");
             $table->text("descripcion");
+            $table->text('observaciones')->nullable()->default('No hay observaciones.');
             
             $table->unsignedBigInteger("id_departamento");
             $table->foreign('id_departamento')

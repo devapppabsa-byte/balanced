@@ -32,7 +32,7 @@
     @yield('contenido')
 
     <script type="text/javascript" src="{{asset('js/mdb.umd.min.js')}}"></script> 
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @yield('scripts')
 
 

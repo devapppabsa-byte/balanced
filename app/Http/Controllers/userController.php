@@ -1,13 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\EvaluacionProveedor;
 use App\Models\Departamento;
 use App\Models\Indicador;
+use App\Models\Proveedor;
 
 class userController extends Controller
 {
@@ -49,8 +51,10 @@ class userController extends Controller
 
         $id_dep = Auth::user()->departamento->id;
         $indicadores = Indicador::where('id_departamento', $id_dep)->get();
+        $proveedores = Proveedor::get();
+        $evaluaciones = EvaluacionProveedor::with('proveedor')->where('id_departamento', $id_dep)->get();
 
-        return view('user.perfil_user', compact('indicadores'));
+        return view('user.perfil_user', compact('indicadores', 'proveedores', 'evaluaciones'));
 
     }
 
@@ -98,8 +102,6 @@ class userController extends Controller
         
         return back()->with('editado', 'El usuario fue actualizado!');
 
-
-
     }
 
 
@@ -113,7 +115,33 @@ class userController extends Controller
     }
 
 
+    public function evaluacion_servicio_store(User $user, Request $request){
 
+
+        $request->validate([
+            'descripcion_servicio' => 'required',
+            'proveedor' => 'required',
+            'calificacion' => 'required'
+        ]);
+
+        $fecha = Carbon::now()->locale('es')->translatedFormat('l j \\d\\e F \\d\\e Y');
+
+        EvaluacionProveedor::create([
+
+            'fecha' => $fecha,
+            'calificacion' => $request->calificacion,
+            'descripcion' => $request->descripcion_servicio,
+            'id_departamento' => $user->departamento->id,
+            'observaciones' => $request->observaciones_servicio,
+            'id_proveedor' => $request->proveedor
+
+        ]);
+
+
+        return back()->with('success', 'La evaluación fue agregada');
+
+
+    }
 
     public function cerrar_session(Request $request){
 

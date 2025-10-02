@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\proveedorController;
 use App\Http\Controllers\clienteController;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\campoPrecargadoController;
@@ -131,8 +131,15 @@ Route::get('/perfil_admin/clientes', [clienteController::class, 'clientes_show_a
 Route::get('/perfil_admin/usuarios', [userController::class, 'usuarios_show_admin'])->name("usuarios.show.admin");
 Route::get('/perfil_admin/encuestas', [encuestaController::class, 'encuestas_show_admin'])->name('encuestas.show.admin');
 Route::get('/perfil_admin/encuestas/preguntas/{encuesta}', [encuestaController::class, 'encuesta_index'])->name('encuesta.index');
+Route::get('/perfil_admin/proveedores', [proveedorController::class, 'proveedores_show_admin'])->name('proveedores.show.admin');
+
 Route::get('/perfil_admin/encuestas/respuestas_clientes/{cliente}/{encuesta}', [clienteController::class, 'show_respuestas'])->name('show.respuestas');
 
+
+
+//rutas de las evaluaciones de los proveedores
+Route::post('/perfil_admin/proveedores/', [proveedorController::class, 'proveedor_store'])->name('proveedor.store');
+Route::post('/perfil_usuario/agregar_evauacion/{user}', [userController::class, 'evaluacion_servicio_store'])->name('evaluacion.servicio.store');
 
 
 Route::get('/login_cliente',[clienteController::class, 'login'])->name('login.cliente');
