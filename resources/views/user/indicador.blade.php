@@ -45,9 +45,12 @@
                 </button>
             </form>
         </div>
-        
     </div>
+    @include('user.assets.nav')
+</div>
 
+
+<div class="container-fluid">
     <div class="row">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
@@ -56,13 +59,9 @@
             </button>
         </div>
     </div>
-
 </div>
 
-
 <div class="container-fluid">
-
-
 
     <div class="row gap-4 p-2 justify-content-start border-bottom pb-5 mt-3">
         <div class="col-12">
@@ -91,10 +90,10 @@
             <h5>Seguimiento del Indicador</h5>
         </div>
 
-        <div class="col-auto border shadow-sm mx-2">
-            <div class="table-responsive">
+        <div class="col-auto mx-2">
+            <div class="table-responsive p-0 border shadow-sm ">
             <table class="table">
-                <thead>
+                <thead class="table-primary">
                 <tr>
                     <th scope="col">Mes</th>
                     <th scope="col">Toneladas Presupuestadas</th>
@@ -134,16 +133,12 @@
             </div>
         </div>
 
-        <div class="col-4 mt-4 shadow p-5" >
-            <canvas id="grafico"></canvas>
+        <div class="col-11 col-sm-10 col-md-8 col-lg-5 mt-4 shadow p-5" >
+            <canvas class="w-100 h-100" id="grafico"></canvas>
         </div>
 
-
-
     </div>
-
-
-
+</div>
 
 
 

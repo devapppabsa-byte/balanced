@@ -10,6 +10,7 @@ use App\Http\Controllers\departamentoController;
 use App\Http\Controllers\indicadorController;
 use App\Http\Controllers\indicadoresLlenosController;
 use App\Http\Controllers\informacionForaneaController;
+use App\Http\Controllers\evaluacionProveedorController;
 use App\Http\Controllers\userController;
 use App\Models\CampoPrecargado;
 use App\Models\Indicador;
@@ -136,10 +137,15 @@ Route::get('/perfil_admin/proveedores', [proveedorController::class, 'proveedore
 Route::get('/perfil_admin/encuestas/respuestas_clientes/{cliente}/{encuesta}', [clienteController::class, 'show_respuestas'])->name('show.respuestas');
 
 
+//rutas que muestran los indicadores de cada departamento
+Route::get('/perfil_admin/lista_indicadores/{departamento}', [indicadorController::class, 'lista_indicadores_admin'])->name('lista.indicadores.admin');
+Route::get('/perfil_admin/lista_indicadores/detalle_indicador/{indicador}', [indicadorController::class, 'indicador_lleno_show_admin'])->name('indicador.lleno.show.admin');
+
 
 //rutas de las evaluaciones de los proveedores
 Route::post('/perfil_admin/proveedores/', [proveedorController::class, 'proveedor_store'])->name('proveedor.store');
 Route::post('/perfil_usuario/agregar_evauacion/{user}', [userController::class, 'evaluacion_servicio_store'])->name('evaluacion.servicio.store');
+Route::get('/perfil_usuario/evaluaciones_proveedores', [evaluacionProveedorController::class, 'evaluaciones_show_user'])->name('evaluaciones.show.user');
 
 
 Route::get('/login_cliente',[clienteController::class, 'login'])->name('login.cliente');
@@ -149,3 +155,8 @@ Route::get('/login_cliente/ingreso_cliente', [clienteController::class, 'perfil_
 //Para contestar los cuestionarios
 Route::get('/perfil_cliente/cuestionario/{encuesta}', [clienteController::class, 'index_encuesta'])->name("index.encuesta");
 Route::post('/perfil_cliente/cuestionario/contestando/{encuesta}', [clienteController::class, 'contestar_encuesta'])->name("contestar.encuesta");
+
+
+
+
+

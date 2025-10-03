@@ -280,7 +280,28 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
 
         return back()->with('success', 'El nuevo campo de promedio a sido creado!');
         
-        
+}
+
+
+
+public function lista_indicadores_admin(Departamento $departamento){
+
+
+
+    $indicadores = Indicador::where('id_departamento', $departamento->id)->get();
+
+    return view('admin.lista_indicadores', compact('indicadores', 'departamento'));
+
+
+}
+
+
+public function indicador_lleno_show_admin(Indicador $indicador){
+
+
+    $campos_llenos = CampoPrecargado::where('id_indicador', $indicador->id)->get();
+    
+    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos'));
 
 }
 

@@ -5,7 +5,7 @@
     </div>
 
     <div class="col-auto">
-        <a href="{{route("departamentos.show.admin")}}" class="text-white text-decoration-none fw-bold">Departamentos</a>
+        <a href="{{route("departamentos.show.admin")}}" class="text-white text-decoration-none fw-bold">Gestionar Departamentos</a>
     </div>
 
     <div class="col-auto">

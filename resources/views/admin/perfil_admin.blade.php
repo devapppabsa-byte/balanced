@@ -60,7 +60,7 @@
 {{-- elaborando el perfil del usuario --}}
 
 <div class="container-fluid">
-    <div class="row border py-2">
+    <div class="row  border-bottom py-2">
 
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
@@ -82,62 +82,61 @@
 </div>
 
 
-<div class="container-fluid">
+<div class="container-fluid border-bottom my-5">
+
     <div class="row">
-        <div class="col-12 text-center">
-            <h2>Departamentos de la empresa</h2>
-        </div>
+        @forelse ($departamentos as $departamento)
+            <div class="col-md-3 my-3">
+                <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
+                    <div class="card text-white bg-danger shadow-2-strong">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                <h3>{{$departamento->nombre}}</h3>
+                                <p class="mb-1">Indicadores</p>
+                                <h5 class="mb-2 fw-bold">4</h5>
+                                </div>
+                                <i class="fas fa-chart-pie fa-4x"></i>
+                            </div>
+                            <div class="progress rounded-0 mt-2" style="height: 4px;">
+                                <div class="progress-bar" style="width: 70%; background-color:rgb(148, 0, 0)"></div>
+                            </div>
+                            <small class="mt-2 d-block">
+                                70% de cumplimiento general de Producción
+                            </small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3 my-3">
+                <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
+                    <div class="card text-white bg-success shadow-2-strong">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                <h3>{{$departamento->nombre}}</h3>
+                                <p class="mb-1">Indicadores</p>
+                                <h5 class="mb-2 fw-bold">4</h5>
+                                </div>
+                                <i class="fas fa-chart-pie fa-4x"></i>
+                            </div>
+                            <div class="progress rounded-0 mt-2" style="height: 4px;">
+                                <div class="progress-bar" style="width: 80%; background-color:rgb(4, 116, 23)"></div>
+                            </div>
+                            <small class="mt-2 d-block">
+                                80% de cumplimiento general de Producción
+                            </small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        @empty
+            <li>No hay datos</li>
+        @endforelse
+
     </div>
-    <div class="row border py-2">
-        <div class="col-auto p-2  text-white text-center mx-2" style="background-color: rgb(155, 0, 0)">
-            <div class="row">
-                <div class="col-12">
-                    <h3>Atencion a clientes</h3>
-                </div>
-                <div class="col-12">
-                    <h2>60%</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-auto p-2 text-white text-center mx-2" style="background-color: rgb(34, 138, 34)">
-            <div class="row">
-                <div class="col-12">
-                    <h3>Producción</h3>
-                </div>
-                <div class="col-12">
-                    <h2>80%</h2>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="col-auto p-2 text-white text-center mx-2" style="background-color: rgb(155, 0, 0)">
-            <div class="row">
-                <div class="col-12">
-                    <h3>Atencion a clientes</h3>
-                </div>
-                <div class="col-12">
-                    <h2>60%</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-auto p-2  text-white text-center mx-2" style="background-color: rgb(34, 138, 34)">
-            <div class="row">
-                <div class="col-12">
-                    <h3>Costos e Inventarios</h3>
-                </div>
-                <div class="col-12">
-                    <h2>90%</h2>
-                </div>
-            </div>
-        </div>
-
-
-    </div>
-</div>
-
 
 
 

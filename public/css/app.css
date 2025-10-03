@@ -1,10 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap');
 
 
 .bungee-regular {
   font-family: "Bungee", sans-serif;
   font-weight: 200;
   font-size: 20px;
+  font-style: normal;
+}
+
+.archivo-font{
+  font-family: "Archivo", sans-serif;
+  font-size: large;
+  font-style: normal;
+  font-variation-settings:"wdth" 100;
+}
+
+.fjalla-one-regular {
+  font-family: "Fjalla One", sans-serif;
+  font-weight: 400;
   font-style: normal;
 }
 

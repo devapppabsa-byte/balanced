@@ -51,10 +51,8 @@ class userController extends Controller
 
         $id_dep = Auth::user()->departamento->id;
         $indicadores = Indicador::where('id_departamento', $id_dep)->get();
-        $proveedores = Proveedor::get();
-        $evaluaciones = EvaluacionProveedor::with('proveedor')->where('id_departamento', $id_dep)->get();
 
-        return view('user.perfil_user', compact('indicadores', 'proveedores', 'evaluaciones'));
+        return view('user.perfil_user', compact('indicadores'));
 
     }
 
