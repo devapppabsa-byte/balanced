@@ -8,7 +8,21 @@ use Illuminate\Http\Request;
 
 class informacionForaneaController extends Controller
 {
+
+
+
+    public function informacio_foranea_show_admin(){
+
+
+
+        return view('admin.gestionar_informacion_foranea');
+
+    }
     
+
+
+
+
     public function agregar_informacion_foranea(Request $request){
 
 

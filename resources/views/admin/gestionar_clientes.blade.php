@@ -3,7 +3,7 @@
 
 @section('contenido')
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center px-4">
+    <div class="row bg-primary  d-flex align-items-center   ">
         <div class="col-auto py-4 text-white">
             <h1 class="mt-1">Clientes de la empresa</h1>
             @if (session('success'))
@@ -37,12 +37,12 @@
 
 
 
-<div class="container-fluid border">
+<div class="container-fluid">
     <div class="row justify-content-center">
 
         <div class="col-12 col-sm-12 col-md-10 col-lg-9  mx-5">
             <div class="row">
-                <div class="col-12 text-center my-3">
+                <div class="col-12 text-center">
                     <h2>Clientes</h2>
                     @if (session('eliminado'))
                         <h5 class="">
@@ -60,8 +60,8 @@
                 </button>
             </div>
 
-            <table class="table table-responsive mb-0  bg-primary border">
-                    <thead class="bg-primary text-white">
+            <table class="table table-responsive mb-0 border shadow-sm table-hover">
+                    <thead class="table-primary text-white zalando">
                         <tr>
                         <th>Id</th>
                         <th>Nombre</th>
@@ -84,14 +84,20 @@
                         </td>
 
                         <td>
-                            {{$cliente->email}}
+                            <a href="mailto:{{$cliente->email}}">
+                            <i class="fa-solid fa-envelopes-bulk"></i>
+                                {{$cliente->email}}
+                            </a>
                         </td>
                         <td>
                             {{$cliente->linea}}
                         </td>
 
                         <td>
-                            {{$cliente->telefono}}
+                            <a href="tel:+52{{$cliente->telefono}}">
+                                <i class="fa fa-square-phone"></i>
+                                {{$cliente->telefono}}
+                            </a>
                         </td>
 
                         <td class="">
@@ -177,7 +183,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('id_cliente_edit') ? 'is-invalid' : '' }} " value="{{old("id_cliente_edit", $cliente->id_interno)}}" id="id_cliente_edit" name="id_cliente_edit">
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('id_cliente_edit') ? 'is-invalid' : '' }} " value="{{old("id_cliente_edit", $cliente->id_interno)}}"  name="id_cliente_edit">
                             <label class="form-label" for="id_cliente_edit" >ID Interno </label>
                         </div>
                     </div>
@@ -186,7 +192,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_cliente_edit') ? 'is-invalid' : '' }} " id="nombre_cliente_edit" value="{{old("nombre_cliente_edit", $cliente->nombre)}}" name="nombre_cliente_edit">
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_cliente_edit') ? 'is-invalid' : '' }} "  value="{{old("nombre_cliente_edit", $cliente->nombre)}}" name="nombre_cliente_edit">
                             <label class="form-label" for="nombre_cliente_edit" >Nombre del cliente </label>
                         </div>
                     </div>
@@ -221,7 +227,7 @@
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="form-group mt-3">
-                        <select name="linea_edit" class="form-control form-control-lg" id="">
+                        <select name="linea_edit" class="form-control form-control-lg" >
                             <option value="" disabled selected>Linea</option>
                             <option value="Mascotas" {{old("linea_edit", $cliente->linea)  == 'Mascotas' ? 'selected' : '' }} >Mascotas</option>
                             <option value="Pecuarios" {{old("linea_edit", $cliente->linea) == 'Pecuarios' ? 'selected' : '' }} >Pecuarios</option>

@@ -133,6 +133,7 @@ Route::get('/perfil_admin/usuarios', [userController::class, 'usuarios_show_admi
 Route::get('/perfil_admin/encuestas', [encuestaController::class, 'encuestas_show_admin'])->name('encuestas.show.admin');
 Route::get('/perfil_admin/encuestas/preguntas/{encuesta}', [encuestaController::class, 'encuesta_index'])->name('encuesta.index');
 Route::get('/perfil_admin/proveedores', [proveedorController::class, 'proveedores_show_admin'])->name('proveedores.show.admin');
+Route::get('/perfil_admin/informacion_foranea', [informacionForaneaController::class, 'informacio_foranea_show_admin'])->name('informacio.foranea.show.admin');
 
 Route::get('/perfil_admin/encuestas/respuestas_clientes/{cliente}/{encuesta}', [clienteController::class, 'show_respuestas'])->name('show.respuestas');
 

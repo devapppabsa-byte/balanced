@@ -93,7 +93,7 @@
         <div class="col-auto mx-2">
             <div class="table-responsive p-0 border shadow-sm ">
             <table class="table">
-                <thead class="table-primary">
+                <thead class="table-primary fjalla-one-regular">
                 <tr>
                     <th scope="col">Mes</th>
                     <th scope="col">Toneladas Presupuestadas</th>

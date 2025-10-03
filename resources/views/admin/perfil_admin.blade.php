@@ -59,51 +59,30 @@
 
 {{-- elaborando el perfil del usuario --}}
 
-<div class="container-fluid">
-    <div class="row  border-bottom py-2">
-
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
-                <i class="fa fa-plus"></i>
-                Agregar Usuarios
-            </button>
-        </div>
-
-
-
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#precargar_campos">
-                <i class="fa fa-plus"></i>
-                Precargar Campos - para pruebas
-            </button>
-        </div>
-
-    </div>
-</div>
-
-
 <div class="container-fluid border-bottom my-5">
 
     <div class="row">
         @forelse ($departamentos as $departamento)
             <div class="col-md-3 my-3">
                 <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
-                    <div class="card text-white bg-danger shadow-2-strong">
+                    <div class="card text-white  shadow-2-strong" style="background-color: rgb(184, 70, 70)">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                 <h3>{{$departamento->nombre}}</h3>
-                                <p class="mb-1">Indicadores</p>
-                                <h5 class="mb-2 fw-bold">4</h5>
+                                <p class="mb-1">Cumplimiento</p>
+                                <h5 class="mb-2 fw-bold">50%</h5>
                                 </div>
-                                <i class="fas fa-chart-pie fa-4x"></i>
+                                <span class="material-icons" style="font-size: 80px">
+                                    trending_down
+                                </span>
                             </div>
                             <div class="progress rounded-0 mt-2" style="height: 4px;">
-                                <div class="progress-bar" style="width: 70%; background-color:rgb(148, 0, 0)"></div>
+                                <div class="progress-bar" style="width: 70%; background-color:rgb(112, 2, 2)"></div>
                             </div>
-                            <small class="mt-2 d-block">
-                                70% de cumplimiento general de Producción
-                            </small>
+                            <span class="mt-2 d-block fw-bold">
+                                4 Indicadores.
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -111,22 +90,22 @@
 
             <div class="col-md-3 my-3">
                 <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
-                    <div class="card text-white bg-success shadow-2-strong">
+                    <div class="card text-white shadow-2-strong" style="background-color: rgb(89, 152, 89)">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                 <h3>{{$departamento->nombre}}</h3>
-                                <p class="mb-1">Indicadores</p>
-                                <h5 class="mb-2 fw-bold">4</h5>
+                                <p class="mb-1">Cumplimiento</p>
+                                <h5 class="mb-2 fw-bold">50%</h5>
                                 </div>
                                 <i class="fas fa-chart-pie fa-4x"></i>
                             </div>
                             <div class="progress rounded-0 mt-2" style="height: 4px;">
-                                <div class="progress-bar" style="width: 80%; background-color:rgb(4, 116, 23)"></div>
+                                <div class="progress-bar" style="width: 80%; background-color:rgb(57, 78, 27)"></div>
                             </div>
-                            <small class="mt-2 d-block">
-                                80% de cumplimiento general de Producción
-                            </small>
+                            <span class="mt-2 d-block fw-bold">
+                                4 Indicadores.
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -142,168 +121,12 @@
 
 
 
-{{-- Modales del perfil de administrador --}}
-
-{{-- precargado de campos --}}
-<div class="modal fade" id="precargar_campos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header bg-primary py-4">
-        <h3 class="text-white" id="exampleModalLabel">Cargando Información foranea de prueba</h3>
-        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body py-4">
-        <form action="{{route('agregar.info.foranea')}}"  method="post">
-            @csrf 
-            <div class="row">
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="form-group mt-3">
-                        <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg" name="nombre_info" required>
-                            <label class="form-label" for="nombre_info" >Nombre </label>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="form-group mt-3">
-                        <select name="tipo_info" class="form-select" id="tipo_info"required>
-                            <option value="" disabled selected>Selecciona un tipo de dato</option>
-                            <option value="number">Número</option>
-                            <option value="string">Texto</option>
-                            <option value="date">Fecha</option>
-                            <option value="month">Mes</option>
-                            <option value="year">Año</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="form-group mt-3">
-                        <div class="form-outline" id="contenedor_input" >
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
-                <h6>Guardar</h6>
-            </button>
-        </form>
-
-      </div>
-    </div>
-  </div>
-</div>
-
 
 
 
 
 
 <!-- Modal -->
-<div class="modal fade" id="agregar_usuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header bg-primary py-4">
-        <h3 class="text-white" id="exampleModalLabel">Agregar Usuarios</h3>
-        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body py-4">
-        <form action="{{route('agregar.usuario')}}"  method="post" onkeydown="return event.key !='Enter';">
-            @csrf
-
-            <div class="row">
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                    <div class="form-group mt-3">
-                        <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_usuario') ? 'is-invalid' : '' }} " id="nombre_usuario" name="nombre_usuario">
-                            <label class="form-label" for="nombre_usuario" >Nombre </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                    <div class="form-group mt-3">
-                        <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('correo_usuario') ? 'is-invalid' : '' }} "  name="correo_usuario">
-                            <label class="form-label" for="correo_usuario" >Correo </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-3">
-                    <div class="form-group mt-3">
-                        <div class="form-outline" data-mdb-input-init>
-                            <input type="password" class="form-control form-control-lg {{ $errors->first('password_usuario') ? 'is-invalid' : '' }}" name="password_usuario">
-                            <label class="form-label" for="password" >Contraseña </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-3">
-                    <div class="form-group mt-3">
-                        <div class="form-outline" data-mdb-input-init>
-                            <input type="puesto" class="form-control form-control-lg {{ $errors->first('puesto_usuario') ? 'is-invalid' : '' }}" name="puesto_usuario">
-                            <label class="form-label" for="puesto" >Puesto </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                    <div class="form-group mt-3">
-                        <select name="planta" class="form-control form-control-lg" id="">
-                            <option value="" disabled selected>Selecciona la planta a la que pertenece</option>
-                            <option value="Planta 1">Planta 1</option>
-                            <option value="Planta 2">Planta 2</option>
-                            <option value="Planta 3">Planta 3</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-12 ">
-                    <div class="form-group mt-3">
-                        <select id="departamentoSelect" name="departamento" class="form-control form-control-lg {{$errors->first('departamento') ? 'is-invalid' : ''}}" data-mdb-select-init data-mdb-filter="true" 
-                        data-mdb-clear-button="true">
-                            <option value="" disabled selected>Selecciona el departamento al que pertenece</option>
-                            @forelse ($departamentos as $departamento)
-                                <option value="{{$departamento->id}}" {{old('departamento', $departamento->nombre ?? '') == $departamento->id ? 'selected' : '' }}>
-
-                                    {{$departamento->nombre}}
-
-                                </option>
-                            @empty
-                                
-                            @endforelse
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
-                <h6>Guardar</h6>
-            </button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-
-
 
 
 @endsection

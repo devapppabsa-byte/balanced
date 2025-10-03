@@ -48,17 +48,28 @@
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-10 col-sm-10 col-md-8 col-lg-6 mt-4">
-            <div class="row   table-responsive">
-                <div class="col-6 col-md-6  col-lg-1 my-1 ">
+        <div class="col-10 col-sm-10 col-md-8 col-lg-8">
+            <div class="row  table-responsive">
+
+                <div class="col-12 text-center">
+                    <h2>Proveedores</h2>
+                    @if (session('eliminado'))
+                        <h5 class="">
+                            <i class="fa fa-exclamation-circle text-danger"></i>
+                            {{session('eliminado')}}
+                        </h5>
+                    @endif
+                </div>
+    
+                <div class="col-6 col-md-6  col-lg-1 my-2 ">
                     <button class="btn btn-outline-primary " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_proveedor">
                     <i class="fa fa-plus "></i>
                     </button>
                 </div>
                 @if ($proveedores->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
                 @else
-                    <table class="table mb-0 border">
-                        <thead class=" table-secondary text-white">
+                    <table class="table mb-0 border table-hover ">
+                        <thead class="table-primary text-white cascadia-code">
                             <tr>
                                 <th>Nombre</th>
                                 <th>Descripción</th>

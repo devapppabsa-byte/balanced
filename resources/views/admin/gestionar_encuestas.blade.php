@@ -39,12 +39,20 @@
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-7 mx-1 mt-5 ">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-8  ">
             <div class="row">
                 <div class="col-12 text-center">
-                    <h4>Encuestas</h4>
+                    <h2>Encuestas</h2>
+                    @if (session('eliminado'))
+                        <h5 class="">
+                            <i class="fa fa-exclamation-circle text-danger"></i>
+                            {{session('eliminado')}}
+                        </h5>
+                    @endif
                 </div>
-                <div class="col-12 mt-4">
+            </div>
+            <div class="row">
+                <div class="col-12 ">
                     <div class="row   table-responsive">
                         <div class="col-6 col-md-6  col-lg-1 my-1 ">
                             <button class="btn btn-outline-primary " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
@@ -53,14 +61,14 @@
                         </div>
                         @if ($encuestas->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
                         @else
-                            <table class="table mb-0 border">
-                                <thead class=" table-secondary text-white">
+                            <table class="table mb-0 border table-hover">
+                                <thead class=" table-secondary text-white zalando">
                                     <tr>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
                                     <th>Departamento</th>
                                     <th>Acciones</th>
-                                    <th>Porcentaje de cumplimiento</th>
+                                    <th>Cumplimiento</th>
                                     </tr>
                                 </thead>
                             <tbody>
@@ -121,10 +129,10 @@
 
                                     @if ($suma>0)
                                         {{-- Aqui esta el porcentaje de cumplimiento --}}
-                                        <h4 class="{{($suma/($contador*10)*100 > 50) ? "text-success" : "text-danger" }}" >
+                                        <h6 class="{{($suma/($contador*10)*100 > 50) ? "text-success" : "text-danger" }}" >
                                             {{round(($suma/($contador*10))*100, 3) }} %
                                             <i class="fa {{($suma/($contador*10)*100 > 50) ? "fa-check-circle" : "fa-xmark-circle" }} "></i>
-                                        </h4>
+                                        </h6>
                                         @endif
                                 
                                 </td>

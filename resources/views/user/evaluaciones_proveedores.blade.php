@@ -64,12 +64,16 @@
 
 
 <div class="container-fluid py-4">
-     <div class="row justi">
+     <div class="row justify-content-center">
         <div class="col-11">
-            <div class="row justify-content-start pb-5 mt-4 ">
-                <div class="col-12 mb-3">
-                    <h5>Evaluaciones realizadas por {{Auth::user()->departamento->nombre}}</h5>
+            <div class="row d-flex align-items-center justify-content-start pb-5 mt-4 ">
+                <div class="col-11 mb-3">
+                    <h4>
+                        <i class="fa-solid fa-check-to-slot"></i>
+                        Evaluaciones realizadas por {{Auth::user()->departamento->nombre}}
+                    </h4>
                 </div>
+
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-11  ">
                     <div class="table-responsive shadow-sm mx-2 border">

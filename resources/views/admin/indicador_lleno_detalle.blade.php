@@ -71,7 +71,7 @@
             <small>{{$campo_lleno->descripcion}}</small>
         </div>
         @empty
-            <div class="col-11 border border-4 p-5 text-center">
+            <div class="col-12 border border-4 p-5 text-center">
                 <h2>
                     <i class="fa fa-exclamation-circle text-danger"></i>
                     No se encontraron datos
@@ -161,7 +161,7 @@
         },
         {
             type: "line", // Línea sobrepuesta
-            label: "Promedio",
+            label: "Minimo",
             data: [50, 50, 50, 50],
             borderColor: "red",
             borderWidth: 2,
@@ -169,7 +169,7 @@
         },
         {
             type: "line", // Línea sobrepuesta
-            label: "Promedio",
+            label: "Maximo",
             data: [100, 100, 100, 100],
             borderColor: "blue",
             borderWidth: 2,

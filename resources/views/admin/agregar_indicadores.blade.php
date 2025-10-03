@@ -7,11 +7,6 @@
 
 <div class="container-fluid">
     <div class="row bg-primary  d-flex align-items-center px-4">
-        <div class="col-auto text-center">
-            <a href="{{route('perfil.admin')}}">
-                <i class="fa fa-home fa-2x text-white"></i>
-            </a>
-        </div>
         <div class="col-auto py-4 text-white">
             <h1 class="mt-1">{{$departamento->nombre}}</h1>
             @if (session('success'))
@@ -69,129 +64,62 @@
 </div>
 
 
-<div class="container-fluid m-3 mt-5">
-    <div class="row justify-content-around px-4">
-        <div class="col-12 col-sm-12 col-md-10 col-lg-3 mx-1 mt-5 ">
 
-                <div class="col-12 text-center">
-                    <h4>Indicadores de {{$departamento->nombre}}</h4>
-                    @if (session('eliminado'))
+
+<div class="container-fluid">
+    <div class="row justify-content-around">
+        <div class="col-3">
+            <div class="col-12  mx-1 mt-5 ">
+
+                    <div class="col-12 text-center">
                         <h4>
-                            <i class="fa-solid fa-triangle-exclamation text-danger"></i>
-                            {{session('eliminado')}}
+                            <i class="fa fa-chart-line"></i>
+                            Indicadores de {{$departamento->nombre}}
                         </h4>
-                    @endif
-                </div>
-
-                <div class="col-12">
-                    <div class="row  border">
-                        <div class="col-12">
-                        @if ($indicadores->isEmpty())
-                        @else
-                            <table class="table mb-0 ">
-                                <thead class=" text-white">
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Descripción</th>
-                                    </tr>
-                                </thead>
-                            <tbody>
+                        @if (session('eliminado'))
+                            <h4>
+                                <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                                {{session('eliminado')}}
+                            </h4>
                         @endif
-                        
-                        @forelse ($indicadores as $indicador)
-                            <tr>
-                                <td>
-                                    <a href="{{route('indicador.index', $indicador->id)}}" class="">
-                                        {{$indicador->nombre}}
-                                    </a>
-                                </td>
-
-
-                                <td class="">
-                                    <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#bo{{$indicador->id}}">
-                                        <i class="fa fa-trash"></i> 
-                                    </a>
-                                    <a href="{{route('indicador.index', $indicador->id)}}" class="text-dark">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-
-                        <div class="col-12 p-5 text-center p-5">
-
-                            <div class="row">
-                                
-                                <div class="col-12">
-                                    <i class="fa fa-exclamation-circle text-danger"></i>
-                                    No cuenta con indicadores, pero los puedes agregar aqui
-                                </div>
-                                
-                                <div class="col-12">
-                                    <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_indicador">
-                                        Agregar Indicador
-                                    </a>
-                                </div>
-
-                            </div>
-                            <h5>
-                            </h5>
-                        </div>
-                            
-                        @endforelse
-                        </tbody>
-                        </table>
-                        </div>
                     </div>
-            </div>
-        </div>
+
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12">
+                            @if ($indicadores->isEmpty())
+                            @else
+                                <table class="table mb-0 border  shadow-sm">
+                                    <thead class="table-light text-white">
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                <tbody>
+                            @endif
+                            
+                            @forelse ($indicadores as $indicador)
+                                <tr>
+                                    <td>
+                                        <a href="{{route('indicador.index', $indicador->id)}}" class="">
+                                            {{$indicador->nombre}}
+                                        </a>
+                                    </td>
 
 
-        <div class="col-12 col-sm-12 col-md-10 col-lg-6 mx-1 mt-5">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h4>Cuestionarios de {{$departamento->nombre}}</h4>
-                </div>
-                <div class="col-12">
-                    <div class="row  border">
+                                    <td class="">
+                                        <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#bo{{$indicador->id}}">
+                                            <i class="fa fa-trash"></i> 
+                                        </a>
+                                        <a href="{{route('indicador.index', $indicador->id)}}" class="text-dark">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
 
-                        @if ($encuestas->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
-                        @else
-                            <table class="table mb-0 bg-primary">
-                                <thead class="bg-primary text-white">
-                                    <tr>
-                                    <th>Nombre</th>
-                                    <th>Descripción</th>
-                                    <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                            <tbody>
-                        @endif
-
-                        @forelse ($encuestas as $encuesta)
-                            <tr>
-                                <td>
-                                    <a href="{{route('encuesta.index', $encuesta->id)}}">
-                                        {{$encuesta->nombre}}
-                                    </a>
-                                </td>
-                                <td>
-                                    {{$encuesta->descripcion}}
-                                </td>
-
-                                <td class="">
-                                    <a class="text-danger cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_en{{$encuesta->id}}" style="cursor: pointer">
-                                        <i class="fa fa-trash"></i> 
-                                    </a>
-
-                                    <a class="text-primary cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_en{{$encuesta->id}}"  style="cursor: pointer">
-                                        <i class="fa fa-edit"></i> 
-                                    </a>
-
-                                </td>
-                            </tr>
-                        @empty
-                            <div class="col-12 p-5 text-center p-5 border">
+                            <div class="col-12 p-5 text-center p-5">
 
                                 <div class="row">
                                     
@@ -201,8 +129,8 @@
                                     </div>
                                     
                                     <div class="col-12">
-                                        <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
-                                            Agregar Cuestionario
+                                        <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_indicador">
+                                            Agregar Indicador
                                         </a>
                                     </div>
 
@@ -210,86 +138,167 @@
                                 <h5>
                                 </h5>
                             </div>
-                        @endforelse
-                        </tbody>
-                        </table>
-                    </div>
+                                
+                            @endforelse
+                            </tbody>
+                            </table>
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>
-
-
-
-        <div class="col-12 col-sm-12 col-md-10 col-lg-6 mx-1 mt-5">
+        <div class="col-6">
             <div class="row">
-
-                <div class="col-12 text-center ">
-                    <h4>Usuarios de {{$departamento->nombre}}</h4>
-                    @if (session('eliminado_user'))
-                        <h5 class="text-danger">
-                            <i class="fa fa-exclamation-circle"></i>
-                            {{session('eliminado_user')}}
-                        </h5>
-                    @endif
-                </div>                
-                <div class="col-12 table-responsive">
-
-                    <div class="row  border">
-
-                        @if ($usuarios->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
-                        @else
-                            <table class="table mb-0">
-                                <thead class="bg-primary text-white">
+                <div class="col-12 mx-1 mt-5">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h4>
+                               <i class="fa fa-circle-question"></i>
+                                Cuestionarios de {{$departamento->nombre}}
+                            </h4>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+    
+                                @if ($encuestas->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
+                                @else
+                                    <table class="table table mb-0 border  shadow-sm">
+                                        <thead class="table-light text-white">
+                                            <tr>
+                                            <th>Nombre</th>
+                                            <th>Descripción</th>
+                                            <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                    <tbody>
+                                @endif
+    
+                                @forelse ($encuestas as $encuesta)
                                     <tr>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Correo</th>
-                                        <th scope="col">Puesto</th>
-                                        <th scope="col">Departamento</th>
-                                        <th scope="col">Acciones</th>
+                                        <td>
+                                            <a href="{{route('encuesta.index', $encuesta->id)}}">
+                                                {{$encuesta->nombre}}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {{$encuesta->descripcion}}
+                                        </td>
+    
+                                        <td class="">
+                                            <a class="text-danger cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_en{{$encuesta->id}}" style="cursor: pointer">
+                                                <i class="fa fa-trash"></i> 
+                                            </a>
+    
+                                            <a class="text-primary cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_en{{$encuesta->id}}"  style="cursor: pointer">
+                                                <i class="fa fa-edit"></i> 
+                                            </a>
+    
+                                        </td>
                                     </tr>
-                                </thead>
-                            <tbody>
-                        @endif
-
-                        @forelse ($usuarios as $usuario)
-                            <tr>
-                                <th>{{$usuario->name}}</th>
-                                <td>{{$usuario->email}}</td>
-                                <td>{{$usuario->puesto}}</td>
-                                <td>{{$usuario->departamento->nombre}}</td>
-
-                                <td class="btn-group shadow-0 border-0"> 
-                                    <button class="btn btn-outline-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                    <button class="btn btn-outline-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
-                            <div class="col-12 p-5 text-center p-5 border">
-
-                                <div class="row">
-                                    
-                                    <div class="col-12">
-                                        <i class="fa fa-exclamation-circle text-danger"></i>
-                                        No cuenta con usuarios, pero los puedes agregar aqui
+                                @empty
+                                    <div class="col-12 p-5 text-center p-5 border">
+    
+                                        <div class="row">
+                                            
+                                            <div class="col-12">
+                                                <i class="fa fa-exclamation-circle text-danger"></i>
+                                                No cuenta con indicadores, pero los puedes agregar aqui
+                                            </div>
+                                            
+                                            <div class="col-12">
+                                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
+                                                    Agregar Cuestionario
+                                                </a>
+                                            </div>
+    
+                                        </div>
+                                        <h5>
+                                        </h5>
                                     </div>
-                                    
-                                    <div class="col-12">
-                                        <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
-                                            Agregar Usuario
-                                        </a>
-                                    </div>
-
-                                </div>
-                                <h5>
-                                </h5>
+                                @endforelse
+                                </tbody>
+                                </table>
                             </div>
-                        @endforelse
-                        </tbody>
-                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mx-1 mt-5">
+                    <div class="row">
+
+                        <div class="col-12 text-center">
+                            <h4>
+                                <i class="fa fa-users"></i>
+                                Usuarios de {{$departamento->nombre}}  
+                            </h4>
+                            @if (session('eliminado_user'))
+                                <h5 class="text-danger">
+                                    <i class="fa fa-exclamation-circle"></i>
+                                    {{session('eliminado_user')}}
+                                </h5>
+                            @endif
+                        </div>                
+                        <div class="col-12 table-responsive">
+
+                            <div class="row border  shadow-sm">
+
+                                @if ($usuarios->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
+                                @else
+                                    <table class="table mb-0 ">
+                                        <thead class="table-light text-white">
+                                            <tr>
+                                                <th scope="col">Nombre</th>
+                                                <th scope="col">Correo</th>
+                                                <th scope="col">Puesto</th>
+                                                <th scope="col">Departamento</th>
+                                                <th scope="col">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                    <tbody>
+                                @endif
+
+                                @forelse ($usuarios as $usuario)
+                                    <tr>
+                                        <th>{{$usuario->name}}</th>
+                                        <td>{{$usuario->email}}</td>
+                                        <td>{{$usuario->puesto}}</td>
+                                        <td>{{$usuario->departamento->nombre}}</td>
+
+                                        <td class="btn-group shadow-0 border-0"> 
+                                            <button class="btn btn-outline-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <div class="col-12 p-5 text-center p-5 border">
+
+                                        <div class="row">
+                                            
+                                            <div class="col-12">
+                                                <i class="fa fa-exclamation-circle text-danger"></i>
+                                                No cuenta con usuarios, pero los puedes agregar aqui
+                                            </div>
+                                            
+                                            <div class="col-12">
+                                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
+                                                    Agregar Usuario
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                        <h5>
+                                        </h5>
+                                    </div>
+                                @endforelse
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

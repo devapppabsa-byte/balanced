@@ -51,16 +51,16 @@
 
 
 <div class="row justify-content-center">
-    <div class="col-12 col-sm-12 col-md-10 col-lg-10 mx-1 mt-3">
+    <div class="col-12 col-sm-12 col-md-10 col-lg-7 mx-1">
         <div class="row">
             <div class="row">
-                <div class="col-12 text-center my-3">
+                <div class="col-12 text-center">
                     <h2>Usuarios</h2>
                     @if (session('eliminado'))
                         <h5 class="">
                             <i class="fa fa-exclamation-circle text-danger"></i>
                             {{session('eliminado')}}
-                        </h5>
+                        </h5>           
                     @endif
                 </div>
             </div>
@@ -71,8 +71,8 @@
             </div>
 
             <div class="col-12 table-responsive">
-                <table class="table border">
-                    <thead class="table-secondary border">
+                <table class="table border table-hover">
+                    <thead class="table-secondary border zalando ">
                         <th scope="col">Nombre</th>
                         <th scope="col">Correo</th>
                         <th scope="col">Puesto</th>
@@ -83,11 +83,13 @@
                         @forelse ($usuarios as $usuario)
                             <tr>
                                 <th>{{$usuario->name}}</th>
-                                <td>{{$usuario->email}}</td>
+                                <td>
+                                    <a href="mailto:{{$usuario->email}}" target="_blank">{{$usuario->email}}</a>
+                                </td>
                                 <td>{{$usuario->puesto}}</td>
                                 <td>{{$usuario->departamento->nombre}}</td>
 
-                                <td class="btn-group shadow-0 "> 
+                                <td class="btn-group bg-transparent shadow-0 "> 
                                     <button class="btn btn-outline-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
                                         <i class="fa fa-trash"></i>
                                     </button>
@@ -95,6 +97,7 @@
                                         <i class="fa fa-edit"></i>
                                     </button>
                                 </td>
+
                             </tr>
                         @empty
 

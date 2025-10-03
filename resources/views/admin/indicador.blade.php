@@ -11,7 +11,7 @@
             <h1 class="mt-1">
                 {{$indicador->nombre}}
             </h1>
-            <span class="mx-5">
+            <span>
                 Departamento de {{$indicador->departamento->nombre}}
             </span>
             @if (session('success'))
@@ -97,7 +97,7 @@
         <div class="col-12 col-sm-12 col-md-12 col-lg-7  table-responsive">
 
             <table class="table border">
-                <thead class="table-secondary border">
+                <thead class="table-primary border">
                     <th scope="col">Id</th>
                     <th scope="col">Nombre del campo</th>
                     <th scope="col">Tipo</th>
