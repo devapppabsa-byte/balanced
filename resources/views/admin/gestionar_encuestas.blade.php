@@ -35,6 +35,17 @@
     @include('admin.assets.nav')
 </div>
 
+<div class="container-fluid">
+    <div class="row  border-bottom">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
+                <i class="fa fa-plus-circle"></i>
+                Agregar Cliente
+            </button>
+        </div>
+    </div>
+</div>
+
 
 
 <div class="container-fluid">
@@ -54,15 +65,10 @@
             <div class="row">
                 <div class="col-12 ">
                     <div class="row   table-responsive">
-                        <div class="col-6 col-md-6  col-lg-1 my-1 ">
-                            <button class="btn btn-outline-primary " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
-                            <i class="fa fa-plus "></i>
-                            </button>
-                        </div>
-                        @if ($encuestas->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
-                        @else
+                        @if (!$encuestas->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
+                        
                             <table class="table mb-0 border table-hover">
-                                <thead class=" table-secondary text-white zalando">
+                                <thead class="table-secondary text-white cascadia-code">
                                     <tr>
                                     <th>Nombre</th>
                                     <th>Descripción</th>

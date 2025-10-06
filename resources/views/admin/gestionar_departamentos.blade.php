@@ -43,40 +43,50 @@
 </div>
 
 
-<div class="container">
-    <div class="row justify-content-around">
-
-        <div class="col-12 text-center my-3">
-            <h2>Departamentos</h2>
+<div class="container-fluid">
+    <div class="row  border-bottom">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_departamento">
-                <i class="fa fa-plus"></i>
-                Agregar Departamentos
+                <i class="fa fa-plus-circle"></i>
+                Agregar Departamento
             </button>
         </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="row justify-content-around">
         @forelse ($departamentos as $departamento)
 
         <div class="col-12 col-sm-12 col-md-5 col-lg-4">
-                <div class="row justify-content-center m-2 text-center border border-3 shadow shadow-3 py-3">
+                <div class="row justify-content-center mx-2 text-center border border-3 shadow shadow-3 py-3">
                     <div class="col-12">
                         <a href="{{route('agregar.indicadores.index', $departamento->id)}}" class="btn btn-outline-secondary w-100 h-100 d-block h5 py-4">
                             {{$departamento->nombre}}    
                         </a>   
                     </div>
-                    <div class="col-12 mt-3">
-                        <div class="row">
-                            <div class="col-auto">
-                                <a href="#" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_dep{{$departamento->id}}" class="text-danger">
-                                    <i class="fa fa-trash"></i>
-                                    Eliminar
-                                </a>
-                            </div>
-                            <div class="col-auto">
-                                <a href="edit_dep{{$departamento->id}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_dep{{$departamento->id}}"  class="text-primary">
-                                    <i class="fa fa-edit"></i>
-                                    Editar
-                                </a>
+                    <div class="col-12  text-end px-3">
+                        <a href="#coll{{$departamento->id}}" data-mdb-collapse-init data-mdb-ripple-init role="button" aria-expanded="false" aria-controls="collapseExample">
+                           <i class="fa-solid fa-circle-arrow-right"></i>
+                        </a>
+
+                        <div class="collapse" id="coll{{$departamento->id}}">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <a href="#" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_dep{{$departamento->id}}" class="text-danger">
+                                        <i class="fa fa-trash"></i>
+                                        Eliminar
+                                    </a>
+                                </div>
+                                <div class="col-auto">
+                                    <a href="edit_dep{{$departamento->id}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_dep{{$departamento->id}}"  class="text-primary">
+                                        <i class="fa fa-edit"></i>
+                                        Editar
+                                    </a>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

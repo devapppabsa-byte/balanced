@@ -13,8 +13,8 @@ class departamentoController extends Controller
 
     public function eliminar_departamento(Departamento $departamento){
 
-            $departamento_borrar = Departamento::findOrFail($departamento->id);
-            $departamento_borrar->delete();
+
+            $departamento->delete();
 
         return back()->with('eliminado', 'El departamento fue eliminado!');
     }

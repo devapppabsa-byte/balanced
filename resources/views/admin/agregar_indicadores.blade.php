@@ -60,6 +60,13 @@
             </a>
         </div>
 
+        <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
+            <a class="btn btn-outline-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_norma">
+                <i class="fa fa-plus"></i>
+                Norma
+            </a>
+        </div>
+
     </div>
 </div>
 
@@ -223,6 +230,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-12 mx-1 mt-5">
                     <div class="row">
@@ -507,6 +515,53 @@
                             <div class="form-outline" data-mdb-input-init>
                                 <textarea class="form-control w-100 {{ $errors->first('descripcion_cuestionario') ? 'is-invalid' : '' }}" id="descrpcion_encuesta" name="descripcion_encuesta" required ></textarea>
                                 <label class="form-label" for="descrpcion_encuesta">Descripción del Cuestionario</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+                <h6>Guardar</h6>
+            </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="agregar_norma" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary py-4">
+        <h3 class="text-white" id="exampleModalLabel">Agregar Norma</h3>
+        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        <form action="{{route('norma.store')}}" method="post">
+            @csrf
+            <div class="row">
+
+                <div class="col-12 text-center">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" min="0" max="100" class="form-control w-100 {{ $errors->first('titulo_norma') ? 'is-invalid' : '' }} " id="calificacion" name="titulo_norma" required>
+                            <label class="form-label" for="titulo_norma" >Titulo Norma</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 text-center">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <div class="form-outline" data-mdb-input-init>
+                                <textarea class="form-control w-100 {{ $errors->first('descripcion_norma') ? 'is-invalid' : '' }}" id="descripcion_norma" name="descripcion_norma" required ></textarea>
+                                <label class="form-label" for="descripcion_norma">Descripción de la Norma</label>
                             </div>
                         </div>
                     </div>

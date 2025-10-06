@@ -61,9 +61,9 @@
 
 <div class="container-fluid border-bottom my-5">
 
-    <div class="row">
+    <div class="row justify-content-around">
         @forelse ($departamentos as $departamento)
-            <div class="col-md-3 my-3">
+            <div class="col-12 col-sm-10 col-md-4 col-lg-3 my-3">
                 <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
                     <div class="card text-white  shadow-2-strong" style="background-color: rgb(184, 70, 70)">
                         <div class="card-body">
@@ -88,7 +88,7 @@
                 </a>
             </div>
 
-            <div class="col-md-3 my-3">
+            <div class="col-12 col-sm-10 col-md-4 col-lg-3  my-3">
                 <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
                     <div class="card text-white shadow-2-strong" style="background-color: rgb(89, 152, 89)">
                         <div class="card-body">

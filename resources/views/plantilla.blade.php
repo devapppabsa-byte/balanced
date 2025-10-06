@@ -34,10 +34,14 @@
     
     @yield('contenido')
 
+
+
+
     <script type="text/javascript" src="{{asset('js/mdb.umd.min.js')}}"></script> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script src="{{asset('js/draggable.js')}}"></script>
     @yield('scripts')
-
 
 </body>
 </html>

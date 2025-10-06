@@ -11,7 +11,7 @@ class informacionForaneaController extends Controller
 
 
 
-    public function informacio_foranea_show_admin(){
+    public function informacion_foranea_show_admin(){
 
 
 
