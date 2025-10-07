@@ -21,6 +21,13 @@
                 </div>
             @endif
 
+            @if (session('eliminado'))
+                <div class="text-white fw-bold ">
+                    <i class="fa fa-check-circle mx-2"></i>
+                    {{session('eliminado')}}
+                </div>          
+            @endif
+
             @if (session('editado'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -48,8 +55,8 @@
 </div>
 
 <div class="container-fluid">
-    <div class="row  border-bottom">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+    <div class="row  border-bottom mb-5">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1 ">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
                 <i class="fa fa-plus-circle"></i>
                 Agregar Usuario
@@ -64,13 +71,10 @@
         <div class="row">
             <div class="row">
                 <div class="col-12 text-center">
-                    <h2>Usuarios</h2>
-                    @if (session('eliminado'))
-                        <h5 class="">
-                            <i class="fa fa-exclamation-circle text-danger"></i>
-                            {{session('eliminado')}}
-                        </h5>           
-                    @endif
+                    <h2>
+                        <i class="fa-solid fa-users-gear"></i>
+                        Usuarios
+                    </h2>
                 </div>
             </div>
 

@@ -66,8 +66,8 @@
 <div class="container-fluid py-4">
      <div class="row justify-content-center">
         <div class="col-11">
-            <div class="row d-flex align-items-center justify-content-start pb-5 mt-4 ">
-                <div class="col-11 mb-3">
+            <div class="row d-flex align-items-center justify-content-center pb-5 mt-4 ">
+                <div class="col-11 mx-3 mb-3">
                     <h4>
                         <i class="fa-solid fa-check-to-slot"></i>
                         Evaluaciones realizadas por {{Auth::user()->departamento->nombre}}

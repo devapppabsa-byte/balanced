@@ -10,6 +10,7 @@ use App\Models\CampoVacio;
 use App\Models\InformacionForanea;
 use Illuminate\Http\Request;
 use App\Models\Departamento;
+use App\Models\Norma;
 use App\Models\Indicador;
 use App\Models\Encuesta;
 use App\Models\User;
@@ -25,6 +26,8 @@ class indicadorController extends Controller
         $usuarios = User::with('departamento')->where('id_departamento', $departamento->id)->get();
 
         $encuestas = Encuesta::where("id_departamento", $departamento->id)->get();
+
+        $normas = Norma::where("id_departamento", $departamento->id)->get();
         
 
 
@@ -36,7 +39,7 @@ class indicadorController extends Controller
 
 
 
-        return view('admin.agregar_indicadores', compact('departamento','indicadores', 'usuarios', 'departamentos', 'encuestas' ));
+        return view('admin.agregar_indicadores', compact('departamento','indicadores', 'usuarios', 'departamentos', 'encuestas', 'normas' ));
 
     }
 

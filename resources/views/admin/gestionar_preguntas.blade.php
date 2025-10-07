@@ -92,18 +92,20 @@
     <div class="row justify-content-around">
             <div class="col-12 col-sm-12 col-md-10 col-lg-4 mt-5 table-responsive">
                 <h3 class="text-center">Preguntas de la encuesta {{$encuesta->nombre}}</h3>
+                    @if (!$preguntas->isEmpty())
+                        <table class="table border shadow-sm">
+                            <thead class="table-secondary border">
+                                <th scope="col">Pregunta</th>
+                                <th scope="col">Cuantificable</th>
+                                <th scope="col">Eliminar</th>
+                            </thead>
+                            <tbody class="">
+                    @endif
+                                @php
+                                    $numero_preguntas_cuantificables = 0;
+                                    $total_obtenido = 0;
+                                @endphp
 
-                    <table class="table border shadow-sm">
-                        <thead class="table-secondary border">
-                            <th scope="col">Pregunta</th>
-                            <th scope="col">Cuantificable</th>
-                            <th scope="col">Eliminar</th>
-                        </thead>
-                        <tbody class="">
-                            @php
-                                $numero_preguntas_cuantificables = 0;
-                                $total_obtenido = 0;
-                            @endphp
                             @forelse ($preguntas as $pregunta)
                                 <tr>
 
@@ -135,25 +137,24 @@
                                     </td>
                                 </tr>
                             @empty
+                                <div class="row justify-content-center border py-5">
+                                
+                                    <div class="col-12 text-center">
+                                        <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">
+                                    </div>
 
-                                <tr>
-                                    <td>
-                                        <div class="row justify-content-center">
- 
-                                            <div class="col-auto">
-                                                <i class="fa fa-exclamation-circle text-danger"></i>
-                                                No cuenta con preguntas, pero las puedes agregar aqui.
-                                            </div>
-                                            
-                                            <div class="col-auto">
-                                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
-                                                    Agregar Pregunta
-                                                </a>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                </tr>
+                                    <div class="col-12 text-center">
+                                        <i class="fa fa-exclamation-circle text-danger"></i>
+                                        No cuenta con preguntas, pero las puedes agregar aqui.
+                                    </div>
+                                    
+                                    <div class="col-12 text-center">
+                                        <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
+                                            <i class="fa fa-plus"></i>
+                                            Agregar Pregunta
+                                        </a>
+                                    </div>
+                                </div>
                             @endforelse
                         </tbody>
                     </table>
@@ -161,14 +162,17 @@
             
             <div class="col-12 col-sm-12 col-md-6 col-lg-5 mt-5 table-responsive">
                 <h3 class="text-center">Respuestas de los Clientes</h3>
-                    <table class="table border shadow-sm">
-                        <thead class="table-secondary border">
-                            <th scope="col">Cliente</th>
-                            <th scope="col">Linea</th>
-                            <th scope="col">Respuestas</th>
-                            
-                        </thead>
-                        <tbody class="">
+                    @if (!$clientes->isEmpty())
+                        <table class="table border shadow-sm">
+                            <thead class="table-secondary border">
+                                <th scope="col">Cliente</th>
+                                <th scope="col">Linea</th>
+                                <th scope="col">Respuestas</th>
+                                
+                            </thead>
+                            <tbody class="">
+                        
+                    @endif
                             @forelse ($clientes as $cliente)
                                 <tr>
                                         <th>{{$cliente->nombre}}</th>
@@ -185,16 +189,16 @@
                                 </tr>
                             @empty
 
-                                <tr  class="col-2">
-                                    <td>
-                                        <div class="row justify-content-center">
-                                            <div class="col-auto">
-                                                <i class="fa fa-exclamation-circle text-danger"></i>
-                                                Aun no se cuenta con respuestas.
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <div class="row justify-content-center py-5 border">
+                                <div class="col-12 text-center">
+                                    <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">
+                                </div>
+                                <div class="col-12 text-center">
+                                    <i class="fa fa-exclamation-circle text-danger"></i>
+                                    Aún no se cuenta con respuestas.
+                                </div>
+                            </div>
+
                             @endforelse
                         </tbody>
                     </table>
@@ -208,19 +212,51 @@
             <div class="row justify-content-around">
                 
                 <div class="col-auto  p-3">
+
                     <h5 class="fw-bold">Puntuación Maxima</h5>
-                    <h5 id="puntuacion_maxima">{{ ($numero_preguntas_cuantificables != 0) ? $numero_preguntas_cuantificables * 10 : 'Aún no hay respuestas' }}</h5>
+                    @if ($numero_preguntas_cuantificables != 0)
+                        <h6 id="puntuacion_maxima">
+                            {{$numero_preguntas_cuantificables * 10}}
+                        </h6>
+                    @else
+                        <h6>
+                            <i class="fa fa-exclamation-circle text-danger"></i>
+                            No hay respuestas resgistradas.
+                        </h6>         
+                    @endif
+                        
                 </div>
                 
                 <div class="col-auto p-3">
                     <h5 class="fw-bold">Puntuación General Obtenida </h5>
-                    <h5 id="puntuacion_obtenida">{{($total_obtenido != 0)  ? $total_obtenido : 'Aún no hay respuestas' }}</h5>
+
+                    @if ($total_obtenido != 0)
+                        <h6 id="puntuacion_maxima">
+                            {{$total_obtenido}}
+                        </h6>
+                    @else
+                        <h6>
+                            <i class="fa fa-exclamation-circle text-danger"></i>
+                            No hay respuestas resgistradas.
+                        </h6>         
+                    @endif
+                
                 </div>
 
                 <div class="col-auto p-3">
                     <h5 class="fw-bold">% Cumplimiento</h5>
-                    <h5 id="cumplimiento">{{ ($total_obtenido != 0 ) ?  round((( $total_obtenido) /($numero_preguntas_cuantificables * 10)) * 100, 3) : 'Aún no hay respuestas' }} </h5>
-                    
+
+                    @if ($total_obtenido != 0)
+                        <h6 id="puntuacion_maxima">
+                            {{round((( $total_obtenido) /($numero_preguntas_cuantificables * 10)) * 100, 3)}}
+                        </h6>
+                    @else
+                        <h6>
+                            <i class="fa fa-exclamation-circle text-danger"></i>
+                            No hay respuestas resgistradas.
+                        </h6>         
+                    @endif
+                   
                 </div>
 
             </div>

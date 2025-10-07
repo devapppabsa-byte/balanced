@@ -43,7 +43,7 @@
 </div>
 
 <div class="container-fluid">
-    <div class="row  border-bottom">
+    <div class="row  border-bottom mb-5">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_proveedor">
                 <i class="fa fa-plus-circle"></i>
@@ -57,17 +57,14 @@
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-10 col-sm-10 col-md-8 col-lg-8">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-8">
             <div class="row  table-responsive">
 
                 <div class="col-12 text-center">
-                    <h2>Proveedores</h2>
-                    @if (session('eliminado'))
-                        <h5 class="">
-                            <i class="fa fa-exclamation-circle text-danger"></i>
-                            {{session('eliminado')}}
-                        </h5>
-                    @endif
+                    <h2>
+                        <i class="fa-solid fa-users-line"></i>
+                        Proveedores
+                    </h2>
                 </div>
 
                 @if (!$proveedores->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
@@ -76,7 +73,7 @@
                             <tr>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
-                                <th>% Cumplimiento</th>
+                                <th>Cumplimiento</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>

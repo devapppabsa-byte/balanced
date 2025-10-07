@@ -51,7 +51,7 @@
 
 
 <div class="container-fluid">
-    <div class="row">
+    <div class="row border-bottom mb-5">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
                 <i class="fa fa-plus"></i>
@@ -63,7 +63,7 @@
 
 <div class="container-fluid">
 
-    <div class="row gap-4 p-2 justify-content-start border-bottom pb-5 mt-3">
+    <div class="row gap-4 p-2 justify-content-center border-bottom pb-5 mt-3">
         <div class="col-12">
             <h5>Información para este indicador</h5>
         </div>
@@ -150,7 +150,7 @@
                 <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body py-4">
-                <div class="row gap-4 p-2">
+                <div class="row gap-4 p-2 justify-content-center">
                     @forelse ($campos_vacios as $campo_vacio)
                         <div class="col-11  col-sm-11 col-md-5 col-lg-4 text-start border border-4 mb-4 p-3 shadow-sm campos_vacios">
                             <div class="row justify-content-center">

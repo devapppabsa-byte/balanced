@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Norma;
+use App\Models\Departamento;
 use App\Models\ApartadoNorma;
 use Illuminate\Http\Request;
 
@@ -18,20 +19,20 @@ class normaController extends Controller
     }
 
 
-    public function norma_store(Request $request){
+    public function norma_store(Request $request, Departamento $departamento){
 
         $request->validate([
 
             "titulo_norma" => 'required|unique:norma,nombre',
             "descripcion_norma" => 'required'
-
         ]);
 
 
         Norma::create([
 
             "nombre" => $request->titulo_norma,
-            "descripcion" => $request->descripcion_norma
+            "descripcion" => $request->descripcion_norma,
+            "id_departamento" => $departamento->id
 
         ]);
 
@@ -56,7 +57,7 @@ class normaController extends Controller
 
         $norma->update();
 
-        return back()->with('actualizado', 'La norma fue actualizada');
+        return back()->with('editado', 'La norma fue actualizada');
         
 
     }
@@ -67,6 +68,13 @@ class normaController extends Controller
         $apartados = ApartadoNorma::where('id_norma',$norma->id)->get();
         return view('admin.apartados_norma', compact('norma', 'apartados'));
    
+    }
+
+
+    public function cumplimiento_normativo_user(){
+
+
+        return view('user.cumplimiento_normativo');
     }
 
 

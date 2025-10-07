@@ -30,7 +30,7 @@ Route::get('/perfil_usuario', [userController::class, 'perfil_user'])->name('per
 
 //Rutas del llenado de los indicadores
 Route::get('/perfil_usuario/indicador/{indicador}', [indicadorController::class, 'show_indicador_user'])->name('show.indicador.user');
-
+Route::get('/perfil_usuario/cumplimiento_normativo/', [normaController::class, 'cumplimiento_normativo_user'])->name('cumplimiento.normativo.user');
 
 
 
@@ -141,7 +141,7 @@ Route::get('/perfil_admin/informacion_foranea', [informacionForaneaController::c
 Route::get('/perfil_admin/encuestas/respuestas_clientes/{cliente}/{encuesta}', [clienteController::class, 'show_respuestas'])->name('show.respuestas');
 
 Route::get('/perfil_admin/normas/', [normaController::class, 'cumplimiento_norma_show_admin'])->name('cumplimiento.norma.show.admin');
-Route::post('/perfil_admin/normas/agregar', [normaController::class, 'norma_store'])->name('norma.store');
+Route::post('/perfil_admin/normas/agregar/{departamento}', [normaController::class, 'norma_store'])->name('norma.store');
 Route::delete('/perfil_admin/normas/borrar/{norma}', [normaController::class, 'norma_delete'])->name('norma.delete');
 Route::patch('/perfil_admin/normas/editar/{norma}', [normaController::class, 'norma_update'])->name('norma.update');
 

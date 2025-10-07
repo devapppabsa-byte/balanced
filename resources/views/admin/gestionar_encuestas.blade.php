@@ -35,7 +35,7 @@
     @include('admin.assets.nav')
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid mb-5">
     <div class="row  border-bottom">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
@@ -53,7 +53,10 @@
         <div class="col-12 col-sm-12 col-md-11 col-lg-8  ">
             <div class="row">
                 <div class="col-12 text-center">
-                    <h2>Encuestas</h2>
+                    <h2>
+                        <i class="fa-regular fa-newspaper"></i>
+                        Encuestas
+                    </h2>
                     @if (session('eliminado'))
                         <h5 class="">
                             <i class="fa fa-exclamation-circle text-danger"></i>

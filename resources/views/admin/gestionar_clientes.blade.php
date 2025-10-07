@@ -36,7 +36,7 @@
 </div>
 
 <div class="container-fluid">
-    <div class="row  border-bottom">
+    <div class="row  border-bottom mb-5">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cliente">
                 <i class="fa fa-plus-circle"></i>
@@ -51,9 +51,10 @@
     <div class="row justify-content-center">
 
         <div class="col-12 col-sm-12 col-md-10 col-lg-9  mx-5">
-            <div class="row">
+            <div class="row justify-content-center">
                 <div class="col-12 text-center">
                     <h2>
+                        <i class="fa fa-users"></i>
                         Lista de Clientes
                     </h2>
                     @if (session('eliminado'))
@@ -64,7 +65,7 @@
                     @endif
                 </div>
             </div>
-        <div class="table-responsive ">
+        <div class="table-responsive shadow-sm">
             <table class="table table-responsive mb-0 border shadow-sm table-hover">
                     <thead class="table-secondary text-white cascadia-code">
                         <tr>

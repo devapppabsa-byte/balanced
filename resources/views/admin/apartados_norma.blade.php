@@ -57,7 +57,7 @@
 
 
 <div class="container-fluid">
-    <div class="row  border-bottom">
+    <div class="row  border-bottom mb-5">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_apartado_norma">
                 <i class="fa fa-plus-circle"></i>
@@ -73,7 +73,7 @@
         <div class="col-12 col-sm-12 col-md-11 col-lg-8  ">
             <div class="row">
                 <div class="col-12 text-center">
-                    <h2> Apartados de la norma {{$norma->nombre}}</h2>
+                    <h2 class="fw-bold"> Apartados de la norma {{$norma->nombre}}</h2>
                     @if (session('eliminado'))
                         <h5 class="">
                             <i class="fa fa-exclamation-circle text-danger"></i>
@@ -123,6 +123,10 @@
                             <div class="col-12 p-5 text-center p-5 border">
 
                                 <div class="row">
+
+                                    <div class="col-12">
+                                        <img src="{{asset('/img/iconos/empty.png')}}" alt="">
+                                    </div>
                                     
                                     <div class="col-12">
                                         <i class="fa fa-exclamation-circle text-danger"></i>
@@ -131,6 +135,7 @@
                                     
                                     <div class="col-12">
                                         <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_apartado_norma">
+                                            <i class="fa fa-plus"></i>
                                             Agregar apartado a la norma
                                         </a>
                                     </div>

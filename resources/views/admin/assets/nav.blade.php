@@ -42,11 +42,6 @@
         </a>
     </div>
 
-    <div class="col-auto mx-1">
-        <a href="{{route('cumplimiento.norma.show.admin')}}" class="text-white text-decoration-none fw-bold">
-            Normas SEH
-        </a>
-    </div>
 
 
 </div>
