@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Norma;
 use App\Models\Departamento;
 use App\Models\ApartadoNorma;
@@ -17,6 +18,8 @@ class normaController extends Controller
 
 
     }
+
+
 
 
     public function norma_store(Request $request, Departamento $departamento){
@@ -54,6 +57,7 @@ class normaController extends Controller
     public function norma_update(Norma $norma, Request $request){
 
         $norma->nombre = $request->nombre_norma;
+        $norma->descripcion = $request->descripcion_norma_edit;
 
         $norma->update();
 
@@ -74,7 +78,10 @@ class normaController extends Controller
     public function cumplimiento_normativo_user(){
 
 
-        return view('user.cumplimiento_normativo');
+        $normas = Norma::where('id_departamento', Auth::user()->id_departamento)->get();
+
+
+        return view('user.cumplimiento_normativo', compact('normas'));
     }
 
 

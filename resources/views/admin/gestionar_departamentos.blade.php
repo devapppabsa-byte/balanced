@@ -61,10 +61,11 @@
         <div class="col-12 col-sm-12 col-md-5 col-lg-4">
                 <div class="row justify-content-center mx-2 text-center border border-3 shadow shadow-3 py-3">
                     <div class="col-12">
-                        <a href="{{route('agregar.indicadores.index', $departamento->id)}}" class="btn btn-outline-secondary w-100 h-100 d-block h5 py-4">
+                        <a href="{{route('agregar.indicadores.index', $departamento->id)}}" class="btn btn-outline-secondary fw-bold w-100 h-100 d-block h5 py-4" style="font-size:3vh;">
                             {{$departamento->nombre}}    
                         </a>   
                     </div>
+
                     <div class="col-12  text-end px-3">
                         <a href="#coll{{$departamento->id}}" data-mdb-collapse-init data-mdb-ripple-init role="button" aria-expanded="false" aria-controls="collapseExample">
                            <i class="fa-solid fa-circle-arrow-right"></i>
@@ -91,7 +92,19 @@
                 </div>
             </div>
         @empty
-            <li>No hay datos disponibles</li>
+            <div class="col-12 py-5">
+               <div class="row justify-content-center">
+                <div class="col-12 text-center">
+                    <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">
+                </div>
+                <div class="col-12 text-center">
+                    <h2>
+                        <i class="fa fa-exclamation-circle text-danger"></i>
+                        No hay datos disponibles 
+                    </h2>
+                </div>
+               </div>
+            </div>
         @endforelse
     </div>
 </div>

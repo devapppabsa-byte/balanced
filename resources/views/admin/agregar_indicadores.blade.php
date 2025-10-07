@@ -83,7 +83,7 @@
 
 <div class="container-fluid">
     <div class="row justify-content-evenly">
-        <div class="col-3">
+        <div class="col-12 col-sm-11 col-md-6 col-lg-4 ">
             <div class="row">
                 <div class="col-12  mx-1 mt-5 ">
 
@@ -135,11 +135,12 @@
                                         
                                         <div class="col-12">
                                             <i class="fa fa-exclamation-circle text-danger"></i>
-                                            No cuenta con indicadores, pero los puedes agregar aqui
+                                            No cuenta con indicadores.
                                         </div>
                                         
                                         <div class="col-12">
                                             <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_indicador">
+                                                <i class="fa fa-plus"></i>
                                                 Agregar Indicador
                                             </a>
                                         </div>
@@ -159,7 +160,7 @@
             </div>
             
             <div class="row">
-                <div class="col-12 mx1 mt-5">
+                <div class="col-12 mx1 mt-5 mb-5">
                     <div class="col-12 text-center">
                         <h4>
                             <i class="fa-regular fa-newspaper"></i>
@@ -190,7 +191,7 @@
                                         </td>
 
 
-                                        <td class="btn-group shadow-0 gap-1">
+                                        <td class="btn-group shadow-0  gap-1">
                                             <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_norm{{$norma->id}}">
                                                 <i class="fa fa-trash"></i> 
                                             </a>
@@ -210,11 +211,12 @@
                                         
                                         <div class="col-12">
                                             <i class="fa fa-exclamation-circle text-danger"></i>
-                                            No cuenta con seguimiento al cumplimiento de normas, pero los puedes aqgregar aqui.
+                                            No cuenta con seguiminetos a normas.
                                         </div>
                                         
                                         <div class="col-12">
                                             <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_norma">
+                                                <i class="fa fa-plus"></i>
                                                 Agregar Norma
                                             </a>
                                         </div>
@@ -235,7 +237,7 @@
 
         </div>
 
-        <div class="col-5">
+        <div class="col-12 col-sm-11 col-md-11 col-lg-6 mb-4">
             <div class="row">
                 <div class="col-12 mx-1 mt-5">
                     <div class="row">
@@ -295,6 +297,7 @@
                                             
                                             <div class="col-12">
                                                 <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
+                                                    <i class="fa fa-plus"></i>
                                                     Agregar Cuestionario
                                                 </a>
                                             </div>
@@ -340,7 +343,6 @@
                                                 <th scope="col">Nombre</th>
                                                 <th scope="col">Correo</th>
                                                 <th scope="col">Puesto</th>
-                                                <th scope="col">Departamento</th>
                                                 <th scope="col">Acciones</th>
                                             </tr>
                                         </thead>
@@ -352,7 +354,6 @@
                                         <th>{{$usuario->name}}</th>
                                         <td>{{$usuario->email}}</td>
                                         <td>{{$usuario->puesto}}</td>
-                                        <td>{{$usuario->departamento->nombre}}</td>
 
                                         <td class="btn-group shadow-0 border-0"> 
                                             <button class="btn btn-outline-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
@@ -375,6 +376,7 @@
                                             
                                             <div class="col-12">
                                                 <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
+                                                    <i class="fa fa-plus"></i>
                                                     Agregar Usuario
                                                 </a>
                                             </div>
@@ -914,8 +916,15 @@
                     
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg w-100{{ $errors->first('nombre_departamento') ? 'is-invalid' : '' }} " id="nombre_norm{{$norma->id}}" name="nombre_norma" value="{{old('nombre_norma', $norma->nombre)}}" style="font-size: 30px">
-                            <label class="form-label" for="nombre_norm{{$norma->id}}" >Nombre nuevo </label>
+                            <input type="text" class="form-control form-control-lg w-100{{ $errors->first('nombre_norma_edit') ? 'is-invalid' : '' }} " id="nombre_norm{{$norma->id}}" name="nombre_norma" value="{{old('nombre_norma', $norma->nombre)}}" style="font-size: 30px">
+                            <label class="form-label" for="nombre_norm{{$norma->id}}" >Nombre </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <textarea type="text" rows="5" class="form-control form-control-lg w-100 h-100 lh-sm{{ $errors->first('descripcion_norma_edit') ? 'is-invalid' : '' }} " id="descrip_norm_edit{{$norma->id}}" name="descripcion_norma_edit" value="{{old('descripcion_norma_edit', $norma->descripcion)}}">{{$norma->descripcion}}</textarea>
+                            <label class="form-label" for="descrip_norm_edit{{$norma->id}}" >Descripción </label>
                         </div>
                     </div>
 

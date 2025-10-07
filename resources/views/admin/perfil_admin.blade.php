@@ -61,8 +61,9 @@
 
 <div class="container-fluid border-bottom my-5">
 
-    <div class="row justify-content-around">
+    <div class="row justify-content-center">
         @forelse ($departamentos as $departamento)
+
             <div class="col-12 col-sm-10 col-md-4 col-lg-3 my-3">
                 <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
                     <div class="card text-white  shadow-2-strong" style="background-color: rgb(184, 70, 70)">
@@ -73,9 +74,7 @@
                                 <p class="mb-1">Cumplimiento</p>
                                 <h5 class="mb-2 fw-bold">50%</h5>
                                 </div>
-                                <span class="material-icons" style="font-size: 80px">
-                                    trending_down
-                                </span>
+                                <i class="fas fa-chart-line fa-4x"></i>
                             </div>
                             <div class="progress rounded-0 mt-2" style="height: 4px;">
                                 <div class="progress-bar" style="width: 70%; background-color:rgb(112, 2, 2)"></div>
@@ -112,7 +111,17 @@
             </div>
 
         @empty
-            <li>No hay datos</li>
+            <div class="col-8 text-center py-5">
+                <div class="col-12">
+                    <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">
+                </div>
+                <div class="col-12">
+                    <h2>
+                        <i class="fa fa-exclamation-circle text-danger"></i>
+                        No hay datos disponibles!
+                    </h2>
+                </div>
+            </div>
         @endforelse
 
     </div>

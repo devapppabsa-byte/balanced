@@ -65,19 +65,21 @@
                     @endif
                 </div>
             </div>
-        <div class="table-responsive shadow-sm">
-            <table class="table table-responsive mb-0 border shadow-sm table-hover">
-                    <thead class="table-secondary text-white cascadia-code">
-                        <tr>
-                        <th>Id</th>
-                        <th>Nombre</th>
-                        <th>Correo</th>
-                        <th>Linea</th>
-                        <th>Teléfono</th>
-                        <th>Acciones</th>
-                        </tr>
-                    </thead>
-                <tbody>
+                @if (!$clientes->isEmpty())
+                    <div class="table-responsive shadow-sm">
+                        <table class="table table-responsive mb-0 border shadow-sm table-hover">
+                                <thead class="table-secondary text-white cascadia-code">
+                                    <tr>
+                                    <th>Id</th>
+                                    <th>Nombre</th>
+                                    <th>Correo</th>
+                                    <th>Linea</th>
+                                    <th>Teléfono</th>
+                                    <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                            <tbody>
+                @endif
 
                 @forelse ($clientes as $cliente)
                     <tr>

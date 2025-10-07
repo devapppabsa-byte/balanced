@@ -70,16 +70,11 @@
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-8  ">
-            <div class="row">
-                <div class="col-12 text-center">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-10">
+            <div class="row mb-2">
+                <div class="col-12 text-center ">
                     <h2 class="fw-bold"> Apartados de la norma {{$norma->nombre}}</h2>
-                    @if (session('eliminado'))
-                        <h5 class="">
-                            <i class="fa fa-exclamation-circle text-danger"></i>
-                            {{session('eliminado')}}
-                        </h5>
-                    @endif
+                    <p style="text-align:justify">{{$norma->descripcion}}</p>
                 </div>
             </div>
             <div class="row">
@@ -249,7 +244,7 @@
 
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <textarea type="text" class="form-control form-control-lg w-100{{ $errors->first('descripcion_apartado_edit') ? 'is-invalid' : '' }} " id="descripcion_apartado{{$apartado->id}}" name="descripcion_apartado_edit" value="{{old('descripcion_apartado_edit', $apartado->apartado)}}" style="font-size: 30px">{{$apartado->descripcion}}</textarea>
+                            <textarea type="text" class="form-control form-control-lg w-100{{ $errors->first('descripcion_apartado_edit') ? 'is-invalid' : '' }} " id="descripcion_apartado{{$apartado->id}}" name="descripcion_apartado_edit" value="{{old('descripcion_apartado_edit', $apartado->apartado)}}">{{$apartado->descripcion}}</textarea>
                             <label class="form-label" for="descripcion_apartado_edit{{$apartado->id}}" >Editando apartado </label>
                         </div>
                     </div>

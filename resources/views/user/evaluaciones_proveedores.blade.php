@@ -67,7 +67,7 @@
      <div class="row justify-content-center">
         <div class="col-11">
             <div class="row d-flex align-items-center justify-content-center pb-5 mt-4 ">
-                <div class="col-11 mx-3 mb-3">
+                <div class="col-11 ms-5 mb-3">
                     <h4>
                         <i class="fa-solid fa-check-to-slot"></i>
                         Evaluaciones realizadas por {{Auth::user()->departamento->nombre}}
@@ -76,21 +76,26 @@
 
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-11  ">
-                    <div class="table-responsive shadow-sm mx-2 border">
-                        <table class="table ">
-                            <thead class="table-primary">
-                            <tr class="fjalla-one-regular ">
-                                <th scope="col">Fecha</th>
-                                <th scope="col">Proveedor</th>
-                                <th scope="col">Servicio y/o Entrega</th>
-                                <th scope="col">Observaciones</th>
-                                <th scope="col">Calificación Otorgada </th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                    @if (!$evaluaciones->isEmpty())
+                        <div class="table-responsive shadow-sm mx-2 border">
+                            <table class="table ">
+                                <thead class="table-primary">
+                                <tr class="fjalla-one-regular ">
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Proveedor</th>
+                                    <th scope="col">Servicio y/o Entrega</th>
+                                    <th scope="col">Observaciones</th>
+                                    <th scope="col">Calificación Otorgada </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                        @endif
                                 @forelse ($evaluaciones as $evaluacion)
                                 <tr>
-                                    <th scope="row">{{$evaluacion->fecha}}</th>
+                                    <th scope="row">
+                                        <i class="fa fa-calendar"></i>
+                                        {{$evaluacion->fecha}}
+                                    </th>
                                     <td>{{$evaluacion->proveedor->nombre}}</td>
                                     <td>{{$evaluacion->descripcion}}</td>
                                     <td>{{$evaluacion->observaciones}}</td>
@@ -100,7 +105,19 @@
                                     </td>
                                 </tr>                   
                                 @empty
-                                    NO hay nada
+                                   <div class="col-12  py-5 text-center border">
+                                        <div class="row justify-content-center">
+                                            <div class="col-12">
+                                                <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">
+                                            </div>
+                                            <div class="col-12">
+                                                <h2>
+                                                    <i class="fa fa-exclamation-circle text-danger"></i>
+                                                    No hay evaluciones aún.
+                                                </h2>
+                                            </div>
+                                        </div>
+                                   </div>
                                 @endforelse
 
                             </tbody>
