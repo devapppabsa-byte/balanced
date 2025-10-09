@@ -2,49 +2,6 @@
 @section('title', 'Encuesta')
     
 @section('contenido')
-
-@if ($existe->isEmpty())
-    <button class="btn btn-primary  flotante-encuesta" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
-        <i class="fa fa-plus fa-2x"></i>
-    </button>
-@else
-
-    <button class="btn btn-dark  flotante-encuesta" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#encuesta_contestada">
-        <i class="fa fa-plus fa-2x"></i>
-    </button>
-
-@endif
-
-
-
-
-<div class="modal fade" id="encuesta_contestada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-header bg-danger py-4">
-        <h3 class="text-white" id="exampleModalLabel">La encuesta ya tiene respuestas.</h3>
-        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body py-4">
-
-            <div class="row justify-content-center">
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-10 text-center mt-3">
-                    <i class="fa fa-exclamation-circle fa-4x text-danger"></i>
-                </div>
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-10 text-justify  text-justify mt-3">
-                    <p class="">La encuesta ya fue respondida por lo que para mantener la integridad de los datos no se puede modificar la encuesta.</p>
-                </div>
-
-            </div>
-        </div>
-    </div>
-  </div>
-</div>
-
-
-
 <div class="container-fluid">
     <div class="row bg-primary  d-flex align-items-center px-4">
         <div class="col-auto text-center">
@@ -83,18 +40,38 @@
     @include('admin.assets.nav')
 </div>
 
+<div class="container-fluid ">
+    <div class="row bg-white shadow-sm border-bottom   mb-5">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+            @if ($existe->isEmpty())
+                <button class="btn btn-secondary border  w-100 " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
+                    <i class="fa fa-plus"></i>
+                    Agregar Pregunta
+                </button>
+            @else
+                <button class="btn btn-dark  w-100 " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#encuesta_contestada">
+                    <i class="fa fa-plus"></i>
+                    La encuesta ya fue cintestada
+                </button>
+            @endif
 
+        </div>
+    </div>
+</div>
 
 
 
 <div class="container-fluid">
 
     <div class="row justify-content-around">
-            <div class="col-12 col-sm-12 col-md-10 col-lg-4 mt-5 table-responsive">
-                <h3 class="text-center">Preguntas de la encuesta {{$encuesta->nombre}}</h3>
+            <div class="col-12 col-sm-12 col-md-10 col-lg-5 m table-responsive bg-white p-5 rounded shadow-sm">
+                <h3 class="text-center">
+                    <i class="fa-solid fa-clipboard-question"></i>
+                    {{$encuesta->nombre}}
+                </h3>
                     @if (!$preguntas->isEmpty())
                         <table class="table border shadow-sm">
-                            <thead class="table-secondary border">
+                            <thead class="table-primary border">
                                 <th scope="col">Pregunta</th>
                                 <th scope="col">Cuantificable</th>
                                 <th scope="col">Eliminar</th>
@@ -160,8 +137,11 @@
                     </table>
             </div>
             
-            <div class="col-12 col-sm-12 col-md-6 col-lg-5 mt-5 table-responsive">
-                <h3 class="text-center">Respuestas de los Clientes</h3>
+            <div class="col-12 col-sm-12 col-md-6 col-lg-5 mt-2 table-responsive bg-white p-5 rounded shadow-sm">
+                <h3 class="text-center">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    Respuestas de los Clientes
+                </h3>
                     @if (!$clientes->isEmpty())
                         <table class="table border shadow-sm">
                             <thead class="table-secondary border">
@@ -208,10 +188,16 @@
 
     <div class="row justify-content-center mt-5 ">
 
-        <div class="col-11 col-sm-11 col-md-11 col-lg-8 mt-5 text-center bg-light border">
+        <div class="col-11 col-sm-11 col-md-11 p-3 col-lg-10 mt-5 text-center bg-white border rounded">
             <div class="row justify-content-around">
+                <div class="col-12 text-center">
+                    <h3>
+                        <i class="fa-solid fa-medal"></i>
+                        Resultados
+                    </h3>
+                </div>
                 
-                <div class="col-auto  p-3">
+                <div class="col-auto    border-bottom border-2 p-3">
 
                     <h5 class="fw-bold">Puntuación Maxima</h5>
                     @if ($numero_preguntas_cuantificables != 0)
@@ -227,7 +213,7 @@
                         
                 </div>
                 
-                <div class="col-auto p-3">
+                <div class="col-auto   border-bottom border-2 p-3">
                     <h5 class="fw-bold">Puntuación General Obtenida </h5>
 
                     @if ($total_obtenido != 0)
@@ -243,7 +229,7 @@
                 
                 </div>
 
-                <div class="col-auto p-3">
+                <div class="col-auto   border-bottom border-2 p-3">
                     <h5 class="fw-bold">% Cumplimiento</h5>
 
                     @if ($total_obtenido != 0)
@@ -266,6 +252,31 @@
 </div>
 
 
+
+<div class="modal fade" id="encuesta_contestada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-danger py-4">
+        <h3 class="text-white" id="exampleModalLabel">La encuesta ya tiene respuestas.</h3>
+        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+
+            <div class="row justify-content-center">
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-10 text-center mt-3">
+                    <i class="fa fa-exclamation-circle fa-4x text-danger"></i>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-10 text-justify  text-justify mt-3">
+                    <p class="">La encuesta ya fue respondida por lo que para mantener la integridad de los datos no se puede modificar la encuesta.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
 
 
 

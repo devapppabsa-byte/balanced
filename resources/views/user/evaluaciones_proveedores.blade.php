@@ -6,8 +6,8 @@
     <div class="row bg-primary d-flex align-items-center">
 
         <div class="col-8 col-sm-8 col-md-6 col-lg-9  py-4  py-4 ">
-            <h1 class="text-white"> Evaluaciones Porveedores</h1>
-            <h3 class="text-white text-uppercase" id="fecha"></h3>
+            <h2 class="text-white"> Evaluaciones Porveedores</h2>
+            <h4 class="text-white" id="fecha"></h4>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>

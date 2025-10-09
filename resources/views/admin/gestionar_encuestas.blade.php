@@ -36,7 +36,7 @@
 </div>
 
 <div class="container-fluid mb-5">
-    <div class="row  border-bottom">
+    <div class="row  border-bottom bg-white shadow-sm ">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
                 <i class="fa fa-plus-circle"></i>
@@ -50,8 +50,8 @@
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-8  ">
-            <div class="row">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-8 shadow-sm rounded border  bg-white p-5">
+            <div class="row ">
                 <div class="col-12 text-center">
                     <h2>
                         <i class="fa-regular fa-newspaper"></i>

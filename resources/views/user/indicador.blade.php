@@ -51,7 +51,7 @@
 
 
 <div class="container-fluid">
-    <div class="row border-bottom mb-5">
+    <div class="row border-bottom mb-5 ">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
                 <i class="fa fa-plus"></i>
@@ -218,11 +218,6 @@
 
 @section('scripts')
 
-<script>
-    let mostrar_fecha = document.getElementById("fecha");
-    let fecha = new Date();
-    mostrar_fecha.innerHTML = " <i class='fa fa-calendar'></i>  " + fecha.toLocaleDateString("es-Es", {month: 'long'}) +" "+ fecha.getFullYear();
-</script>
 
 <script>
 const ctx = document.getElementById('grafico').getContext('2d');

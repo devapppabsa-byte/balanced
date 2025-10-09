@@ -57,7 +57,7 @@
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-8">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-8 bg-white p-5 shadow border rounded">
             <div class="row  table-responsive">
 
                 <div class="col-12 text-center">

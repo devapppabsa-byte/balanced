@@ -35,7 +35,7 @@ class informacionForaneaController extends Controller
 
         InformacionForanea::create([
             'nombre_info' => $request->nombre_info,
-            'informacion' => $request->informacion,
+            'contenido' => $request->informacion,
             'tipo_dato'  => $request->tipo_info
         ]);
 

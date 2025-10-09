@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('evidencia_cumplimiento_norma', function (Blueprint $table) {
             $table->id();
             $table->string('evidencia');
+            $table->text('nombre_archivo');
             $table->unsignedBigInteger('id_cumplimiento_norma');
             $table->foreign('id_cumplimiento_norma')
                   ->references('id')

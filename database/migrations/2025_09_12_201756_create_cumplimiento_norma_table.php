@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('cumplimiento_norma', function (Blueprint $table) {
             $table->id();
             $table->string("mes");
-            $table->string("valoracion"); //si / no / no aplica
+            $table->text("descripcion"); //si / no / no aplica
             $table->unsignedBigInteger("id_apartado_norma");
             $table->foreign("id_apartado_norma")
                   ->references("id")

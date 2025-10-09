@@ -7,7 +7,10 @@
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
-            <h1 class="text-white">Apartados de la norma {{$norma->nombre}}</h1>
+            <h1 class="text-white">
+                <i class="fa-regular fa-file-lines"></i>
+                {{$norma->nombre}}
+            </h1>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -57,7 +60,7 @@
 
 
 <div class="container-fluid">
-    <div class="row  border-bottom mb-5">
+    <div class="row  border-bottom mb-5 bg-white">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_apartado_norma">
                 <i class="fa fa-plus-circle"></i>
@@ -68,9 +71,9 @@
 </div>
 
 
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-10">
+<div class="container-fluid ">
+    <div class="row justify-content-center ">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-10 border-bottom mb-5 bg-white p-5 rounded border">
             <div class="row mb-2">
                 <div class="col-12 text-center ">
                     <h2 class="fw-bold"> Apartados de la norma {{$norma->nombre}}</h2>
@@ -83,7 +86,7 @@
                         @if (!$apartados->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
                         
                             <table class="table mb-0 border table-hover">
-                                <thead class="table-secondary text-white cascadia-code">
+                                <thead class="table-primary text-white cascadia-code">
                                     <tr>
                                         <th>Nombre</th>
                                         <th>Descripción</th>
@@ -96,9 +99,9 @@
                         @forelse ($apartados as $apartado)
                             <tr>
                                 <td>
-                                    <span  class="text-decoration-none text-dark fw-bold">
+                                    <a href="{{route('ver.evidencia.cumplimiento.normativo.admin', $apartado->id)}}" class="text-decoration-none text-dark fw-bold">
                                         {{$apartado->apartado}}
-                                    </span>
+                                    </a>
                                 </td>
                                 <td>{{$apartado->descripcion}}</td>
 

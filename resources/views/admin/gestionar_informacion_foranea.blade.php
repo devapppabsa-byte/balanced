@@ -55,7 +55,7 @@
 </div>
 
 <div class="container-fluid">
-    <div class="row  border-bottom py-2">
+    <div class="row  border-bottom py-2 bg-white border-bottom shadow-sm">
 
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#precargar_campos">
@@ -152,8 +152,9 @@
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="form-group mt-3">
-                        <div class="form-outline" id="contenedor_input" >
-
+                        <div class="form-outline" id="contenedor_input" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg" name="informacion" required>
+                            <label class="form-label" for="informacion" >Información </label>
                         </div>
                     </div>
                 </div>

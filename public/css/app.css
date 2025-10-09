@@ -6,7 +6,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Zalando+Sans+SemiExpanded:ital,wght@0,200..900;1,200..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&display=swap');
 
-
+body{
+  /* background-image: url('/img/background.jpg'); */
+  background-color: rgb(236, 236, 236);
+}
 
 
 
@@ -14,7 +17,7 @@
   font-family: "Cascadia Code", sans-serif;
   font-optical-sizing: auto;
   font-weight: normal;
-  font-size: 20px;
+  font-size: 15px;
   font-style: normal;
 }
 

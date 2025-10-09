@@ -9,6 +9,7 @@
     <div class="row bg-primary  d-flex align-items-center px-4">
         <div class="col-auto py-4 text-white">
             <h1 class="mt-1">{{$departamento->nombre}}</h1>
+            <span>Asignación de Indicadores a {{$departamento->nombre}}</span>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -52,24 +53,24 @@
 
 
 <div class="container-fluid">
-    <div class="row border py-2">
+    <div class="row border py-2 bg-white shadow-sm border-bottom ">
 
         <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
-            <a class="btn btn-outline-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_indicador">
+            <a class="btn btn-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_indicador">
                 <i class="fa fa-plus"></i>
                 Indicador a {{$departamento->nombre}}
             </a>
         </div>
 
         <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
-            <a class="btn btn-outline-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
+            <a class="btn btn-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
                 <i class="fa fa-plus"></i>
                 Encuesta para el cliente
             </a>
         </div>
 
         <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
-            <a class="btn btn-outline-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_norma">
+            <a class="btn btn-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_norma">
                 <i class="fa fa-plus"></i>
                 Norma
             </a>
@@ -82,11 +83,10 @@
 
 
 <div class="container-fluid">
-    <div class="row justify-content-evenly">
-        <div class="col-12 col-sm-11 col-md-6 col-lg-4 ">
+    <div class="row justify-content-evenly ">
+        <div class="col-12 col-sm-11 col-md-11 col-lg-5 ">
             <div class="row">
-                <div class="col-12  mx-1 mt-5 ">
-
+                <div class="col-12  mx-1 mt-5 bg-white rounded shadow shadow-sm p-5">
                         <div class="col-12 text-center">
                             <h4>
                                 <i class="fa fa-chart-line"></i>
@@ -95,12 +95,12 @@
                         </div>
 
                         <div class="col-12">
-                            <div class="row">
+                            <div class="row ">
                                 <div class="col-12">
                                 @if ($indicadores->isEmpty())
                                 @else
                                     <table class="table mb-0 border  shadow-sm">
-                                        <thead class="table-light text-white">
+                                        <thead class="table-primary text-white">
                                             <tr>
                                                 <th>Nombre</th>
                                                 <th>Acciones</th>
@@ -160,7 +160,7 @@
             </div>
             
             <div class="row">
-                <div class="col-12 mx1 mt-5 mb-5">
+                <div class="col-12  mt-3 mb-5 rounded shadow shadow-sm bg-white p-5">
                     <div class="col-12 text-center">
                         <h4>
                             <i class="fa-regular fa-newspaper"></i>
@@ -173,7 +173,7 @@
                                 @if ($normas->isEmpty())
                                 @else
                                     <table class="table mb-0 border  shadow-sm">
-                                        <thead class="table-light text-white">
+                                        <thead class="table-primary text-white">
                                             <tr>
                                                 <th>Nombre</th>
                                                 <th>Acciones</th>
@@ -191,7 +191,7 @@
                                         </td>
 
 
-                                        <td class="btn-group shadow-0  gap-1">
+                                        <td class="">
                                             <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_norm{{$norma->id}}">
                                                 <i class="fa fa-trash"></i> 
                                             </a>
@@ -239,12 +239,12 @@
 
         <div class="col-12 col-sm-11 col-md-11 col-lg-6 mb-4">
             <div class="row">
-                <div class="col-12 mx-1 mt-5">
+                <div class="col-12 mx-1 mt-5 col-12   mb-3 rounded shadow shadow-sm bg-white p-5">
                     <div class="row">
                         <div class="col-12 text-center">
                             <h4>
                                <i class="fa fa-circle-question"></i>
-                                Cuestionarios de {{$departamento->nombre}}
+                                Encuestas de {{$departamento->nombre}}
                             </h4>
                         </div>
                         <div class="col-12">
@@ -253,7 +253,7 @@
                                 @if ($encuestas->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
                                 @else
                                     <table class="table table mb-0 border  shadow-sm">
-                                        <thead class="table-light text-white">
+                                        <thead class="table-primary text-white">
                                             <tr>
                                             <th>Nombre</th>
                                             <th>Descripción</th>
@@ -316,7 +316,7 @@
             </div>
 
             <div class="row">
-                <div class="col-12 mx-1 mt-5">
+                <div class="col-12   rounded shadow shadow-sm bg-white p-5">
                     <div class="row">
 
                         <div class="col-12 text-center">
@@ -338,7 +338,7 @@
                                 @if ($usuarios->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
                                 @else
                                     <table class="table mb-0 ">
-                                        <thead class="table-light text-white">
+                                        <thead class="table-primary text-white">
                                             <tr>
                                                 <th scope="col">Nombre</th>
                                                 <th scope="col">Correo</th>
@@ -355,17 +355,17 @@
                                         <td>{{$usuario->email}}</td>
                                         <td>{{$usuario->puesto}}</td>
 
-                                        <td class="btn-group shadow-0 border-0"> 
-                                            <button class="btn btn-outline-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
+                                        <td class=""> 
+                                            <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
                                                 <i class="fa fa-trash"></i>
-                                            </button>
-                                            <button class="btn btn-outline-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
+                                            </a>
+                                            <a class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
                                                 <i class="fa fa-edit"></i>
-                                            </button>
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty
-                                    <div class="col-12 p-5 text-center p-5 border">
+                                    <div class="col-12 p-5 text-center p-5 ">
 
                                         <div class="row">
                                             
@@ -510,7 +510,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_usuario') ? 'is-invalid' : '' }} " id="nombre_usuario" name="nombre_usuario" required>
+                            <input type="text" value="{{old('nombre_usuario')}}" class="form-control form-control-lg {{ $errors->first('nombre_usuario') ? 'is-invalid' : '' }} " id="nombre_usuario" name="nombre_usuario" required>
                             <label class="form-label" for="nombre_usuario" >Nombre </label>
                         </div>
                     </div>
@@ -519,7 +519,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('correo_usuario') ? 'is-invalid' : '' }} "  name="correo_usuario" required>
+                            <input type="text" value="{{old('correo_usuario')}}" class="form-control form-control-lg {{ $errors->first('correo_usuario') ? 'is-invalid' : '' }} "  name="correo_usuario" required>
                             <label class="form-label" for="correo_usuario" >Correo </label>
                         </div>
                     </div>
@@ -528,7 +528,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-3">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="password" class="form-control form-control-lg {{ $errors->first('password_usuario') ? 'is-invalid' : '' }}" name="password_usuario" required>
+                            <input type="password" value="{{old('password_usuario')}}" class="form-control form-control-lg {{ $errors->first('password_usuario') ? 'is-invalid' : '' }}" name="password_usuario" required>
                             <label class="form-label" for="password" >Contraseña </label>
                         </div>
                     </div>
@@ -537,7 +537,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-3">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="puesto" class="form-control form-control-lg {{ $errors->first('puesto_usuario') ? 'is-invalid' : '' }}" name="puesto_usuario" required>
+                            <input type="puesto" value="{{old('puesto_usuario')}}" class="form-control form-control-lg {{ $errors->first('puesto_usuario') ? 'is-invalid' : '' }}" name="puesto_usuario" required>
                             <label class="form-label" for="puesto" >Puesto </label>
                         </div>
                     </div>
@@ -547,9 +547,9 @@
                     <div class="form-group mt-3">
                         <select name="planta" class="form-control form-control-lg" id="" required>
                             <option value="" disabled selected>Selecciona la planta a la que pertenece</option>
-                            <option value="Planta 1">Planta 1</option>
-                            <option value="Planta 2">Planta 2</option>
-                            <option value="Planta 3">Planta 3</option>
+                            <option value="Planta 1"{{old('planta') == 'Planta 1' ? 'selected': ''}}>Planta 1</option>
+                            <option value="Planta 2"{{old('planta') == 'Planta 2' ? 'selected': ''}} >Planta 2</option>
+                            <option value="Planta 3"{{old('planta') == 'Planta 3' ? 'selected' : ''}} >Planta 3</option>
                         </select>
                     </div>
                 </div>
@@ -867,7 +867,7 @@
                     <form action="{{route('borrar.indicador', $indicador->id)}}" method="POST">
                         @csrf @method('DELETE')
                         <h2>
-                            <button class="btn btn-danger w-100">
+                            <button class="btn btn-danger w-100 py-3">
                                 Eliminar
                             </button>
                         </h2>

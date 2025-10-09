@@ -8,7 +8,7 @@
 <div class="container-fluid bg-primary py-3 px-4 text-white">
     <div class="row d-flex align-items-center">
         <div class="col-6 text-start ">
-            <h3>Inicio de sesión</h3>
+            <h3>Inicio de sesión usuarios</h3>
         </div>
         <div class="col-6 text-end">
             <a href="{{route('admin.login.index')}}" class="btn btn-primary btn-lg">
@@ -24,7 +24,7 @@
 
 <div class="container ">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-7 col-lg-5 mt-5 shadow p-5">
+        <div class="col-12 col-sm-12 col-md-7 col-lg-5 mt-5 shadow-sm p-5 bg-white border">
             <div class="row justify-content-center">
 
                 <div class="col-12 mb-2 mb-4">

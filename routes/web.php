@@ -31,8 +31,9 @@ Route::get('/perfil_usuario', [userController::class, 'perfil_user'])->name('per
 //Rutas del llenado de los indicadores
 Route::get('/perfil_usuario/indicador/{indicador}', [indicadorController::class, 'show_indicador_user'])->name('show.indicador.user');
 Route::get('/perfil_usuario/cumplimiento_normativo/', [normaController::class, 'cumplimiento_normativo_user'])->name('cumplimiento.normativo.user');
-
-
+Route::get('/perfil_usuario/cumplimiento_normativo/registro_cumplimiento_normativo/{norma}', [apartadoNormaController::class, 'registro_cumplimiento_normativa_index'])->name('registro.cumplimiento.normativa.index');
+Route::post('/perfil_usuario/cumplimiento_normativo/registro_cumplimiento_normativo/resgistro_actividad/{apartado}', [apartadoNormaController::class, 'registro_actividad_cumplimiento_norma'])->name('registro.actividad.cumplimiento.norma');
+Route::get('/perfil_usuario/cumplimiento_normativo/registro_cumplimiento_normativo/registro_actividad/evidencias/{apartado}', [apartadoNormaController::class, 'ver_evidencia_cumplimiento_normativo'])->name('ver.evidencia.cumplimiento.normativo');
 
 
 
@@ -150,6 +151,8 @@ Route::get('/perfil_admin/normas/apartado/{norma}', [normaController::class, 'ap
 Route::post('/perfil_admin/normas/apartado/agregar_apartado/{norma}', [apartadoNormaController::class, 'apartado_norma_store'])->name('apartado.norma.store');
 Route::delete('/perfil_admin/normas/apartado/eliminar_apartado/{apartado}', [apartadoNormaController::class, 'delete_apartado_norma'])->name('delete.apartado.norma');
 Route::patch('/perfil_admin/normas/apartado/editar_apartado/{apartado}', [apartadoNormaController::class, 'edit_apartado_norma'])->name('edit.apartado.norma');
+
+Route::get('/perfil_admin/normas/apartado_admin/{apartado}', [apartadoNormaController::class, 'ver_evidencia_cumplimiento_normativo_admin'])->name('ver.evidencia.cumplimiento.normativo.admin');
 
 
 //rutas que muestran los indicadores de cada departamento

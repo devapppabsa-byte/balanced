@@ -23,9 +23,9 @@
 
 
 
-<div class="container ">
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-7 col-lg-5 mt-5 shadow p-5">
+        <div class="col-12 col-sm-12 col-md-7 col-lg-5 mt-5 shadow-sm bg-white border p-5">
             <div class="row justify-content-center">
                 <div class="col-12 mb-2 mb-4">
                     <h1>Inicio de Sesión</h1>

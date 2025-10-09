@@ -55,7 +55,7 @@
 </div>
 
 <div class="container-fluid">
-    <div class="row  border-bottom mb-5">
+    <div class="row  border-bottom mb-5 bg-white">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1 ">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
                 <i class="fa fa-plus-circle"></i>
@@ -66,8 +66,8 @@
 </div>
 
 
-<div class="row justify-content-center">
-    <div class="col-12 col-sm-12 col-md-10 col-lg-7 mx-1">
+<div class="row justify-content-center ">
+    <div class="col-12 col-sm-12 col-md-10 col-lg-7 mx-1 bg-white p-5 rounded border shadow-sm">
         <div class="row">
             <div class="row">
                 <div class="col-12 text-center">
@@ -80,7 +80,7 @@
 
             <div class="col-12 table-responsive">
                 <table class="table border table-hover">
-                    <thead class="table-secondary border cascadia-code ">
+                    <thead class="table-primary border cascadia-code ">
                         <th scope="col">Nombre</th>
                         <th scope="col">Correo</th>
                         <th scope="col">Puesto</th>
@@ -97,7 +97,7 @@
                                 <td>{{$usuario->puesto}}</td>
                                 <td>{{$usuario->departamento->nombre}}</td>
 
-                                <td class="btn-group bg-transparent shadow-0 "> 
+                                <td class=""> 
                                     <button class="btn btn-outline-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
                                         <i class="fa fa-trash"></i>
                                     </button>

@@ -20,12 +20,25 @@
                     {{session('success')}}
                 </div>
             @endif
+            @if (session('error_input'))
+                <div class="text-white fw-bold ">
+                    <i class="fa fa-check-circle mx-2"></i>
+                    {{session('error_input')}}
+                </div>
+            @endif
             @if (session('editado'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
                     {{session('editado')}}
                 </div>
             @endif
+            @if (session('deleted'))
+                <div class="text-white fw-bold ">
+                    <i class="fa fa-check-circle mx-2"></i>
+                    {{session('deleted')}}
+                </div>
+            @endif
+
         </div>
     </div>
     @include('admin.assets.nav')
@@ -33,7 +46,7 @@
 
 
 <div class="container-fluid">
-    <div class="row border py-2 justify-content-center">
+    <div class="row border py-2 justify-content-center bg-white shadow-sm">
 
         <div class="col-5 col-sm-5 col-md-6 col-lg-2 m-1">
             <button class="btn btn-secondary w-100"
@@ -54,6 +67,7 @@
 
         <div class="col-5 col-sm-4 col-md-5 col-lg-2 m-1">
             <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalPromediarCampos" >
+              <i class="fa-solid fa-scale-balanced"></i>
                 Crear campo promedio
             </button>
         </div>
@@ -77,38 +91,47 @@
 
 
 
-<div class="container-fluid">
-    <div class="row justify-content-around mt-4">
-        <div class="col-12 col-sm-12 col-md-12 col-lg-7  text-center">
-            @if (session('deleted'))
-                <div class="text-danger fw-bold border border-danger h5 p-2">
-                    <i class="fa fa-exclamation-circle text-danger "></i>
-                    {{session('deleted')}}
+<div class="container shadow">
+    <div class="row justify-content-around mt-4 bg-white pb-5 pt-2 rounded px-4">
+        <div class="col-12 text-center my-3">
+            <h3>
+                <i class="fa-solid fa-clipboard-check"></i>
+                Campos del Indicador
+            </h3>    
+        </div>       
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+
+            @if (!$campos_unidos->isEmpty())
+                <div class="table-responsive">
+                    <table class="table border">
+                        <thead class="table-primary border">
+                            <th scope="col">Id</th>
+                            <th scope="col">Nombre del campo</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Descripcion</th>
+                            <th scope="col">Vista previa</th>
+                            <th scope="col">Acciones</th>
+                        </thead>
+                        <tbody class="" id="contenedor">
+    
+                        </tbody>
+                    </table>
                 </div>
+            @else
                 
-            @endif
-            @if (session('error_input'))
-                <div class="text-danger fw-bold border border-danger h5 p-2">
-                    <i class="fa fa-exclamation-circle mx-2"></i>
-                    {{session('error_input')}}
+            <div class="row justify-content-center mt-5 ">
+                <div class="col-12 text-center ">
+                    <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">
                 </div>
+                <div class="col-12 text-center">
+                    <h3>
+                        <i class="fa fa-exclamation-circle text-danger"></i>
+                        No hay campos disponibles en este indicador.
+                    </h3>
+                </div>
+            </div>
+            
             @endif
-        </div>
-        <div class="col-12 col-sm-12 col-md-12 col-lg-7  table-responsive">
-
-            <table class="table border">
-                <thead class="table-primary border">
-                    <th scope="col">Id</th>
-                    <th scope="col">Nombre del campo</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Descripcion</th>
-                    <th scope="col">Vista previa</th>
-                    <th scope="col">Acciones</th>
-                </thead>
-                <tbody class="" id="contenedor">
-
-                </tbody>
-            </table>
 
         </div>
     </div>
@@ -351,19 +374,19 @@
             if(campo.tipo) input1.type = campo.tipo;
             if(campo.tipo_dato) input1.type = campo.tipo_dato;
 
-
             const tr = document.createElement('tr');
 
             const tdNombre = document.createElement("td");
             tdNombre.textContent = campo.nombre;
 
             const tdTipo = document.createElement("td");
-
+            
             if(campo.tipo_dato) {
                 tdTipo.textContent = campo.tipo_dato;
-                input1.value = campo.informacion_precargada;
+                input1.value = campo.contenido;
                 // input1.disabled = true;
             }
+            
 
             if(campo.tipo){
 
@@ -446,6 +469,7 @@
 
 
             if(campo.tipo) input_para_promedio.type = campo.tipo;
+            
             if(campo.tipo_dato) {
                 input_para_promedio.disabled = true;
                 input_para_promedio.type =  campo.tipo_dato;

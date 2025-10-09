@@ -1,9 +1,20 @@
 @extends('plantilla')
 @section('title', 'Detalle del Indicador')
-
-
 @section('contenido')  
-<div class="container-fluid">
+<style>
+    .accordion{
+        padding-top: 0.25rem;   /* menos alto */
+        padding-bottom: 0.25rem;
+        padding-left: 0.75rem;  /* opcional, ajusta horizontal */
+        padding-right: 0.75rem;
+        margin: 0rem;
+        font-size: 0.9rem;  
+    }
+</style>
+
+
+
+<div class="container-fluid sticky-top">
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
@@ -60,78 +71,293 @@
 
 <div class="container-fluid">
 
-    <div class="row gap-4 p-2 justify-content-start border-bottom pb-5 mt-3">
-        <div class="col-12">
-            <h5>Información para este indicador</h5>
-        </div>
-        @forelse ($campos_llenos as $campo_lleno)
-        <div class="col-auto border border-4 p-2 text-center shadow-sm">
-            <span>{{$campo_lleno->nombre}}</span>
-            <h6>{{$campo_lleno->informacion_precargada}}</h6>
-            <small>{{$campo_lleno->descripcion}}</small>
-        </div>
-        @empty
-            <div class="col-12 border border-4 p-5 text-center">
-                <h2>
-                    <i class="fa fa-exclamation-circle text-danger"></i>
-                    No se encontraron datos
-                </h2>
+<div class="row bg-white">
+    <div class="accordion p-0 m-0 bg-white" id="accordionExample">
+        <div class="">
+            <div class="accordion-header text-end border" id="headingTwo">
+                <a data-mdb-collapse-init class="fw-bold  collapsed m-2" type="button" data-mdb-target="#info_precargada" aria-expanded="false" aria-controls="collapseTwo">
+                    <i class="fa-solid fa-circle-arrow-down"></i>
+                    Información precargada por el administrador
+                </a>
             </div>
-        @endforelse
+            <div id="info_precargada" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div class="row gap-4  justify-content-start d-flex align-items-center">
+                        @forelse ($campos_llenos as $campo_lleno)
+                        <div class="col-2 p-2 text-center  bg-white mb-4 border">
+                            <h5 class="fw-bold">{{$campo_lleno->nombre}}</h5>
+                            <h5  class="lh-1">{{$campo_lleno->informacion_precargada}}</h5>
+                            <small>{{$campo_lleno->descripcion}}</small>
+                        </div>
+                        @empty
+                            <div class="col-12 border border-4 p-5 text-center">
+                                <h2>
+                                    <i class="fa fa-exclamation-circle text-danger"></i>
+                                    No se encontraron datos
+                                </h2>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+</div>
 
 
-    <div class="row justify-content-around pb-5 mt-4 border-bottom d-flex align-items-center">
-        <div class="col-12 mb-3">
-            <h5>Seguimiento del Indicador</h5>
-        </div>
 
-        <div class="col-auto mx-2">
-            <div class="table-responsive p-0 border shadow-sm ">
-            <table class="table">
-                <thead class="table-primary">
-                <tr>
-                    <th scope="col">Mes</th>
-                    <th scope="col">Toneladas Presupuestadas</th>
-                    <th scope="col">Toneladas Producidas</th>
-                    <th scope="col">% Cumplimiento</th>
-                </tr>
-                </thead>
-                <tbody>
 
-                <tr>
-                    <th scope="row">Julio</th>
-                    <td>4000</td>
-                    <td>3950</td>
-                    <td class="text-success fw-bold">98.75%</td>
-                </tr>                    
 
-                <tr>
-                    <th scope="row">Agosto</th>
-                    <td>4000</td>
-                    <td>2000</td>
-                    <td class="text-danger fw-bold">50%</td>
-                </tr>
-                <tr>
-                    <th scope="row">Septiembre</th>
-                    <td>4000</td>
-                    <td>3950</td>
-                    <td class="text-success fw-bold">98.75%</td>
-                </tr>
-                <tr>
-                    <th scope="row">Octubre</th>
-                    <td>4000</td>
-                    <td>3950</td>
-                    <td class="text-success fw-bold">98.75%</td>
-                </tr>
-                </tbody>
-            </table>
+    <div class="row  pb-5 mt-2 d-flex align-items-center justify-content-around">
+        
+
+        <div class="col-11 col-sm-10 col-md-9 col-lg-5 mt-5 shadow px-5 pb-5 pt-4 bg-white" >
+            <!-- Tabs navs -->
+            <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a data-mdb-tab-init class="nav-link fw-bold  text-dark active" id="ex3-tab-1" href="#ex3-tabs-11" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
+                       Seguimiento del Indicador de Ventas
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a data-mdb-tab-init class="nav-link fw-bold  text-dark" id="ex3-tab-2" href="#ex3-tabs-21" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
+                       Seguimiento normativo
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a data-mdb-tab-init class="nav-link fw-bold  text-dark" id="ex3-tab-3" href="#ex3-tabs-31" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
+                       Seguimiento a los cuestionarios
+                    </a>
+                </li>
+            </ul>
+            <!-- Tabs navs -->
+
+            <!-- Tabs content -->
+            <div class="tab-content" id="ex2-content">
+                <div class="tab-pane  show active" id="ex3-tabs-11" role="tabpanel" aria-labelledby="ex3-tab-1" >
+
+                    <div class="col-auto ">
+                        <h5>
+                            <i class="fa-solid fa-chart-simple"></i>
+                            Seguimiento del Indicador de Ventas
+                        </h5>
+                        <div class="table-responsive p-0 border shadow-sm ">
+                        <table class="table">
+                            <thead class="table-primary">
+                            <tr>
+                                <th scope="col">Mes</th>
+                                <th scope="col">Toneladas Presupuestadas</th>
+                                <th scope="col">Toneladas Producidas</th>
+                                <th scope="col">% Cumplimiento</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <th scope="row">Julio</th>
+                                <td>4000</td>
+                                <td>3950</td>
+                                <td class="text-success fw-bold">98.75%</td>
+                            </tr>                    
+
+                            <tr>
+                                <th scope="row">Agosto</th>
+                                <td>4000</td>
+                                <td>2000</td>
+                                <td class="text-danger fw-bold">50%</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Septiembre</th>
+                                <td>4000</td>
+                                <td>3950</td>
+                                <td class="text-success fw-bold">98.75%</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Octubre</th>
+                                <td>4000</td>
+                                <td>3950</td>
+                                <td class="text-success fw-bold">98.75%</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="tab-pane  " id="ex3-tabs-21" role="tabpanel" aria-labelledby="ex3-tab-2">
+
+                    <div class="col-auto ">
+                        <h5>
+                            <i class="fa-solid fa-list-ul"></i>
+                            Seguimiento normativo
+                        </h5>
+                        <div class="table-responsive p-0 border shadow-sm ">
+                        <table class="table">
+                            <thead class="table-primary">
+                            <tr>
+                                <th scope="col">Mes</th>
+                                <th scope="col">Apartaddo de la norma</th>
+                                <th scope="col">Evidencias</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <th scope="row">Julio</th>
+                                <td>Este es un aportado de la norma de ejemplo</td>
+                                <td>
+                                    <a href="#">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>                    
+
+                            <tr>
+                                <th scope="row">Agosto</th>
+                                <td>Este es un aportado de la norma de ejemplo</td>
+                                <td>
+                                    <a href="#">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Septiembre</th>
+                                <td>Este es un aportado de la norma de ejemplo</td>
+                                <td>
+                                    <a href="#">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Octubre</th>
+                                <td>Este es un aportado de la norma de ejemplo</td>
+                                <td>
+                                    <a href="#">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                    </div>
+
+                </div>
+
+                <div class="tab-pane " id="ex3-tabs-31" role="tabpanel" aria-labelledby="ex3-tab-3">
+                    <div class="col-auto ">
+                        <h5>
+                            <i class="fa-solid fa-clipboard-question"></i>
+                            Seguimiento a los cuestionarios
+                        </h5>
+                        <div class="table-responsive p-0 border shadow-sm ">
+                        <table class="table">
+                            <thead class="table-primary">
+                            <tr>
+                                <th scope="col">Mes</th>
+                                <th scope="col">Apartaddo de la norma</th>
+                                <th scope="col">Evidencias</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <th scope="row">Julio</th>
+                                <td>Este es un aportado de la norma de ejemplo</td>
+                                <td>
+                                    <a href="#">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>                    
+
+                            <tr>
+                                <th scope="row">Agosto</th>
+                                <td>Este es un aportado de la norma de ejemplo</td>
+                                <td>
+                                    <a href="#">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Septiembre</th>
+                                <td>Este es un aportado de la norma de ejemplo</td>
+                                <td>
+                                    <a href="#">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Octubre</th>
+                                <td>Este es un aportado de la norma de ejemplo</td>
+                                <td>
+                                    <a href="#">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <!-- Tabs content -->
+
         </div>
 
-        <div class="col-11 col-sm-10 col-md-8 col-lg-5 mt-4 shadow p-5" >
-            <canvas class="w-100 h-100" id="grafico"></canvas>
+
+
+
+
+
+
+
+        <div class="col-11 col-sm-10 col-md-9 col-lg-5 mt-5 shadow px-5 pb-5 pt-4 bg-white" >
+            <!-- Tabs navs -->
+            <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
+                        Grafico de Barras
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
+                        Grafico de Pie
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
+                        Grafico de Burbuja
+                    </a>
+                </li>
+            </ul>
+            <!-- Tabs navs -->
+
+            <!-- Tabs content -->
+            <div class="tab-content" id="ex2-content">
+                <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
+                    <canvas class="w-100 h-100" id="grafico"></canvas>
+                </div>
+                <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+                   <div class="row justify-content-center">
+                        <div class="col-8 text-center">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                   </div>
+                </div>
+                <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
+                    <canvas id="bubbleChart"></canvas>
+                </div>
+            </div>
+            <!-- Tabs content -->
+
         </div>
 
     </div>
@@ -186,5 +412,89 @@
     });
 </script>
 
-    
+
+
+
+
+
+
+
+{{-- Grafico de Pie --}}
+
+<script>
+
+const ctxPie = document.getElementById('pieChart').getContext('2d');
+
+new Chart(ctxPie, {
+  type: 'pie',
+  data: {
+    labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
+    datasets: [{
+      label: 'Ventas',
+      data: [30, 50, 35, 60],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.6)',
+        'rgba(54, 162, 235, 0.6)',
+        'rgba(255, 206, 86, 0.6)',
+        'rgba(75, 192, 192, 0.6)'
+      ],
+      borderColor: '#fff',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom' },
+      title: {
+        display: true,
+        text: 'Gráfico de Pie - Ventas'
+      }
+    }
+  }
+});
+</script>
+
+
+
+
+
+{{-- grafico de burbuja --}}
+
+
+<script>
+const ctxBubble = document.getElementById('bubbleChart').getContext('2d');
+
+new Chart(ctxBubble, {
+  type: 'bubble',
+  data: {
+    datasets: [{
+      label: 'Ventas',
+      data: [
+        { x: 1, y: 30, r: 10 },   // Enero
+        { x: 2, y: 50, r: 15 },   // Febrero
+        { x: 3, y: 35, r: 12 },   // Marzo
+        { x: 4, y: 60, r: 18 }    // Abril
+      ],
+      backgroundColor: 'rgba(75, 192, 192, 0.6)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    scales: {
+      x: { title: { display: true, text: 'Mes' } },
+      y: { title: { display: true, text: 'Ventas' }, beginAtZero: true }
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: 'Gráfico de Burbuja - Ventas'
+      },
+      legend: { position: 'bottom' }
+    }
+  }
+});
+</script>
+
 @endsection

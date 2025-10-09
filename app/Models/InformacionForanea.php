@@ -8,7 +8,7 @@ class InformacionForanea extends Model
 {
 
     protected $table = "informacion_foranea";
-    protected $fillable = ['nombre_info', 'informacion', 'tipo_dato'];
+    protected $fillable = ['nombre_info', 'contenido', 'tipo_dato'];
 
 
 

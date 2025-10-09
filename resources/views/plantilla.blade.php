@@ -31,12 +31,30 @@
 
 
 
+    {{-- <footer class="container-fluid  fixed-bottom">
+        <div class="row bg-primary p-1 d-flex align-items-center">
+            <div class="col-12 cascadia-code text-center text-white">
+                With <i class="fa fa-gear "></i> by: <a href="https://github.com/resendiz1" class="text-white">Arturo Resendiz López</a>
+            </div>
+        </div>
+    </footer> --}}
+
 
     <script type="text/javascript" src="{{asset('js/mdb.umd.min.js')}}"></script> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="{{asset('js/draggable.js')}}"></script>
     @yield('scripts')
+
+    <script>
+        if(document.getElementById("fecha")){
+            let mostrar_fecha = document.getElementById("fecha");
+            let fecha = new Date();
+            mostrar_fecha.innerHTML = " <i class='fa fa-calendar'></i>  " + fecha.toLocaleDateString("es-Es", {month: 'long'}) +" "+ fecha.getFullYear();
+        }
+    </script>
+
+
 
 </body>
 </html>

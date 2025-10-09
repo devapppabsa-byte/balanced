@@ -4,7 +4,10 @@
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center justify-content-start ">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
-            <h1 class="text-white">{{Auth::user()->departamento->nombre}}</h1>
+            <h2 class="text-white">
+                <i class="fa-regular fa-file-lines"></i>
+                {{Auth::user()->departamento->nombre}} - Cumplimiento Normativo
+            </h2>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -55,14 +58,19 @@
 
 
 <div class="container-fluid">
-    <div class="row justify-content-center p-3">
+    <div class="row justify-content-around p-3">
         @forelse ($normas as $norma)
-            <div class="col-3  p-4 shadow ">
+            <div class="col-11 col-sm-11 col-md-5  col-lg-3  p-5 shadow-sm m-2 border">
                 <h3>{{$norma->nombre}} </h3>
                 <p class="text-justify lh-sm" style="text-align: justify">
                     {{$norma->descripcion}}
                 </p>
+                <a href="{{route('registro.cumplimiento.normativa.index', $norma->id)}}" class="btn btn-primary btn-sm w-100 w-md-50">
+                    Ver
+                </a>
             </div>
+
+
         @empty
             <div class="col-8 py-5">
                 <div class="row">
