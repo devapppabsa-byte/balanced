@@ -23,11 +23,12 @@ class normaController extends Controller
 
 
     public function norma_store(Request $request, Departamento $departamento){
-
+        
         $request->validate([
 
             "titulo_norma" => 'required|unique:norma,nombre',
-            "descripcion_norma" => 'required'
+            "descripcion_norma" => 'required',
+            "ponderacion_norma" => 'required'
         ]);
 
 
@@ -35,7 +36,8 @@ class normaController extends Controller
 
             "nombre" => $request->titulo_norma,
             "descripcion" => $request->descripcion_norma,
-            "id_departamento" => $departamento->id
+            "id_departamento" => $departamento->id,
+            "ponderacion" => $request->ponderacion_norma
 
         ]);
 

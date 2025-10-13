@@ -66,18 +66,18 @@
 
             <div class="col-12 col-sm-10 col-md-4 col-lg-3 my-3">
                 <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
-                    <div class="card text-white  shadow-2-strong" style="background-color: rgb(184, 70, 70)">
+                    <div class="card text-white border border-3 border-light  shadow-2-strong" style="background-color: rgb(92, 151, 55)">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                 <h3>{{$departamento->nombre}}</h3>
                                 <p class="mb-1">Cumplimiento</p>
-                                <h5 class="mb-2 fw-bold">50%</h5>
+                                <h5 class="mb-2 fw-bold">80%</h5>
                                 </div>
                                 <i class="fas fa-chart-line fa-4x"></i>
                             </div>
                             <div class="progress rounded-0 mt-2" style="height: 4px;">
-                                <div class="progress-bar" style="width: 70%; background-color:rgb(112, 2, 2)"></div>
+                                <div class="progress-bar" style="width: 80%; background-color:rgb(53, 112, 2)"></div>
                             </div>
                             <span class="mt-2 d-block fw-bold">
                                 4 Indicadores.
@@ -87,28 +87,6 @@
                 </a>
             </div>
 
-            <div class="col-12 col-sm-10 col-md-4 col-lg-3  my-3">
-                <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
-                    <div class="card text-white shadow-2-strong" style="background-color: rgb(89, 152, 89)">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                <h3>{{$departamento->nombre}}</h3>
-                                <p class="mb-1">Cumplimiento</p>
-                                <h5 class="mb-2 fw-bold">50%</h5>
-                                </div>
-                                <i class="fas fa-chart-pie fa-4x"></i>
-                            </div>
-                            <div class="progress rounded-0 mt-2" style="height: 4px;">
-                                <div class="progress-bar" style="width: 80%; background-color:rgb(57, 78, 27)"></div>
-                            </div>
-                            <span class="mt-2 d-block fw-bold">
-                                4 Indicadores.
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            </div>
 
         @empty
             <div class="col-8 text-center py-5">
@@ -123,6 +101,30 @@
                 </div>
             </div>
         @endforelse
+
+
+            <div class="col-12 col-sm-10 col-md-4 col-lg-3 my-3">
+                <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
+                    <div class="card text-white border border-3 border-light  shadow-2-strong" style="background-color: rgb(151, 55, 55)">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                <h3>Sanidad</h3>
+                                <p class="mb-1">Cumplimiento</p>
+                                <h5 class="mb-2 fw-bold">70%</h5>
+                                </div>
+                                <i class="fas fa-chart-line fa-4x"></i>
+                            </div>
+                            <div class="progress rounded-0 mt-2" style="height: 4px;">
+                                <div class="progress-bar" style="width: 70%; background-color:rgb(112, 2, 2)"></div>
+                            </div>
+                            <span class="mt-2 d-block fw-bold">
+                                4 Indicadores.
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
 
     </div>
 

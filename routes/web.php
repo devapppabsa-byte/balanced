@@ -138,8 +138,19 @@ Route::get('/perfil_admin/usuarios', [userController::class, 'usuarios_show_admi
 Route::get('/perfil_admin/encuestas', [encuestaController::class, 'encuestas_show_admin'])->name('encuestas.show.admin');
 Route::get('/perfil_admin/encuestas/preguntas/{encuesta}', [encuestaController::class, 'encuesta_index'])->name('encuesta.index');
 Route::get('/perfil_admin/proveedores', [proveedorController::class, 'proveedores_show_admin'])->name('proveedores.show.admin');
+Route::get('/perfil_admin/proveedores/detalle_evaluacion/{proveedor}', [evaluacionProveedorController::class, 'detalle_evaluacion_proveedor'])->name('detalle.evaluacion.proveedor');
+
+
 Route::get('/perfil_admin/informacion_foranea', [informacionForaneaController::class, 'informacion_foranea_show_admin'])->name('informacion.foranea.show.admin');
+
+
+
 Route::get('/perfil_admin/encuestas/respuestas_clientes/{cliente}/{encuesta}', [clienteController::class, 'show_respuestas'])->name('show.respuestas');
+
+Route::get('perfil_admin/lista_indicadores/encuesta/{encuesta}', [encuestaController::class, 'encuesta_llena_show_admin'] )->name('encuesta.llena.show.admin');
+
+
+
 
 Route::get('/perfil_admin/normas/', [normaController::class, 'cumplimiento_norma_show_admin'])->name('cumplimiento.norma.show.admin');
 Route::post('/perfil_admin/normas/agregar/{departamento}', [normaController::class, 'norma_store'])->name('norma.store');

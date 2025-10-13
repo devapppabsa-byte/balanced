@@ -52,7 +52,8 @@ class encuestaController extends Controller
         
         $request->validate([
             "nombre_encuesta" => "required|unique:encuestas,nombre",
-            "descripcion_encuesta" => "required"
+            "descripcion_encuesta" => "required",
+            "ponderacion_encuesta" => "required"
 
         ]);
 
@@ -60,7 +61,8 @@ class encuestaController extends Controller
         Encuesta::create([
             "nombre" => $request->nombre_encuesta,
             "descripcion" => $request->descripcion_encuesta,
-            "id_departamento" => $departamento->id
+            "id_departamento" => $departamento->id,
+            "ponderacion" => $request->ponderacion_encuesta
         ]);
 
 
@@ -73,18 +75,24 @@ class encuestaController extends Controller
 
     public function encuesta_store_two(Request $request){
 
+
         $request->validate([
 
             "nombre_encuesta" => "required|unique:encuestas,nombre",
-            "descripcion_encuesta" => "required"
+            "descripcion_encuesta" => "required",
+            "ponderacion_encuesta" => "required"
 
         ]);
 
 
         Encuesta::create([
+
             "nombre" => $request->nombre_encuesta,
             "descripcion" => $request->descripcion_encuesta,
-            "id_departamento" => $request->departamento
+            "id_departamento" => $request->departamento,
+            "ponderacion" => $request->ponderacion_encuesta
+
+
         ]);
 
 
@@ -101,7 +109,7 @@ class encuestaController extends Controller
 
         $encuesta->delete();
 
-        return back()->with('encuesta_eliminada', 'La encuesta fue eliminada!');
+        return back()->with('eliminado', 'La encuesta fue eliminada!');
 
 
     }
@@ -182,6 +190,14 @@ class encuestaController extends Controller
         $departamentos = Departamento::get();
 
         return view ('admin.gestionar_encuestas', compact('encuestas', 'departamentos'));
+
+    }
+
+
+//muestra las 
+    public function encuesta_llena_show_admin(Encuesta $encuesta){
+
+        return view('admin.seguimiento_encuesta_detalle', compact('encuesta'));
 
     }
 

@@ -68,7 +68,7 @@
                 @if (!$clientes->isEmpty())
                     <div class="table-responsive shadow-sm">
                         <table class="table table-responsive mb-0 border shadow-sm table-hover">
-                                <thead class="table-primary text-white cascadia-code">
+                                <thead class="table-secondary text-white cascadia-code">
                                     <tr>
                                     <th>Id</th>
                                     <th>Nombre</th>
@@ -92,7 +92,7 @@
                         </td>
 
                         <td>
-                            <a href="mailto:{{$cliente->email}}">
+                            <a href="mailto:{{$cliente->email}}" class="text-dark fw-bold">
                             <i class="fa-solid fa-envelopes-bulk"></i>
                                 {{$cliente->email}}
                             </a>
@@ -102,7 +102,7 @@
                         </td>
 
                         <td>
-                            <a href="tel:+52{{$cliente->telefono}}">
+                            <a href="tel:+52{{$cliente->telefono}}" class="text-dark fw-bold">
                                 <i class="fa fa-square-phone"></i>
                                 {{$cliente->telefono}}
                             </a>

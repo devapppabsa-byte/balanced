@@ -1,24 +1,12 @@
 @extends('plantilla')
 @section('title', 'Detalle del Indicador')
 @section('contenido')  
-<style>
-    .accordion{
-        padding-top: 0.25rem;   /* menos alto */
-        padding-bottom: 0.25rem;
-        padding-left: 0.75rem;  /* opcional, ajusta horizontal */
-        padding-right: 0.75rem;
-        margin: 0rem;
-        font-size: 0.9rem;  
-    }
-</style>
-
-
 
 <div class="container-fluid sticky-top">
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
-            <h1 class="text-white">Detalle del {{$indicador->nombre}}</h1>
+            <h1 class="text-white">Detalle del</h1>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -74,7 +62,7 @@
 <div class="row bg-white">
     <div class="accordion p-0 m-0 bg-white" id="accordionExample">
         <div class="">
-            <div class="accordion-header text-start " id="headingTwo">
+            <div class="accordion-header text-end border" id="headingTwo">
                 <a data-mdb-collapse-init class="fw-bold  collapsed m-2" type="button" data-mdb-target="#info_precargada" aria-expanded="false" aria-controls="collapseTwo">
                     <i class="fa-solid fa-circle-arrow-down"></i>
                     Información precargada por el administrador
@@ -84,7 +72,7 @@
                 <div class="accordion-body">
                     <div class="row gap-4  justify-content-start d-flex align-items-center">
                         @forelse ($campos_llenos as $campo_lleno)
-                        <div class="col-2 p-2 text-center  bg-white mb-4 border border-dark border-4 rounded-5">
+                        <div class="col-2 p-2 text-center  bg-white mb-4 border">
                             <h5 class="fw-bold">{{$campo_lleno->nombre}}</h5>
                             <h5  class="lh-1">{{$campo_lleno->informacion_precargada}}</h5>
                             <small>{{$campo_lleno->descripcion}}</small>

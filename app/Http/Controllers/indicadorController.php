@@ -62,6 +62,7 @@ class indicadorController extends Controller
         $indicador->descripcion = $request->descripcion;
         $indicador->meta_esperada = $request->meta_esperada;
         $indicador->meta_minima = $request->meta_minima;
+        $indicador->ponderacion = $request->ponderacion_indicador;
         if ($indicador->planta_1) $request->planta_1;
         if ($indicador->planta_2) $request->planta_2;
         if ($indicador->planta_3) $request->planta_3; 
@@ -292,8 +293,10 @@ public function lista_indicadores_admin(Departamento $departamento){
 
 
     $indicadores = Indicador::where('id_departamento', $departamento->id)->get();
+    $encuestas = Encuesta::where('id_departamento', $departamento->id)->get();
+    $normas = Norma::where('id_departamento', $departamento->id)->get();
 
-    return view('admin.lista_indicadores', compact('indicadores', 'departamento'));
+    return view('admin.lista_indicadores', compact('indicadores', 'departamento', 'encuestas', 'normas'));
 
 
 }

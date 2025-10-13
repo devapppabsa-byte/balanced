@@ -480,6 +480,16 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-12 mt-3 ">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="number" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador" name="ponderacion_indicador" required ></textarea>
+                            <label class="form-label" for="ponderacion_indicador">Ponderación Indicador dentro de la evaluación total</label>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         <div class="modal-footer">
@@ -597,8 +607,17 @@
                         <div class="form-outline" data-mdb-input-init>
                             <div class="form-outline" data-mdb-input-init>
                                 <textarea class="form-control w-100 {{ $errors->first('descripcion_cuestionario') ? 'is-invalid' : '' }}" id="descrpcion_encuesta" name="descripcion_encuesta" required ></textarea>
-                                <label class="form-label" for="descrpcion_encuesta">Descripción del Cuestionario</label>
+                                <label class="form-label" for="descrpcion_encuesta">Descripción de la Encuesta</label>
                             </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="col-12 mt-4 ">
+                    <div class="form-group mt-2">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="number" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_encuesta') ? 'is-invalid' : '' }}" id="ponderacion_indicador" name="ponderacion_encuesta" required ></textarea>
+                            <label class="form-label" for="ponderacion_encuesta">Ponderación de la encuesta dentro de la evaluación total</label>
                         </div>
                     </div>
                 </div>
@@ -646,6 +665,15 @@
                                 <textarea class="form-control w-100 {{ $errors->first('descripcion_norma') ? 'is-invalid' : '' }}" id="descripcion_norma" name="descripcion_norma" required ></textarea>
                                 <label class="form-label" for="descripcion_norma">Descripción de la Norma</label>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 mt-4 ">
+                    <div class="form-group mt-2">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="number" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_norma') ? 'is-invalid' : '' }}" id="ponderacion_norma" name="ponderacion_norma" required ></textarea>
+                            <label class="form-label" for="ponderacion_norma">Ponderación de la encuesta dentro de la evaluación total</label>
                         </div>
                     </div>
                 </div>

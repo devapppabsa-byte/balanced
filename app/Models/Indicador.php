@@ -16,7 +16,8 @@ class Indicador extends Model
         'id_departamento', 
         'planta_1', 
         'planta_2', 
-        'planta_3'
+        'planta_3',
+        'ponderacion'
     ];
 
 

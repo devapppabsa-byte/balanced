@@ -6,8 +6,12 @@
 
 <div class="container-fluid">
     <div class="row bg-primary  d-flex align-items-center px-4">
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">Hola {{strtok(Auth::guard("cliente")->user()->nombre, " ");}}</h1>
+        <div class="col-12 col-sm-12 col-md-8 col-lg-10 py-4 text-white py-4 text-white">
+            <h1 class="mt-1">
+                <i class="fa fa-clipboard-list"></i>
+                Hola {{strtok(Auth::guard("cliente")->user()->nombre, " ");}}
+            </h1>
+            <h3>{{ $encuesta->nombre }}</h3>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -27,6 +31,18 @@
                 </div>
             @endif
         </div>
+
+        <div class="col-12 cl-sm-12 col-md-4 col-lg-2 text-center ">
+            <form action="{{route('cerrar.session')}}" method="POST">
+                @csrf 
+                <button  class="btn btn-primary text-danger text-white fw-bold">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    Cerrar Sesión
+                </button>
+            </form>
+        </div>
+
+
     </div>
 </div>
 
@@ -35,10 +51,13 @@
 
     <div class="row justify-content-center mt-3">
         @if (!$preguntas->isEmpty())
-            <div class="col-8 p-4">
-                <div class="row">
-                    <div class="col-12 text-center my-2">
-                        <h2>Preguntas de {{$encuesta->nombre}}</h2>
+            <div class="col-8 p-4 bg-white border shadow-sm rounded-5" style="min-height: 800px">
+                <div class="row mb-5">
+                    <div class="col-12 text-center my-2 border-bottom">
+                        <h2>
+                            <i class="fa fa-exclamation-circle"></i>
+                            {{$encuesta->nombre}}
+                        </h2>
                     </div>  
                 </div>
                 <form action="{{route('contestar.encuesta', $encuesta->id)}}" method="POST" class="row mt-2 d-flex  justify-content-center">
@@ -89,7 +108,7 @@
         @else
             <div class="col-12">
                 <div class="row justify-content-center p-5 ">
-                    <div class="col-8 border text-center p-5 border-2 rounded-7">
+                    <div class="col-8 border text-center p-5 border-2 rounded-7 bg-white">
                         <img src="{{asset('/img/empty.svg')}}" class="img-fluid w-50" alt="">
                         <h4> <i class="fa fa-exclamation-circle text-danger"></i> Aún no se agregan preguntas a esta encuesta.</h4>
                     </div>

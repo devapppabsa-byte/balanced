@@ -11,7 +11,7 @@
 
         <div class="col-8 col-sm-8 col-md-6 col-lg-9  py-4  py-4 ">
             <h1 class="text-white"> {{$indicador->nombre}} </h1>
-            <h3 class="text-white text-uppercase" id="fecha"></h3>
+            <h3 class="text-white" id="fecha"></h3>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -51,7 +51,7 @@
 
 
 <div class="container-fluid">
-    <div class="row border-bottom mb-5 ">
+    <div class="row border-bottom mb-2 bg-white">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
                 <i class="fa fa-plus"></i>
@@ -63,35 +63,46 @@
 
 <div class="container-fluid">
 
-    <div class="row gap-4 p-2 justify-content-center border-bottom pb-5 mt-3">
-        <div class="col-12">
-            <h5>Información para este indicador</h5>
-        </div>
-        @forelse ($campos_llenos as $campo_lleno)
-        <div class="col-auto border border-4 p-2 text-center shadow-sm">
-            <span>{{$campo_lleno->nombre}}</span>
-            <h6>{{$campo_lleno->informacion_precargada}}</h6>
-            <small>{{$campo_lleno->descripcion}}</small>
-        </div>
-        @empty
-            <div class="col-11 border border-4 p-5 text-center">
-                <h2>
-                    <i class="fa fa-exclamation-circle text-danger"></i>
-                    No se encontraron datos
-                </h2>
+    <div class="row gap-4 p-2 justify-content-center ">
+        <div class="col-12 col-sm-12 border col-md-10 col-lg-9 bg-white boder shadow shadow-sm p-5">
+            <div class="row justify-content-center">
+                <div class="col-11">
+                    <h5>
+                        <i class="fa fa-exclamation-circle text-primary"></i>
+                        Información para este indicador
+                    </h5>
+                </div>
+                @forelse ($campos_llenos as $campo_lleno)
+                <div class="col-auto border border-4 p-2 text-center shadow-sm">
+                    <span>{{$campo_lleno->nombre}}</span>
+                    <h6>{{$campo_lleno->informacion_precargada}}</h6>
+                    <small>{{$campo_lleno->descripcion}}</small>
+                </div>
+                @empty
+                    <div class="col-11 border border-4 p-5 text-center">
+                        <h2>
+                            <i class="fa fa-exclamation-circle text-danger"></i>
+                            No se encontraron datos
+                        </h2>
+                    </div>
+                @endforelse
             </div>
-        @endforelse
+        </div>
     </div>
 
 
 
     <div class="row justify-content-around pb-5 mt-4 border-bottom d-flex align-items-center">
         <div class="col-12 mb-3">
-            <h5>Seguimiento del Indicador</h5>
+            
         </div>
 
-        <div class="col-auto mx-2">
-            <div class="table-responsive p-0 border shadow-sm ">
+        <div class="col-auto mx-2 bg-white shadow-sm p-5">
+            <h5>
+                <i class="fa fa-chart-simple"></i>
+                Seguimiento del Indicador
+            </h5>
+            <div class="table-responsive  border ">
             <table class="table">
                 <thead class="table-primary fjalla-one-regular">
                 <tr>
@@ -133,7 +144,7 @@
             </div>
         </div>
 
-        <div class="col-11 col-sm-10 col-md-8 col-lg-5 mt-4 shadow p-5" >
+        <div class="col-11 col-sm-10 col-md-8 col-lg-5 mt-4 shadow p-5 bg-white" >
             <canvas class="w-100 h-100" id="grafico"></canvas>
         </div>
 

@@ -58,81 +58,95 @@
 
 <div class="container-fluid mt-5">
     <div class="row justify-content-center">
-        @forelse ($cumplimientos as $cumplimiento)
-            <div class="col-10 my-1">
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item border-2 border-primary">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button data-mdb-collapse-init class="accordion-button fw-bold  collapsed" type="button" data-mdb-target="#cump{{$cumplimiento->id}}" aria-expanded="false" aria-controls="collapseTwo">
-                               Evidencias del mes de {{$cumplimiento->mes}} - {{$cumplimiento->descripcion}}
-                            </button>
-                        </h2>
-                        <div id="cump{{$cumplimiento->id}}" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <div class="row">
-                                    @forelse ($cumplimiento->evidencia_cumplimiento_norma as $evidencia)
-                                        
-                                        @if (substr($evidencia->evidencia, -4) === ".pdf")
-                                            <div class="col-auto m-2">
-                                                <a href="{{Storage::url($evidencia->evidencia)}}" target="_blank" > 
-                                                    <img src="{{asset('/img/iconos/pdf.png')}}" alt="" style="width: 50px; height: 60px;">
-                                                    <p class="text-truncate" style="max-width: 200px">{{$evidencia->nombre_archivo}}</p>
-                                                </a>
-                                            </div>
-                                        @endif
-                                            
-
-                                        @if (substr($evidencia->evidencia, -4) === ".jpg" ||  substr($evidencia->evidencia, -4) === ".png" ||  substr($evidencia->evidencia, -5) === ".jpeg" ||  substr($evidencia->evidencia, -4) === ".bmp")
-
-                                            <div class="col-auto m-2">
-                                                <a href="{{Storage::url($evidencia->evidencia)}}" target="_blank" data-mdb-tooltip-init title="{{$evidencia->nombre_archivo}}"> 
-                                                    <img src="{{asset('/img/iconos/jpg.png')}}" alt="" style="width: 60px; height: 60px;">
-                                                    <p class="text-truncate" style="max-width: 200px">{{$evidencia->nombre_archivo}}</p>
-                                                </a>
-                                            </div>
-                                        @endif
-
-                                        @if (substr($evidencia->evidencia, -4) === "docx")
-                                            <div class="col-auto m-2">
-                                                <a href="{{Storage::url($evidencia->evidencia)}}" download="{{$evidencia->nombre_archivo}}" data-mdb-tooltip-init title="{{$evidencia->nombre_archivo}}" > 
-                                                    <img src="{{asset('/img/iconos/docx.png')}}"  alt="" style="width: 50px; height: 60px;">
-                                                    <p class="text-truncate" style="max-width: 200px">{{$evidencia->nombre_archivo}} </p>
-                                                </a>
-                                            </div>
-                                        @endif
-
-                                        @if (substr($evidencia->evidencia, -4) === ".mp4")
-                                            <div class="col-auto m-2">
-                                                <a href="#" target="_blank" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#id_vi{{$evidencia->id}}" data-mdb-tooltip-init title="{{$evidencia->nombre_archivo}}"> 
-                                                    <img src="{{asset('/img/iconos/mp4.png')}}" alt="" style="width: 60px; height: 60px;">
-                                                    <p class="text-truncate" style="max-width: 200px">{{$evidencia->nombre_archivo}}</p>
-                                                </a>
-                                            </div>
-
-                                            <div class="modal fade" id="id_vi{{$evidencia->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-                                                <div class="modal-dialog modal-centered">
-                                                    <div class="modal-content">
-
-                                                        <div class="modal-body text-center">
-                                                            <video src="{{Storage::url($evidencia->evidencia)}}" class="img-fluid" controls></video>
+        <div class="col-10 bg-white py-5  shadow border border-5">
+        <div class="row justify-content-center ">
+            <div class="col-12 text-center">
+                <h2>
+                    <i class="fa-solid fa-camera-retro"></i>
+                    Evidencias del cumplimiento normativo
+                </h2>
+            </div>
+            <div class="col-12 ">
+                <div class="row justify-content-center">
+                    @forelse ($cumplimientos as $cumplimiento)
+                        <div class="col-10 my-1">
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item border-2 border-primary">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button data-mdb-collapse-init class="accordion-button fw-bold  collapsed" type="button" data-mdb-target="#cump{{$cumplimiento->id}}" aria-expanded="false" aria-controls="collapseTwo">
+                                        Evidencias del mes de {{$cumplimiento->mes}} - {{$cumplimiento->descripcion}}
+                                        </button>
+                                    </h2>
+                                    <div id="cump{{$cumplimiento->id}}" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                @forelse ($cumplimiento->evidencia_cumplimiento_norma as $evidencia)
+                                                    
+                                                    @if (substr($evidencia->evidencia, -4) === ".pdf")
+                                                        <div class="col-auto m-2">
+                                                            <a href="{{Storage::url($evidencia->evidencia)}}" target="_blank" > 
+                                                                <img src="{{asset('/img/iconos/pdf.png')}}" alt="" style="width: 50px; height: 60px;">
+                                                                <p class="text-truncate" style="max-width: 200px">{{$evidencia->nombre_archivo}}</p>
+                                                            </a>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endif
+                                                    @endif
+                                                        
 
-                                    @empty
-                                        
-                                    @endforelse
+                                                    @if (substr($evidencia->evidencia, -4) === ".jpg" ||  substr($evidencia->evidencia, -4) === ".png" ||  substr($evidencia->evidencia, -5) === ".jpeg" ||  substr($evidencia->evidencia, -4) === ".bmp")
+
+                                                        <div class="col-auto m-2">
+                                                            <a href="{{Storage::url($evidencia->evidencia)}}" target="_blank" data-mdb-tooltip-init title="{{$evidencia->nombre_archivo}}"> 
+                                                                <img src="{{asset('/img/iconos/jpg.png')}}" alt="" style="width: 60px; height: 60px;">
+                                                                <p class="text-truncate" style="max-width: 200px">{{$evidencia->nombre_archivo}}</p>
+                                                            </a>
+                                                        </div>
+                                                    @endif
+
+                                                    @if (substr($evidencia->evidencia, -4) === "docx")
+                                                        <div class="col-auto m-2">
+                                                            <a href="{{Storage::url($evidencia->evidencia)}}" download="{{$evidencia->nombre_archivo}}" data-mdb-tooltip-init title="{{$evidencia->nombre_archivo}}" > 
+                                                                <img src="{{asset('/img/iconos/docx.png')}}"  alt="" style="width: 50px; height: 60px;">
+                                                                <p class="text-truncate" style="max-width: 200px">{{$evidencia->nombre_archivo}} </p>
+                                                            </a>
+                                                        </div>
+                                                    @endif
+
+                                                    @if (substr($evidencia->evidencia, -4) === ".mp4")
+                                                        <div class="col-auto m-2">
+                                                            <a href="#" target="_blank" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#id_vi{{$evidencia->id}}" data-mdb-tooltip-init title="{{$evidencia->nombre_archivo}}"> 
+                                                                <img src="{{asset('/img/iconos/mp4.png')}}" alt="" style="width: 60px; height: 60px;">
+                                                                <p class="text-truncate" style="max-width: 200px">{{$evidencia->nombre_archivo}}</p>
+                                                            </a>
+                                                        </div>
+
+                                                        <div class="modal fade" id="id_vi{{$evidencia->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+                                                            <div class="modal-dialog modal-centered">
+                                                                <div class="modal-content">
+
+                                                                    <div class="modal-body text-center">
+                                                                        <video src="{{Storage::url($evidencia->evidencia)}}" class="img-fluid" controls></video>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+
+                                                @empty
+                                                    
+                                                @endforelse
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @empty
+                        
+                    @endforelse
                 </div>
             </div>
-        @empty
-            
-        @endforelse
+        </div>
+        </div>
     </div>
 </div>
 

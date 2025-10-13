@@ -5,9 +5,12 @@
 @section('contenido')
 
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center px-4">
+    <div class="row bg-primary  d-flex align-items-center ">
         <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">Inicio de Sesión Cliente</h1>
+            <h1 class="mt-1">
+            <i class="fa-solid fa-circle-user"></i>
+                Encuestas de Satisfacción para el cliente
+            </h1>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -34,17 +37,24 @@
 
 <div class="container ">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-7 col-lg-5 mt-5 shadow p-5">
+        <div class="col-12 col-sm-12 col-md-7 col-lg-5 mt-5 shadow p-5 rounded border bg-white">
             <div class="row justify-content-center">
 
-                <div class="col-12 mb-2 mb-4">
-                    <h1>Inicio de Sesión</h1>
-                    @if (session("error"))
-                        <span class="text-danger fw-bold">
-                            <i class="fa fa-exclamation-circle"></i>
-                            {{session("error")}}
-                        </span>
-                    @endif
+                <div class="col-12 mb-2 mb-4 text-center">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="mt-2">Inicio de Sesión Cliente</h2>
+                        </div>
+                        <div class="col-12">
+                            @if (session("error"))
+                                <span class="text-danger fw-bold">
+                                    <i class="fa fa-exclamation-circle"></i>
+                                    {{session("error")}}
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                    
                 </div>
 
                 <form action="{{route("index.cliente")}}" method="POST">

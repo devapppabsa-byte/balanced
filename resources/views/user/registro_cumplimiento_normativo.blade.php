@@ -62,7 +62,7 @@
 <div class="container-fluid">
     <div class="row justify-content-center mt-4">
 
-        <div class="col-12 col-sm-12 col-md-10 col-lg-10  mx-5">
+        <div class="col-12 col-sm-12 col-md-10 col-lg-10  mx-5 bg-white p-5 border border-4 rounded-7">
             <div class="row justify-content-center">
                 <div class="col-12 text-center">
                     <h2 class="text-uppercase">

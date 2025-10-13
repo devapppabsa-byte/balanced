@@ -1,13 +1,13 @@
 @extends('plantilla')
-@section('title', 'Cumplimiento a Normatividad')
+@section('title', 'Resultados de la encuesta' )
+
+
 @section('contenido')
 <div class="container-fluid">
-    <div class="row bg-primary d-flex align-items-center justify-content-start ">
+
+    <div class="row bg-primary d-flex align-items-center justify-content-start">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
-            <h2 class="text-white">
-                <i class="fa-regular fa-file-lines"></i>
-                {{Auth::user()->departamento->nombre}} - Cumplimiento Normativo
-            </h2>
+            <h1 class="text-white">{{ $encuesta->nombre }}</h1>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -51,43 +51,23 @@
             </form>
         </div>
     </div>
-    @include('user.assets.nav')
+
+    @include('admin.assets.nav')
 </div>
-    
 
 
 
 <div class="container-fluid">
-    <div class="row justify-content-around p-3">
-        @forelse ($normas as $norma)
-            <div class="col-11 col-sm-11 col-md-5  col-lg-3  p-5 shadow-sm m-2 border bg-white shadow-sm border-4">
-                <h3>{{$norma->nombre}} </h3>
-                <p class="text-justify lh-sm" style="text-align: justify">
-                    {{$norma->descripcion}}
-                </p>
-                <a href="{{route('registro.cumplimiento.normativa.index', $norma->id)}}" class="btn btn-primary btn-sm w-100 w-md-50">
-                    Ver
-                </a>
+    <div class="row">
+        <div class="col-10 bg-white border shadow">
+            <div class="row">
+                
             </div>
-
-
-        @empty
-            <div class="col-8 py-5 bg-white shadow-sm border-4">
-                <div class="row">
-                    <div class="col-12">
-                        <img src="{{asset('/img/iconos/empty.png')}}" alt="" class="img-fluid">
-                    </div>
-                    <div class="col-12">
-                        <h2>
-                            <i class="fa fa-exclamation-circle"></i>
-                            No hay datos para mostrar.
-                        </h2>
-                    </div>
-                </div>
-            </div>
-        @endforelse
+        </div>
     </div>
 </div>
+
+
 
 
 

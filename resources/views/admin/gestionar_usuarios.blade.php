@@ -80,7 +80,7 @@
 
             <div class="col-12 table-responsive">
                 <table class="table border table-hover">
-                    <thead class="table-primary border cascadia-code ">
+                    <thead class="table-secondary border cascadia-code ">
                         <th scope="col">Nombre</th>
                         <th scope="col">Correo</th>
                         <th scope="col">Puesto</th>
@@ -92,7 +92,10 @@
                             <tr>
                                 <th>{{$usuario->name}}</th>
                                 <td>
-                                    <a href="mailto:{{$usuario->email}}" target="_blank">{{$usuario->email}}</a>
+                                    <a href="mailto:{{$usuario->email}}" class="text-dark fw-bold" target="_blank">
+                                        <i class="fa-solid fa-envelope-open-text"></i>
+                                        {{$usuario->email}}
+                                    </a>
                                 </td>
                                 <td>{{$usuario->puesto}}</td>
                                 <td>{{$usuario->departamento->nombre}}</td>

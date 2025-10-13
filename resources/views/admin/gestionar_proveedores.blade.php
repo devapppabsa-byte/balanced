@@ -43,7 +43,7 @@
 </div>
 
 <div class="container-fluid">
-    <div class="row  border-bottom mb-5">
+    <div class="row  border-bottom mb-5 bg-white">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_proveedor">
                 <i class="fa fa-plus-circle"></i>
@@ -69,7 +69,7 @@
 
                 @if (!$proveedores->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
                     <table class="table mb-0 border table-hover ">
-                        <thead class="table-secondary text-white cascadia-code">
+                        <thead class="table-primary text-white cascadia-code">
                             <tr>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
@@ -82,7 +82,11 @@
 
                 @forelse ($proveedores as $proveedor)
                     <tr>
-                        <td>{{$proveedor->nombre}}</td>
+                        <td>
+                            <a class="fw-bold text-dark" href="{{ route('detalle.evaluacion.proveedor', $proveedor->id) }}">
+                                {{$proveedor->nombre}}
+                            </a>
+                        </td>
                         <td>{{$proveedor->descripcion}}</td>
 
                         <td class="">
@@ -98,7 +102,7 @@
                                     @endphp
                                 @empty
                                 @endforelse
-                                <span class="{{(($suma/$contador) < 80 ? 'text-danger fw-bold' : 'text-success fw-bold')}}">
+                                <span class="badge  border border-danger border-2  {{(($suma/$contador) < 80 ? 'fw-bold badge-danger ' : 'badge-success fw-bold')}}">
                                     {{round($suma/$contador, 3)}} %
                                 </span>
                             @else
@@ -111,6 +115,10 @@
                             <a class="text-danger mx-1" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_pro{{$proveedor->id}}" style="cursor: pointer">
                                 <i class="fa fa-trash"></i> 
                             </a>
+                           
+                            <a href="{{ route('detalle.evaluacion.proveedor', $proveedor->id) }}" class="text-dark mx-1" style="cursor: pointer">
+                                <i class="fa fa-chart-pie"></i> 
+                           </a>
 
                             <a class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_pro{{$proveedor->id}}"  style="cursor: pointer">
                                 <i class="fa fa-edit"></i> 

@@ -18,6 +18,12 @@
                     {{session('actualizado')}}
                 </div>
             @endif
+            @if (session('eliminado'))
+                <div class="text-white fw-bold ">
+                    <i class="fa fa-check-circle mx-2"></i>
+                    {{session('eliminado')}}
+                </div>
+            @endif
             @if (session('editado'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -40,7 +46,7 @@
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
                 <i class="fa fa-plus-circle"></i>
-                Agregar Cliente
+                Agregar Encuesta
             </button>
         </div>
     </div>
@@ -50,19 +56,13 @@
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-8 shadow-sm rounded border  bg-white p-5">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-10 shadow-sm rounded border  bg-white p-5">
             <div class="row ">
                 <div class="col-12 text-center">
                     <h2>
                         <i class="fa-regular fa-newspaper"></i>
                         Encuestas
                     </h2>
-                    @if (session('eliminado'))
-                        <h5 class="">
-                            <i class="fa fa-exclamation-circle text-danger"></i>
-                            {{session('eliminado')}}
-                        </h5>
-                    @endif
                 </div>
             </div>
             <div class="row">

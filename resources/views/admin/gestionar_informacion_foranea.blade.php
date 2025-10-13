@@ -77,6 +77,65 @@
 
 
 
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+        <div class="col-11 bg-white rounded rounded-3 shadow shadow-sm border p-4" style="min-height: 800px">
+            
+            <div class="row">
+                <div class="col-12 text-center mt-3">
+                    <h2>
+                        <i class="fa fa-exclamation-circle text-primary"></i>
+                        Información cargada de fuera
+                    </h2>
+                </div>
+            </div>
+
+            <div class="row justify-content-around mt-5">
+
+                <div class="col-12 col-sm-12 col-md-5 my-2 col-lg-3 text-center py-4 border border-4 border-dark">
+                    <h2 class="text-dark">Toneladas Vendidas</h2>
+                    <span class="fs-1 fw-bold">
+                        3000
+                    </span> <br>
+                    <span class="fw-bold">
+                        <i class="fa fa-calendar"></i>
+                        Octubre 2025
+                    </span>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-5 my-2 col-lg-3 text-center py-4 border border-4 border-dark">
+                    <h2 class="text-dark">Costo de mano de Obra</h2>
+                    <span class="fs-1 fw-bold">
+                        3000
+                    </span> <br>
+                    <small class="fw-bold">
+                        <i class="fa fa-calendar"></i>
+                        Octubre 2025
+                    </small>
+                </div>
+            
+                <div class="col-12 col-sm-12 col-md-5 my-2 col-lg-3 text-center py-4 border border-4 border-dark">
+                    <h2 class="text-dark">Costo de mano de Obra</h2>
+                    <span class="fs-1 fw-bold">
+                        3000
+                    </span> <br>
+                    <small class="fw-bold">
+                        <i class="fa fa-calendar"></i>
+                        Octubre 2025
+                    </small>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
 {{-- Modales del perfil de administrador --}}
 
 {{-- precargado de campos --}}

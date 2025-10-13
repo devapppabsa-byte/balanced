@@ -48,7 +48,7 @@
 <div class="container-fluid">
     <div class="row border py-2 justify-content-center bg-white shadow-sm">
 
-        <div class="col-5 col-sm-5 col-md-6 col-lg-2 m-1">
+        <div class="col-5 col-sm-5 col-md-6 col-lg-auto m-1">
             <button class="btn btn-secondary w-100"
             data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalCampos">
                 <i class="fa fa-plus-circle mx-2"></i>
@@ -57,7 +57,7 @@
         </div>
 
 
-        <div class="col-5 col-sm-4 col-md-5 col-lg-2 m-1">
+        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
             <button class="btn btn-secondary w-100"
             data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalCamposPrecargados">
                 <i class="fa fa-plus-circle mx-2"></i>
@@ -65,25 +65,41 @@
             </button>
         </div>
 
-        <div class="col-5 col-sm-4 col-md-5 col-lg-2 m-1">
-            <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalPromediarCampos" >
+        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
+            <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalPromediarCampos">
               <i class="fa-solid fa-scale-balanced"></i>
-                Crear campo promedio
+                Crear Campo Promedio
+            </button>
+        </div>
+
+        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
+             <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalDividirCampos">
+               <i class="fa-solid fa-divide fw-bold"></i>
+                 Crear Campo División
+             </button>
+         </div>
+
+        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
+            <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalSumarCampos">
+              <i class="fa-solid fa-plus fw-bold"></i>
+                Crear Campo Suma
+            </button>
+        </div>
+
+        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
+            <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalRestarCampos">
+              <i class="fa-solid fa-minus fw-bold"></i>
+                Crear Campo Resta
             </button>
         </div>
 
 
-
-
-        {{-- <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-            <div class="form-group mt-3">
-                <div class="form-outline" data-mdb-input-init>
-                    <input type="text" class="form-control form-control-lg" id="nombre_usuariox" >
-                    <label class="form-label" for="nombre_usuariox" >Nombre </label>
-                </div>
-            </div>
-        </div> --}}
-
+        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
+            <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalMultiplicarCampos">
+                <i class="fa-solid fa-square-xmark"></i>
+                Crear Campo Multiplicación
+            </button>
+        </div>
 
 
     </div>
@@ -138,13 +154,69 @@
 </div>
 
 
-
 <div class="modal fade" id="modalPromediarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-primary py-3">
                 <h3 class="text-white" id="exampleModalLabel">
+                <i class="fa-solid fa-gauge-simple"></i>
                    Selecciona los datos que se van a promediar.
+                </h3>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body p-2">
+
+                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="col-12 no-drop m-2">
+                        <h6 class"no-drop">Campos Disponibles</h6>
+                    </div>
+
+
+
+
+                </div>
+
+                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
+                    @csrf
+                    <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a promediar </h6>
+                    
+                </form>
+
+                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
+
+                    <h6 class="no-drop">Campo Generado</h6>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
+
+                        <div class="form-check mt-2">
+                            <input class="form-check-input form-check-input-lg" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
+                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                        </div>
+
+                        <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
+                            Crear Campo Promedio
+                        </button>
+                        {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
+                            Vista Previa
+                        </a> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalRestarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary py-3">
+                <h3 class="text-white" id="exampleModalLabel">
+                    <i class="fa fa-minus-circle"></i>
+                   Selecciona los datos que se van a restar.
                 </h3>
                 <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close">
                 </button>
@@ -155,6 +227,17 @@
                     <div class="col-12 no-drop m-2">
                         <h6 class="no-drop">Campos Disponibles</h6>
                     </div>
+
+                    @forelse ($campos_unidos as $campo_unido)
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                            <label class="no-drop">{{ $campo_unido->nombre }}</label>
+                            <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
+                        </div>
+                    @empty
+                        
+                    @endforelse
+                   
+
                 </div>
 
                 <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
@@ -177,6 +260,197 @@
 
                         <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
                             Crear Campo Promedio
+                        </button>
+                        {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
+                            Vista Previa
+                        </a> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalMultiplicarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary py-3">
+                <h3 class="text-white" id="exampleModalLabel">
+                    <i class="fa fa-xmark-circle"></i>
+                   Selecciona los datos que se van a multiplicar.
+                </h3>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body p-2">
+
+                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="col-12 no-drop m-2">
+                        <h6 class="no-drop">Campos Disponibles</h6>
+                    </div>
+
+                    @forelse ($campos_unidos as $campo_unido)
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                            <label class="no-drop">{{ $campo_unido->nombre }}</label>
+                            <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
+                        </div>
+                    @empty
+                        
+                    @endforelse
+
+
+                </div>
+
+                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
+                    @csrf
+                    <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a promediar </h6>
+                </form>
+
+                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
+
+                    <h6 class="no-drop">Campo Generado</h6>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
+
+                        <div class="form-check mt-2">
+                            <input class="form-check-input form-check-input-lg" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
+                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                        </div>
+
+                        <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
+                            Crear Campo Promedio
+                        </button>
+                        {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
+                            Vista Previa
+                        </a> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalDividirCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary py-3">
+                <h3 class="text-white" id="exampleModalLabel">
+                   Selecciona los datos que se van a Dividir.
+                </h3>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body p-2">
+
+                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    
+                    <div class="col-12 no-drop m-2">
+                        <h6 class="no-drop">Campos Disponibles</h6>
+                    </div>
+
+
+
+                    @forelse ($campos_unidos as $campo_unido)
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                            <label class="no-drop">{{ $campo_unido->nombre }}</label>
+                            <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
+                        </div>
+                    @empty
+                        
+                    @endforelse
+
+
+                </div>
+
+                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
+                    @csrf
+                    <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a promediar </h6>
+                </form>
+
+                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
+
+                    <h6 class="no-drop">Campo Generado</h6>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
+
+                        <div class="form-check mt-2">
+                            <input class="form-check-input form-check-input-lg" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
+                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                        </div>
+
+                        <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
+                            Crear Campo Promedio
+                        </button>
+                        {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
+                            Vista Previa
+                        </a> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="modalSumarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary py-3">
+                <h3 class="text-white" id="exampleModalLabel">
+                    <i class="fa fa-plus-circle"></i>
+                   Selecciona los datos que se van a sumar.
+                </h3>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body p-2">
+
+                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container_suma" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="col-12 no-drop m-2">
+                        <h6 class="no-drop">Campos Disponibles</h6>
+                    </div>
+
+                    @forelse ($campos_unidos as $campo_unido)
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                            <label class="no-drop">{{ $campo_unido->nombre }}</label>
+                            <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
+                        </div>
+                    @empty
+                        
+                    @endforelse
+
+
+                </div>
+
+                <form action="#" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="suma_container">
+                    @csrf
+                    <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a sumar. </h6>
+                </form>
+
+                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
+
+                    <h6 class="no-drop">Campo Generado</h6>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
+
+                        <div class="form-check mt-2">
+                            <input class="form-check-input form-check-input-lg" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
+                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                        </div>
+
+                        <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
+                            Crear Campo de Suma
                         </button>
                         {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
                             Vista Previa
@@ -433,159 +707,114 @@
 
         });
 
-</script>  
+    </script>  
 {{-- Codigo que genera la tabla que muestra los campos combinados  --}}
 
 
 
-<script>
+    <script>
 
-        const calculados_container = document.getElementById("calculados_container");
-        const campos_para_operaciones = @json($campos_unidos);
-
-
-        campos_para_operaciones.forEach(campo =>{
-
-            let nombre_espacios = campo.nombre;
-            let limpio = nombre_espacios.replace(/\s+/g, "");
-
-            const campo_container = document.createElement('div');
-            campo_container.classList.add("col-12", "col-sm-12", "col-md-4", "col-lg-3", "p-3", "border", "no-drop", "bg-white");
-            campo_container.setAttribute("draggable", true);
-            campo_container.id = campo.created_at+"1";
-            campo_container.setAttribute("ondragstart", "dragStart(event)")
-
-            const input_para_promedio_hidden = document.createElement('input');
-            input_para_promedio_hidden.type = "hidden";
-            input_para_promedio_hidden.name = "input_promedio[]";
-            input_para_promedio_hidden.value = campo.id_input;
+            const calculados_container = document.getElementById("calculados_container");
+            const campos_para_operaciones = @json($campos_unidos);
 
 
-            const input_para_promedio = document.createElement('input');
-            input_para_promedio.classList.add("form-control", "form-control-sm", "no-drop");
-            input_para_promedio.placeholder = campo.nombre;
-            // input_para_promedio.name = "input_promedio[]";
-            input_para_promedio.id = campo.created_at;
+            let nodo_arrastrado = null;
+
+            // variables que me dan la vista previa de el input generado
+            const contenedor_vista_previa = document.getElementById('vista_previa_campo');
+            const div_columna = document.createElement("div");
+            div_columna.classList.add("col-12", "col-sm-12", "col-md-4", "col-lg-3", "px-3", "py-4", "border", "bg-white", "no-drop");
+            const label_vista_previa = document.createElement("label");
+            // variables que me dan la vista previa de el input generado
 
 
-            if(campo.tipo) input_para_promedio.type = campo.tipo;
-            
-            if(campo.tipo_dato) {
-                input_para_promedio.disabled = true;
-                input_para_promedio.type =  campo.tipo_dato;
-                input_para_promedio.value = campo.informacion_precargada;
+
+
+            function dragStart(e){
+
+            nodo_arrastrado = e.target;
+            e.dataTransfer.setData('text', e.target.id);
+            console.log("contador")
+            //    console.log(e.dataTransfer.setData('text', e.target.id));
 
             }
 
-            const label = document.createElement('label');
-            label.innerText = campo.nombre;
-            label.classList.add('no-drop');
+            function allowDrop(e){
+                e.preventDefault();
+            }
 
 
-            campo_container.appendChild(label);
-            campo_container.appendChild(input_para_promedio);
-            campo_container.appendChild(input_para_promedio_hidden);
-            calculados_container.appendChild(campo_container);
+            function drop(e){
+                e.preventDefault();
+
+                if(nodo_arrastrado){
 
 
-        });
+                    let destino = e.target;
+                    const id = e.dataTransfer.getData('text');
+
+                    if(!destino.classList.contains('no-drop')){
 
 
+                        destino.appendChild(nodo_arrastrado);
 
+                        //Aqui ocurre la magia
+                        const inputs = document.querySelectorAll("#promedio_container input");
+                        const inputs_valores = Array.from(inputs);
+                        const input_vista_previa = document.createElement("input"); //es para generar el input que vera el usuario, innecesario en la pratica pero le ayuda al user
+                        const nombre_nuevo_campo = document.createElement("input"); //Es para insertar el nombre del nuevo input, que repetitivo es esto :p
+                        const descripcion_nuevo_campo = document.createElement("textarea");
+                        descripcion_nuevo_campo.classList.add("form-control", "form-control-sm", "mb-1", "no-drop", "w-100"); 
+                        descripcion_nuevo_campo.placeholder = "Insertar Descripción";
+                        descripcion_nuevo_campo.name = "descripcion";   
+                        descripcion_nuevo_campo.setAttribute("form", "promedio_container");
+                        descripcion_nuevo_campo.required = true;
 
-        let nodo_arrastrado = null;
-
-        // variables que me dan la vista previa de el input generado
-        const contenedor_vista_previa = document.getElementById('vista_previa_campo');
-        const div_columna = document.createElement("div");
-        div_columna.classList.add("col-12", "col-sm-12", "col-md-4", "col-lg-3", "px-3", "py-4", "border", "bg-white", "no-drop");
-        const label_vista_previa = document.createElement("label");
-        // variables que me dan la vista previa de el input generado
-
-
-
-
-        function dragStart(e){
-
-           nodo_arrastrado = e.target;
-           e.dataTransfer.setData('text', e.target.id);
-        //    console.log(e.dataTransfer.setData('text', e.target.id));
-
-        }
-
-        function allowDrop(e){
-            e.preventDefault();
-        }
-
-
-        function drop(e){
-            e.preventDefault();
-
-            if(nodo_arrastrado){
-
-
-                let destino = e.target;
-                const id = e.dataTransfer.getData('text');
-
-                if(!destino.classList.contains('no-drop')){
-
-
-                    destino.appendChild(nodo_arrastrado);
-
-                    //Aqui ocurre la magia
-                    const inputs = document.querySelectorAll("#promedio_container input");
-                    const inputs_valores = Array.from(inputs);
-                    const input_vista_previa = document.createElement("input"); //es para generar el input que vera el usuario, innecesario en la pratica pero le ayuda al user
-                    const nombre_nuevo_campo = document.createElement("input"); //Es para insertar el nombre del nuevo input, que repetitivo es esto :p
-                    const descripcion_nuevo_campo = document.createElement("textarea");
-                    descripcion_nuevo_campo.classList.add("form-control", "form-control-sm", "mb-1", "no-drop", "w-100"); 
-                    descripcion_nuevo_campo.placeholder = "Insertar Descripción";
-                    descripcion_nuevo_campo.name = "descripcion";   
-                    descripcion_nuevo_campo.setAttribute("form", "promedio_container");
-                    descripcion_nuevo_campo.required = true;
-
-                    nombre_nuevo_campo.classList.add("form-control", "form-control-sm", "mb-1");
-                    nombre_nuevo_campo.placeholder = "Insertar Nombre";
-                    nombre_nuevo_campo.name = "nombre_nuevo";
-                    nombre_nuevo_campo.required = true;
-                    nombre_nuevo_campo.setAttribute("form", "promedio_container");
-                    nombre_nuevo_campo.id = "{{$indicador->id}}";
-                    nombre_nuevo_campo.type = "text";
+                        nombre_nuevo_campo.classList.add("form-control", "form-control-sm", "mb-1");
+                        nombre_nuevo_campo.placeholder = "Insertar Nombre";
+                        nombre_nuevo_campo.name = "nombre_nuevo";
+                        nombre_nuevo_campo.required = true;
+                        nombre_nuevo_campo.setAttribute("form", "promedio_container");
+                        nombre_nuevo_campo.id = "{{$indicador->id}}";
+                        nombre_nuevo_campo.type = "text";
 
 
 
-                    input_vista_previa.classList.add("form-control", "no-drop");
-                    input_vista_previa.name = "promedio";
+                        input_vista_previa.classList.add("form-control", "no-drop");
+                        input_vista_previa.name = "promedio";
 
-                    let suma = 0; //se usa mas adelanta para sumar los valores de os inputs
+                        let suma = 0; //se usa mas adelanta para sumar los valores de os inputs
 
-                    //va recogiendo los datos de cada input y los va sumando
-                    inputs_valores.shift(); //quita el input que trae el toker csrf de laravel
+                        //va recogiendo los datos de cada input y los va sumando
+                        inputs_valores.shift(); //quita el input que trae el toker csrf de laravel
 
 
-                    inputs_valores.forEach(input_valor => {
-                        
-                        if(input_valor.type != "hidden"){
-                        
-                            suma = Number(suma) + Number(input_valor.value);
+                        inputs_valores.forEach(input_valor => {
                             
-                        }
+                            if(input_valor.type != "hidden"){
+                            
+                                suma = Number(suma) + Number(input_valor.value);
+                                
+                            }
 
-                    });
+                        });
 
 
-                    div_columna.innerHTML = "";
-                    input_vista_previa.value = Number(suma) / (Number(inputs_valores.length)/2);
-                    // input_vista_previa.disabled = true;
-                    div_columna.appendChild(nombre_nuevo_campo);
-                    div_columna.appendChild(input_vista_previa);
-                    div_columna.appendChild(descripcion_nuevo_campo);
-                    contenedor_vista_previa.appendChild(div_columna);
+                        div_columna.innerHTML = "";
+                        input_vista_previa.value = Number(suma) / (Number(inputs_valores.length)/2);
+                        // input_vista_previa.disabled = true;
+                        div_columna.appendChild(nombre_nuevo_campo);
+                        div_columna.appendChild(input_vista_previa);
+                        div_columna.appendChild(descripcion_nuevo_campo);
+                        contenedor_vista_previa.appendChild(div_columna);
 
+                    }
                 }
             }
-        }
 
-   </script>
+    </script>
+
+
+
 
 @endsection

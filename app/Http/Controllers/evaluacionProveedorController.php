@@ -23,6 +23,16 @@ class evaluacionProveedorController extends Controller
 
     }
 
+    public function detalle_evaluacion_proveedor(Proveedor $proveedor){
+        
+        $evaluaciones = EvaluacionProveedor::where('id_proveedor', $proveedor->id)->get();
+   
+   
+   
+        return view('admin.detalle_evaluacion_proveedores', compact('proveedor', 'evaluaciones'));
+   
+    }
+
 
 
 

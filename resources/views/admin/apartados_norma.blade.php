@@ -2,7 +2,12 @@
 @section('title', 'Apartados de la Norma')
 
 @section('contenido')
-    
+
+<button class="btn btn-danger flotante" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico">
+    <i class="fa-solid fa-chart-pie fa-2x "></i>
+</button>
+
+
 <div class="container-fluid">
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
@@ -203,6 +208,61 @@
 
 
 
+<!-- Modal -->
+<div class="modal fade" id="grafico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Gráfica</h5>
+        <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <div class="modal-body">
+            <div class="col-12 pb-5 px-5 pt-2" >
+                <!-- Tabs navs -->
+                <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
+                            <i class="fa fa-chart-simple"></i>
+                            Grafico de Barras
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
+                            <i class="fa fa-chart-line"></i>
+                            Grafico de Linea
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
+                            <i class="fa fa-circle"></i>
+                            Grafico de Burbuja
+                        </a>
+                    </li>
+                </ul>
+                <!-- Tabs navs -->
+
+                <!-- Tabs content -->
+                <div class="tab-content" id="ex2-content">
+                    <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
+                         <canvas id="barLineChart"></canvas>
+                    </div>
+                    <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                    <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
+                        <canvas id="bubbleScatterChart"></canvas>
+                    </div>
+                </div>
+                <!-- Tabs content -->
+
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 
 @forelse ($apartados as $apartado)
@@ -273,6 +333,122 @@
 
 
 
+
+
+@endsection
+
+
+
+
+@section('scripts')
+  <script>
+
+    const ctx1 = document.getElementById('barLineChart');
+    new Chart(ctx1, {
+      data: {
+        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        datasets: [
+          {
+            type: 'bar',
+            label: 'Cumplimiento (%)',
+            data: [80, 75, 90, 70, 85, 95],
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderRadius: 6
+          },
+          {
+            type: 'line',
+            label: 'Límite mínimo (meta)',
+            data: [85, 85, 85, 85, 85, 85],
+            borderColor: 'red',
+            borderWidth: 2,
+            fill: false,
+            pointStyle: 'circle',
+            pointRadius: 5,
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        plugins: { title: { display: true, text: 'Cumplimiento vs Meta (Barras + Línea)' } },
+        scales: { y: { beginAtZero: true, max: 100 } }
+      }
+    });
+
+
+
+const ctx = document.getElementById('lineChart');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Seguridad', 'Calidad', 'Eficiencia', 'Limpieza', 'Puntualidad'],
+        datasets: [{
+          label: 'Nivel de cumplimiento (%)',
+          data: [65, 80, 70, 90, 60],
+          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 6,
+          pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+          pointHoverRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Cumplimiento por Norma (Gráfico de Línea)',
+            font: { size: 18 }
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => `${context.label}: ${context.parsed.y}%`
+            }
+          },
+          legend: {
+            position: 'top'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            title: { display: true, text: 'Porcentaje de cumplimiento' }
+          },
+          x: {
+            title: { display: true, text: 'Normas evaluadas' }
+          }
+        }
+      }
+    });
+
+   
+
+    const ctx4 = document.getElementById('bubbleScatterChart');
+    new Chart(ctx4, {
+      data: {
+        datasets: [
+          {
+            type: 'bubble',
+            label: 'Burbuja (impacto)',
+            data: [
+              {x: 10, y: 20, r: 10},
+              {x: 15, y: 10, r: 15},
+              {x: 25, y: 30, r: 8},
+            ],
+            backgroundColor: 'rgba(255, 99, 132, 0.5)'
+          },
+        ]
+      },
+      options: {
+        plugins: { title: { display: true, text: 'Burbuja + Dispersión (Relación entre variables)' } },
+        scales: { x: { beginAtZero: true }, y: { beginAtZero: true } }
+      }
+    });
+  </script>
 
 
 @endsection
