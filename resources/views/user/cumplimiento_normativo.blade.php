@@ -8,6 +8,7 @@
                 <i class="fa-regular fa-file-lines"></i>
                 {{Auth::user()->departamento->nombre}} - Cumplimiento Normativo
             </h2>
+            <h5 class="text-white fw-bold" id="fecha"></h5>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -60,26 +61,28 @@
 <div class="container-fluid">
     <div class="row justify-content-around p-3">
         @forelse ($normas as $norma)
-            <div class="col-11 col-sm-11 col-md-5  col-lg-3  p-5 shadow-sm m-2 border bg-white shadow-sm border-4">
-                <h3>{{$norma->nombre}} </h3>
+        <div class="col-11 col-sm-11 col-md-5  col-lg-3  shadow-sm m-2 border bg-white shadow-sm border-4 text-center">
+            <a href="{{route('registro.cumplimiento.normativa.index', $norma->id)}}" class="text-dark w-100 h-100 start-0 top-0 p-4">
+                <h4 class="fw-bold">
+                
+                    {{$norma->nombre}}
+                 </h4>
                 <p class="text-justify lh-sm" style="text-align: justify">
                     {{$norma->descripcion}}
-                </p>
-                <a href="{{route('registro.cumplimiento.normativa.index', $norma->id)}}" class="btn btn-primary btn-sm w-100 w-md-50">
-                    Ver
-                </a>
-            </div>
-
+                </p>      
+            </a>
+        </div>
+            
 
         @empty
-            <div class="col-8 py-5 bg-white shadow-sm border-4">
+            <div class="col-8 py-5 bg-white shadow-sm border-4 text-center">
                 <div class="row">
                     <div class="col-12">
                         <img src="{{asset('/img/iconos/empty.png')}}" alt="" class="img-fluid">
                     </div>
                     <div class="col-12">
                         <h2>
-                            <i class="fa fa-exclamation-circle"></i>
+                            <i class="fa fa-exclamation-circle text-danger"></i>
                             No hay datos para mostrar.
                         </h2>
                     </div>

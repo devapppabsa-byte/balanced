@@ -9,7 +9,7 @@
     <div class="row bg-primary d-flex align-items-center justify-content-start ">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
             <h2 class="text-white">{{Auth::user()->departamento->nombre}}</h2>
-
+            <h5 class="text-white fw-bold" id="fecha"></h5>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -63,7 +63,7 @@
 
 
 
-<div class="container-fluid border-bottom py-4 bg-white shadow shadow-sm">
+<div class="container-fluid border-bottom pt-2 bg-white shadow shadow-sm ">
      <div class="row">
         <div class="col-12 ">
             <h5>Indicadores de {{Auth::user()->departamento->nombre}}</h5>
@@ -84,7 +84,11 @@
 </div>
 
 
-<div class="container-fluid p-5">
+<div class="container-fluid py-2"><div class="row">
+        <div class="col-12 text-center">
+            <h2 class="cascadia_code">Balance General de {{Auth::user()->departamento->nombre}}</h2>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="col-11 col-sm-10 col-md-11 col-lg-8  shadow px-5 pb-5 pt-4 bg-white" >
             <!-- Tabs navs -->
@@ -139,43 +143,58 @@
 @section('scripts')
 
 <script>
-    const ctx = document.getElementById('grafico').getContext('2d');
+const ctx = document.getElementById('grafico').getContext('2d');
 
-    new Chart(ctx, {
-    data: {
-        labels: ["Enero", "Febrero", "Marzo", "Abril"],
-        datasets: [
-        {
-            type: "bar",  // Barras
-            label: "Ventas",
-            data: [30, 50, 40, 60],
-            backgroundColor: "rgba(75, 192, 192, 0.5)"
+new Chart(ctx, {
+  data: {
+    labels: ["Enero", "Febrero", "Marzo", "Abril"],
+    datasets: [
+      {
+        type: "bar",  // Barras
+        label: "Ventas",
+        data: [30, 50, 40, 60],
+
+        backgroundColor: function(context) {
+          const value = context.raw;
+          return value < 50
+            ? "rgba(255, 99, 132, 0.7)"  // rojo
+            : "rgba(75, 192, 75, 0.7)";  // verde
         },
-        {
-            type: "line", // Línea sobrepuesta
-            label: "Minimo",
-            data: [50, 50, 50, 50],
-            borderColor: "red",
-            borderWidth: 2,
-            fill: false
+        borderColor: function(context) {
+          const value = context.raw;
+          return value < 50 ? "red" : "green";
         },
-        {
-            type: "line", // Línea sobrepuesta
-            label: "Maximo",
-            data: [100, 100, 100, 100],
-            borderColor: "blue",
-            borderWidth: 2,
-            fill: false
-        }
-        ]
+
+        borderWidth: 1
+      },
+      {
+        type: "line", // Línea sobrepuesta
+        label: "Mínimo",
+        data: [50, 50, 50, 50],
+        borderColor: "red",
+        borderWidth: 2,
+        fill: false
+      },
+      {
+        type: "line", // Línea sobrepuesta
+        label: "Máximo",
+        data: [100, 100, 100, 100],
+        borderColor: "green",
+        borderWidth: 2,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: "top" }
     },
-    options: {
-        responsive: true,
-        plugins: {
-        legend: { position: "top" }
-        }
+    scales: {
+      y: { beginAtZero: true }
     }
-    });
+  }
+});
 </script>
 
 

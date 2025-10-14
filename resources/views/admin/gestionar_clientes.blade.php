@@ -92,7 +92,7 @@
                         </td>
 
                         <td>
-                            <a href="mailto:{{$cliente->email}}" class="text-dark fw-bold">
+                            <a href="mailto:{{$cliente->email}}" class="text-dark fw-bold" data-mdb-tooltip-init title="Mandar un correo a {{$cliente->email}}" >
                             <i class="fa-solid fa-envelopes-bulk"></i>
                                 {{$cliente->email}}
                             </a>
@@ -102,18 +102,18 @@
                         </td>
 
                         <td>
-                            <a href="tel:+52{{$cliente->telefono}}" class="text-dark fw-bold">
+                            <a href="tel:+52{{$cliente->telefono}}" data-mdb-tooltip-init title="Llamar a  {{$cliente->telefono}}"  class="text-dark fw-bold">
                                 <i class="fa fa-square-phone"></i>
                                 {{$cliente->telefono}}
                             </a>
                         </td>
 
                         <td class="">
-                            <a class="text-danger cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_client{{$cliente->id}}" style="cursor: pointer">
+                            <a class="text-danger cursor-pointer" data-mdb-tooltip-init title="Eliminar {{$cliente->nombre}}"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_client{{$cliente->id}}" style="cursor: pointer">
                                 <i class="fa fa-trash"></i> 
                             </a>
 
-                            <a class="text-primary cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_client{{$cliente->id}}"  style="cursor: pointer">
+                            <a class="text-primary cursor-pointer" data-mdb-tooltip-init title="Editar {{$cliente->nombre}}"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_client{{$cliente->id}}"  style="cursor: pointer">
                                 <i class="fa fa-edit"></i> 
                             </a>
 

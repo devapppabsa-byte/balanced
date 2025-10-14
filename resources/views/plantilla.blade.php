@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="{{asset('css/mdb.min.css')}}" />
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
+    <link rel="stylesheet" href="{{asset('css/toastr.min.css')}}">
     <style>
 
         body{
@@ -38,11 +39,11 @@
             </div>
         </div>
     </footer> --}}
-
-
+    <script src="{{asset('js/jquery-3.6.0.min.js')}}"></script>
+    <script src="{{asset('js/toastr.min.js')}}"></script>
     <script type="text/javascript" src="{{asset('js/mdb.umd.min.js')}}"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script src="{{asset('js/chart.js')}}"></script>
+    <script src="{{asset('js/interact.min.js')}}"></script>
     <script src="{{asset('js/draggable.js')}}"></script>
     @yield('scripts')
 
@@ -51,10 +52,43 @@
             let mostrar_fecha = document.getElementById("fecha");
             let fecha = new Date();
             mostrar_fecha.innerHTML = " <i class='fa fa-calendar'></i>  " + fecha.toLocaleDateString("es-Es", {month: 'long'}) +" "+ fecha.getFullYear();
-        }
+        }    
     </script>
 
+    {{-- notificaciones de todo --}}
+        @if (session("error"))
+            <script>
+                toastr.error('{{session("error")}}', 'Error!');
+            </script>
+        @endif
 
+
+        @if (session('success'))
+            <script>
+                toastr.success('{{session("success")}}', 'Exito!');
+            </script>
+        @endif
+
+        @if (session('actualizado'))
+            <script>
+                toastr.success('{{session("actualizado")}}', 'Exito!');
+            </script>
+        @endif
+
+        @if (session('eliminado'))
+            <script>
+                toastr.warning('{{session("eliminado")}}', 'Exito!');
+            </script>
+        @endif
+
+        @if (session('eliminado_user'))
+            <script>
+                toastr.warning('{{session("eliminado_user")}}', 'Exito!');
+            </script>
+        @endif
+
+
+    {{-- notificaciones de todo --}}
 
 </body>
 </html>

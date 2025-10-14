@@ -28,7 +28,10 @@
         <div class="col-12 col-sm-12 col-md-7 col-lg-5 mt-5 shadow-sm bg-white border p-5">
             <div class="row justify-content-center">
                 <div class="col-12 mb-2 mb-4">
-                    <h1>Inicio de Sesión</h1>
+                    <h3>
+                        <i class="fa-solid fa-user-tie"></i>
+                        Inicio de sesión Admin
+                    </h3>
                     @if (session('error'))
                         <span class="text-danger text-center fw-bold">
                             {{session('error')}}

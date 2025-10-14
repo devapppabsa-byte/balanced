@@ -11,7 +11,7 @@
 
         <div class="col-8 col-sm-8 col-md-6 col-lg-9  py-4  py-4 ">
             <h1 class="text-white"> {{$indicador->nombre}} </h1>
-            <h3 class="text-white" id="fecha"></h3>
+            <h5 class="text-white fw-bold" id="fecha"></h5>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -53,9 +53,9 @@
 <div class="container-fluid">
     <div class="row border-bottom mb-2 bg-white">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
+            <button class="btn btn-outline-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
                 <i class="fa fa-plus"></i>
-                Llenar indicadores
+                Llenar este Indicador
             </button>
         </div>
     </div>
@@ -63,9 +63,9 @@
 
 <div class="container-fluid">
 
-    <div class="row gap-4 p-2 justify-content-center ">
-        <div class="col-12 col-sm-12 border col-md-10 col-lg-9 bg-white boder shadow shadow-sm p-5">
-            <div class="row justify-content-center">
+    <div class="row gap-4  justify-content-center ">
+        <div class="col-12 col-sm-12 border col-md-10 col-lg-10 bg-white boder  shadow shadow-sm py-3 px-5">
+            <div class="row justify-content-start">
                 <div class="col-11">
                     <h5>
                         <i class="fa fa-exclamation-circle text-primary"></i>
@@ -92,7 +92,7 @@
 
 
 
-    <div class="row justify-content-around pb-5 mt-4 border-bottom d-flex align-items-center">
+    <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center">
         <div class="col-12 mb-3">
             
         </div>
@@ -106,6 +106,7 @@
             <table class="table">
                 <thead class="table-primary fjalla-one-regular">
                 <tr>
+                    <th scope="col">Año</th>
                     <th scope="col">Mes</th>
                     <th scope="col">Toneladas Presupuestadas</th>
                     <th scope="col">Toneladas Producidas</th>
@@ -115,6 +116,7 @@
                 <tbody>
 
                 <tr>
+                    <th>2025</th>
                     <th scope="row">Julio</th>
                     <td>4000</td>
                     <td>3950</td>
@@ -122,18 +124,21 @@
                 </tr>                    
 
                 <tr>
+                    <th>2025</th>
                     <th scope="row">Agosto</th>
                     <td>4000</td>
                     <td>2000</td>
                     <td class="text-danger fw-bold">50%</td>
                 </tr>
                 <tr>
+                    <th>2025</th>
                     <th scope="row">Septiembre</th>
                     <td>4000</td>
                     <td>3950</td>
                     <td class="text-success fw-bold">98.75%</td>
                 </tr>
                 <tr>
+                    <th>2025</th>
                     <th scope="row">Octubre</th>
                     <td>4000</td>
                     <td>3950</td>
@@ -145,6 +150,11 @@
         </div>
 
         <div class="col-11 col-sm-10 col-md-8 col-lg-5 mt-4 shadow p-5 bg-white" >
+            <select name="" class="form-select border-0" id="periodo">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+
+            </select>
             <canvas class="w-100 h-100" id="grafico"></canvas>
         </div>
 
@@ -241,11 +251,23 @@ new Chart(ctx, {
         type: "bar",  // Barras
         label: "Ventas",
         data: [30, 50, 40, 60],
-        backgroundColor: "rgba(75, 192, 192, 0.5)"
+
+        backgroundColor: function(context) {
+          const value = context.raw;
+          return value < 50
+            ? "rgba(255, 99, 132, 0.7)"  // rojo
+            : "rgba(75, 192, 75, 0.7)";  // verde
+        },
+        borderColor: function(context) {
+          const value = context.raw;
+          return value < 50 ? "red" : "green";
+        },
+
+        borderWidth: 1
       },
       {
         type: "line", // Línea sobrepuesta
-        label: "Promedio",
+        label: "Mínimo",
         data: [50, 50, 50, 50],
         borderColor: "red",
         borderWidth: 2,
@@ -253,9 +275,9 @@ new Chart(ctx, {
       },
       {
         type: "line", // Línea sobrepuesta
-        label: "Promedio",
+        label: "Máximo",
         data: [100, 100, 100, 100],
-        borderColor: "blue",
+        borderColor: "green",
         borderWidth: 2,
         fill: false
       }
@@ -265,6 +287,9 @@ new Chart(ctx, {
     responsive: true,
     plugins: {
       legend: { position: "top" }
+    },
+    scales: {
+      y: { beginAtZero: true }
     }
   }
 });

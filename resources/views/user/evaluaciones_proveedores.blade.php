@@ -7,7 +7,7 @@
 
         <div class="col-8 col-sm-8 col-md-6 col-lg-9  py-4  py-4 ">
             <h2 class="text-white"> Evaluaciones Porveedores</h2>
-            <h4 class="text-white" id="fecha"></h4>
+            <h5 class="text-white fw-bold" id="fecha"></h5>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -63,7 +63,7 @@
 
 <div class="container-fluid py-4">
      <div class="row justify-content-center">
-        <div class="col-10 bg-white border rounded rounded-5">
+        <div class="col-10 bg-white border rounded rounded-5 py-5">
             <div class="row d-flex align-items-center justify-content-center pb-5 mt-4 ">
                 <div class="col-11 ms-5 ">
                     <h4>
@@ -97,8 +97,8 @@
                                     <td>{{$evaluacion->proveedor->nombre}}</td>
                                     <td>{{$evaluacion->descripcion}}</td>
                                     <td>{{$evaluacion->observaciones}}</td>
-                                    <td class="{{($evaluacion->calificacion > 80) ? 'text-success fw-bold' : 'text-danger fw-bold'}}" >
-                                        <i class="fa  {{($evaluacion->calificacion > 80) ? 'fa-check-circle' : 'fa-xmark-circle'}}"></i>
+                                    <td class="{{($evaluacion->calificacion >= 80) ? 'text-success fw-bold' : 'text-danger fw-bold'}}" >
+                                        <i class="fa  {{($evaluacion->calificacion >= 80) ? 'fa-check-circle' : 'fa-xmark-circle'}}"></i>
                                         {{$evaluacion->calificacion}} Puntos
                                     </td>
                                 </tr>                   
@@ -120,6 +120,9 @@
 
                             </tbody>
                         </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-4">
+                        {{$evaluaciones->links()}}
                     </div>
                 </div>
             </div>

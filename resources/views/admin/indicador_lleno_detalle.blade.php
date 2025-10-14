@@ -222,43 +222,58 @@
 @section('scripts')
 
 <script>
-    const ctx = document.getElementById('grafico').getContext('2d');
+const ctx = document.getElementById('grafico').getContext('2d');
 
-    new Chart(ctx, {
-    data: {
-        labels: ["Enero", "Febrero", "Marzo", "Abril"],
-        datasets: [
-        {
-            type: "bar",  // Barras
-            label: "Ventas",
-            data: [30, 50, 40, 60],
-            backgroundColor: "rgba(75, 192, 192, 0.5)"
+new Chart(ctx, {
+  data: {
+    labels: ["Enero", "Febrero", "Marzo", "Abril"],
+    datasets: [
+      {
+        type: "bar",  // Barras
+        label: "Ventas",
+        data: [30, 50, 40, 60],
+
+        backgroundColor: function(context) {
+          const value = context.raw;
+          return value < 50
+            ? "rgba(255, 99, 132, 0.7)"  // rojo
+            : "rgba(75, 192, 75, 0.7)";  // verde
         },
-        {
-            type: "line", // Línea sobrepuesta
-            label: "Minimo",
-            data: [50, 50, 50, 50],
-            borderColor: "red",
-            borderWidth: 2,
-            fill: false
+        borderColor: function(context) {
+          const value = context.raw;
+          return value < 50 ? "red" : "green";
         },
-        {
-            type: "line", // Línea sobrepuesta
-            label: "Maximo",
-            data: [100, 100, 100, 100],
-            borderColor: "blue",
-            borderWidth: 2,
-            fill: false
-        }
-        ]
+
+        borderWidth: 1
+      },
+      {
+        type: "line", // Línea sobrepuesta
+        label: "Mínimo",
+        data: [50, 50, 50, 50],
+        borderColor: "red",
+        borderWidth: 2,
+        fill: false
+      },
+      {
+        type: "line", // Línea sobrepuesta
+        label: "Máximo",
+        data: [100, 100, 100, 100],
+        borderColor: "green",
+        borderWidth: 2,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: "top" }
     },
-    options: {
-        responsive: true,
-        plugins: {
-        legend: { position: "top" }
-        }
+    scales: {
+      y: { beginAtZero: true }
     }
-    });
+  }
+});
 </script>
 
 

@@ -28,13 +28,11 @@
             <div class="row justify-content-center">
 
                 <div class="col-12 mb-2 mb-4">
-                    <h1>Inicio de Sesión</h1>
-                    @if (session("error"))
-                        <span class="text-danger fw-bold">
-                            <i class="fa fa-exclamation-circle"></i>
-                            {{session("error")}}
-                        </span>
-                    @endif
+                    <h3 class="text-center">
+                        <i class="fa fa-users"></i>
+                        Inicio de sesión usuarios
+                    </h3>
+
                 </div>
 
                 <form action="{{route('login.user')}}" method="POST">
@@ -43,14 +41,14 @@
     
                         <div class="form-group">
                             <div class="form-outline" data-mdb-input-init>
-                                <input type="text" id="email" name="email" class="form-control form-control-lg" />
+                                <input type="text" id="email" name="email" class="form-control form-control-lg" required />
                                 <label class="form-label" for="email">Correo Eléctronico </label>
                             </div>
                         </div>
     
                         <div class="form-group mt-3">
                             <div class="form-outline" data-mdb-input-init>
-                                <input type="password" class="form-control form-control-lg" id="password" name="password">
+                                <input type="password" class="form-control form-control-lg" id="password" name="password" required>
                                 <label class="form-label" for="password" >Contraseña </label>
                             </div>
                         </div>
@@ -72,25 +70,29 @@
 
 
 
+
 @endsection
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 @section('scripts')
+    
+
 
 @endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

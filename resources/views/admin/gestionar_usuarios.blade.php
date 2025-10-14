@@ -7,34 +7,6 @@
         <div class="col-auto py-4 text-white">
             <h1 class="mt-1">Usuarios de la empresa</h1>
 
-            @if (session('success'))
-                <div class="text-white fw-bold ">
-                    <i class="fa fa-check-circle mx-2"></i>
-                    {{session('success')}}
-                </div>
-            @endif
-
-            @if (session('actualizado'))
-                <div class="text-white fw-bold ">
-                    <i class="fa fa-check-circle mx-2"></i>
-                    {{session('actualizado')}}
-                </div>
-            @endif
-
-            @if (session('eliminado'))
-                <div class="text-white fw-bold ">
-                    <i class="fa fa-check-circle mx-2"></i>
-                    {{session('eliminado')}}
-                </div>          
-            @endif
-
-            @if (session('editado'))
-                <div class="text-white fw-bold ">
-                    <i class="fa fa-check-circle mx-2"></i>
-                    {{session('editado')}}
-                </div>
-            @endif
-
             @if ($errors->any())
                 <div class="text-white fw-bold bad_notifications">
                     <i class="fa fa-xmark-circle mx-2"></i>
@@ -42,12 +14,6 @@
                 </div>
             @endif
 
-            @if (session('eliminado_user'))
-                <h5 class="text-danger">
-                    <i class="fa fa-exclamation-circle"></i>
-                    {{session('eliminado_user')}}
-                </h5>
-            @endif
 
         </div>
     </div>
@@ -92,7 +58,7 @@
                             <tr>
                                 <th>{{$usuario->name}}</th>
                                 <td>
-                                    <a href="mailto:{{$usuario->email}}" class="text-dark fw-bold" target="_blank">
+                                    <a href="mailto:{{$usuario->email}}" data-mdb-tooltip-init title="Enviar un correo a {{$usuario->email}}" class="text-dark fw-bold" target="_blank">
                                         <i class="fa-solid fa-envelope-open-text"></i>
                                         {{$usuario->email}}
                                     </a>
@@ -101,10 +67,10 @@
                                 <td>{{$usuario->departamento->nombre}}</td>
 
                                 <td class=""> 
-                                    <button class="btn btn-outline-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
+                                    <button class="btn btn-outline-danger" data-mdb-tooltip-init title="Eliminar a {{$usuario->name}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
                                         <i class="fa fa-trash"></i>
                                     </button>
-                                    <button class="btn btn-outline-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
+                                    <button class="btn btn-outline-primary" data-mdb-tooltip-init title="Editar a {{$usuario->name}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
                                         <i class="fa fa-edit"></i>
                                     </button>
                                 </td>

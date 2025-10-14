@@ -86,7 +86,7 @@
                         @forelse ($encuestas as $encuesta)
                             <tr>
                                 <td>
-                                    <a href="{{route('encuesta.index', $encuesta->id)}}" class="text-decoration-none text-dark fw-bold">
+                                    <a href="{{route('encuesta.index', $encuesta->id)}}" data-mdb-tooltip-init title="Detalles de {{$encuesta->nombre}}" class="text-decoration-none text-dark fw-bold">
                                         {{$encuesta->nombre}}
                                     </a>
                                 </td>
@@ -94,15 +94,15 @@
                                 <td>{{$encuesta->departamento->nombre}}</td>
 
                                 <td class="tex-start">
-                                    <a class="text-danger mx-1" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_en{{$encuesta->id}}" style="cursor: pointer">
+                                    <a class="text-danger mx-1" data-mdb-tooltip-init title="Eliminar {{$encuesta->nombre}}"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_en{{$encuesta->id}}" style="cursor: pointer">
                                         <i class="fa fa-trash"></i> 
                                     </a>
 
-                                    <a class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_en{{$encuesta->id}}"  style="cursor: pointer">
+                                    <a class="text-primary" data-mdb-tooltip-init title="Editar {{$encuesta->nombre}}"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_en{{$encuesta->id}}"  style="cursor: pointer">
                                         <i class="fa fa-edit"></i> 
                                     </a>
 
-                                    <a class=" mx-1" href="{{route('encuesta.index', $encuesta->id)}}">
+                                    <a class=" mx-1" data-mdb-tooltip-init title="Ver {{$encuesta->nombre}}" href="{{route('encuesta.index', $encuesta->id)}}">
                                         <i class="fa fa-eye"></i>
                                     </a>
                                 
@@ -138,7 +138,7 @@
 
                                     @if ($suma>0)
                                         {{-- Aqui esta el porcentaje de cumplimiento --}}
-                                        <h6 class="{{($suma/($contador*10)*100 > 50) ? "text-success" : "text-danger" }}" >
+                                        <h6 class="badge  p-2 {{($suma/($contador*10)*100 > 50) ? "badge-success border border border-success" : "badge-danger border border-danger" }}" data-mdb-tooltip-init title="{{round($suma/($contador*10)*100, 3)}}%">
                                             {{round(($suma/($contador*10))*100, 3) }} %
                                             <i class="fa {{($suma/($contador*10)*100 > 50) ? "fa-check-circle" : "fa-xmark-circle" }} "></i>
                                         </h6>

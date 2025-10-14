@@ -83,7 +83,7 @@
                 @forelse ($proveedores as $proveedor)
                     <tr>
                         <td>
-                            <a class="fw-bold text-dark" href="{{ route('detalle.evaluacion.proveedor', $proveedor->id) }}">
+                            <a class="fw-bold text-dark" data-mdb-tooltip-init title="Detalles evaluaciones {{$proveedor->nombre}}" href="{{ route('detalle.evaluacion.proveedor', $proveedor->id) }}">
                                 {{$proveedor->nombre}}
                             </a>
                         </td>
@@ -102,7 +102,7 @@
                                     @endphp
                                 @empty
                                 @endforelse
-                                <span class="badge  border border-danger border-2  {{(($suma/$contador) < 80 ? 'fw-bold badge-danger ' : 'badge-success fw-bold')}}">
+                                <span class="badge  border  border-2  {{(($suma/$contador) < 80 ? '  fw-bold badge-danger border-danger' : 'badge-success fw-bold border-success')}}" data-mdb-tooltip-init title="{{ round($suma/$contador, 3)}} %">
                                     {{round($suma/$contador, 3)}} %
                                 </span>
                             @else
@@ -112,15 +112,15 @@
                         </td>
 
                         <td class="tex-start">
-                            <a class="text-danger mx-1" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_pro{{$proveedor->id}}" style="cursor: pointer">
+                            <a class="text-danger mx-1" data-mdb-tooltip-init title="Eliminar {{$proveedor->nombre}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_pro{{$proveedor->id}}" style="cursor: pointer">
                                 <i class="fa fa-trash"></i> 
                             </a>
                            
-                            <a href="{{ route('detalle.evaluacion.proveedor', $proveedor->id) }}" class="text-dark mx-1" style="cursor: pointer">
+                            <a href="{{ route('detalle.evaluacion.proveedor', $proveedor->id) }}" data-mdb-tooltip-init title="Detalles evaluaciones {{$proveedor->nombre}}" class="text-dark mx-1" style="cursor: pointer">
                                 <i class="fa fa-chart-pie"></i> 
                            </a>
 
-                            <a class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_pro{{$proveedor->id}}"  style="cursor: pointer">
+                            <a class="text-primary" data-mdb-tooltip-init title="Editar {{$proveedor->nombre}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_pro{{$proveedor->id}}"  style="cursor: pointer">
                                 <i class="fa fa-edit"></i> 
                             </a>
                         </td>
