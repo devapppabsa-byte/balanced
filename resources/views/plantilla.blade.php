@@ -6,8 +6,7 @@
     <title>@yield('title')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=groups" />
-
-    
+    <meta http-equiv="Cache-Control" content="no-store" />   
     <link rel="stylesheet" href="{{asset('css/mdb.min.css')}}" />
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
     <link rel="stylesheet" href="{{asset('css/toastr.min.css')}}">
@@ -27,6 +26,13 @@
 
 </head>
 <body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <span><b>MetricHub </b> by: <a href="https://github.com/resendiz1" class="text-dark fw-bold">Arturo Resendiz López</a> with <i class="fa fa-code"></i> </span>
+            </div>
+        </div>
+    </div>
     
     @yield('contenido')
 

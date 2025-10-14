@@ -15,7 +15,7 @@ class evaluacionProveedorController extends Controller
     public function  evaluaciones_show_user(){
 
         
-        $evaluaciones = EvaluacionProveedor::with('proveedor')->where('id_departamento', Auth::user()->departamento->id )->Simplepaginate(6);
+        $evaluaciones = EvaluacionProveedor::with('proveedor')->where('id_departamento', Auth::user()->departamento->id )->Simplepaginate();
         $proveedores = Proveedor::get();
         
 

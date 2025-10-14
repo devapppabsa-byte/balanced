@@ -76,6 +76,13 @@
             </a>
         </div>
 
+        <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
+            <a class="btn btn-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
+                <i class="fa fa-users"></i>
+                Usuarios
+            </a>
+        </div>
+
     </div>
 </div>
 
