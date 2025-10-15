@@ -7,8 +7,8 @@
 
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center justify-content-start ">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
-            <h2 class="text-white">{{Auth::user()->departamento->nombre}}</h2>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-3">
+            <h2 class="text-white">Balance General de {{Auth::user()->departamento->nombre}}</h2>
             <h5 class="text-white fw-bold" id="fecha"></h5>
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -85,27 +85,27 @@
 
 
 <div class="container-fluid py-2"><div class="row">
-        <div class="col-12 text-center">
-            <h2 class="cascadia_code">Balance General de {{Auth::user()->departamento->nombre}}</h2>
-        </div>
     </div>
     <div class="row justify-content-center">
-        <div class="col-11 col-sm-10 col-md-11 col-lg-8  shadow px-5 pb-5 pt-4 bg-white" >
+        <div class="col-12 col-sm-12 col-md-11 col-lg-7  shadow px-5 pb-5 pt-4 bg-white" >
             <!-- Tabs navs -->
             <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
-                        Grafico de Barras
+                      <i class="fa fa-chart-simple"></i>  
+                      Barras
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
-                        Grafico de Pie
+                      <i class="fa fa-chart-line"></i> 
+                      Lineas
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
-                        Grafico de Burbuja
+                      <i class="fa fa-circle"></i>  
+                     Burbuja
                     </a>
                 </li>
             </ul>
@@ -116,15 +116,11 @@
                 <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
                     <canvas class="w-100 h-100" id="grafico"></canvas>
                 </div>
-                <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
-                <div class="row justify-content-center">
-                        <div class="col-8 text-center">
-                            <canvas id="pieChart"></canvas>
-                        </div>
-                </div>
+                <div class="tab-pane" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+                    <canvas  class="w-100 h-100" id="chartLinea"></canvas>
                 </div>
                 <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                    <canvas id="bubbleChart"></canvas>
+                    <canvas  class="w-100 h-100" id="chartBurbuja"></canvas>
                 </div>
             </div>
             <!-- Tabs content -->
@@ -206,39 +202,44 @@ new Chart(ctx, {
 
 {{-- Grafico de Pie --}}
 
+
+
 <script>
+const ctx2 = document.getElementById('chartLinea');
 
-const ctxPie = document.getElementById('pieChart').getContext('2d');
-
-new Chart(ctxPie, {
-  type: 'pie',
+new Chart(ctx2, {
+  type: 'line',
   data: {
     labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
-    datasets: [{
-      label: 'Ventas',
-      data: [30, 50, 35, 60],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.6)',
-        'rgba(54, 162, 235, 0.6)',
-        'rgba(255, 206, 86, 0.6)',
-        'rgba(75, 192, 192, 0.6)'
-      ],
-      borderColor: '#fff',
-      borderWidth: 2
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'bottom' },
-      title: {
-        display: true,
-        text: 'Gráfico de Pie - Ventas'
+    datasets: [
+      {
+        label: 'Ventas',
+        data: [30, 50, 40, 60],
+        borderColor: '#36a2eb',
+        backgroundColor: 'rgba(54,162,235,0.2)',
+        fill: true,
+        tension: 0.3
+      },
+      {
+        label: 'Mínimo',
+        data: [50, 50, 50, 50],
+        borderColor: 'red',
+        borderDash: [5, 5],
+        fill: false
+      },
+      {
+        label: 'Máximo',
+        data: [100, 100, 100, 100],
+        borderColor: 'green',
+        borderDash: [5, 5],
+        fill: false
       }
-    }
-  }
+    ]
+  },
+  options: { responsive: true }
 });
 </script>
+
 
 
 
@@ -247,39 +248,40 @@ new Chart(ctxPie, {
 {{-- grafico de burbuja --}}
 
 
-<script>
-const ctxBubble = document.getElementById('bubbleChart').getContext('2d');
 
-new Chart(ctxBubble, {
+<script>
+const ctx3 = document.getElementById('chartBurbuja');
+
+new Chart(ctx3, {
   type: 'bubble',
   data: {
-    datasets: [{
-      label: 'Ventas',
-      data: [
-        { x: 1, y: 30, r: 10 },   // Enero
-        { x: 2, y: 50, r: 15 },   // Febrero
-        { x: 3, y: 35, r: 12 },   // Marzo
-        { x: 4, y: 60, r: 18 }    // Abril
-      ],
-      backgroundColor: 'rgba(75, 192, 192, 0.6)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 2
-    }]
+    datasets: [
+      {
+        label: 'Ventas por mes',
+        data: [
+          {x: 1, y: 30, r: 10},
+          {x: 2, y: 50, r: 15},
+          {x: 3, y: 40, r: 12},
+          {x: 4, y: 60, r: 18}
+        ],
+        backgroundColor: ['#ff6384','#4bc0c0','#ffce56','#36a2eb']
+      }
+    ]
   },
   options: {
     scales: {
-      x: { title: { display: true, text: 'Mes' } },
-      y: { title: { display: true, text: 'Ventas' }, beginAtZero: true }
-    },
-    plugins: {
-      title: {
-        display: true,
-        text: 'Gráfico de Burbuja - Ventas'
+      x: {
+        ticks: { callback: (val) => ['Ene','Feb','Mar','Abr'][val-1] },
+        title: { display: true, text: 'Mes' }
       },
-      legend: { position: 'bottom' }
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'Valor' }
+      }
     }
   }
 });
 </script>
+
 
 @endsection

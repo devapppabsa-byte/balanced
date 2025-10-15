@@ -112,7 +112,7 @@
     <div class="row  pb-5  mt-2 d-flex align-items-center justify-content-around">
         
 
-        <div class="col-11 col-sm-10 col-md-9 col-lg-5 mt-5 shadow p-5 bg-white" >
+        <div class="col-11 col-sm-10 col-md-9 col-lg-6 mt-5 shadow p-5 bg-white" >
             <div class="col-auto ">
                 <h5 class="my-2">
                     <i class="fa-solid fa-chart-simple"></i>
@@ -125,32 +125,32 @@
                         <th scope="col">Mes</th>
                         <th scope="col">Toneladas Presupuestadas</th>
                         <th scope="col">Toneladas Producidas</th>
-                        <th scope="col">% Cumplimiento</th>
+                        <th scope="col">Cumplimiento</th>
                     </tr>
                     </thead>
                     <tbody>
 
                     <tr>
-                        <th scope="row">Julio</th>
+                        <th scope="row">Enero</th>
                         <td>4000</td>
                         <td>3950</td>
                         <td class="text-success fw-bold">98.75%</td>
                     </tr>                    
 
                     <tr>
-                        <th scope="row">Agosto</th>
+                        <th scope="row">Febrero</th>
                         <td>4000</td>
                         <td>2000</td>
                         <td class="text-danger fw-bold">50%</td>
                     </tr>
                     <tr>
-                        <th scope="row">Septiembre</th>
+                        <th scope="row">Marzo</th>
                         <td>4000</td>
                         <td>3950</td>
                         <td class="text-success fw-bold">98.75%</td>
                     </tr>
                     <tr>
-                        <th scope="row">Octubre</th>
+                        <th scope="row">Abril</th>
                         <td>4000</td>
                         <td>3950</td>
                         <td class="text-success fw-bold">98.75%</td>
@@ -173,17 +173,20 @@
             <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
-                        Grafico de Barras
+                        <i class="fa fa-chart-simple"></i>
+                        Barras
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
-                        Grafico de Pie
+                        <i class="fa fa-chart-pie"></i>
+                        Pie
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
-                        Grafico de Burbuja
+                        <i class="fa fa-circle"></i>
+                        Burbuja
                     </a>
                 </li>
             </ul>
@@ -231,17 +234,17 @@ new Chart(ctx, {
       {
         type: "bar",  // Barras
         label: "Ventas",
-        data: [30, 50, 40, 60],
+        data: [98.75, 50, 98.75, 98.75],
 
         backgroundColor: function(context) {
           const value = context.raw;
-          return value < 50
+          return value < 80
             ? "rgba(255, 99, 132, 0.7)"  // rojo
             : "rgba(75, 192, 75, 0.7)";  // verde
         },
         borderColor: function(context) {
           const value = context.raw;
-          return value < 50 ? "red" : "green";
+          return value < 80 ? "red" : "green";
         },
 
         borderWidth: 1
@@ -295,7 +298,7 @@ new Chart(ctxPie, {
     labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
     datasets: [{
       label: 'Ventas',
-      data: [30, 50, 35, 60],
+      data: [98.75, 50, 98.75, 98.75],
       backgroundColor: [
         'rgba(255, 99, 132, 0.6)',
         'rgba(54, 162, 235, 0.6)',
@@ -333,12 +336,12 @@ new Chart(ctxBubble, {
   type: 'bubble',
   data: {
     datasets: [{
-      label: 'Ventas',
+      label: 'Ventas',  //        data: [98.75, 50, 98.75, 98.75],
       data: [
-        { x: 1, y: 30, r: 10 },   // Enero
+        { x: 1, y: 98.75, r: 10 },   // Enero
         { x: 2, y: 50, r: 15 },   // Febrero
-        { x: 3, y: 35, r: 12 },   // Marzo
-        { x: 4, y: 60, r: 18 }    // Abril
+        { x: 3, y: 98.75, r: 12 },   // Marzo
+        { x: 10, y: 98.75, r: 18 }    // Abril
       ],
       backgroundColor: 'rgba(75, 192, 192, 0.6)',
       borderColor: 'rgba(75, 192, 192, 1)',

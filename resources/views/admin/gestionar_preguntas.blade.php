@@ -191,9 +191,9 @@
             
     </div>
 
-    <div class="row justify-content-center mt-5 ">
+    <div class="row justify-content-center mt-2 d-flex align-items-center">
 
-        <div class="col-11 col-sm-11 col-md-11 p-3 col-lg-10 mt-5 text-center bg-white border rounded">
+        <div class="col-11 col-sm-11 col-md-11 p-3 col-lg-10 mt-2 text-center bg-white border shadow shadow-sm rounded">
             <div class="row justify-content-around">
                 <div class="col-12 text-center">
                     <h3>
@@ -221,7 +221,7 @@
                 <div class="col-auto   border-bottom border-2 p-3">
                     <h5 class="fw-bold">Puntuación General Obtenida </h5>
 
-                    @if ($total_obtenido !== null)
+                    @if ($total_obtenido !== null )
                         <h4 class="fw-bold" id="puntuacion_maxima">
                             {{$total_obtenido}}
                         </h4>
@@ -324,13 +324,13 @@
                 <!-- Tabs content -->
                 <div class="tab-content" id="ex2-content">
                     <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
-                        <canvas id="barLineChart"></canvas>
+                        <canvas id="chartBarrasCondicional"></canvas>
                     </div>
                     <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
-                        <canvas id="lineChart"></canvas>
+                        <canvas id="chartLineaCondicional"></canvas>
                     </div>
                     <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                        <canvas id="bubbleChart"></canvas>
+                        <canvas id="chartBurbujaCondicional"></canvas>
                     </div>
                 </div>
                 <!-- Tabs content -->
@@ -435,117 +435,162 @@
 
 
 @section('scripts')
-    <script>
-        const ctx1 = document.getElementById('barLineChart');
-
-        new Chart(ctx1, {
-        data: {
-            labels: ['Trato amable', 'Tiempo de atención', 'Resolución del problema', 'Claridad del vendedor'],
-            datasets: [
-            {
-                type: 'bar',
-                label: 'Puntuación obtenida',
-                data: [75, 85, 65, 90],
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderRadius: 5
-            },
-            {
-                type: 'line',
-                label: 'Meta esperada (100%)',
-                data: [100, 100, 100, 100],
-                borderColor: 'red',
-                borderWidth: 2,
-                tension: 0.3,
-                pointRadius: 5
-            }
-            ]
-        },
-        options: {
-            plugins: {
-            title: {
-                display: true,
-                text: 'Puntuación por Pregunta vs Meta',
-                font: { size: 18 }
-            }
-            },
-            scales: {
-            y: { beginAtZero: true, max: 100 }
-            }
-        }
-        });
 
 
+ <script>
 
 
+    // --- BAR CHART ---
+const ctx = document.getElementById('chartBarrasCondicional').getContext('2d');
 
-        const ctx2 = document.getElementById('bubbleChart');
+const etiquetas = [
+  'Calidad del producto',
+  'Atención del personal',
+  'Tiempos de entrega',
+  'Precio',
+  'Experiencia general'
+];
 
-        new Chart(ctx2, {
-        type: 'bubble',
-        data: {
-            datasets: [{
-            label: 'Preguntas del cuestionario',
-            data: [
-                {x: 10, y: 85, r: 10}, // Trato amable
-                {x: 8, y: 90, r: 8},  // Tiempo de atención
-                {x: 12, y: 70, r: 12}, // Resolución del problema
-                {x: 6, y: 95, r: 6}   // Claridad del vendedor
-            ],
-            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            borderColor: 'rgba(255, 99, 132, 1)'
-            }]
-        },
-        options: {
-            plugins: {
-            title: {
-                display: true,
-                text: 'Distribución de Respuestas (Cantidad vs Satisfacción)',
-                font: { size: 18 }
-            }
-            },
-            scales: {
-            x: { title: { display: true, text: 'Cantidad de respuestas' }, beginAtZero: true },
-            y: { title: { display: true, text: 'Satisfacción (%)' }, beginAtZero: true, max: 100 }
-            }
-        }
-        });
+const valores = [8, 6, 7, 5, 9];  // Resultados
+const minimo = 5;
+const maximo = 10;
 
+// Colores condicionales: rojo si está por debajo del mínimo, verde si está igual o por encima
+const colores = valores.map(v => v < minimo ? '#e74c3c' : '#2ecc71'); // 🔥 rojo / verde
 
-
-
-
-        const ctx3 = document.getElementById('lineChart');
-
-        new Chart(ctx3, {
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: etiquetas,
+    datasets: [
+      {
+        label: 'Promedio de satisfacción',
+        data: valores,
+        backgroundColor: colores,
+        borderColor: '#333',
+        borderWidth: 1
+      },
+      {
+        label: 'Mínimo esperado',
+        data: Array(valores.length).fill(minimo),
+        borderColor: 'red',
+        borderWidth: 2,
+        fill: false,
         type: 'line',
-        data: {
-            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo'],
-            datasets: [{
-            label: 'Cumplimiento general (%)',
-            data: [70, 78, 82, 90, 88],
-            borderColor: 'rgba(75, 192, 192, 1)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            tension: 0.4,
+        pointRadius: 3
+      },
+      {
+        label: 'Máximo posible',
+        data: Array(valores.length).fill(maximo),
+        borderColor: 'green',
+        borderWidth: 2,
+        fill: false,
+        type: 'line',
+        pointRadius: 3
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: {
+        display: true,
+        text: 'Resultados de Encuesta - Colores según umbral'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 10,
+        ticks: { stepSize: 1 }
+      }
+    }
+  }
+});
+
+    // --- LINE CHART ---
+    const ctxLine = document.getElementById('chartLineaCondicional').getContext('2d');
+    const coloresLinePoints = coloresPorValor(valores);
+
+    new Chart(ctxLine, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Promedio de satisfacción',
+            data: valores,
+            borderColor: '#206bb3',
+            backgroundColor: 'rgba(32,107,179,0.12)',
             fill: true,
-            pointRadius: 5
-            }]
-        },
-        options: {
-            plugins: {
-            title: {
-                display: true,
-                text: 'Evolución del Cumplimiento Mensual',
-                font: { size: 18 }
-            }
+            tension: 0.3,
+            pointBackgroundColor: coloresLinePoints, // cada punto tendrá su color
+            pointBorderColor: '#222',
+            pointRadius: 6,
+            pointHoverRadius: 8
+          },
+          {
+            label: 'Mínimo esperado',
+            data: Array(valores.length).fill(minimo),
+            borderColor: 'red',
+            borderDash: [6,4],
+            fill: false,
+            pointRadius: 3
+          },
+          {
+            label: 'Máximo posible',
+            data: Array(valores.length).fill(maximo),
+            borderColor: 'green',
+            borderDash: [6,4],
+            fill: false,
+            pointRadius: 3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true, max: 10 } }
+      }
+    });
+
+    // --- BUBBLE CHART ---
+    const ctxBubble = document.getElementById('chartBurbujaCondicional').getContext('2d');
+    // Para burbuja, mapeamos valores a (x,y,r) y a color correspondiente
+    const dataBubbles = valores.map((v, i) => ({ x: i + 1, y: v, r: 6 + v }));
+    const coloresBurbuja = coloresPorValor(valores);
+
+    new Chart(ctxBubble, {
+      type: 'bubble',
+      data: {
+        datasets: [{
+          label: 'Resultados por aspecto',
+          data: dataBubbles,
+          backgroundColor: coloresBurbuja,
+          borderColor: '#333',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            ticks: {
+              stepSize: 1,
+              callback: function(val) {
+                // val está en índice (1..n)
+                const idx = parseInt(val) - 1;
+                return labels[idx] ? labels[idx].split(' ')[0] : '';
+              }
             },
-            scales: {
-            y: { beginAtZero: true, max: 100 },
-            x: { title: { display: true, text: 'Meses' } }
-            }
+            title: { display: true, text: 'Aspecto' },
+            min: 0.5,
+            max: labels.length + 0.5
+          },
+          y: { beginAtZero: true, max: 10 }
         }
-        });
+      }
+    });
 
-
-
-    </script>
+  </script>
 @endsection

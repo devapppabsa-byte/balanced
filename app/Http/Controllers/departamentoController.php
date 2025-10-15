@@ -21,7 +21,7 @@ class departamentoController extends Controller
         } catch (\Illuminate\Database\QueryException $e) {
             
             if ($e->getCode() == '23000') {
-                return redirect()->back()->with('error', 'No se puede eliminar este departamento porque está siendo utilizado en una evaluación de proveedores.');
+                return redirect()->back()->with('error', 'No se puede eliminar este departamento porque está siendo utilizado en otra operación.');
         
         }
 
@@ -30,10 +30,7 @@ class departamentoController extends Controller
 
 
 
-
-
-
-    }
+}
 
     
 

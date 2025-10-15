@@ -244,13 +244,13 @@
                 <!-- Tabs content -->
                 <div class="tab-content" id="ex2-content">
                     <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
-                         <canvas id="barLineChart"></canvas>
+                         <canvas id="chartBar"></canvas>
                     </div>
                     <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
-                        <canvas id="lineChart"></canvas>
+                        <canvas id="chartLinea"></canvas>
                     </div>
                     <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                        <canvas id="bubbleScatterChart"></canvas>
+                        <canvas id="chartBurbuja"></canvas>
                     </div>
                 </div>
                 <!-- Tabs content -->
@@ -333,122 +333,161 @@
 
 
 
-
-
 @endsection
+
 
 
 
 
 @section('scripts')
-  <script>
-
-    const ctx1 = document.getElementById('barLineChart');
-    new Chart(ctx1, {
-      data: {
-        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
-        datasets: [
-          {
-            type: 'bar',
-            label: 'Cumplimiento (%)',
-            data: [80, 75, 90, 70, 85, 95],
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            borderRadius: 6
-          },
-          {
-            type: 'line',
-            label: 'Límite mínimo (meta)',
-            data: [85, 85, 85, 85, 85, 85],
-            borderColor: 'red',
-            borderWidth: 2,
-            fill: false,
-            pointStyle: 'circle',
-            pointRadius: 5,
-            tension: 0.3
-          }
-        ]
-      },
-      options: {
-        plugins: { title: { display: true, text: 'Cumplimiento vs Meta (Barras + Línea)' } },
-        scales: { y: { beginAtZero: true, max: 100 } }
-      }
-    });
 
 
 
-const ctx = document.getElementById('lineChart');
 
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Seguridad', 'Calidad', 'Eficiencia', 'Limpieza', 'Puntualidad'],
-        datasets: [{
-          label: 'Nivel de cumplimiento (%)',
-          data: [65, 80, 70, 90, 60],
-          borderColor: 'rgba(54, 162, 235, 1)',
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          borderWidth: 2,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 6,
-          pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-          pointHoverRadius: 8
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Cumplimiento por Norma (Gráfico de Línea)',
-            font: { size: 18 }
-          },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.label}: ${context.parsed.y}%`
-            }
-          },
-          legend: {
-            position: 'top'
-          }
+
+
+<script>
+
+const ctx = document.getElementById('chartBar').getContext('2d');
+
+new Chart(ctx, {
+  data: {
+    labels: ["Enero", "Febrero", "Marzo", "Abril"],
+    datasets: [
+      {
+        type: "bar",  // Barras
+        label: "Cumplimiento Normativo",
+        data: [30, 50, 40, 60],
+
+        backgroundColor: function(context) {
+          const value = context.raw;
+          return value < 50
+            ? "rgba(255, 99, 132, 0.7)"  // rojo
+            : "rgba(75, 192, 75, 0.7)";  // verde
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            title: { display: true, text: 'Porcentaje de cumplimiento' }
-          },
-          x: {
-            title: { display: true, text: 'Normas evaluadas' }
-          }
-        }
-      }
-    });
+        borderColor: function(context) {
+          const value = context.raw;
+          return value < 50 ? "red" : "green";
+        },
 
-   
-
-    const ctx4 = document.getElementById('bubbleScatterChart');
-    new Chart(ctx4, {
-      data: {
-        datasets: [
-          {
-            type: 'bubble',
-            label: 'Burbuja (impacto)',
-            data: [
-              {x: 10, y: 20, r: 10},
-              {x: 15, y: 10, r: 15},
-              {x: 25, y: 30, r: 8},
-            ],
-            backgroundColor: 'rgba(255, 99, 132, 0.5)'
-          },
-        ]
+        borderWidth: 1
       },
-      options: {
-        plugins: { title: { display: true, text: 'Burbuja + Dispersión (Relación entre variables)' } },
-        scales: { x: { beginAtZero: true }, y: { beginAtZero: true } }
+      {
+        type: "line", // Línea sobrepuesta
+        label: "Mínimo",
+        data: [50, 50, 50, 50],
+        borderColor: "red",
+        borderWidth: 2,
+        fill: false
+      },
+      {
+        type: "line", // Línea sobrepuesta
+        label: "Máximo",
+        data: [100, 100, 100, 100],
+        borderColor: "green",
+        borderWidth: 2,
+        fill: false
       }
-    });
-  </script>
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: "top" }
+    },
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+</script>
+
+
+
+{{-- Grafico de Pie --}}
+
+
+
+<script>
+const ctx2 = document.getElementById('chartLinea');
+
+new Chart(ctx2, {
+  type: 'line',
+  data: {
+    labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
+    datasets: [
+      {
+        label: 'Ventas',
+        data: [30, 50, 40, 60],
+        borderColor: '#36a2eb',
+        backgroundColor: 'rgba(54,162,235,0.2)',
+        fill: true,
+        tension: 0.3
+      },
+      {
+        label: 'Mínimo',
+        data: [50, 50, 50, 50],
+        borderColor: 'red',
+        borderDash: [5, 5],
+        fill: false
+      },
+      {
+        label: 'Máximo',
+        data: [100, 100, 100, 100],
+        borderColor: 'green',
+        borderDash: [5, 5],
+        fill: false
+      }
+    ]
+  },
+  options: { responsive: true }
+});
+</script>
+
+
+
+
+
+
+{{-- grafico de burbuja --}}
+
+
+
+<script>
+const ctx3 = document.getElementById('chartBurbuja');
+
+new Chart(ctx3, {
+  type: 'bubble',
+  data: {
+    datasets: [
+      {
+        label: 'Ventas por mes',
+        data: [
+          {x: 1, y: 30, r: 10},
+          {x: 2, y: 50, r: 15},
+          {x: 3, y: 40, r: 12},
+          {x: 4, y: 60, r: 18}
+        ],
+        backgroundColor: ['#ff6384','#4bc0c0','#ffce56','#36a2eb']
+      }
+    ]
+  },
+  options: {
+    scales: {
+      x: {
+        ticks: { callback: (val) => ['Ene','Feb','Mar','Abr'][val-1] },
+        title: { display: true, text: 'Mes' }
+      },
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'Valor' }
+      }
+    }
+  }
+});
+</script>
 
 
 @endsection
+
+

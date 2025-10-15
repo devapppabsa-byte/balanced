@@ -216,7 +216,7 @@
                 <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body py-4">
-                <form action="#" method="POST">
+                <form action="{{route('proveedor.delete', $proveedor->id)}}" method="POST">
                     @csrf @method('DELETE')
                     <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
                         <h6>Eliminar</h6>
