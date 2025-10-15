@@ -2,60 +2,49 @@
 @section('title', 'Información Foranea')
 
 @section('contenido')
+@section('contenido')
 <div class="container-fluid">
-
-    <div class="row bg-primary d-flex align-items-center justify-content-start">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
-            <h1 class="text-white">Administrador</h1>
-
+    <div class="row bg-primary  d-flex align-items-center px-4">
+        <div class="col-auto py-4 text-white">
+            <h1 class="mt-1">Cargar Información Externa</h1>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
                     {{session('success')}}
                 </div>
             @endif
-
             @if (session('actualizado'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
                     {{session('actualizado')}}
                 </div>
             @endif
-
+            @if (session('editado'))
+                <div class="text-white fw-bold ">
+                    <i class="fa fa-check-circle mx-2"></i>
+                    {{session('editado')}}
+                </div>
+            @endif
             @if (session('eliminado'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
                     {{session('eliminado')}}
                 </div>
             @endif
-
             @if ($errors->any())
-                <div class="bg-white  fw-bold p-2 rounded">
-                    <i class="fa fa-xmark-circle mx-2  text-danger"></i>
-                        No se agrego! <br> 
-                    <i class="fa fa-exclamation-circle mx-2  text-danger"></i>
+                <div class="text-white fw-bold bad_notifications">
+                    <i class="fa fa-xmark-circle mx-2"></i>
                     {{$errors->first()}}
                 </div>
             @endif
         </div>
-
-        
-        <div class="col-12 cl-sm-12 col-md-6 col-lg-2 text-center ">
-            <form action="{{route('cerrar.session')}}" method="POST">
-                @csrf 
-                <button  class="btn btn-primary text-danger text-white fw-bold">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    Cerrar Sesión
-                </button>
-            </form>
-        </div>
     </div>
-
     @include('admin.assets.nav')
 </div>
 
+
 <div class="container-fluid">
-    <div class="row  border-bottom py-2 bg-white border-bottom shadow-sm">
+    <div class="row  border-bottom  bg-white border-bottom shadow-sm">
 
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#precargar_campos">

@@ -62,7 +62,12 @@
             </div>  
 
         @empty
-            
+            <div class="col-auto p-5 border border-5  m-5">
+                <h2>
+                    <i class="fa fa-exclamation-circle"></i>
+                    No se encontraron datos de indicadores.
+                </h2>
+            </div>
         @endforelse
 
 
@@ -98,7 +103,12 @@
         </div>  
 
     @empty
-        
+        <div class="col-auto p-5 border border-5  m-5">
+            <h2>
+                <i class="fa fa-exclamation-circle"></i>
+                No se encontraron datos de evaluacion de normas.
+            </h2>
+        </div>
     @endforelse
 
 
@@ -137,7 +147,12 @@
         </div>  
 
     @empty
-        
+        <div class="col-auto p-5 border border-5  m-5">
+            <h2>
+                <i class="fa fa-exclamation-circle"></i>
+                No se encontraron datos de encuestas
+            </h2>
+        </div>
     @endforelse
 
 {{-- Foreach del cumplimiento a normas --}}
