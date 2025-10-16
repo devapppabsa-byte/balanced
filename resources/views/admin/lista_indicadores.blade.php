@@ -62,12 +62,7 @@
             </div>  
 
         @empty
-            <div class="col-auto p-5 border border-5  m-5">
-                <h2>
-                    <i class="fa fa-exclamation-circle"></i>
-                    No se encontraron datos de indicadores.
-                </h2>
-            </div>
+
         @endforelse
 
 
@@ -103,12 +98,7 @@
         </div>  
 
     @empty
-        <div class="col-auto p-5 border border-5  m-5">
-            <h2>
-                <i class="fa fa-exclamation-circle"></i>
-                No se encontraron datos de evaluacion de normas.
-            </h2>
-        </div>
+
     @endforelse
 
 
@@ -147,19 +137,27 @@
         </div>  
 
     @empty
-        <div class="col-auto p-5 border border-5  m-5">
-            <h2>
-                <i class="fa fa-exclamation-circle"></i>
-                No se encontraron datos de encuestas
-            </h2>
-        </div>
+
     @endforelse
 
 {{-- Foreach del cumplimiento a normas --}}
-
-
-
     </div>
+
+
+    @if ($encuestas->isEmpty() && $normas->isEmpty()  &&  $indicadores->isEmpty() )
+        <div class="row mt-5 justify-content-center">
+            <div class="col-9 p-5 text-center bg-white shadow shadow-sm border">
+                <h4>
+                    <i class="fa fa-exclamation-circle text-danger"></i>
+                    No se encontro Información.
+                </h4>
+            </div>
+        </div>
+    @endif
+
+
+
+    
 </div>
 
 

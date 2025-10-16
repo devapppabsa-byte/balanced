@@ -11,6 +11,20 @@ body{
   background-color: rgb(236, 236, 236);
 }
 
+.zoom_link{
+  transition: transform 0.2s ease;
+}
+
+.zoom_link:hover{
+  background-color: rgb(1, 67, 121);
+  transform: scale(1.05);
+  border-radius: 50px;
+}
+
+.link_selected{
+  background-color: rgb(1, 67, 121);
+  border-radius: 50px;
+}
 
 
 .cascadia-code {

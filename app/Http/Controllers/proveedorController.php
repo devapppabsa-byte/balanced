@@ -40,4 +40,33 @@ class proveedorController extends Controller
 
 
 
+    public function proveedor_delete(Proveedor $proveedor){
+
+
+        try{
+
+            $proveedor->delete();
+             return back()->with('eliminado', 'El proveedor '.$proveedor->nombre.' fue eliminado');
+        
+        } catch (\Illuminate\Database\QueryException $e) {
+            
+            if ($e->getCode() == '23000') {
+                return redirect()->back()->with('error', 'No se puede eliminar este departamento porque está siendo utilizado en una evaluación de proveedores.');
+        
+        }
+
+        return redirect()->back()->with('error', 'Ocurrió un error inesperado al intentar eliminar el departamento.');
+    }
+
+
+        
+
+
+       
+
+
+    }
+
+
+
 }

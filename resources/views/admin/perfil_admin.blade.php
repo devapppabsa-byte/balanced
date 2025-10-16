@@ -66,7 +66,7 @@
 
             <div class="col-12 col-sm-10 col-md-4 col-lg-3 my-3">
                 <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
-                    <div class="card text-white border border-3 border-light  shadow-2-strong" style="background-color: rgb(92, 151, 55)">
+                    <div class="card text-white border border-3 border-light  shadow-2-strong" style="background-color: rgb(92, 151, 55)" data-mdb-tooltip-init title="80%  Cumplimiento en {{ $departamento->nombre }}">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
@@ -76,7 +76,7 @@
                                 </div>
                                 <i class="fas fa-chart-line fa-4x"></i>
                             </div>
-                            <div class="progress rounded-0 mt-2" style="height: 4px;">
+                            <div class="progress rounded-0 mt-2" style="height: 4px;" >
                                 <div class="progress-bar" style="width: 80%; background-color:rgb(53, 112, 2)"></div>
                             </div>
                             <span class="mt-2 d-block fw-bold">

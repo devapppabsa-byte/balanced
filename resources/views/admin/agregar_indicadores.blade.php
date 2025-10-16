@@ -129,6 +129,11 @@
                                             <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#bo{{$indicador->id}}">
                                                 <i class="fa fa-trash"></i> 
                                             </a>
+
+                                            <a href="#" class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#update_indicador">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+
                                             <a href="{{route('indicador.index', $indicador->id)}}" class="text-dark">
                                                 <i class="fa fa-eye"></i>
                                             </a>
@@ -244,7 +249,7 @@
 
         </div>
 
-        <div class="col-12 col-sm-11 col-md-11 col-lg-6 mb-4">
+        <div class="col-12 col-sm-11 col-md-11 col-lg-5 mb-4">
             <div class="row">
                 <div class="col-12 mx-1 mt-5 col-12   mb-3 rounded shadow shadow-sm bg-white p-5">
                     <div class="row">
@@ -491,8 +496,64 @@
                 <div class="col-12 mt-3 ">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="number" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador" name="ponderacion_indicador" required ></textarea>
+                            <input type="number" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador1" name="ponderacion_indicador" required ></textarea>
                             <label class="form-label" for="ponderacion_indicador">Ponderación Indicador dentro de la evaluación total</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+                <h6>Guardar</h6>
+            </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="update_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary py-4">
+        <h3 class="text-white" id="exampleModalLabel">Actualizando Meta del Inidicador</h3>
+        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        <form action="#" method="post">
+            @csrf
+            <div class="row">
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 mt-4 border-left">
+                    <div class="row d-flex align-items-center justify-content-center">
+                        <div class="col-12">
+                            <h6>Actualizando meta porcentual de cumplimiento %</h6>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <input type="number" min="1" value="50%" class="form-control" name="meta_minima" placeholder="% Minimo" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-6">
+                            <div class="form-group">
+                                <input type="number" min="1" class="form-control" value="100%" name="meta_esperada" placeholder="% Máximo"  required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-12 mt-3 ">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="number" min="1" max="100" value="30%" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador1" name="ponderacion_indicador" required ></textarea>
+                            <label class="form-label" for="ponderacion_indicador">Ponderación % Indicador dentro de la evaluación total</label>
                         </div>
                     </div>
                 </div>
@@ -613,7 +674,7 @@
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
                             <div class="form-outline" data-mdb-input-init>
-                                <textarea class="form-control w-100 {{ $errors->first('descripcion_cuestionario') ? 'is-invalid' : '' }}" id="descrpcion_encuesta" name="descripcion_encuesta" required ></textarea>
+                                <textarea class="form-control w-100 {{ $errors->first('descripcion_cuestionario') ? 'is-invalid' : '' }}" id="descrpcion_encuesta1" name="descripcion_encuesta" required ></textarea>
                                 <label class="form-label" for="descrpcion_encuesta">Descripción de la Encuesta</label>
                             </div>
                         </div>
@@ -741,7 +802,7 @@
                     <div class="col-12 text-center">
                         <div class="form-group mt-2">
                             <div class="form-outline" data-mdb-input-init>
-                                <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_encuesta_edit') ? 'is-invalid' : '' }} " id="nombre_encuesta" value="{{$encuesta->nombre}}" name="nombre_encuesta_edit" required>
+                                <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_encuesta_edit') ? 'is-invalid' : '' }} " id="nombre_encuesta1" value="{{$encuesta->nombre}}" name="nombre_encuesta_edit" required>
                                 <label class="form-label" for="nombre_encuesta_edit" >Nombre para la Encuesta</label>
                             </div>
                         </div>

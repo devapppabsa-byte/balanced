@@ -33,7 +33,7 @@
 
 
 <div class="row justify-content-center ">
-    <div class="col-12 col-sm-12 col-md-10 col-lg-7 mx-1 bg-white p-5 rounded border shadow-sm">
+    <div class="col-12 col-sm-12 col-md-10 col-lg-9 mx-1 bg-white p-5 rounded border shadow-sm">
         <div class="row">
             <div class="row">
                 <div class="col-12 text-center">
@@ -44,16 +44,19 @@
                 </div>
             </div>
 
-            <div class="col-12 table-responsive">
-                <table class="table border table-hover">
-                    <thead class="table-secondary border cascadia-code ">
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Correo</th>
-                        <th scope="col">Puesto</th>
-                        <th scope="col">Departamento</th>
-                        <th scope="col">Acciones</th>
-                    </thead>
-                    <tbody class="">
+                @if (!$usuarios->isEmpty())
+                    <div class="col-12 table-responsive">
+                        <table class="table border table-hover">
+                            <thead class="table-secondary border cascadia-code ">
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Correo</th>
+                                <th scope="col">Puesto</th>
+                                <th scope="col">Departamento</th>
+                                <th scope="col">Acciones</th>
+                            </thead>
+                            <tbody class="">
+                @endif
+
                         @forelse ($usuarios as $usuario)
                             <tr>
                                 <th>{{$usuario->name}}</th>
@@ -66,37 +69,39 @@
                                 <td>{{$usuario->puesto}}</td>
                                 <td>{{$usuario->departamento->nombre}}</td>
 
-                                <td class=""> 
-                                    <button class="btn btn-outline-danger" data-mdb-tooltip-init title="Eliminar a {{$usuario->name}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                    <button class="btn btn-outline-primary" data-mdb-tooltip-init title="Editar a {{$usuario->name}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
+                                <td class="row"> 
+                                    <div class="ol-12 col-sm-12 col-md-3 col-lg-4">
+                                        <a class="text-danger" data-mdb-tooltip-init title="Eliminar a {{$usuario->name}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </div>
+                                    <div class="ol-12 col-sm-12 col-md-3 col-lg-4">
+                                        <a class="text-primary" data-mdb-tooltip-init title="Editar a {{$usuario->name}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    </div>
                                 </td>
 
                             </tr>
                         @empty
 
-                            <tr>
-                                <td>
-                                    <div class="row justify-content-center">
+                            <div class="row justify-content-center mt-4 border border-3 p-5">
 
-                                        <div class="col-auto">
-                                            <i class="fa fa-exclamation-circle text-danger"></i>
-                                            No cuenta con usuaios, pero los puedes agregar aqui
-                                        </div>
-                                        
-                                        <div class="col-auto">
-                                            <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
-                                                Agregar Usuario
-                                            </a>
-                                        </div>
+                                <div class="col-12 text-center">
+                                    <i class="fa fa-exclamation-circle text-danger"></i>
+                                    No cuenta con usuaios, pero los puedes agregar aqui
+                                </div>
+                                
+                                <div class="col-12 text-center">
+                                    <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
+                                        Agregar Usuario
+                                    </a>
+                                </div>
 
-                                    </div>
-                                </td>
-                            </tr>
+                            </div>
+   
                         @endforelse
+                       
                     </tbody>
                 </table>
             </div>
@@ -112,7 +117,10 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-primary py-4">
-        <h3 class="text-white" id="exampleModalLabel">Agregar Usuarios</h3>
+        <h3 class="text-white" id="exampleModalLabel">
+            <i class="fa fa-users"></i>
+            Agregar Usuarios
+        </h3>
         <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body py-4">
@@ -164,6 +172,15 @@
                             <option value="Planta 1">Planta 1</option>
                             <option value="Planta 2">Planta 2</option>
                             <option value="Planta 3">Planta 3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="form-group mt-3">
+                        <select class="form-control form-control-lg" id="">
+                            <option value="" disabled selected>Tipo de usuarios</option>
+                            <option value="Emisor">Emisor</option>
+                            <option value="Receptor">Receptor</option>
                         </select>
                     </div>
                 </div>

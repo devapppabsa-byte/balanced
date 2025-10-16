@@ -107,15 +107,15 @@
 
 
 
-<div class="container shadow">
-    <div class="row justify-content-around mt-4 bg-white pb-5 pt-2 rounded px-4">
+<div class="container-fluid shadow">
+    <div class="row justify-content-around mt-4 mx-2 bg-white pb-5 pt-2 rounded px-4">
         <div class="col-12 text-center my-3">
             <h3>
                 <i class="fa-solid fa-clipboard-check"></i>
                 Campos del Indicador
             </h3>    
         </div>       
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-12">
 
             @if (!$campos_unidos->isEmpty())
                 <div class="table-responsive">
@@ -172,7 +172,14 @@
                         <h6 class"no-drop">Campos Disponibles</h6>
                     </div>
 
-
+                    @forelse ($campos_unidos as $campo_unido)
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                            <label class="no-drop">{{ $campo_unido->nombre }}</label>
+                            <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
+                        </div>
+                    @empty
+                        
+                    @endforelse
 
 
                 </div>
@@ -258,12 +265,10 @@
                             <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
                         </div>
 
-                        <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
+                        <button  class="btn btn-primary" form="promedio_container" >
                             Crear Campo Promedio
                         </button>
-                        {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
-                            Vista Previa
-                        </a> --}}
+
                     </div>
                 </div>
             </div>
@@ -618,7 +623,7 @@
 @endforelse
 
 
-
+@endsection
 
 
 

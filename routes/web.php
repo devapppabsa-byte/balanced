@@ -138,6 +138,9 @@ Route::get('/perfil_admin/usuarios', [userController::class, 'usuarios_show_admi
 Route::get('/perfil_admin/encuestas', [encuestaController::class, 'encuestas_show_admin'])->name('encuestas.show.admin');
 Route::get('/perfil_admin/encuestas/preguntas/{encuesta}', [encuestaController::class, 'encuesta_index'])->name('encuesta.index');
 Route::get('/perfil_admin/proveedores', [proveedorController::class, 'proveedores_show_admin'])->name('proveedores.show.admin');
+Route::delete('/perfil_admin/proveedores/eliminar/{proveedor}', [proveedorController::class, 'proveedor_delete']  )->name('proveedor.delete');
+
+
 Route::get('/perfil_admin/proveedores/detalle_evaluacion/{proveedor}', [evaluacionProveedorController::class, 'detalle_evaluacion_proveedor'])->name('detalle.evaluacion.proveedor');
 
 

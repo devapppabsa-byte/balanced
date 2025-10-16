@@ -61,16 +61,25 @@
 <div class="container-fluid">
     <div class="row justify-content-around p-3">
         @forelse ($normas as $norma)
-        <div class="col-11 col-sm-11 col-md-5  col-lg-3  shadow-sm m-2 border bg-white shadow-sm border-4 text-center">
-            <a href="{{route('registro.cumplimiento.normativa.index', $norma->id)}}" class="text-dark w-100 h-100 start-0 top-0 p-4">
-                <h4 class="fw-bold">
-                
-                    {{$norma->nombre}}
-                 </h4>
-                <p class="text-justify lh-sm" style="text-align: justify">
+
+        <div class="col-11 col-sm-11 col-md-5  col-lg-3 ">
+
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3 class="card-title">
+                        {{$norma->nombre}}
+                    </h3>
+                </div>
+                <div class="card-body">
                     {{$norma->descripcion}}
-                </p>      
-            </a>
+                </div>
+                <div class="card-footer">
+                    <a href="{{route('registro.cumplimiento.normativa.index', $norma->id)}}" class="btn btn-light text-dark w-100">
+                        Ver
+                    </a>
+                </div>
+            </div>
+
         </div>
             
 

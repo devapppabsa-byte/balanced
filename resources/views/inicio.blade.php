@@ -12,8 +12,8 @@
         </div>
         <div class="col-6 text-end">
             <a href="{{route('admin.login.index')}}" class="btn btn-primary btn-lg">
-                <i  class="fa fa-user mx-1"></i>
-                Admin
+                <i  class="fa fa-user-tie mx-1"></i>
+                Adminnistrador
             </a>
         </div>
     </div>
@@ -24,7 +24,7 @@
 
 <div class="container ">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-7 col-lg-5 mt-5 shadow-sm p-5 bg-white border">
+        <div class="col-12 col-sm-12 col-md-9 col-lg-5 mt-5 shadow-sm p-5 bg-white border">
             <div class="row justify-content-center">
 
                 <div class="col-12 mb-2 mb-4">
