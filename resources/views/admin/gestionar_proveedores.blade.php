@@ -4,9 +4,9 @@
 
 @section('contenido')
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center px-4">
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">Proveedores de la Empresa</h1>
+    <div class="row bg-primary  d-flex align-items-center">
+        <div class="col-auto pt-2 text-white">
+            <h3 class="mt-1 league-spartan">Proveedores de la Empresa</h3>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -44,8 +44,8 @@
 
 <div class="container-fluid">
     <div class="row  border-bottom mb-5 bg-white">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_proveedor">
+        <div class="col-12 col-sm-12 col-md-3 col-lg-1 my-1">
+            <button class="btn btn-secondary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_proveedor">
                 <i class="fa fa-plus-circle"></i>
                 Agregar Proveedor
             </button>
@@ -57,7 +57,7 @@
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-8 bg-white p-5 shadow border rounded">
+        <div class="col-12 col-sm-12 col-md-10 col-lg-6  bg-white p-5 shadow border rounded">
             <div class="row  table-responsive">
 
                 <div class="col-12 text-center">
@@ -72,7 +72,6 @@
                         <thead class="table-primary text-white cascadia-code">
                             <tr>
                                 <th>Nombre</th>
-                                <th>Descripción</th>
                                 <th>Cumplimiento</th>
                                 <th>Acciones</th>
                             </tr>
@@ -81,13 +80,15 @@
                 @endif
 
                 @forelse ($proveedores as $proveedor)
-                    <tr>
-                        <td>
+                    <tr class="align-items-center">
+                        <td class="col">
                             <a class="fw-bold text-dark" data-mdb-tooltip-init title="Detalles evaluaciones {{$proveedor->nombre}}" href="{{ route('detalle.evaluacion.proveedor', $proveedor->id) }}">
                                 {{$proveedor->nombre}}
                             </a>
+                            <p>
+                                {{$proveedor->descripcion}}
+                            </p>
                         </td>
-                        <td>{{$proveedor->descripcion}}</td>
 
                         <td class="">
                             @if (!$proveedor->evaluacion_proveedores->isEmpty())

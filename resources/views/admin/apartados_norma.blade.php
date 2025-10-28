@@ -11,11 +11,10 @@
 <div class="container-fluid">
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
-            <h1 class="text-white">
-                <i class="fa-regular fa-file-lines"></i>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-10  pt-2">
+            <h3 class="text-white league-spartan">
                 {{$norma->nombre}}
-            </h1>
+            </h3>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -66,8 +65,8 @@
 
 <div class="container-fluid">
     <div class="row  border-bottom mb-5 bg-white">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_apartado_norma">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-1 my-1">
+            <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_apartado_norma">
                 <i class="fa fa-plus-circle"></i>
                 Agregar Apartado Norma
             </button>

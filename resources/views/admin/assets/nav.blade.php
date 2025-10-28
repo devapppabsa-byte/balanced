@@ -1,4 +1,4 @@
-<div class="row py-2" style="background-color: #5476ac">
+<div class="row py-2" style="background-color: #5476ac; font-size:14px">
 
     <div class="col-auto  mx-1 zoom_link {{ request()->routeIs('perfil.admin') ? 'link_selected' : '' }}">
         <a href="{{route("perfil.admin")}}" class="text-white text-decoration-none fw-bold ">

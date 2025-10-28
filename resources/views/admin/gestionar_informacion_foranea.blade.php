@@ -2,11 +2,12 @@
 @section('title', 'Información Foranea')
 
 @section('contenido')
-@section('contenido')
+
+
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center px-4">
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">Cargar Información Externa</h1>
+    <div class="row bg-primary  d-flex align-items-center">
+        <div class="col-auto pt-2 text-white">
+            <h3 class="mt-1 league-spartan">Cargar Información Externa</h3>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -46,15 +47,15 @@
 <div class="container-fluid">
     <div class="row  border-bottom  bg-white border-bottom shadow-sm">
 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#precargar_campos">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-2 my-1">
+            <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#precargar_campos">
                 <i class="fa fa-plus"></i>
                 Precargar Campos - para pruebas
             </button>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#cargar_excel">
+        <div class="col-12 col-sm-12 col-md-3 col-lg-1 my-1">
+            <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#cargar_excel">
                 <i class="fa fa-file-excel mx-1"></i>
                 Cargar Excel
             </button>

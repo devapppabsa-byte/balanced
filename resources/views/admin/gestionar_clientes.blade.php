@@ -4,8 +4,8 @@
 @section('contenido')
 <div class="container-fluid">
     <div class="row bg-primary  d-flex align-items-center   ">
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">Clientes de la empresa</h1>
+        <div class="col-auto pt-2 text-white">
+            <h3 class="mt-1 league-spartan">Clientes de la empresa</h3>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -37,8 +37,8 @@
 
 <div class="container-fluid">
     <div class="row  border-bottom mb-5 bg-white shadow-sm">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cliente">
+        <div class="col-12 col-sm-12 col-md-3 col-lg-2 my-1">
+            <button class="btn btn-secondary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cliente">
                 <i class="fa fa-plus-circle"></i>
                 Agregar Cliente
             </button>
@@ -50,7 +50,7 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
 
-        <div class="col-12 col-sm-12 col-md-10 col-lg-9  mx-5 bg-white rounded border p-5 shadow-sm">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-7  mx-5 bg-white rounded border p-5 shadow-sm">
             <div class="row justify-content-center">
                 <div class="col-12 text-center">
                     <h2>
@@ -70,10 +70,9 @@
                         <table class="table table-responsive mb-0 border shadow-sm table-hover">
                                 <thead class="table-secondary text-white cascadia-code">
                                     <tr>
-                                    <th>Id</th>
                                     <th>Nombre</th>
-                                    <th>Correo</th>
                                     <th>Linea</th>
+                                    <th>Correo</th>
                                     <th>Teléfono</th>
                                     <th>Acciones</th>
                                     </tr>
@@ -84,11 +83,18 @@
                 @forelse ($clientes as $cliente)
                     <tr>
                         <td>
-                            {{$cliente->id_interno}}
+                            <p class="my-0 py-0 fw-bold">
+                               # {{$cliente->id_interno}}
+                            </p>
+                            <p class="my-0 py-0">
+                                {{$cliente->nombre}}
+                            </p>
+                            
                         </td>
-
                         <td>
-                           {{$cliente->nombre}}
+                            <p class="my-0 py-0">
+                                {{$cliente->linea}}
+                            </p>
                         </td>
 
                         <td>
@@ -96,9 +102,6 @@
                             <i class="fa-solid fa-envelopes-bulk"></i>
                                 {{$cliente->email}}
                             </a>
-                        </td>
-                        <td>
-                            {{$cliente->linea}}
                         </td>
 
                         <td>

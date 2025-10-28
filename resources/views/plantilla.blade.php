@@ -26,14 +26,14 @@
 
 </head>
 <body>
-    <div class="container-fluid">
+    {{-- <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <span><b>MetricHub </b> by: <a href="https://github.com/resendiz1" target="_blank" class="text-dark fw-bold">Arturo Resendiz López</a> with <i class="fa fa-code text-dark fw-bold"></i> </span>
             </div>
         </div>
     </div>
-    
+     --}}
     @yield('contenido')
 
 
@@ -91,6 +91,14 @@
             <script>
                 toastr.warning('{{session("eliminado_user")}}', 'Exito!');
             </script>
+        @endif
+
+
+        @if ($errors->any())
+            <script>
+                toastr.error('{{$errors->first()}}', 'Error!')
+            </script>
+
         @endif
 
 

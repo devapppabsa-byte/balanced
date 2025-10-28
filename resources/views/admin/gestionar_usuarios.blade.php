@@ -3,9 +3,9 @@
 
 @section('contenido')
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center px-4">
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">Usuarios de la empresa</h1>
+    <div class="row bg-primary  d-flex align-items-center">
+        <div class="col-auto pt-2 text-white">
+            <h3 class="mt-1 league-spartan">Usuarios de la empresa</h3>
 
             @if ($errors->any())
                 <div class="text-white fw-bold bad_notifications">
@@ -22,8 +22,8 @@
 
 <div class="container-fluid">
     <div class="row  border-bottom mb-5 bg-white">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1 ">
-            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
+        <div class="col-12 col-sm-12 col-md-3 col-lg-1 my-1 ">
+            <button class="btn btn-secondary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
                 <i class="fa fa-plus-circle"></i>
                 Agregar Usuario
             </button>
@@ -32,78 +32,82 @@
 </div>
 
 
-<div class="row justify-content-center ">
-    <div class="col-12 col-sm-12 col-md-10 col-lg-9 mx-1 bg-white p-5 rounded border shadow-sm">
-        <div class="row">
+<div class="container-fluid">
+    <div class="row justify-content-center ">
+        <div class="col-12 col-sm-12 col-md-10 col-lg-6  bg-white p-5 rounded border shadow-sm">
             <div class="row">
-                <div class="col-12 text-center">
-                    <h2>
-                        <i class="fa-solid fa-users-gear"></i>
-                        Usuarios
-                    </h2>
-                </div>
-            </div>
 
-                @if (!$usuarios->isEmpty())
-                    <div class="col-12 table-responsive">
-                        <table class="table border table-hover">
-                            <thead class="table-secondary border cascadia-code ">
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Correo</th>
-                                <th scope="col">Puesto</th>
-                                <th scope="col">Departamento</th>
-                                <th scope="col">Acciones</th>
-                            </thead>
-                            <tbody class="">
-                @endif
+                    <div class="col-12 text-center">
+                        <h2>
+                            <i class="fa-solid fa-users-gear"></i>
+                            Usuarios
+                        </h2>
+                    </div>
 
-                        @forelse ($usuarios as $usuario)
-                            <tr>
-                                <th>{{$usuario->name}}</th>
-                                <td>
-                                    <a href="mailto:{{$usuario->email}}" data-mdb-tooltip-init title="Enviar un correo a {{$usuario->email}}" class="text-dark fw-bold" target="_blank">
-                                        <i class="fa-solid fa-envelope-open-text"></i>
-                                        {{$usuario->email}}
-                                    </a>
-                                </td>
-                                <td>{{$usuario->puesto}}</td>
-                                <td>{{$usuario->departamento->nombre}}</td>
 
-                                <td class="row"> 
-                                    <div class="ol-12 col-sm-12 col-md-3 col-lg-4">
+                    @if (!$usuarios->isEmpty())
+                        <div class="col-12 table-responsive">
+                            <table class="table border table-hover">
+                                <thead class="table-secondary border cascadia-code ">
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Departamento y Puesto</th>
+                                    <th scope="col">Acciones</th>
+                                </thead>
+                                <tbody class="">
+                    @endif
+
+                            @forelse ($usuarios as $usuario)
+                                <tr>
+                                    <th>
+                                        <p class="py-0 my-0">
+                                            {{$usuario->name}}
+                                        </p>
+                                        <a href="mailto:{{$usuario->email}}" data-mdb-tooltip-init title="Enviar un correo a {{$usuario->email}}" class="text-dark fw-bold" target="_blank">
+                                            {{$usuario->email}}
+                                        </a>
+                                    </th>
+                                    <td>
+                                        <p class="my-0 py-0">
+                                            {{$usuario->puesto}}
+                                        </p>
+                                        <b class="my-0 py-0">
+                                            {{$usuario->departamento->nombre}}
+                                        </b>
+                                    </td>
+
+                                    <td class=""> 
                                         <a class="text-danger" data-mdb-tooltip-init title="Eliminar a {{$usuario->name}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
                                             <i class="fa fa-trash"></i>
                                         </a>
-                                    </div>
-                                    <div class="ol-12 col-sm-12 col-md-3 col-lg-4">
+
                                         <a class="text-primary" data-mdb-tooltip-init title="Editar a {{$usuario->name}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
                                             <i class="fa fa-edit"></i>
                                         </a>
+                                    </td>
+
+                                </tr>
+                            @empty
+
+                                <div class="row justify-content-center mt-4 border border-3 p-5">
+
+                                    <div class="col-12 text-center">
+                                        <i class="fa fa-exclamation-circle text-danger"></i>
+                                        No cuenta con usuaios, pero los puedes agregar aqui
                                     </div>
-                                </td>
+                                    
+                                    <div class="col-12 text-center">
+                                        <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
+                                            Agregar Usuario
+                                        </a>
+                                    </div>
 
-                            </tr>
-                        @empty
-
-                            <div class="row justify-content-center mt-4 border border-3 p-5">
-
-                                <div class="col-12 text-center">
-                                    <i class="fa fa-exclamation-circle text-danger"></i>
-                                    No cuenta con usuaios, pero los puedes agregar aqui
                                 </div>
-                                
-                                <div class="col-12 text-center">
-                                    <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
-                                        Agregar Usuario
-                                    </a>
-                                </div>
-
-                            </div>
-   
-                        @endforelse
-                       
-                    </tbody>
-                </table>
+    
+                            @endforelse
+                        
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

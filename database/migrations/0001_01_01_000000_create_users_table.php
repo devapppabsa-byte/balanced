@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('puesto');
             $table->string('planta');
+            $table->string('tipo_usuario');
             $table->unsignedBigInteger('id_departamento');
 
             $table->foreign('id_departamento')

@@ -4,13 +4,17 @@
 
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center">
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">
+        <div class="col-auto  text-white">
+            <h3 class="mt-1 mb-0">
                 {{$departamento->nombre}}
-            </h1>
-            <span class="">
-               Lista de indicadores de {{$departamento->nombre}}
-            </span>
+            </h3>
+
+            <small>
+                Lista de indicadores de {{$departamento->nombre}}
+            </small>
+
+              
+            
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -33,13 +37,13 @@
     <div class="row jusfify-content-start">
         @forelse ($indicadores as $indicador) 
             
-            <div class="col-10 col-sm-10 col-md-4 col-lg-4 my-3">
+            <div class="col-10 col-sm-10 col-md-6 col-lg-3 my-3">
                 <div class="card text-white bg-danger shadow-2-strong">
                     <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
                     <div class="card-body">
                         <div class="row justify-content-around d-flex align-items-center">
                             <div class="col-12 col-sm-12 col-md-12 col-lg-7 ">
-                                <h2 class="card-title fw-bold display-6 x">50%</h2>
+                                <h3 class="card-title fw-bold display-6 x">50%</h3>
                                 <p class="card-text fw-bold">{{$indicador->nombre}}</p>
                             </div>
                             <div class="col-12 col-sm-12 col-md-12 col-lg-4 p-0 m-0">
@@ -47,7 +51,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer p-2">
                             <div class="row  d-flex justify-content-between align-items-center">
                                 <div class="col-auto">
                                         Ver Detalles
@@ -69,7 +73,7 @@
 {{-- Foreach de las encuestas --}}
     @forelse ($normas as $norma)
         
-        <div class="col-10 col-sm-10 col-md-4 col-lg-4 my-3">
+        <div class="col-10 col-sm-10 col-md-6 col-lg-3 my-3">
             <div class="card text-white bg-danger shadow-2-strong">
                 <a href="{{route('apartado.norma', $norma->id)}}" class="text-white w-100">
                 <div class="card-body">
@@ -83,7 +87,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer p-2">
                         <div class="row  d-flex justify-content-between align-items-center">
                             <div class="col-auto">
                                     Ver Detalles
@@ -108,7 +112,7 @@
 {{-- Foreach del cumplimiento a normas --}}
     @forelse ($encuestas as $encuesta)
         
-        <div class="col-10 col-sm-10 col-md-4 col-lg-4 my-3">
+        <div class="col-10 col-sm-10 col-md-6 col-lg-3 my-3">
             <div class="card text-white bg-danger shadow-2-strong">
                 <a href="{{route('encuesta.index', $encuesta->id)}}" class="text-white w-100">
                 <div class="card-body">
@@ -122,7 +126,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer p-2">
                         <div class="row  d-flex justify-content-between align-items-center">
                             <div class="col-auto">
                                     Ver Detalles

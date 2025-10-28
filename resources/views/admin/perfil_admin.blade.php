@@ -8,8 +8,8 @@
 <div class="container-fluid">
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
-            <h1 class="text-white">Administrador</h1>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-10 pt-2">
+            <h3 class="text-white league-spartan">Administrador</h3>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -64,7 +64,9 @@
     <div class="row justify-content-center">
         @forelse ($departamentos as $departamento)
 
-            <div class="col-12 col-sm-10 col-md-4 col-lg-3 my-3">
+
+        {{-- card anterior --}}
+            {{-- <div class="col-12 col-sm-10 col-md-4 col-lg-3 my-3">
                 <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
                     <div class="card text-white border border-3 border-light  shadow-2-strong" style="background-color: rgb(92, 151, 55)" data-mdb-tooltip-init title="80%  Cumplimiento en {{ $departamento->nombre }}">
                         <div class="card-body">
@@ -85,11 +87,125 @@
                         </div>
                     </div>
                 </a>
+            </div> --}}
+        {{-- card anterior --}}
+
+
+        <div class="col-12 col-sm-12 col-md-5 col-lg-3 mt-2">
+            <div class="card shadow-3 rounded-4 p-3 border" style="max-width: 400px;">
+
+            <div class="card-body p-1">
+                <h3 class="text-muted text-uppercase fw-bold">{{$departamento->nombre}}</h3>
+
+
+
+                <!-- Gráfico -->
+                <canvas id="{{$departamento->id}}" class="" height="200"></canvas>
+
+                <div class="mt-3">
+                <p class="fw-bold text-muted mb-2">Indicadores (4)</p>
+
+                <!-- Producto -->
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="d-flex align-items-center">
+
+                        <div class="position-relative me-2">
+
+                            <div class="progress progress-circular " style="--percentage: 72;">
+                                <div class="progress-bar bg-success"></div>
+                                <div class="progress-label"></div>
+                            </div>
+
+                            <span class="position-absolute top-50 start-50 translate-middle small fw-bold text-success">
+                                72%
+                            </span>
+                        </div>
+
+                        <div>
+                            <p class="fw-bold mb-0">Indicador uno</p>
+                            <small class="bg-dark text-white px-2 py-1 rounded-pill">72%</small>
+                        </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="d-flex align-items-center">
+                        <div class="position-relative me-2">
+
+                            <div class="progress progress-circular " style="--percentage: 23;">
+                                <div class="progress-bar bg-danger"></div>
+                                <div class="progress-label"></div>
+                            </div>
+
+                            <span class="position-absolute top-50 start-50 translate-middle small fw-bold text-danger">23%</span>
+                        </div>
+                        <div>
+                            <p class="fw-bold mb-0">Indicador Dos</p>
+                            <small class="bg-dark text-white px-2 py-1 rounded-pill">23%</small>
+                        </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="d-flex align-items-center">
+                        <div class="position-relative me-2">
+
+                            <div class="progress progress-circular " style="--percentage: 64;">
+                                <div class="progress-bar bg-success"></div>
+                                <div class="progress-label"></div>
+                            </div>
+
+                            <span class="position-absolute top-50 start-50 translate-middle small fw-bold text-succcess">64%</span>
+                        </div>
+                        <div>
+                            <p class="fw-bold mb-0">Inidcador 3</p>
+                            <small class="bg-dark text-white px-2 py-1 rounded-pill">64%</small>
+                        </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                        <div class="position-relative me-2">
+
+                            <div class="progress progress-circular " style="--percentage: 64;">
+                                <div class="progress-bar bg-success"></div>
+                                <div class="progress-label"></div>
+                            </div>
+
+                            <span class="position-absolute top-50 start-50 translate-middle small fw-bold text-success">69%</span>
+                        </div>
+                        <div>
+                            <p class="fw-bold mb-0">Indicador 4</p>
+                            <small class="bg-dark text-white px-2 py-1 rounded-pill">69%</small>
+                        </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <div class="text-center mt-4">
+                <a href="{{route('lista.indicadores.admin', $departamento->id)}}" class="btn btn-primary btn-sm rounded-pill">
+                    Ver todo <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+                </div>
             </div>
+            </div>
+        </div>
 
 
         @empty
-            <div class="col-8 text-center py-5">
+            <div class="col-8 text-center py-5 bg-white shadow shadow-sm border">
                 <div class="col-12">
                     <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">
                 </div>
@@ -102,29 +218,6 @@
             </div>
         @endforelse
 
-
-            <div class="col-12 col-sm-10 col-md-4 col-lg-3 my-3">
-                <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
-                    <div class="card text-white border border-3 border-light  shadow-2-strong" style="background-color: rgb(151, 55, 55)">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                <h3>Sanidad</h3>
-                                <p class="mb-1">Cumplimiento</p>
-                                <h5 class="mb-2 fw-bold">70%</h5>
-                                </div>
-                                <i class="fas fa-chart-line fa-4x"></i>
-                            </div>
-                            <div class="progress rounded-0 mt-2" style="height: 4px;">
-                                <div class="progress-bar" style="width: 70%; background-color:rgb(112, 2, 2)"></div>
-                            </div>
-                            <span class="mt-2 d-block fw-bold">
-                                4 Indicadores.
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            </div>
 
     </div>
 
@@ -145,6 +238,75 @@
 
 
 @section('scripts')
+
+@forelse ($departamentos as $departamento)
+
+
+<script>
+
+const ctx{{$departamento->id}} = document.getElementById({{$departamento->id}});
+
+new Chart(ctx{{$departamento->id}}, {
+  data: {
+    labels: ["Enero", "Febrero", "Marzo", "Abril"],
+    datasets: [
+      {
+        type: "bar",  // Barras
+        label: "Ventas",
+        data: [30, 50, 40, 60],
+
+        backgroundColor: function(context) {
+          const value = context.raw;
+          return value < 50
+            ? "rgba(255, 99, 132, 0.7)"  // rojo
+            : "rgba(75, 192, 75, 0.7)";  // verde
+        },
+        borderColor: function(context) {
+          const value = context.raw;
+          return value < 50 ? "red" : "green";
+        },
+
+        borderWidth: 1
+      },
+      {
+        type: "line", // Línea sobrepuesta
+        label: "Mínimo",
+        data: [50, 50, 50, 50],
+        borderColor: "red",
+        borderWidth: 2,
+        fill: false
+      },
+      {
+        type: "line", // Línea sobrepuesta
+        label: "Máximo",
+        data: [100, 100, 100, 100],
+        borderColor: "green",
+        borderWidth: 2,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: "top" }
+    },
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+</script>
+
+
+
+
+
+
+@empty
+    
+@endforelse
+
 
 <script>
 

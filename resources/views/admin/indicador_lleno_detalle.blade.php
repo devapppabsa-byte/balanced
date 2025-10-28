@@ -17,8 +17,8 @@
 <div class="container-fluid sticky-top">
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
-            <h1 class="text-white">Detalle del {{$indicador->nombre}}</h1>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-10 pt-2">
+            <h3 class="text-white league-spartan">Detalle del {{$indicador->nombre}}</h3>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">

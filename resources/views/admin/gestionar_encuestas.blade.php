@@ -3,9 +3,9 @@
 
 @section('contenido')
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center px-4">
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">Encuestas para los clientes</h1>
+    <div class="row bg-primary  d-flex align-items-center">
+        <div class="col-auto pt-2 text-white">
+            <h3 class="mt-1 league-spartan">Encuestas para los clientes</h3>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -43,8 +43,8 @@
 
 <div class="container-fluid mb-5">
     <div class="row  border-bottom bg-white shadow-sm ">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
+        <div class="col-12 col-sm-12 col-md-3 col-lg-1 my-1">
+            <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
                 <i class="fa fa-plus-circle"></i>
                 Agregar Encuesta
             </button>
@@ -74,7 +74,6 @@
                                 <thead class="table-secondary text-white cascadia-code">
                                     <tr>
                                     <th>Nombre</th>
-                                    <th>Descripción</th>
                                     <th>Departamento</th>
                                     <th>Acciones</th>
                                     <th>Cumplimiento</th>
@@ -89,8 +88,10 @@
                                     <a href="{{route('encuesta.index', $encuesta->id)}}" data-mdb-tooltip-init title="Detalles de {{$encuesta->nombre}}" class="text-decoration-none text-dark fw-bold">
                                         {{$encuesta->nombre}}
                                     </a>
+                                    <p>
+                                        {{$encuesta->descripcion}}
+                                    </p>
                                 </td>
-                                <td>{{$encuesta->descripcion}}</td>
                                 <td>{{$encuesta->departamento->nombre}}</td>
 
                                 <td class="tex-start">

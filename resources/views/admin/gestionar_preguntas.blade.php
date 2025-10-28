@@ -8,14 +8,9 @@
 
 
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center px-4">
-        <div class="col-auto text-center">
-            <a href="{{route('perfil.admin')}}">
-                <i class="fa fa-home fa-2x text-white"></i>
-            </a>
-        </div>
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">{{$encuesta->nombre}}</h1>
+    <div class="row bg-primary  d-flex align-items-center ">
+        <div class="col-auto pt-2 text-white">
+            <h3 class="mt-1 league-spartan">{{$encuesta->nombre}}</h3>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -49,14 +44,14 @@
     <div class="row bg-white shadow-sm border-bottom   mb-5">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             @if ($existe->isEmpty())
-                <button class="btn btn-secondary border  w-100 " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
+                <button class="btn btn-secondary btn-sm border  w-100 " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
                     <i class="fa fa-plus"></i>
                     Agregar Pregunta
                 </button>
             @else
-                <button class="btn btn-dark  w-100 " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#encuesta_contestada">
+                <button class="btn btn-dark btn-sm  w-100 " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#encuesta_contestada">
                     <i class="fa fa-plus"></i>
-                    La encuesta ya fue cintestada
+                    La encuesta ya fue contestada
                 </button>
             @endif
 
@@ -142,7 +137,7 @@
                     </table>
             </div>
             
-            <div class="col-12 col-sm-12 col-md-6 col-lg-5 mt-2 table-responsive bg-white p-5 rounded shadow-sm">
+            <div class="col-12 col-sm-12 col-md-10 col-lg-5 mt-2 table-responsive bg-white p-5 rounded shadow-sm">
                 <h3 class="text-center">
                     <i class="fa-solid fa-clipboard-list"></i>
                     Respuestas de los Clientes
@@ -193,7 +188,7 @@
 
     <div class="row justify-content-center mt-2 d-flex align-items-center">
 
-        <div class="col-11 col-sm-11 col-md-11 p-3 col-lg-10 mt-2 text-center bg-white border shadow shadow-sm rounded">
+        <div class="col-12 col-sm-12 col-md-10 p-3 col-lg-10 mt-2 text-center bg-white border shadow shadow-sm rounded">
             <div class="row justify-content-around">
                 <div class="col-12 text-center">
                     <h3>
@@ -219,7 +214,7 @@
                 </div>
                 
                 <div class="col-auto   border-bottom border-2 p-3">
-                    <h5 class="fw-bold">Puntuación General Obtenida </h5>
+                    <h5 class="fw-bold">Puntuación Obtenida </h5>
 
                     @if ($total_obtenido !== null )
                         <h4 class="fw-bold" id="puntuacion_maxima">
@@ -290,14 +285,14 @@
 
 
 <div class="modal fade" id="grafico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-  <div class="modal-dialog modal-xl">
+  <div class="modal-dialog modal-xl modal-fullscreen-sm-down">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title" id="exampleModalLabel">Gráfica</h5>
         <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
         <div class="modal-body">
-            <div class="col-12 pb-5 px-5 pt-2" >
+            <div class="col-12" >
                 <!-- Tabs navs -->
                 <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -327,7 +322,7 @@
                         <canvas id="chartBarrasCondicional"></canvas>
                     </div>
                     <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
-                        <canvas id="chartLineaCondicional"></canvas>
+                        <canvas id="chartLinea"></canvas>
                     </div>
                     <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
                         <canvas id="chartBurbujaCondicional"></canvas>
@@ -509,51 +504,45 @@ new Chart(ctx, {
   }
 });
 
-    // --- LINE CHART ---
-    const ctxLine = document.getElementById('chartLineaCondicional').getContext('2d');
-    const coloresLinePoints = coloresPorValor(valores);
+ </script>
 
-    new Chart(ctxLine, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: 'Promedio de satisfacción',
-            data: valores,
-            borderColor: '#206bb3',
-            backgroundColor: 'rgba(32,107,179,0.12)',
-            fill: true,
-            tension: 0.3,
-            pointBackgroundColor: coloresLinePoints, // cada punto tendrá su color
-            pointBorderColor: '#222',
-            pointRadius: 6,
-            pointHoverRadius: 8
-          },
-          {
-            label: 'Mínimo esperado',
-            data: Array(valores.length).fill(minimo),
-            borderColor: 'red',
-            borderDash: [6,4],
-            fill: false,
-            pointRadius: 3
-          },
-          {
-            label: 'Máximo posible',
-            data: Array(valores.length).fill(maximo),
-            borderColor: 'green',
-            borderDash: [6,4],
-            fill: false,
-            pointRadius: 3
-          }
-        ]
+<script>
+const ctx2 = document.getElementById('chartLinea');
+
+new Chart(ctx2, {
+  type: 'line',
+  data: {
+    labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
+    datasets: [
+      {
+        label: 'Ventas',
+        data: [30, 50, 40, 60],
+        borderColor: '#36a2eb',
+        backgroundColor: 'rgba(54,162,235,0.2)',
+        fill: true,
+        tension: 0.3
       },
-      options: {
-        responsive: true,
-        scales: { y: { beginAtZero: true, max: 10 } }
+      {
+        label: 'Mínimo',
+        data: [50, 50, 50, 50],
+        borderColor: 'red',
+        borderDash: [5, 5],
+        fill: false
+      },
+      {
+        label: 'Máximo',
+        data: [100, 100, 100, 100],
+        borderColor: 'green',
+        borderDash: [5, 5],
+        fill: false
       }
-    });
+    ]
+  },
+  options: { responsive: true }
+});
+</script>
 
+ <script>
     // --- BUBBLE CHART ---
     const ctxBubble = document.getElementById('chartBurbujaCondicional').getContext('2d');
     // Para burbuja, mapeamos valores a (x,y,r) y a color correspondiente

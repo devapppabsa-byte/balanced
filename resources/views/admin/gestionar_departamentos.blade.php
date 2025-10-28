@@ -4,9 +4,9 @@
 @section("contenido")
 
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center px-4">
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">Departamentos de la empresa</h1>
+    <div class="row bg-primary  d-flex align-items-center">
+        <div class="col-auto pt-2 text-white">
+            <h3 class="mt-1 league-spartan">Departamentos de la empresa</h3>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -45,8 +45,8 @@
 
 <div class="container-fluid ">
     <div class="row bg-white shadow-sm border-bottom   mb-5">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_departamento">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-1 my-1">
+            <button class="btn btn-secondary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_departamento">
                 <i class="fa fa-plus-circle"></i>
                 Agregar Departamento
             </button>
@@ -92,7 +92,7 @@
             </div>
             
         @empty
-            <div class="col-12 py-5">
+            <div class="col-12 col-sm-11 col-md-9 col-lg-8 shadow bg-white py-5">
                <div class="row justify-content-center">
                 <div class="col-12 text-center">
                     <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">

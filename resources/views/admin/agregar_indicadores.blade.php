@@ -6,9 +6,9 @@
 @section('contenido')
 
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center px-4">
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">{{$departamento->nombre}}</h1>
+    <div class="row bg-primary  d-flex align-items-center">
+        <div class="col-auto pt-2 text-white">
+            <h3 class="mt-1 mb-0 league-spartan">{{$departamento->nombre}}</h3>
             <span>Asignación de Indicadores a {{$departamento->nombre}}</span>
             @if (session('success'))
                 <div class="text-white fw-bold ">

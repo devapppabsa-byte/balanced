@@ -6,11 +6,11 @@
 
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center">
-        <div class="col-auto py-4 text-white">
+        <div class="col-auto pt-2 text-white">
 
-            <h1 class="mt-1">
+            <h3 class="mt-1 league-spartan mb-0">
                 {{$indicador->nombre}}
-            </h1>
+            </h3>
             <span>
                 Departamento de {{$indicador->departamento->nombre}}
             </span>
@@ -48,8 +48,8 @@
 <div class="container-fluid">
     <div class="row border py-2 justify-content-center bg-white shadow-sm">
 
-        <div class="col-5 col-sm-5 col-md-6 col-lg-auto m-1">
-            <button class="btn btn-secondary w-100"
+        <div class="col-12 col-sm-12 col-md-3 col-lg-1 m-1">
+            <button class="btn btn-secondary bt-sm w-100"
             data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalCampos">
                 <i class="fa fa-plus-circle mx-2"></i>
                  Campos Vacios
