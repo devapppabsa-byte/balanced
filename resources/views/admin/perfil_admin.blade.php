@@ -64,38 +64,11 @@
     <div class="row justify-content-center">
         @forelse ($departamentos as $departamento)
 
-
-        {{-- card anterior --}}
-            {{-- <div class="col-12 col-sm-10 col-md-4 col-lg-3 my-3">
-                <a href="{{route('lista.indicadores.admin', $departamento->id)}}"> 
-                    <div class="card text-white border border-3 border-light  shadow-2-strong" style="background-color: rgb(92, 151, 55)" data-mdb-tooltip-init title="80%  Cumplimiento en {{ $departamento->nombre }}">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                <h3>{{$departamento->nombre}}</h3>
-                                <p class="mb-1">Cumplimiento</p>
-                                <h5 class="mb-2 fw-bold">80%</h5>
-                                </div>
-                                <i class="fas fa-chart-line fa-4x"></i>
-                            </div>
-                            <div class="progress rounded-0 mt-2" style="height: 4px;" >
-                                <div class="progress-bar" style="width: 80%; background-color:rgb(53, 112, 2)"></div>
-                            </div>
-                            <span class="mt-2 d-block fw-bold">
-                                4 Indicadores.
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            </div> --}}
-        {{-- card anterior --}}
-
-
-        <div class="col-12 col-sm-12 col-md-5 col-lg-3 mt-2">
+        <div class="col-10 col-sm-10 col-md-5 col-lg-3 mt-2">
             <div class="card shadow-3 rounded-4 p-3 border" style="max-width: 400px;">
 
             <div class="card-body p-1">
-                <h3 class="text-muted text-uppercase fw-bold">{{$departamento->nombre}}</h3>
+                <h4 class="text-muted text-uppercase fw-bold">{{$departamento->nombre}}</h4>
 
 
 

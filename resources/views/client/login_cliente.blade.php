@@ -1,16 +1,24 @@
 @extends('plantilla')
 @section('title', 'Cuestionario del cliente')
-
-
 @section('contenido')
+<style>
+    body{
+        background-image: url("{{asset('img/fondo.avif')}}");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover; 
+    }
+</style>
 
 <div class="container-fluid">
     <div class="row bg-primary  d-flex align-items-center ">
-        <div class="col-auto py-4 text-white">
-            <h1 class="mt-1">
-            <i class="fa-solid fa-circle-user"></i>
-                Encuestas de Satisfacción para el cliente
-            </h1>
+        <div class="col-auto pt-2 text-white">
+            <p>
+                <span id="titulo" class="h4"></span>
+            </p>
+            {{-- <h3 class="" id="titulo">
+            </h3> --}}
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -37,13 +45,13 @@
 
 <div class="container ">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-7 col-lg-5 mt-5 shadow p-5 rounded border bg-white">
+        <div class="col-8 col-sm-8 col-md-5 col-lg-3 mt-5 shadow px-4 py-4 rounded border bg-white">
             <div class="row justify-content-center">
 
                 <div class="col-12 mb-2 mb-4 text-center">
                     <div class="row">
                         <div class="col-12">
-                            <h2 class="mt-2">Inicio de Sesión Cliente</h2>
+                            <h4 class="">Inicio de Sesión Cliente</h4>
                         </div>
                         <div class="col-12">
                             @if (session("error"))
@@ -63,20 +71,20 @@
     
                         <div class="form-group">
                             <div class="form-outline" data-mdb-input-init>
-                                <input type="text" id="email" name="email" class="form-control form-control-lg" />
+                                <input type="text" id="email" name="email" class="form-control form-control-sm" />
                                 <label class="form-label" for="email">Correo Eléctronico </label>
                             </div>
                         </div>
     
                         <div class="form-group mt-3">
                             <div class="form-outline" data-mdb-input-init>
-                                <input type="password" class="form-control form-control-lg" id="password" name="password">
+                                <input type="password" class="form-control form-control-sm" id="password" name="password">
                                 <label class="form-label" for="password" >Contraseña </label>
                             </div>
                         </div>
     
                         <div class="form-group mt-4">
-                            <button class="btn w-100 w-lg-25 btn-lg btn-primary">
+                            <button class="btn w-100 w-lg-25 btn-primary">
                                 Ingresar
                             </button>
                         </div>
@@ -88,4 +96,17 @@
     </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+<script>
+    var typed = new Typed("#titulo", {
+        strings: ['Hola ', 'Ayúdanos a mejorar', 'Queremos conocer tu perspectiva', '¿Qué tal lo hicimos? Tu opinión es clave!', 'Tu opinión nos importa: Cuéntanos sobre tu experiencia' ],
+        typeSpeed: 30,
+        backSpeed:30,
+        loop: true,
+        smartBackspace: true
+    });
+</script>
 @endsection

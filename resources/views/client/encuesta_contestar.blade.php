@@ -5,13 +5,12 @@
     
 
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center px-4">
-        <div class="col-12 col-sm-12 col-md-8 col-lg-10 py-4 text-white py-4 text-white">
-            <h1 class="mt-1">
-                <i class="fa fa-clipboard-list"></i>
+    <div class="row bg-primary  d-flex align-items-center">
+        <div class="col-12 col-sm-12 col-md-8 col-lg-10 pt-2 text-white  text-white">
+            <h3 class="mt-1 league-spartan mb-0">
                 Hola {{strtok(Auth::guard("cliente")->user()->nombre, " ");}}
-            </h1>
-            <h3>{{ $encuesta->nombre }}</h3>
+            </h3>
+            <span>{{ $encuesta->nombre }}</span>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -41,9 +40,19 @@
                 </button>
             </form>
         </div>
-
-
     </div>
+    
+    @include('client.assets.nav')
+
+    <div class="row bg-white shadow-sm border-bottom">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-auto m-1 p-2">
+            <a class="btn btn-danger btn-sm w-100 px-3 py-1" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#sugerencia">
+                <i class="fa-solid fa-comments"></i>
+                Queja o sugerencia
+            </a>
+        </div>
+    </div>
+
 </div>
 
 
@@ -108,9 +117,9 @@
         @else
             <div class="col-12">
                 <div class="row justify-content-center p-5 ">
-                    <div class="col-8 border text-center p-5 border-2 rounded-7 bg-white">
+                    <div class="col-10 border text-center p-5 border-2 rounded-7 bg-white">
                         <img src="{{asset('/img/empty.svg')}}" class="img-fluid w-50" alt="">
-                        <h4> <i class="fa fa-exclamation-circle text-danger"></i> Aún no se agregan preguntas a esta encuesta.</h4>
+                        <h5> <i class="fa fa-exclamation-circle text-danger"></i> Aún no se agregan preguntas a esta encuesta.</h5>
                     </div>
                 </div>
             </div>

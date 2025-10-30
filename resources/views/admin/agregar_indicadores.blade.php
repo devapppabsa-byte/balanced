@@ -55,28 +55,28 @@
 <div class="container-fluid">
     <div class="row border py-2 bg-white shadow-sm border-bottom ">
 
-        <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-auto m-1">
             <a class="btn btn-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_indicador">
                 <i class="fa fa-plus"></i>
                 Indicador a {{$departamento->nombre}}
             </a>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-auto m-1">
             <a class="btn btn-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
                 <i class="fa fa-plus"></i>
                 Encuesta para el cliente
             </a>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-auto m-1">
             <a class="btn btn-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_norma">
                 <i class="fa fa-plus"></i>
                 Norma
             </a>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-auto m-1">
             <a class="btn btn-secondary w-100 h-100 btn-block" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
                 <i class="fa fa-users"></i>
                 Usuarios
@@ -93,7 +93,7 @@
     <div class="row justify-content-evenly ">
         <div class="col-12 col-sm-11 col-md-11 col-lg-5 ">
             <div class="row">
-                <div class="col-12  mx-1 mt-5 bg-white rounded shadow shadow-sm p-5">
+                <div class="col-12  mx-1 mt-2 bg-white rounded shadow shadow-sm p-5">
                         <div class="col-12 text-center">
                             <h4>
                                 <i class="fa fa-chart-line"></i>
@@ -172,7 +172,7 @@
             </div>
             
             <div class="row">
-                <div class="col-12  mt-3 mb-5 rounded shadow shadow-sm bg-white p-5">
+                <div class="col-12  mt-3  rounded shadow shadow-sm bg-white p-5">
                     <div class="col-12 text-center">
                         <h4>
                             <i class="fa-regular fa-newspaper"></i>
@@ -249,9 +249,9 @@
 
         </div>
 
-        <div class="col-12 col-sm-11 col-md-11 col-lg-5 mb-4">
+        <div class="col-12 col-sm-11 mt-2 col-md-11 col-lg-5 mb-4">
             <div class="row">
-                <div class="col-12 mx-1 mt-5 col-12   mb-3 rounded shadow shadow-sm bg-white p-5">
+                <div class="col-12 mx-1  col-12   mb-3 rounded shadow shadow-sm bg-white p-5">
                     <div class="row">
                         <div class="col-12 text-center">
                             <h4>

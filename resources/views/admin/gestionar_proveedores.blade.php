@@ -44,7 +44,7 @@
 
 <div class="container-fluid">
     <div class="row  border-bottom mb-5 bg-white">
-        <div class="col-12 col-sm-12 col-md-3 col-lg-1 my-1">
+        <div class="col-12 col-sm-12 col-md-3 col-lg-2 my-1">
             <button class="btn btn-secondary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_proveedor">
                 <i class="fa fa-plus-circle"></i>
                 Agregar Proveedor
@@ -103,7 +103,7 @@
                                     @endphp
                                 @empty
                                 @endforelse
-                                <span class="badge  border  border-2  {{(($suma/$contador) < 80 ? '  fw-bold badge-danger border-danger' : 'badge-success fw-bold border-success')}}" data-mdb-tooltip-init title="{{ round($suma/$contador, 3)}} %">
+                                <span class="badge fs-6  border  border-2  {{(($suma/$contador) < 80 ? '  fw-bold badge-danger border-danger' : 'badge-success fw-bold border-success')}}" data-mdb-tooltip-init title="{{ round($suma/$contador, 3)}} %">
                                     {{round($suma/$contador, 3)}} %
                                 </span>
                             @else

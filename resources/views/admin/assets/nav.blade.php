@@ -35,6 +35,15 @@
         </a>
     </div>
 
+
+    <div class="col-auto mx-1 zoom_link {{ request()->routeIs('lista.quejas.cliente') ? 'link_selected' : '' }}">
+        <a href="{{route("lista.quejas.cliente")}}" class="text-white text-decoration-none fw-bold ">
+            <i class="fa-solid fa-comment"></i>
+            Quejas y sugerencias
+        </a>
+    </div>
+
+
     <div class="col-auto mx-1 zoom_link {{ request()->routeIs('proveedores.show.admin') ? 'link_selected' : '' }}">
         <a href="{{route("proveedores.show.admin")}}" class="text-white text-decoration-none fw-bold  ">
             <i class="fa-solid fa-clipboard-check"></i>

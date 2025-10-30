@@ -39,7 +39,7 @@
 
                     <div class="col-12 text-center">
                         <h2>
-                            <i class="fa-solid fa-users-gear"></i>
+                            <i class="fa-solid text-dark fa-users-gear"></i>
                             Usuarios
                         </h2>
                     </div>

@@ -13,6 +13,7 @@
 body{
   /* background-image: url('/img/background.jpg'); */
   background-color: rgb(236, 236, 236);
+  overflow-y: hidden;
 }
 
 .league-spartan {
@@ -48,7 +49,7 @@ body{
 .bree-serif-regular {
   font-family: "Bree Serif", serif;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 15px;
   font-style: normal;
 }
 

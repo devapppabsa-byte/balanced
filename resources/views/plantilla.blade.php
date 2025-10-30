@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{asset('css/mdb.min.css')}}" />
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
     <link rel="stylesheet" href="{{asset('css/toastr.min.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
     <style>
 
         body{
@@ -26,14 +27,13 @@
 
 </head>
 <body>
-    {{-- <div class="container-fluid">
+    <div class="container-fluid bg-white">
         <div class="row">
             <div class="col-12">
-                <span><b>MetricHub </b> by: <a href="https://github.com/resendiz1" target="_blank" class="text-dark fw-bold">Arturo Resendiz López</a> with <i class="fa fa-code text-dark fw-bold"></i> </span>
+                <span style="font-size: 10px;"><b>MetricHub </b> by: <a href="https://github.com/resendiz1" target="_blank" class="text-dark fw-bold">Arturo Resendiz López</a> with <i class="fa fa-code text-dark fw-bold"></i> </span>
             </div>
         </div>
     </div>
-     --}}
     @yield('contenido')
 
 
@@ -51,8 +51,22 @@
     <script src="{{asset('js/chart.js')}}"></script>
     <script src="{{asset('js/interact.min.js')}}"></script>
     <script src="{{asset('js/draggable.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     @yield('scripts')
 
+    <script>
+
+        const editor = new Quill("#editor", {theme:'snow',})
+
+        const formulario = document.getElementById('formularioQueja')
+        formulario.addEventListener('submit', function(e){
+
+            document.getElementById('queja').value = editor.root.innerHTML;
+
+        })
+
+    </script>
+    
     <script>
         if(document.getElementById("fecha")){
             let mostrar_fecha = document.getElementById("fecha");

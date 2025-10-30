@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\apartadoNormaController;
+use App\Http\Controllers\quejasController;
 use App\Http\Controllers\normaController;
 use App\Http\Controllers\proveedorController;
 use App\Http\Controllers\clienteController;
@@ -137,6 +138,9 @@ Route::get('/perfil_admin/clientes', [clienteController::class, 'clientes_show_a
 Route::get('/perfil_admin/usuarios', [userController::class, 'usuarios_show_admin'])->name("usuarios.show.admin");
 Route::get('/perfil_admin/encuestas', [encuestaController::class, 'encuestas_show_admin'])->name('encuestas.show.admin');
 Route::get('/perfil_admin/encuestas/preguntas/{encuesta}', [encuestaController::class, 'encuesta_index'])->name('encuesta.index');
+Route::get('/perfil_admin/reclamaciones', [quejasController::class, 'index_quejas'])->name('lista.quejas.cliente');
+
+
 Route::get('/perfil_admin/proveedores', [proveedorController::class, 'proveedores_show_admin'])->name('proveedores.show.admin');
 Route::delete('/perfil_admin/proveedores/eliminar/{proveedor}', [proveedorController::class, 'proveedor_delete']  )->name('proveedor.delete');
 
@@ -187,6 +191,10 @@ Route::get('/login_cliente/ingreso_cliente', [clienteController::class, 'perfil_
 //Para contestar los cuestionarios
 Route::get('/perfil_cliente/cuestionario/{encuesta}', [clienteController::class, 'index_encuesta'])->name("index.encuesta");
 Route::post('/perfil_cliente/cuestionario/contestando/{encuesta}', [clienteController::class, 'contestar_encuesta'])->name("contestar.encuesta");
+Route::get('/perfil_cliente/cuestionario/contestado/{encuesta}', [clienteController::class, 'index_encuesta_contestada'])->name('index.encuesta.contestada');
+
+Route::post('/perfil_cliente/queja', [clienteController::class, 'queja_cliente'])->name('queja.cliente');
+Route::get('/perfil_cliente/seguimientos', [clienteController::class, 'seguimiento_quejas_cliente'])->name('seguimiento.quejas.cliente');
 
 
 

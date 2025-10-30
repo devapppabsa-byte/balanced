@@ -54,7 +54,7 @@
             </button>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-3 col-lg-1 my-1">
+        <div class="col-12 col-sm-12 col-md-3 col-lg-2 my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#cargar_excel">
                 <i class="fa fa-file-excel mx-1"></i>
                 Cargar Excel
@@ -69,7 +69,7 @@
 
 <div class="container-fluid mt-3">
     <div class="row justify-content-center">
-        <div class="col-11 bg-white rounded rounded-3 shadow shadow-sm border p-4" style="min-height: 800px">
+        <div class="col-11 bg-white rounded rounded-3 shadow shadow-sm border p-4" style="min-height: 600px">
             
             <div class="row">
                 <div class="col-12 text-center mt-3">

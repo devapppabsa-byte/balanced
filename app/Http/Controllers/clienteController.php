@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Pregunta;
 use App\Models\Respuesta;
+use App\Models\Queja;
 use App\Models\ClienteEncuesta;
 use App\Models\Encuesta;
 use App\Models\Cliente;
@@ -61,6 +62,7 @@ class clienteController extends Controller
 
         //protegiendo la URL de las encuestas, la consulta esta es para verificar si el cliente aun no contesta 
         //la encuesta o si ya la contesto. Todo eso sobre la tabla Aux. 
+
         $existe = ClienteEncuesta::where('id_cliente', Auth::guard('cliente')->user()->id)
         ->where('id_encuesta', $encuesta->id)
         ->exists();
@@ -77,6 +79,23 @@ class clienteController extends Controller
         return view('client.encuesta_contestar', compact("preguntas", "encuesta"));
 
 
+    }
+
+
+    public function index_encuesta_contestada(Encuesta $encuesta){
+
+                //checo si la encuesta ya fue contestada
+        $existe = ClienteEncuesta::where('id_encuesta', $encuesta->id)->get();
+        
+        //Esto me trae todas las preguntas de la encuesta con sus respuestas 
+        $preguntas = Pregunta::with('respuestas')->where('id_encuesta', $encuesta->id)->get();
+
+
+
+
+
+        return view('client.encuesta_contestada', compact('encuesta', 'preguntas'));
+    
     }
 
 
@@ -148,6 +167,34 @@ public function show_respuestas(Cliente $cliente, Encuesta $encuesta){
         //se necesitan las respuestas de las encuestas, es decir, consultar las preguntas con su respuesta, todo estom vendra de la tabla auxiliar.
         return view("admin.respuestas_cliente_encuestas", compact('preguntas', 'cliente'));
     
+}
+
+public function queja_cliente(Request $request){
+    
+    $request->validate([
+        
+        'queja' => 'required'
+    
+    ]);
+
+
+    Queja::create([
+        "queja" => $request->queja,
+        'id_cliente' => Auth::guard('cliente')->user()->id
+    ]);
+
+    return back()->with('success', 'La información fue enviada con exito!');
+    
+}
+
+
+public function seguimiento_quejas_cliente(){
+
+    
+
+
+    return view('client.seguimiento_quejas');
+
 }
 
 

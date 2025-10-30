@@ -43,7 +43,7 @@
 
 <div class="container-fluid mb-5">
     <div class="row  border-bottom bg-white shadow-sm ">
-        <div class="col-12 col-sm-12 col-md-3 col-lg-1 my-1">
+        <div class="col-12 col-sm-12 col-md-3 col-lg-2 my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
                 <i class="fa fa-plus-circle"></i>
                 Agregar Encuesta
@@ -139,7 +139,7 @@
 
                                     @if ($suma>0)
                                         {{-- Aqui esta el porcentaje de cumplimiento --}}
-                                        <h6 class="badge  p-2 {{($suma/($contador*10)*100 > 50) ? "badge-success border border border-success" : "badge-danger border border-danger" }}" data-mdb-tooltip-init title="{{round($suma/($contador*10)*100, 3)}}%">
+                                        <h6 class="badge fs-6  p-2 {{($suma/($contador*10)*100 > 50) ? "badge-success border border border-success" : "badge-danger border border-danger" }}" data-mdb-tooltip-init title="{{round($suma/($contador*10)*100, 3)}}%">
                                             {{round(($suma/($contador*10))*100, 3) }} %
                                             <i class="fa {{($suma/($contador*10)*100 > 50) ? "fa-check-circle" : "fa-xmark-circle" }} "></i>
                                         </h6>

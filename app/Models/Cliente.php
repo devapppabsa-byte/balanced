@@ -13,4 +13,10 @@ class Cliente extends Authenticatable
 
 
 
+
+    public function quejas(){
+        return $this->hasMany(Queja::class, 'id_cliente');
+    }
+
+
 }
