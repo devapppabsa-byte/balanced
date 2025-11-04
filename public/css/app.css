@@ -13,8 +13,14 @@
 body{
   /* background-image: url('/img/background.jpg'); */
   background-color: rgb(236, 236, 236);
-  overflow-y: hidden;
+
 }
+
+.border-dashed{
+  border: dashed 2px; 
+  border-color: gray;
+}
+
 
 .league-spartan {
   font-family: "League Spartan", sans-serif;

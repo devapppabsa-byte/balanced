@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Pregunta;
 use App\Models\Respuesta;
+use App\Models\MensajeQuejas;
 use App\Models\Queja;
 use App\Models\ClienteEncuesta;
 use App\Models\Encuesta;
 use App\Models\Cliente;
+use App\Models\MensajeQueja;
+use App\Models\EvidenciaQuejas;
+
 class clienteController extends Controller
 {
 
@@ -171,32 +176,97 @@ public function show_respuestas(Cliente $cliente, Encuesta $encuesta){
 
 public function queja_cliente(Request $request){
     
+
+
     $request->validate([
         
-        'queja' => 'required'
+        'queja' => 'required',
+        'titulo' => 'required'
     
     ]);
 
-
-    Queja::create([
+    $queja = Queja::create([
         "queja" => $request->queja,
+        "titulo" => $request->titulo,
         'id_cliente' => Auth::guard('cliente')->user()->id
     ]);
+
+
+
+    if($request->hasFile('evidencia')){
+        
+        foreach($request->file('evidencia') as $file){
+
+            //vamos a guardaros en una carpeta diferente
+            $ruta = $file->store('evidencias_reclamaciones', 'public');
+
+            EvidenciaQuejas::create([
+
+                'nombre_archivo' => $file->getClientOriginalName(),
+                'evidencia' => $ruta,
+                'id_queja' => $queja->id
+
+            ]);
+
+        }
+
+    }
+
+
 
     return back()->with('success', 'La información fue enviada con exito!');
     
 }
 
 
-public function seguimiento_quejas_cliente(){
 
-    
+public function seguimiento_quejas_cliente(Queja $queja){
 
+    $evidencias = EvidenciaQuejas::where('id_queja', $queja->id)->get();
+    $comentarios = MensajeQueja::where('id_queja', $queja->id)->get();
 
-    return view('client.seguimiento_quejas');
+    return view('client.seguimiento_quejas', compact('queja', 'evidencias', 'comentarios'));
 
 }
 
+
+
+public function lista_quejas_clientes(){
+
+    $quejas = Queja::where('id_cliente', Auth::guard('cliente')->user()->id)->get();
+    return view('client.lista_quejas', compact('quejas'));
+
+}
+
+
+public function comentario_user_reclamo(Queja $queja, Request $request){
+
+    $request->validate([
+
+        'comentario' => 'required'
+
+    ]);
+
+    if(isset(Auth::guard('cliente')->user()->nombre))$autor =  Auth::guard('cliente')->user()->nombre;
+    
+    if(isset(Auth::guard('admin')->user()->nombre))$autor = Auth::guard('admin')->user()->nombre;
+
+
+    MensajeQueja::create([
+
+        'mensaje' => $request->comentario,
+        'remitente' => $autor,
+        'id_queja' => $queja->id
+
+    ]);
+
+
+    return back()->with('success', 'El comentario fue enviado');
+
+
+
+
+}
 
 
     

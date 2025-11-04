@@ -71,7 +71,7 @@
                     <div class="row   table-responsive">
                         @forelse ($clientes as $cliente)
 
-                            <div class="accordion" id="accordionExample">
+                            <div class="accordion mt-3" id="accordionExample">
                                 <div class="accordion-item border-2 border-primary">
                                     <h2 class="accordion-header" id="headingTwo">
                                         <button data-mdb-collapse-init class="accordion-button fw-bold  collapsed" type="button" data-mdb-target="#cli{{$cliente->id}}" aria-expanded="false" aria-controls="collapseTwo">
@@ -83,10 +83,23 @@
                                             <div class="row align-items-center">
                                                 @forelse ($cliente->quejas as $quejas)
                                                     <div class="col-12 border shadow-sm m-2 py-4">
-                                                        {!! $quejas->queja !!}
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <h3>{{$quejas->titulo}}</h3>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                {!! $quejas->queja !!}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <a href="{{route('seguimiento_quejas.admin', $quejas->id)}}" class="btn btn-primary btn-sm ">
+                                                                    <i class="fa fa-eye"></i>
+                                                                    Ver seguimiento
+                                                                </a>
+                                                            </div>
+                                                        </div>
                                                     </div>
-
-
                                                 @empty
                                                     
                                                 @endforelse
@@ -95,7 +108,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
 
                         @empty

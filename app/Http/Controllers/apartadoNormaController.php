@@ -109,7 +109,7 @@ class apartadoNormaController extends Controller
                 'descripcion' => $request->descripcion_actividad,
                 'id_apartado_norma' => $apartado->id
 
-            ]);
+        ]);
 
 
 

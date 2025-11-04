@@ -8,12 +8,19 @@ class Queja extends Model
 {
 
     protected $table = 'quejas';
-    protected $fillable = ['queja', 'id_cliente'];
+    protected $fillable = ['titulo', 'queja', 'id_cliente'];
 
 
 
     public function cliente(){
         return $this->belongsTo(Cliente::class);
+    }
+
+
+    public function evidencias_quejas(){
+
+        return $this->hasMany(EvidenciaQuejas::class, 'id_cliente');
+    
     }
 
 

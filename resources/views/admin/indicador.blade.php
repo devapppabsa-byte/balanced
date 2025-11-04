@@ -48,8 +48,8 @@
 <div class="container-fluid">
     <div class="row border py-2 justify-content-center bg-white shadow-sm">
 
-        <div class="col-12 col-sm-12 col-md-3 col-lg-1 m-1">
-            <button class="btn btn-secondary bt-sm w-100"
+        <div class="col-5 col-sm-4 col-md-3 col-lg-auto m-1">
+            <button class="btn btn-secondary btn-sm w-100"
             data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalCampos">
                 <i class="fa fa-plus-circle mx-2"></i>
                  Campos Vacios
@@ -57,47 +57,47 @@
         </div>
 
 
-        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
-            <button class="btn btn-secondary w-100"
+        <div class="col-5 col-sm-3 col-md-5 col-lg-auto m-1">
+            <button class="btn btn-secondary btn-sm w-100"
             data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalCamposPrecargados">
                 <i class="fa fa-plus-circle mx-2"></i>
-                 Campos Precargados
+                 Precargados
             </button>
         </div>
 
-        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
-            <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalPromediarCampos">
+        <div class="col-5 col-sm-3 col-md-5 col-lg-auto m-1">
+            <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalPromediarCampos">
               <i class="fa-solid fa-scale-balanced"></i>
-                Crear Campo Promedio
+                Promedio
             </button>
         </div>
 
-        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
-             <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalDividirCampos">
+        <div class="col-5 col-sm-3 col-md-5 col-lg-auto m-1">
+             <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalDividirCampos">
                <i class="fa-solid fa-divide fw-bold"></i>
-                 Crear Campo División
+                 División
              </button>
          </div>
 
-        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
-            <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalSumarCampos">
+        <div class="col-5 col-sm-3 col-md-5 col-lg-auto m-1">
+            <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalSumarCampos">
               <i class="fa-solid fa-plus fw-bold"></i>
-                Crear Campo Suma
+                Suma
             </button>
         </div>
 
-        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
-            <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalRestarCampos">
+        <div class="col-5 col-sm-3 col-md-5 col-lg-auto m-1">
+            <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalRestarCampos">
               <i class="fa-solid fa-minus fw-bold"></i>
-                Crear Campo Resta
+                Resta
             </button>
         </div>
 
 
         <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
-            <button class="btn btn-outline-primary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalMultiplicarCampos">
+            <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalMultiplicarCampos">
                 <i class="fa-solid fa-square-xmark"></i>
-                Crear Campo Multiplicación
+                Multiplicación
             </button>
         </div>
 
@@ -184,7 +184,7 @@
 
                 </div>
 
-                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
+                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
                     @csrf
                     <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a promediar </h6>
                     
@@ -247,10 +247,16 @@
 
                 </div>
 
-                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
-                    @csrf
-                    <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a promediar </h6>
-                </form>
+                <div class="row m-3 justify-content-around">
+                    
+                    <div class="col-6 bg-light pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h6 class="">Minuendo</h6>
+                    </div>
+                    <div class="col-6 bg-light pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h6 class="">Sustraendo</h6>
+                    </div>
+                    
+                </div>
 
                 <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
 
@@ -262,7 +268,7 @@
 
                         <div class="form-check mt-2">
                             <input class="form-check-input form-check-input-lg" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
-                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Campo Final</label>
                         </div>
 
                         <button  class="btn btn-primary" form="promedio_container" >
@@ -307,9 +313,9 @@
 
                 </div>
 
-                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
+                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
                     @csrf
-                    <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a promediar </h6>
+                    <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a multiplicar </h6>
                 </form>
 
                 <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
@@ -322,7 +328,7 @@
 
                         <div class="form-check mt-2">
                             <input class="form-check-input form-check-input-lg" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
-                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Campo Final</label>
                         </div>
 
                         <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
@@ -360,7 +366,7 @@
 
 
                     @forelse ($campos_unidos as $campo_unido)
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3  border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
                             <label class="no-drop">{{ $campo_unido->nombre }}</label>
                             <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
                         </div>
@@ -371,12 +377,19 @@
 
                 </div>
 
-                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
-                    @csrf
-                    <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a promediar </h6>
-                </form>
+                <div class="row m-3 justify-content-around border-dashed">
+                    
+                    <div class="col-6 bg-light border pb-5 ">
+                        <h6 class="">Divisor</h6>
+                    </div>
+                    <div class="col-6 bg-light border pb-5">
+                        <h6 class="">Dividendo</h6>
+                    </div>
+                    
+                </div>
 
-                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
+
+                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 no-drop " id="vista_previa_campo" >
 
                     <h6 class="no-drop">Campo Generado</h6>
 
@@ -386,7 +399,7 @@
 
                         <div class="form-check mt-2">
                             <input class="form-check-input form-check-input-lg" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
-                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Campo Final</label>
                         </div>
 
                         <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
@@ -436,7 +449,7 @@
 
                 </div>
 
-                <form action="#" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="suma_container">
+                <form action="#" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)" id="suma_container">
                     @csrf
                     <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a sumar. </h6>
                 </form>
@@ -451,7 +464,7 @@
 
                         <div class="form-check mt-2">
                             <input class="form-check-input form-check-input-lg" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
-                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Campo Final</label>
                         </div>
 
                         <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}

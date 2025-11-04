@@ -178,6 +178,23 @@ Route::get('/perfil_admin/lista_indicadores/{departamento}', [indicadorControlle
 Route::get('/perfil_admin/lista_indicadores/detalle_indicador/{indicador}', [indicadorController::class, 'indicador_lleno_show_admin'])->name('indicador.lleno.show.admin');
 
 
+
+
+
+
+
+
+//Rutas del seguimiento de las quejas desde el perifl del admin
+Route::get('/perfil_admin/quejas/seguimiento_quejas/{queja}',[quejasController::class, 'seguimiento_quejas_admin'])->name('seguimiento_quejas.admin');
+
+
+
+
+
+
+
+
+
 //rutas de las evaluaciones de los proveedores
 Route::post('/perfil_admin/proveedores/', [proveedorController::class, 'proveedor_store'])->name('proveedor.store');
 Route::post('/perfil_usuario/agregar_evauacion/{user}', [userController::class, 'evaluacion_servicio_store'])->name('evaluacion.servicio.store');
@@ -191,11 +208,15 @@ Route::get('/login_cliente/ingreso_cliente', [clienteController::class, 'perfil_
 //Para contestar los cuestionarios
 Route::get('/perfil_cliente/cuestionario/{encuesta}', [clienteController::class, 'index_encuesta'])->name("index.encuesta");
 Route::post('/perfil_cliente/cuestionario/contestando/{encuesta}', [clienteController::class, 'contestar_encuesta'])->name("contestar.encuesta");
+
 Route::get('/perfil_cliente/cuestionario/contestado/{encuesta}', [clienteController::class, 'index_encuesta_contestada'])->name('index.encuesta.contestada');
 
 Route::post('/perfil_cliente/queja', [clienteController::class, 'queja_cliente'])->name('queja.cliente');
-Route::get('/perfil_cliente/seguimientos', [clienteController::class, 'seguimiento_quejas_cliente'])->name('seguimiento.quejas.cliente');
+Route::get('/perfil_cliente/lista_quejas', [clienteController::class, 'lista_quejas_clientes'])->name('lista.quejas.clientes.clientes');
 
+Route::get('/perfil_cliente/seguimientos/{queja}', [clienteController::class, 'seguimiento_quejas_cliente'])->name('seguimiento.quejas.cliente');
+
+Route::post('/perfil_cliente/seguimientos/comentando/{queja}', [clienteController::class, 'comentario_user_reclamo'])->name('comentario.user.reclamo');
 
 
 
