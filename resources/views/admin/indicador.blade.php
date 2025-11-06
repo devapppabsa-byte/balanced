@@ -48,7 +48,7 @@
 <div class="container-fluid">
     <div class="row border py-2 justify-content-center bg-white shadow-sm">
 
-        <div class="col-5 col-sm-4 col-md-3 col-lg-auto m-1">
+        <div class="col-3 col-sm-4 col-md-3 col-lg-auto m-1">
             <button class="btn btn-secondary btn-sm w-100"
             data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalCampos">
                 <i class="fa fa-plus-circle mx-2"></i>
@@ -57,7 +57,7 @@
         </div>
 
 
-        <div class="col-5 col-sm-3 col-md-5 col-lg-auto m-1">
+        <div class="col-3 col-sm-3 col-md-3 col-lg-auto m-1">
             <button class="btn btn-secondary btn-sm w-100"
             data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalCamposPrecargados">
                 <i class="fa fa-plus-circle mx-2"></i>
@@ -65,28 +65,28 @@
             </button>
         </div>
 
-        <div class="col-5 col-sm-3 col-md-5 col-lg-auto m-1">
+        <div class="col-3 col-sm-3 col-md-3 col-lg-auto m-1">
             <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalPromediarCampos">
               <i class="fa-solid fa-scale-balanced"></i>
                 Promedio
             </button>
         </div>
 
-        <div class="col-5 col-sm-3 col-md-5 col-lg-auto m-1">
+        <div class="col-3 col-sm-3 col-md-3 col-lg-auto m-1">
              <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalDividirCampos">
                <i class="fa-solid fa-divide fw-bold"></i>
                  División
              </button>
          </div>
 
-        <div class="col-5 col-sm-3 col-md-5 col-lg-auto m-1">
+        <div class="col-3 col-sm-3 col-md-3 col-lg-auto m-1">
             <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalSumarCampos">
               <i class="fa-solid fa-plus fw-bold"></i>
                 Suma
             </button>
         </div>
 
-        <div class="col-5 col-sm-3 col-md-5 col-lg-auto m-1">
+        <div class="col-3 col-sm-3 col-md-3 col-lg-auto m-1">
             <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalRestarCampos">
               <i class="fa-solid fa-minus fw-bold"></i>
                 Resta
@@ -94,7 +94,7 @@
         </div>
 
 
-        <div class="col-5 col-sm-4 col-md-5 col-lg-auto m-1">
+        <div class="col-3 col-sm-4 col-md-3 col-lg-auto m-1">
             <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalMultiplicarCampos">
                 <i class="fa-solid fa-square-xmark"></i>
                 Multiplicación
@@ -124,12 +124,27 @@
                             <th scope="col">Id</th>
                             <th scope="col">Nombre del campo</th>
                             <th scope="col">Tipo</th>
-                            <th scope="col">Descripcion</th>
-                            <th scope="col">Vista previa</th>
+                            <th scope="col">Descripción</th>
                             <th scope="col">Acciones</th>
                         </thead>
                         <tbody class="" id="contenedor">
-    
+                            @forelse ($campos_unidos as $campo)
+
+                                <tr>
+                                    <td>{{$campo->id}}</td>
+                                    <td>{{$campo->nombre}}</td>
+                                    <td>{{($campo->tipo) ? $campo->tipo : $campo->tipo_dato}}</td>
+                                    <td>{!!($campo->descripcion) ? $campo->descripcion : ' <i class="fa fa-info-circle text-primary"></i> No hay descripción disponible'!!}</td>
+                                    <td>
+                                        <buttton class="btn btn-danger btn-control-sm py-2 px-3" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del{{$campo->id_input}}">
+                                            <i class="fa fa-trash"></i>
+                                        </buttton>
+                                    </td>
+                                </tr>
+                                
+                            @empty
+                                
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -154,6 +169,9 @@
 </div>
 
 
+
+
+{{-- modales de los campos calculados --}}
 <div class="modal fade" id="modalPromediarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -167,7 +185,7 @@
             </div>
             <div class="modal-body p-2">
 
-                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container_promedio" ondrop="drop(event)" ondragover="allowDrop(event)">
                     <div class="col-12 no-drop m-2">
                         <h6 class"no-drop">Campos Disponibles</h6>
                     </div>
@@ -180,21 +198,22 @@
                     @empty
                         
                     @endforelse
-
-
                 </div>
 
-                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
+                <div class="form-group mt-3 mx-4 no-drop">
+                    <div class="form-outline no-drop" data-mdb-input-init>
+                        <input type="text" class="form-control form-control-lg no-drop {{ $errors->first('nombre') ? 'is-invalid' : '' }}" form="promedio_container" name="nombre">
+                        <label class="form-label" for="nombre" >Nombre nuevo campo </label>
+                    </div>
+                </div>
+
+                <form action="{{route("input.promedio.guardar", $indicador->id)}}"  autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 p-3" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
                     @csrf
-                    <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a promediar </h6>
+                    <h6 class="no-drop" id="letrero_promedio" style="z-index: 1"> Arrastra los campos a promediar </h6>
+
+
                     
                 </form>
-
-                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
-
-                    <h6 class="no-drop">Campo Generado</h6>
-
-                </div>
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
@@ -230,7 +249,7 @@
             </div>
             <div class="modal-body p-2">
 
-                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="row pb-5 px-2 bg-light border m-3"  ondrop="drop(event)" ondragover="allowDrop(event)">
                     <div class="col-12 no-drop m-2">
                         <h6 class="no-drop">Campos Disponibles</h6>
                     </div>
@@ -238,7 +257,7 @@
                     @forelse ($campos_unidos as $campo_unido)
                         <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
                             <label class="no-drop">{{ $campo_unido->nombre }}</label>
-                            <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
+                            <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_resta[]" value="{{$campo_unido->id_input}}">
                         </div>
                     @empty
                         
@@ -249,20 +268,17 @@
 
                 <div class="row m-3 justify-content-around">
                     
-                    <div class="col-6 bg-light pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="row mx-2 bg-light pb-5 border" id="minuendo_container" ondrop="drop(event)" ondragover="allowDrop(event)">
                         <h6 class="">Minuendo</h6>
                     </div>
-                    <div class="col-6 bg-light pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)">
+
+                    <div class="row mx-2 bg-light pb-5 mt-1 border" id="sustraendo_container" ondrop="drop(event)" ondragover="allowDrop(event)">
                         <h6 class="">Sustraendo</h6>
                     </div>
                     
                 </div>
 
-                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
 
-                    <h6 class="no-drop">Campo Generado</h6>
-
-                </div>
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
@@ -313,16 +329,11 @@
 
                 </div>
 
-                <form action="{{route("input.promedio.guardar", $indicador->id)}}" autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
+                <form action="# autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
                     @csrf
                     <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a multiplicar </h6>
                 </form>
 
-                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
-
-                    <h6 class="no-drop">Campo Generado</h6>
-
-                </div>
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
@@ -366,7 +377,7 @@
 
 
                     @forelse ($campos_unidos as $campo_unido)
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-3  border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 py-4 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
                             <label class="no-drop">{{ $campo_unido->nombre }}</label>
                             <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
                         </div>
@@ -379,21 +390,16 @@
 
                 <div class="row m-3 justify-content-around border-dashed">
                     
-                    <div class="col-6 bg-light border pb-5 ">
+                    <div class="col-12 bg-light border pb-5" ondrop="drop(event)" ondragover="allowDrop(event)">
                         <h6 class="">Divisor</h6>
                     </div>
-                    <div class="col-6 bg-light border pb-5">
+                    <div class="col-12 bg-light border pb-5" ondrop="drop(event)" ondragover="allowDrop(event)">
                         <h6 class="">Dividendo</h6>
                     </div>
                     
                 </div>
 
 
-                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 no-drop " id="vista_previa_campo" >
-
-                    <h6 class="no-drop">Campo Generado</h6>
-
-                </div>
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
@@ -454,11 +460,7 @@
                     <h6 class="no-drop" style="z-index: 1"> Arrastra los campos a sumar. </h6>
                 </form>
 
-                <div  class="row m-3 justify-content-center destino  bg-light  pb-5 border no-drop" id="vista_previa_campo">
 
-                    <h6 class="no-drop">Campo Generado</h6>
-
-                </div>
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
@@ -479,6 +481,22 @@
         </div>
     </div>
 </div>
+
+
+{{-- modales de los campos calculados --}}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <div class="modal fade" id="modalCamposPrecargados" tabindex="-1"  aria-labelledby="exampleModalLaaabel" aria-hidden="true" data-mdb-backdrop="static">
@@ -589,47 +607,40 @@
 
 
 
-@php
-    $contador = 0;
-@endphp
+
 @forelse ($campos_unidos as $campo)
 
-@php
-    $contador ++;
-@endphp
+<div class="modal fade" id="del{{$campo->id_input}}" tabindex="-1"  aria-labelledby="exampleMddodalLabel" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <div class="modal-header bg-danger py-4">
+            <h3 class="text-white" id="exampleModalLabel">¿Eliminar a {{$campo->nombre}} ?</h3>
+            <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-4">
 
+            <form action="{{route('eliminar.campo', $campo->id)}}" method="POST">
+                @csrf @method('DELETE')
 
-    <div class="modal fade" id="del{{$contador}}" tabindex="-1"  aria-labelledby="exampleMddodalLabel" aria-hidden="true" data-mdb-backdrop="static">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-            <div class="modal-header bg-danger py-4">
-                <h3 class="text-white" id="exampleModalLabel">¿Eliminar a {{$campo->nombre}} {{$campo->tipo}} {{$campo->tipo_dato}}?</h3>
-                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body py-4">
+                <div class="form-group">
+                    <input type="text" name="id_input" value="{{$campo->id_input}}" >
+                    <input type="text" name="campo_vacio" value="{{$campo->tipo}}">
+                    <input type="text" name="campo_precargado" value="{{$campo->informacion_precargada}}">
+                    <input type="text" name="campo_calculado" value="{{$campo->operacion}}">
+                </div>
 
-                <form action="{{route('eliminar.campo', $campo->id)}}" method="POST">
-                    @csrf @method('DELETE')
+                <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
+                    <h6>Eliminar</h6>
+                </button>
 
-                    <div class="form-group">
-                        <input type="hidden" name="id_input" value="{{$campo->id_input}}" >
-                        <input type="hidden" name="campo_vacio" value="{{$campo->tipo}}">
-                        <input type="hidden" name="campo_precargado" value="{{$campo->informacion_precargada}}">
-                        <input type="hidden" name="campo_calculado" value="{{$campo->operacion}}">
-                    </div>
+            </form>
 
-                    <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
-                        <h6>Eliminar</h6>
-                    </button>
-
-                </form>
-
-            </div>
-            {{-- <div class="modal-footer">
-            </div> --}}
-            </div>
+        </div>
+        {{-- <div class="modal-footer">
+        </div> --}}
         </div>
     </div>
+</div>
 
 @empty
 
@@ -643,194 +654,26 @@
 
 
 @section('scripts')
-    
-{{-- Codigo que genera la tabla que muestra los campos combinados  --}}
-    <script>
-        const campos_ = @json($campos_unidos);
-        const campos = Object.values(campos_);
 
-        const contenedor = document.getElementById("contenedor");
-
-        let contador = 0;
-
-        campos.forEach(campo => {
-
-            contador ++;
-            //este va a ser el codio de la vista previa del input
-            const input1 = document.createElement("input");
-            input1.classList.add("form-control", "w-100");
-            input1.placeholder = campo.nombre;
-            input1.id = campo.id_input;
-            input1.disabled = true;
-            input1.name = "input_promedio[]";
-            if(campo.tipo) input1.type = campo.tipo;
-            if(campo.tipo_dato) input1.type = campo.tipo_dato;
-
-            const tr = document.createElement('tr');
-
-            const tdNombre = document.createElement("td");
-            tdNombre.textContent = campo.nombre;
-
-            const tdTipo = document.createElement("td");
-            
-            if(campo.tipo_dato) {
-                tdTipo.textContent = campo.tipo_dato;
-                input1.value = campo.contenido;
-                // input1.disabled = true;
-            }
-            
-
-            if(campo.tipo){
-
-                tdTipo.textContent = campo.tipo;
-
-            }
-
-            const tdDescripcion = document.createElement("td");
-            tdDescripcion.textContent = campo.descripcion;
-
-            const tdInput = document.createElement("td");
-            tdInput.appendChild(input1)
-
-
-            //botones de eliminar y editar
-            const tdActions = document.createElement("td");
-
-            const btnGroup = document.createElement("div");
-            btnGroup.classList.add("btn-group", "shadow-0");
-
-
-            const btnEliminar = document.createElement("button");
-            btnEliminar.classList.add("btn", "btn-outline-danger");
-            btnEliminar.innerHTML = "<i class='fa fa-trash'></i>";
-            btnEliminar.setAttribute("data-mdb-ripple-init", "");
-            btnEliminar.setAttribute("data-mdb-modal-init", "");
-            btnEliminar.setAttribute("data-mdb-target", "#del"+contador);
-
-            const tdId = document.createElement('td');
-            tdId.textContent = contador;
-            console.log(tdId);
-
-            btnGroup.appendChild(btnEliminar);
-            tdActions.appendChild(btnGroup);
-            tr.appendChild(tdId);
-            tr.appendChild(tdNombre);
-            tr.appendChild(tdTipo);
-            tr.appendChild(tdDescripcion);
-            tr.appendChild(tdInput);
-            tr.appendChild(tdActions);
-            contenedor.appendChild(tr);
-
-
-
-        });
-
-    </script>  
-{{-- Codigo que genera la tabla que muestra los campos combinados  --}}
-
-
-
-    <script>
-
-            const calculados_container = document.getElementById("calculados_container");
-            const campos_para_operaciones = @json($campos_unidos);
-
-
-            let nodo_arrastrado = null;
-
-            // variables que me dan la vista previa de el input generado
-            const contenedor_vista_previa = document.getElementById('vista_previa_campo');
-            const div_columna = document.createElement("div");
-            div_columna.classList.add("col-12", "col-sm-12", "col-md-4", "col-lg-3", "px-3", "py-4", "border", "bg-white", "no-drop");
-            const label_vista_previa = document.createElement("label");
-            // variables que me dan la vista previa de el input generado
+{{-- Me mamecon esto, iba a importar todo el JS en u archivo, pero resulta que estoy mandando una variable de backend a este archivo de blade,
+asi que puse el aterrizado de la variable arriba del codigo del promedio. --}}
+<script>
+    const campos_para_operaciones = @json($campos_unidos);
+    //const calculados_container = document.getElementById("calculados_container_promedio");
+</script>
+<script src="{{asset('js/drop_promedio.js')}}"></script>
+<script src="{{asset('js/drop_resta.js')}}"></script>
 
 
 
 
-            function dragStart(e){
-
-            nodo_arrastrado = e.target;
-            e.dataTransfer.setData('text', e.target.id);
-            console.log("contador")
-            //    console.log(e.dataTransfer.setData('text', e.target.id));
-
-            }
-
-            function allowDrop(e){
-                e.preventDefault();
-            }
-
-
-            function drop(e){
-                e.preventDefault();
-
-                if(nodo_arrastrado){
-
-
-                    let destino = e.target;
-                    const id = e.dataTransfer.getData('text');
-
-                    if(!destino.classList.contains('no-drop')){
-
-
-                        destino.appendChild(nodo_arrastrado);
-
-                        //Aqui ocurre la magia
-                        const inputs = document.querySelectorAll("#promedio_container input");
-                        const inputs_valores = Array.from(inputs);
-                        const input_vista_previa = document.createElement("input"); //es para generar el input que vera el usuario, innecesario en la pratica pero le ayuda al user
-                        const nombre_nuevo_campo = document.createElement("input"); //Es para insertar el nombre del nuevo input, que repetitivo es esto :p
-                        const descripcion_nuevo_campo = document.createElement("textarea");
-                        descripcion_nuevo_campo.classList.add("form-control", "form-control-sm", "mb-1", "no-drop", "w-100"); 
-                        descripcion_nuevo_campo.placeholder = "Insertar Descripción";
-                        descripcion_nuevo_campo.name = "descripcion";   
-                        descripcion_nuevo_campo.setAttribute("form", "promedio_container");
-                        descripcion_nuevo_campo.required = true;
-
-                        nombre_nuevo_campo.classList.add("form-control", "form-control-sm", "mb-1");
-                        nombre_nuevo_campo.placeholder = "Insertar Nombre";
-                        nombre_nuevo_campo.name = "nombre_nuevo";
-                        nombre_nuevo_campo.required = true;
-                        nombre_nuevo_campo.setAttribute("form", "promedio_container");
-                        nombre_nuevo_campo.id = "{{$indicador->id}}";
-                        nombre_nuevo_campo.type = "text";
 
 
 
-                        input_vista_previa.classList.add("form-control", "no-drop");
-                        input_vista_previa.name = "promedio";
-
-                        let suma = 0; //se usa mas adelanta para sumar los valores de os inputs
-
-                        //va recogiendo los datos de cada input y los va sumando
-                        inputs_valores.shift(); //quita el input que trae el toker csrf de laravel
 
 
-                        inputs_valores.forEach(input_valor => {
-                            
-                            if(input_valor.type != "hidden"){
-                            
-                                suma = Number(suma) + Number(input_valor.value);
-                                
-                            }
-
-                        });
 
 
-                        div_columna.innerHTML = "";
-                        input_vista_previa.value = Number(suma) / (Number(inputs_valores.length)/2);
-                        // input_vista_previa.disabled = true;
-                        div_columna.appendChild(nombre_nuevo_campo);
-                        div_columna.appendChild(input_vista_previa);
-                        div_columna.appendChild(descripcion_nuevo_campo);
-                        contenedor_vista_previa.appendChild(div_columna);
-
-                    }
-                }
-            }
-
-    </script>
 
 
 

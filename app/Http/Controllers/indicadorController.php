@@ -224,11 +224,10 @@ public function show_indicador_user(Indicador $indicador){
 
 
 public function input_promedio_guardar(Request $request, Indicador $indicador){
+
+
         
-    //Hay que verificar que solo haya un campo_reultado_final
-
-
-
+    //aqui se hace la verificación si el campo combinado de promedio qued marcado como campo final
     if($request->resultado_final){
 
        $comprobacion = CampoCalculado::where('id_indicador', $indicador->id)
@@ -238,6 +237,7 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
    
 
         //Se necesita comprobar que en el indicador no haya mas Campos que sean Resultado Final
+        //creo que aqui ya hice esa validación, soy un crack ya habia avanzado algo
         if(!$comprobacion->isEmpty() ){
 
             return back()->with('error_input', 'Ya existe un campo de resultado final en este indicador, por lo que no se puede crear otro.' );
@@ -246,6 +246,12 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
 
     }
 
+
+    if(!$request->input_promedio) return back()->with("error", 'Debe agregar almenos un campo');
+    //termina el bloque de comprobacion del campo final
+
+
+    // Tremendo, parece que ya tengo un poco de logic implementada
        //contara los inputs que vienen y creara el ciclo para mandarlos a CamposInvolucrados.
        $contador = count($request->input_promedio);
         
@@ -258,7 +264,7 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
         
         $campo_calculado = CampoCalculado::create([
             
-            "nombre" => $request->nombre_nuevo,
+            "nombre" => $request->nombre,
             "id_input" => $id_input,
             "tipo" => "number",
             "operacion" => "promedio",
