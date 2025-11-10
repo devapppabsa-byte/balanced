@@ -183,8 +183,8 @@
                     <div class="form-group mt-3">
                         <select class="form-control form-control-lg" id="">
                             <option value="" disabled selected>Tipo de usuarios</option>
-                            <option value="Emisor">Emisor</option>
-                            <option value="Receptor">Receptor</option>
+                            <option value="principal">Principal</option>
+                            <option value="lecura">Solo lectura</option>
                         </select>
                     </div>
                 </div>

@@ -101,6 +101,13 @@
             </button>
         </div>
 
+        <div class="col-3 col-sm-4 col-md-3 col-lg-auto m-1">
+            <button class="btn btn-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalPorcentajeCampos">
+                <i class="fa-solid fa-square-xmark"></i>
+                Porcentaje
+            </button>
+        </div>
+
 
     </div>
 </div>
@@ -109,7 +116,7 @@
 
 <div class="container-fluid shadow">
     <div class="row justify-content-around mt-4 mx-2 bg-white pb-5 pt-2 rounded px-4">
-        <div class="col-12 text-center my-3">
+        <div class="col-9 text-center my-3">
             <h3>
                 <i class="fa-solid fa-clipboard-check"></i>
                 Campos del Indicador
@@ -172,6 +179,72 @@
 
 
 {{-- modales de los campos calculados --}}
+<div class="modal fade" id="modalPorcentajeCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary py-3">
+                <h3 class="text-white" id="exampleModalLabel">
+                <i class="fa-solid fa-gauge-simple"></i>
+                   Selecciona los datos que se van a comparar para sacar el porcentaje.
+                </h3>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body p-2">
+
+                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container_promedio" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="col-12 no-drop m-2">
+                        <h6 class"no-drop">Campos Disponibles</h6>
+                    </div>
+
+                    @forelse ($campos_unidos as $campo_unido)
+
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                            <label class="no-drop">{{ $campo_unido->nombre }}</label>
+                            <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
+                        </div>
+
+                    @empty
+                        
+                    @endforelse
+                </div>
+
+                <div class="form-group mt-3 mx-4 no-drop">
+                    <div class="form-outline no-drop" data-mdb-input-init>
+                        <input type="text" class="form-control form-control-lg no-drop {{ $errors->first('nombre') ? 'is-invalid' : '' }}" form="promedio_container" name="nombre">
+                        <label class="form-label" for="nombre" >Nombre nuevo campo </label>
+                    </div>
+                </div>
+
+                <form action="{{route("input.promedio.guardar", $indicador->id)}}"  autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 p-3" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
+                    @csrf
+                    <h6 class="no-drop" id="letrero_promedio" style="z-index: 1"> Arrastra los campos a promediar </h6>
+
+
+                    
+                </form>
+                <div class="modal-footer">
+                    <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
+
+                        <div class="form-check mt-2">
+                            <input class="form-check-input form-check-input-lg" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
+                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                        </div>
+
+                        <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
+                            Crear Campo Promedio
+                        </button>
+                        {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
+                            Vista Previa
+                        </a> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="modal fade" id="modalPromediarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -191,10 +264,12 @@
                     </div>
 
                     @forelse ($campos_unidos as $campo_unido)
+
                         <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
                             <label class="no-drop">{{ $campo_unido->nombre }}</label>
                             <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
                         </div>
+
                     @empty
                         
                     @endforelse
