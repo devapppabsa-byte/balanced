@@ -175,6 +175,7 @@
             @csrf 
             <div class="row">
 
+
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
@@ -183,8 +184,6 @@
                         </div>
                     </div>
                 </div>
-
-
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="form-group mt-3">
@@ -203,7 +202,9 @@
                     <div class="form-group mt-3">
                         <div class="form-outline" id="contenedor_input" data-mdb-input-init>
                             <input type="text" class="form-control form-control-lg" name="informacion" required>
-                            <label class="form-label" for="informacion" >Información </label>
+                            <label class="form-label" for="informacion" >
+                                Información 
+                            </label>
                         </div>
                     </div>
                 </div>

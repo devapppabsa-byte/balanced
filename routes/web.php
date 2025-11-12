@@ -85,6 +85,7 @@ Route::delete('/perfil_admin/elimina_usuario/{usuario}', [userController::class,
 
 //Rutas de los indicadores
 Route::get('/perfil_admin/agregar_indicadores/indicador/{indicador}', [indicadorController::class, 'indicador_index'])->name('indicador.index');
+
 Route::delete('/perfil_admin/agregar_indicadores/{indicador}', [indicadorController::class, 'borrar_indicador'])->name('borrar.indicador');
 
 
@@ -109,7 +110,13 @@ Route::delete('/perfil_admin/agregar_indicadores/indicador/campo_borrado/{campo}
 Route::post("/perfil_admin/agregar_indicadores/indicador/crear_campo_promedio/{indicador}", [indicadorController::class, "input_promedio_guardar"])->name("input.promedio.guardar");
 
 
+//Creando el campo de multiplicacion
+Route::post("/perfil_admin/agregar_indicadores/indicador/crear_campo_multiplicacion/{indicador}", [indicadorController::class, "input_multiplicacion_guardar"])->name('input.multiplicacion.guardar');
 
+//Creando el campo de la suam
+Route::post('/perfil_admin/agregar_indicadores/indicador/crear_campo_suma/{indicador}', [indicadorController::class, "input_suma_guardar"])->name('input.suma.guardar');
+
+Route::post('/perfil_admin/agregar_indicadores/indicador/crear_campo_division/{indicador}', [indicadorController::class, 'input_division_guardar'])->name('input.division.guardar');
 
 
 

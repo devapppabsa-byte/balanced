@@ -64,30 +64,56 @@
 <div class="container-fluid">
 
     <div class="row gap-4  justify-content-center ">
-        <div class="col-12 col-sm-12 border col-md-10 col-lg-10 bg-white boder  shadow shadow-sm py-3 px-5">
-            <div class="row justify-content-start">
-                <div class="col-11">
+
+        <div class="col-12 col-sm-12 border col-md-11 col-lg-10 bg-white boder  shadow shadow-sm py-5 px-5">
+
+            <div class="row justify-content-center">
+                <div class="col-12">
                     <h5>
                         <i class="fa fa-exclamation-circle text-primary"></i>
                         Información para este indicador
                     </h5>
                 </div>
-                @forelse ($campos_llenos as $campo_lleno)
-                <div class="col-auto border border-4 p-2 text-center shadow-sm">
-                    <span>{{$campo_lleno->nombre}}</span>
-                    <h6>{{$campo_lleno->informacion_precargada}}</h6>
-                    <small>{{$campo_lleno->descripcion}}</small>
+
+                {{-- aqui vamos a consultar los campos precargados --}}
+
+                @forelse ($campos_unidos as $campo)
+                <div class="col-11 col-sm-11 col-md-5 col-lg-3 border border-4 p-4 shadow-sm m-3">
+
+                    <span class="fw-bold">{{$campo->nombre}}</span>
+                    <input type="text" class="form-control"  name="{{$campo->nombre}}" value="{{$campo->informacion_precargada}}" disabled>
+                    <small>{{$campo->descripcion}} Aqui va a ir la descripción de cada campo agregado.</small>
+
+                </div>                    
+                @empty
+                    
+                @endforelse
+
+
+                {{-- aqui vamos a consultar los campos precargados --}}
+
+
+                {{-- @forelse ($campos_llenos as $campo_lleno)
+                <div class="col-11 col-sm-11 col-md-5 col-lg-3 border border-4 p-4 shadow-sm m-3">
+
+                    <span class="fw-bold">{{$campo_lleno->nombre}}</span>
+                    <input type="text" class="form-control"  name="{{$campo_lleno->nombre}}" value="{{$campo_lleno->informacion_precargada}}" disabled>
+                    <small>{{$campo_lleno->descripcion}} Aqui va a ir la descripción de cada campo agregado.</small>
+
                 </div>
                 @empty
                     <div class="col-11 border border-4 p-5 text-center">
                         <h2>
                             <i class="fa fa-exclamation-circle text-danger"></i>
-                            No se encontraron datos
-                        </h2>
+                            No se encontraron datos a
+                        </h2> 
                     </div>
-                @endforelse
+                @endforelse --}}
+
             </div>
+
         </div>
+        
     </div>
 
 
@@ -97,7 +123,7 @@
             
         </div>
 
-        <div class="col-auto mx-2 bg-white shadow-sm p-5">
+        <div class="col-11 col-sm-10 col-md-10 col-lg-5  mx-2 bg-white shadow-sm p-5">
             <h5>
                 <i class="fa fa-chart-simple"></i>
                 Seguimiento del Indicador
@@ -132,7 +158,7 @@
                 </tr>
                 <tr>
                     <th>2025</th>
-                    <th scope="row">Septiembre</th>
+                    <th scope="row">Septiembre</th>zzz
                     <td>4000</td>
                     <td>3950</td>
                     <td class="text-success fw-bold">98.75%</td>
@@ -149,7 +175,7 @@
             </div>
         </div>
 
-        <div class="col-11 col-sm-10 col-md-8 col-lg-5 mt-4 shadow p-5 bg-white" >
+        <div class="col-11 col-sm-10 col-md-10 col-lg-5 mt-4 shadow p-5 bg-white" >
             <select name="" class="form-select border-0" id="periodo">
                 <option value="2024">2024</option>
                 <option value="2025">2025</option>
@@ -164,16 +190,16 @@
 
 
 <div class="modal fade" id="llenado_indicadores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-fullscreen-md-down">
         <div class="modal-content">
             <div class="modal-header bg-primary py-4">
                 <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
-                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
             </div>
             <div class="modal-body py-4">
                 <div class="row gap-4 p-2 justify-content-center">
                     @forelse ($campos_vacios as $campo_vacio)
-                        <div class="col-11  col-sm-11 col-md-5 col-lg-4 text-start border border-4 mb-4 p-3 shadow-sm campos_vacios">
+                        <div class="col-11  col-sm-11 col-md-4 col-lg-5 text-start border border-4 mb-4 p-3 shadow-sm campos_vacios">
                             <div class="row justify-content-center">
                                 <div class="col-12">
                                     <label for="" class="fw-bold">{{$campo_vacio->nombre}}</label>

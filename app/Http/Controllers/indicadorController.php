@@ -93,7 +93,9 @@ class indicadorController extends Controller
 
         $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
         $campos_precargados = CampoPrecargado::where('id_indicador', $indicador->id)->get();
+
         $campos_calculados = CampoCalculado::where('id_indicador', $indicador->id)->get();
+        
         //DEspues de obtener los capos calculados correspondientes a este Indicador
         //Se procedera a obtener los id de los campos involucrados con el campo calculado.
         //se optienen para saber como van a ser las opereaciones, aunque en esta seccion podria
@@ -221,12 +223,156 @@ public function show_indicador_user(Indicador $indicador){
 
 
 
+public function input_division_guardar(Request $request, Indicador $indicador){
+
+
+    
+
+    return $request->input_division[2];
+
+
+}
+
+
+
+
+public function input_suma_guardar(Request $request, Indicador $indicador){
+
+
+
+
+if($request->resultado_final){
+
+    $comprobacion = CampoCalculado::where('id_indicador', $indicador->id)
+                    ->whereNotNull('resultado_final')
+                    ->where('resultado_final', '!=', '')
+                    ->get();
+
+    if(!$comprobacion->isEmpty()){
+        
+        return back()->with('error_input', 'Ya existe un campo final en este indicador.');
+        
+    } 
+}
+
+
+if(!$request->input_suma) return back()->with('error', 'Se debe agregar por lo menos un campo!');
+
+    $contador = count($request->input_suma);
+    $fecha = Date('ydmHis');
+    $id_input = strtolower(str_replace(" ","", $fecha.$request->nombre_campo_suma));
+
+
+
+    $campo_calculado = CampoCalculado::create([
+
+        "nombre" => $request->nombre_campo_suma,
+        "id_input" => $id_input,
+        "tipo" => "number",
+        "operacion" => "suma",
+        "resultado_final" => $request->resultado_final,
+        "id_indicador" => $indicador->id,
+        "descripcion" => $request->descripcion
+
+
+    ]);
+
+
+    for($i=0; $i < $contador; $i++){
+
+        CampoInvolucrado::create([
+
+            "id_input" => $request->input_suma[$i],
+            "tipo" => "number",
+            "id_input_calculado" => $campo_calculado->id
+
+        ]);
+
+    }
+
+
+    return back()->with("success", "Se a creado el nuevo campo de suma");
+
+
+}
+
+
+
+
+public function input_multiplicacion_guardar(Request $request, Indicador $indicador){
+
+    
+
+    
+
+    if($request->resultado_final){
+
+        $comprobacion = CampoCalculado::where('id_indicador', $indicador->id)
+                        ->whereNotNull('resultado_final')
+                        ->where('resultado_final', '!=','')
+                        ->get();
+
+
+        if(!$comprobacion->isEmpty()){
+    
+            return back()->with('error_input', 'Ya existe un campo resultado en este indicador.');
+    
+        }
+
+    }
+
+
+    //validando que no venga vacio
+    if(!$request->input_multiplicado) return back()->with("error", 'Se debe poner por lo menos un campo');
+
+    $contador = count($request->input_multiplicado);
+
+    $fecha = Date('ydmHis');
+
+    $id_input = strtolower(str_replace(" ","", $fecha.$request->nombre_campo_multiplicacion));
+
+
+    //se crea el nuevo campo calculado, este campo contendra la informacion de todos los campos que los componen, es decir, despues de crear este campo vamos a  crear los registros de los campos involucrados con este campo calculado.
+
+    
+    
+    $campo_calculado = CampoCalculado::create([
+
+        "nombre" => $request->nombre_campo_multiplicacion,
+        "id_input" => $id_input,
+        "tipo" => "number",
+        "operacion" => "multiplicacion",
+        "resultado_final" => $request->resultado_final,
+        "id_indicador" => $indicador->id,
+        "descripcion" => $request->descripcion
+
+    ]);
+
+    
+
+
+    for($i=0; $i<$contador; $i++){
+
+        CampoInvolucrado::create([
+
+            "id_input" => $request->input_multiplicado[$i],
+            "tipo" => "number",
+            "id_input_calculado" => $campo_calculado->id
+
+        ]);
+
+    }
+
+    return back()->with("success", "Se a creado el nuevo campo de multiplicación");
+
+
+}
+
 
 
 public function input_promedio_guardar(Request $request, Indicador $indicador){
 
-
-        
+       
     //aqui se hace la verificación si el campo combinado de promedio qued marcado como campo final
     if($request->resultado_final){
 
@@ -296,14 +442,11 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
 
 public function lista_indicadores_admin(Departamento $departamento){
 
-
-
     $indicadores = Indicador::where('id_departamento', $departamento->id)->get();
     $encuestas = Encuesta::where('id_departamento', $departamento->id)->get();
     $normas = Norma::where('id_departamento', $departamento->id)->get();
 
     return view('admin.lista_indicadores', compact('indicadores', 'departamento', 'encuestas', 'normas'));
-
 
 }
 

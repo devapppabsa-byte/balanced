@@ -13,6 +13,8 @@ class campoPrecargadoController extends Controller
 
     public function agregar_campo_precargado(Indicador $indicador, Request $request){
 
+    
+        return $request;
         
         $request->validate([
         

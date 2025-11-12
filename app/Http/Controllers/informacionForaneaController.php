@@ -34,10 +34,13 @@ class informacionForaneaController extends Controller
 
 
         InformacionForanea::create([
+
             'nombre_info' => $request->nombre_info,
             'contenido' => $request->informacion,
             'tipo_dato'  => $request->tipo_info
+
         ]);
+
 
 
         return back()->with('success', 'La información fue agregada!');

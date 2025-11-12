@@ -56,14 +56,18 @@
 
     <script>
 
-        const editor = new Quill("#editor", {theme:'snow',})
-
-        const formulario = document.getElementById('formularioQueja')
-        formulario.addEventListener('submit', function(e){
-
-            document.getElementById('queja').value = editor.root.innerHTML;
-
-        })
+        if(document.getElementById('editor')){
+    
+            const editor = new Quill("#editor", {theme:'snow',})
+            
+            const formulario = document.getElementById('formularioQueja')
+            formulario.addEventListener('submit', function(e){
+                
+                document.getElementById('queja').value = editor.root.innerHTML;
+                
+            })
+        
+        }
 
     </script>
     
@@ -76,6 +80,14 @@
     </script>
 
     {{-- notificaciones de todo --}}
+
+        @if (session("error_input"))
+            <script>
+                toastr.error('{{session("error_input")}}', 'Error!')  
+            </script>        
+        @endif
+
+
         @if (session("error"))
             <script>
                 toastr.error('{{session("error")}}', 'Error!');
