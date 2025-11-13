@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("id_input");
             $table->string("tipo");
+            $table->string("posicion")->nullable();
 
             $table->unsignedBigInteger("id_input_calculado");
             $table->foreign("id_input_calculado")

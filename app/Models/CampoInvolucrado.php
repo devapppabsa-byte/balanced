@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CampoInvolucrado extends Model
 {
     protected $table = "input_involucrado";
-    protected $fillable = ["id_input", "tipo", "id_input_calculado"];
+    protected $fillable = ["id_input", "tipo", "id_input_calculado", "posicion"];
 
 
     public function campo_calculado(){

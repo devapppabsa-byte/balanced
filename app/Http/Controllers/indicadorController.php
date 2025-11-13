@@ -221,19 +221,145 @@ public function show_indicador_user(Indicador $indicador){
 }
 
 
+public function input_resta_guardar(Request $request, Indicador $indicador){
 
 
-public function input_division_guardar(Request $request, Indicador $indicador){
+    if($request->resultado_final){
+
+        $comprobacion = CampoCalculado::where('id_indicador', $indicador->id)
+                        ->whereNotNull('resultado_final')
+                        ->where('resultado_final', '!=', '')
+                        ->get();
+
+        if(!$comprobacion->isEmpty()){
+
+            return back()->with("error_input", "Ya existe un campo final en este indicador!");
+        
+        }
+
+    }
+
+    if(count($request->input_resta) < 2 ) return back()->with("error", "Se deben agregar dos campos!");
 
 
-    
+    $id_input = Date('ydmHis').rand(0,100);
 
-    return $request->input_division[2];
+    $campo_calculado = CampoCalculado::create([
+
+            "nombre" => $request->nombre_campo_resta,
+            "id_input" => $id_input,
+            "tipo" => "number",
+            "operacion" => "resta",
+            "resultado_final" => $request->resultado_final,
+            "id_indicador" => $indicador->id,
+            "descripcion" => $request->descripcion
+
+    ]);
+
+
+    CampoInvolucrado::create([
+
+        "id_input" => $request->input_resta[0],
+        "tipo" => "number",
+        "id_input_calculado" => $campo_calculado->id,
+        "posicion" => "0"
+
+    ]);
+
+
+    CampoInvolucrado::create([
+
+        "id_input" => $request->input_resta[1],
+        "tipo" => "number",
+        "id_input_calculado" => $campo_calculado->id,
+        "posicion" => "1"
+
+    ]);
+
+
+    return back()->with("success", "Se agrego el campo de resta!");
+
+
+
+
 
 
 }
 
 
+
+
+public function input_division_guardar(Request $request, Indicador $indicador){
+
+
+
+
+
+     //$request->input_division[0] -> el mero divisor, el que va a dividir
+    //$request->input_division[1] -> el dividendo,es al que se van a dividor
+    if($request->resultado_final){
+
+        $comprobacion = CampoCalculado::where('id_indidcador', $indicador->id)
+                        ->whereNotNull('resultado_final')
+                        ->where('resultado_final', '!=', '')
+                        ->get();
+
+        if(!$comprobacion->isEmpty()){
+
+            return back()->with('error_input', 'Ya existe un campo final en este indicador!');
+
+        }
+
+    }
+
+
+
+    if(count($request->input_division) < 2 ) return back()->with('error', 'Se deben agregar un par de campos');
+
+
+    $id_input  = Date('ydmHis').rand(0,100);
+
+    
+    $campo_calculado = CampoCalculado::create([
+
+        "nombre" => $request->nombre_campo_division,
+        "id_input" => $id_input,
+        "tipo" => "number",
+        "operacion" => "division",
+        "resultado_final" => $request->resultado_final,
+        "id_indicador" => $indicador->id,
+        "descripcion" => $request->descripcion
+
+    ]);
+
+
+    //En lugar del for voy a hacerlo a mano ya que sol son dos campos y necesito diferenciar entre el primero y el segundo
+
+    
+    CampoInvolucrado::create([
+
+        "id_input" => $request->input_division[0],
+        "tipo" => "number",
+        "id_input_calculado" => $campo_calculado->id,
+        "posicion" => "0"
+
+    ]);
+
+
+    CampoInvolucrado::create([
+
+        "id_input" => $request->input_division[1],
+        "tipo" => "number",
+        "id_input_calculado" => $campo_calculado->id,
+        "posicion" => "1"
+
+    ]);
+
+
+
+    return back()->with("success", "Se a creado el nuevo campo de división");
+
+}
 
 
 public function input_suma_guardar(Request $request, Indicador $indicador){
@@ -254,6 +380,7 @@ if($request->resultado_final){
         
     } 
 }
+
 
 
 if(!$request->input_suma) return back()->with('error', 'Se debe agregar por lo menos un campo!');

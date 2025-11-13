@@ -31,20 +31,18 @@ const division_container = document.getElementById("division");
     e.dataTransfer.setData('text', e.target.id);
 
     console.log("Aqui va la logica para cuando el nodo se empieza a arrastrar.")
-    console.log(nodo_arrastrado);
-
-
+  
     //Aqui tenemos el manejo de la UX XD
-        promedio_container.classList.add("border-dashed");
-        letrero_promedio.innerHTML= "<b> Suelta el campo aqui debajo </b>"
+    promedio_container.classList.add("border-dashed");
+    letrero_promedio.innerHTML= "<b> Suelta el campo aqui debajo </b>"
     //Manejo del DOM del container
 
     
 
 
     //el UX de los campos de multiplicacion
-        multiplicacion_container.classList.add("border-dashed");
-        letrero_multiplicacion.innerHTML = "<b> Suelta el campo aqui debajo </b>";
+    multiplicacion_container.classList.add("border-dashed");
+    letrero_multiplicacion.innerHTML = "<b> Suelta el campo aqui debajo </b>";
     //el UX de los campos de multiplicacion
 
 
@@ -95,7 +93,6 @@ const division_container = document.getElementById("division");
 
 
         if(nodo_arrastrado){
-
 
             let destino = e.target;
             const id = e.dataTransfer.getData('text');

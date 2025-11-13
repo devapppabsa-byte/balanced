@@ -191,8 +191,8 @@
                 <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <div class="modal-body p-2">
 
+            <div class="modal-body p-2">
                 <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container_promedio" ondrop="drop(event)" ondragover="allowDrop(event)">
                     <div class="col-12 no-drop m-2">
                         <h6 class"no-drop">Campos Disponibles</h6>
@@ -422,7 +422,7 @@
             </div>
             <div class="modal-body p-2">
 
-                <div class="row pb-5 px-2 bg-light border m-3 justify-content-center"  id="calculados_container" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="row pb-5 px-2 bg-light border m-3 justify-content-center"  id="calculados_container">
                     
                 <div class="col-12 no-drop m-2">
                     <h6 class="no-drop">Campos Disponibles</h6>
@@ -431,7 +431,7 @@
 
 
                 @forelse ($campos_unidos as $campo_unido)
-                    <div class="col-12 col-sm-12 col-md-4 col-lg-3 py-4 px-3 m-1 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                    <div class="col-12 col-sm-12 col-md-4 col-lg-3 py-4 px-3 m-1 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStartDivision(event)">
                         <label class="no-drop">{{ $campo_unido->nombre }}</label>
                         <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_division[]" value="{{$campo_unido->id_input}}">
                     </div>
@@ -442,14 +442,33 @@
 
                 </div>
 
-                <form action="{{route('input.division.guardar', $indicador->id)}}" method="POST" class="row m-3 justify-content-around border-dashed" id="division_container">
-                    @csrf
-                    <div class="col-12 bg-light border pb-5"  ondrop="drop(event)" ondragover="allowDrop(event)">
-                        <h6 class="">Divisor</h6>
+                <div class="form-group mt-5 mx-4 no-drop">
+                    <h4>Datos Nuevo Campo</h4>
+
+        
+                    <div class="form-outline no-drop" data-mdb-input-init>
+                        <input type="text" id="nombre_campo_division" class="form-control form-control-lg no-drop w-100 {{ $errors->first('nombre_campo_division') ? 'is-invalid' : '' }}" form="division_container" name="nombre_campo_division">
+                        <label class="form-label" for="nombre_campo_division" >Nombre nuevo campo </label>
                     </div>
 
-                    <div class="col-12 bg-light border pb-5"  ondrop="drop(event)" ondragover="allowDrop(event)">
-                        <h6 class="">Dividendo</h6>
+
+                    <div class="form-outline no-drop mt-3" data-mdb-input-init>
+                        <textarea class="w-100 form-control" id="descripcion_division" name="descripcion" form="division_container"></textarea>
+                        <label class="form-label" for="descripcion_division">Descripción del campo</label>
+                    </div>
+                    
+                </div>
+
+                <form action="{{route('input.division.guardar', $indicador->id)}}" method="POST" class="row m-3 justify-content-center " id="division_container">
+                    @csrf
+
+                    <h6 class="my-0 no-drop">Divisor</h6>
+                    
+                    <div class="col-12 bg-light border pb-5 mb-3 text-center" ondrop="dropDivision(event)" ondragover="allowDropDivision(event)" id="divisor_container">
+                    </div>
+                    
+                    <h6 class="my-0 no-drop">Dividendo</h6>
+                    <div class="col-12 bg-light border pb-5 mb-3 text-center" ondrop="dropDivision(event)" ondragover="allowDropDivision(event)" id="dividendo_container">
                     </div>
                     
                 </form>
@@ -463,12 +482,9 @@
                             <label class="form-check-label text-danger fw-bold" for="resultado_final">Campo Final</label>
                         </div>
 
-                        <button  class="btn btn-primary" form="division_container" > {{-- id="crear_campo_promedio" --}}
+                        <button  class="btn btn-primary" form="division_container">
                             Crear Campo Promedio
                         </button>
-                        {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
-                            Vista Previa
-                        </a> --}}
                     </div>
                 </div>
             </div>
@@ -490,13 +506,13 @@
             </div>
             <div class="modal-body p-2">
 
-                <div class="row pb-5 px-2 bg-light border m-3"  ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="row pb-5 px-2 bg-light border m-3" >
                     <div class="col-12 no-drop m-2">
                         <h6 class="no-drop">Campos Disponibles</h6>
                     </div>
 
                     @forelse ($campos_unidos as $campo_unido)
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white my-1" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStartResta(event)">
                             <label class="no-drop">{{ $campo_unido->nombre }}</label>
                             <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_resta[]" value="{{$campo_unido->id_input}}">
                         </div>
@@ -504,31 +520,48 @@
                         
                     @endforelse
                    
-
                 </div>
 
-                <div class="row m-3 justify-content-around">
-                    
-                    <div class="row mx-2 bg-light pb-5 border" id="minuendo_container" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        <h6 class="">Minuendo</h6>
+                <div class="form-group mt-5 mx-4 no-drop">
+                    <h4>Datos Nuevo Campo</h4>
+
+        
+                    <div class="form-outline no-drop" data-mdb-input-init>
+                        <input type="text" id="nombre_campo_resta" class="form-control form-control-lg no-drop w-100 {{ $errors->first('nombre_campo_resta') ? 'is-invalid' : '' }}" form="resta_container" name="nombre_campo_resta">
+                        <label class="form-label" for="nombre_campo_resta" >Nombre nuevo campo </label>
                     </div>
 
-                    <div class="row mx-2 bg-light pb-5 mt-1 border" id="sustraendo_container" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        <h6 class="">Sustraendo</h6>
+
+                    <div class="form-outline no-drop mt-3" data-mdb-input-init>
+                        <textarea class="w-100 form-control" id="descripcion_resta" name="descripcion" form="resta_container"></textarea>
+                        <label class="form-label" for="resta_division">Descripción del campo</label>
                     </div>
                     
                 </div>
+
+                <form action="{{route('input.resta.guardar', $indicador->id)}}" method="POST" id="resta_container" class="row m-3 justify-content-around">
+                    @csrf
+                    
+                    <h6 class="my-0">Minuendo</h6>
+                    <div class="row mx-2 bg-light pb-5 border" id="minuendo_container" ondrop="dropResta(event)" ondragover="allowDropResta(event)" id="minuendo_container">
+                    </div>
+                    
+                    <h6 class="my-0">Sustraendo</h6>
+                    <div class="row mx-2 bg-light pb-5 mt-1 border" id="sustraendo_container" ondrop="dropResta(event)" ondragover="allowDropResta(event)" id="sustraendo_container">
+                    </div>
+                    
+                </form>
 
 
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
                         <div class="form-check mt-2">
-                            <input class="form-check-input form-check-input-lg" type="checkbox" name="resultado_final" id="resultado_final" />
+                            <input form="resta_container" class="form-check-input form-check-input-lg" type="checkbox" name="resultado_final" id="resultado_final" />
                             <label class="form-check-label text-danger fw-bold" for="resultado_final">Campo Final</label>
                         </div>
 
-                        <button  class="btn btn-primary" >
+                        <button form="resta_container"  class="btn btn-primary" >
                             Crear Campo Promedio
                         </button>
 
@@ -555,14 +588,14 @@
             </div>
             <div class="modal-body p-2">
 
-                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container_porcentaje" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container_porcentaje" ondrop="dropPorcentaje(event)" ondragover="allowDropPorcentaje(event)">
                     <div class="col-12 no-drop m-2">
                         <h6 class"no-drop">Campos Disponibles</h6>
                     </div>
 
                     @forelse ($campos_unidos as $campo_unido)
 
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStartPorcentaje(event)">
                             <label class="no-drop">{{ $campo_unido->nombre }}</label>
                             <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
                         </div>
@@ -573,31 +606,49 @@
                 </div>
             
 
-                <div class="form-group mx-4 no-drop">
+                <div class="form-group mt-5 mx-4 no-drop">
+                    <h4>Datos Nuevo Campo</h4>
+
+        
                     <div class="form-outline no-drop" data-mdb-input-init>
-                        <label class="form-label" for="nombre" >Nombre nuevo campo </label>
+                        <input type="text" id="nombre_campo_porcentaje" class="form-control form-control-lg no-drop w-100 {{ $errors->first('nombre_campo_porcentaje') ? 'is-invalid' : '' }}" form="resta_container" name="nombre_campo_porcentaje">
+                        <label class="form-label" for="nombre_campo_porcentaje" >Nombre nuevo campo </label>
                     </div>
+
+
+                    <div class="form-outline no-drop mt-3" data-mdb-input-init>
+                        <textarea class="w-100 form-control" id="descripcion_porcentaje" name="descripcion" form="porcentaje_container"></textarea>
+                        <label class="form-label" for="descripcion_porcentaje">Descripción del campo</label>
+                    </div>
+                    
                 </div>
                 
-                <form action="{{route("input.promedio.guardar", $indicador->id)}}"  autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 p-3" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    
-                    @csrf
-                    <input type="text" class="form-control form-control-lg no-drop {{ $errors->first('nombre') ? 'is-invalid' : '' }}" name="nombre">
-                    
-                    <h6 class="no-drop" id="letrero_promedio" style="z-index: 1"> Arrastra los campos a promediar </h6>
 
+
+                <form action="{{route('input.resta.guardar', $indicador->id)}}" method="POST" id="resta_container" class="row m-3 justify-content-around">
+                    @csrf
+                    
+                    <h6 class="my-0">Parte (Cantidad a comparar)</h6>
+                    <div class="row mx-2 bg-light pb-5 border" id="minuendo_container" ondrop="dropPorcentaje(event)" ondragover="allowDropPorcentaje(event)" id="minuendo_container">
+                    </div>
+                    
+                    <h6 class="my-0">Base (Cantidad sobre la que se va a comparar)</h6>
+                    <div class="row mx-2 bg-light pb-5 mt-1 border" id="sustraendo_container" ondrop="dropPorcentaje(event)" ondragover="allowDropPorcentaje(event)" id="sustraendo_container">
+                    </div>
+                    
                 </form>
+
 
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
                         <div class="form-check mt-2">
-                            <input class="form-check-input form-check-input-lg"  type="checkbox" name="resultado_final" id="resultado_final" />
+                            <input class="form-check-input form-check-input-lg"  type="checkbox" name="resultado_final" id="resultado_final" form="porcentaje_container"/>
                             <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
                         </div>
 
-                        <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
-                            Crear Campo Promedio
+                        <button  class="btn btn-primary" form="porcentaje_container" > {{-- id="crear_campo_promedio" --}}
+                            Crear Campo Porcentaje
                         </button>
                         {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
                             Vista Previa
@@ -793,6 +844,7 @@ asi que puse el aterrizado de la variable arriba del codigo del promedio. --}}
     //const calculados_container = document.getElementById("calculados_container_promedio");
 </script>
 <script src="{{asset('js/drop.js')}}"></script>
+<script src="{{asset('js/drop_division.js')}}"></script>
 <script src="{{asset('js/drop_resta.js')}}"></script>
 
 
