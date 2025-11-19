@@ -39,11 +39,25 @@ function dropPorcentaje(e){
     if(nodo_arrastrado_porcentaje){
         
         let destino = e.target;
+        const id = e.dataTransfer.getData('text');
+
         
         if(!destino.classList.contains('no-drop')){
+        
+            const existe = Array.from(destino.children).some(child => child.dataset.originalId === id);
+
+            if(existe){
+                alert('El campo ya existe!');
+                return;
+            }
+
+            
+
             destino.innerHTML = "";
             const copia = nodo_arrastrado_porcentaje.cloneNode(true);
+            copia.dataset.originalId = id;
             destino.appendChild(copia);
+        
         }
 
     }

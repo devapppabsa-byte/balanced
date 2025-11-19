@@ -39,6 +39,13 @@ Route::get('/perfil_usuario/cumplimiento_normativo/registro_cumplimiento_normati
 
 
 
+// aqui van a estar las rutas para el fucking llenado de indicadores
+Route::post('/perfil_usuario/indicador/llenado_de_informacion/{indicador}', [indicadorController::class, 'llenado_informacion_indicadores'])->name('llenado.informacion.indicadores');
+
+
+// aqui van a estar las rutas para el fucking llenado de indicadores
+
+
 
 
 

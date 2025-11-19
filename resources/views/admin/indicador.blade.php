@@ -195,14 +195,14 @@
             </div>
 
             <div class="modal-body p-2">
-                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container_promedio" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="row pb-5 px-2 bg-light border m-3 no-drop"  id="calculados_container_promedio" ondrop="dropPromedio(event)" ondragover="allowDropPromedio(event)">
                     <div class="col-12 no-drop m-2">
                         <h6 class"no-drop">Campos Disponibles</h6>
                     </div>
 
                     @forelse ($campos_unidos as $campo_unido)
 
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStartPromedio(event)">
                             <label class="no-drop">{{ $campo_unido->nombre }}</label>
                             <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
                         </div>
@@ -232,7 +232,7 @@
                 </div>
 
 
-                <form action="{{route("input.promedio.guardar", $indicador->id)}}"  autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 p-3" ondrop="drop(event)" ondragover="allowDrop(event)" id="promedio_container">
+                <form action="{{route("input.promedio.guardar", $indicador->id)}}"  autocomplete="off" method="POST" class="row  m-3  destino  bg-light  pb-5 p-3" ondrop="dropPromedio(event)" ondragover="allowDropPromedio(event)" id="promedio_container">
                     @csrf
                     <h6 class="no-drop" id="letrero_promedio" style="z-index: 1"> Arrastra los campos a promediar </h6>
                 </form>
@@ -846,23 +846,10 @@ asi que puse el aterrizado de la variable arriba del codigo del promedio. --}}
     //const calculados_container = document.getElementById("calculados_container_promedio");
 </script>
 
-<script src="{{asset('js/drop.js')}}"></script>
+{{-- <script src="{{asset('js/drop.js')}}"></script> --}}
+<script src="{{asset('js/drop_promedio.js')}}" ></script>
 <script src="{{asset('js/drop_division.js')}}"></script>
 <script src="{{asset('js/drop_resta.js')}}"></script>
 <script src="{{asset('js/drop_suma.js')}}"></script>
 <script src="{{asset('js/drop_porcentaje.js')}}"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @endsection

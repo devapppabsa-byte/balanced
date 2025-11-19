@@ -40,7 +40,12 @@ function dropSuma(e){
         const id = e.dataTransfer.getData('text');
 
         if(!destino.classList.contains('no-drop')){
+
+            //verificando si existe el nodo
+
             destino.appendChild(nodo_arrastrado_suma)
+        
+        
         }
 
     }

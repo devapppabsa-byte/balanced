@@ -15,7 +15,11 @@ class CampoVacio extends Model
 
 
     public function indicador(){
-        $this->belongsTo(Indicador::class, 'id_indicador');
+        return $this->belongsTo(Indicador::class, 'id_indicador');
+    }
+
+    public function informacion_input_vacio(){
+        return $this->hasMany(InformacionInputVacio::class, 'id_input_vacio');
     }
 
 

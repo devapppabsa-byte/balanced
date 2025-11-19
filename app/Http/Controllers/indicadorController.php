@@ -7,6 +7,7 @@ use App\Models\CampoCalculado;
 use App\Models\CampoInvolucrado;
 use App\Models\CampoPrecargado;
 use App\Models\CampoVacio;
+use App\Models\InformacionInputVacio;
 use App\Models\InformacionForanea;
 use Illuminate\Http\Request;
 use App\Models\Departamento;
@@ -200,9 +201,11 @@ public function show_indicador_user(Indicador $indicador){
         })->get();
 
 
+    //Se consulta el campo de resultado final.
     $campo_resultado_final = CampoCalculado::where('id_indicador', $indicador->id)->whereNotNull('resultado_final')->where('resultado_final', '!=', '')->first();
 
 
+    //aqui hay un desmadre, combino todos los campos y les asigno un ID
     $campos_unidos = $campos_vacios->concat($campos_llenos)
                                     ->concat($campos_calculados)
                                     ->sortBy('created_at')
@@ -212,13 +215,38 @@ public function show_indicador_user(Indicador $indicador){
                                     return $item;
     });
 
+    //el desmadre que combina los campos y les asigno un ID
+
+
+    //Vamos a consultar los inputs y vamos a realizar la opereaciones, esto no se como va a ser, va a estar tremendo.
+
+
+
+
+
+
   
 
    
 
     return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios'));
+
+
+
     
-}
+}//cierra el metodo de show_indicador_user
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 public function input_porcentaje_guardar(Request $request, Indicador $indicador){
@@ -633,6 +661,44 @@ public function indicador_lleno_show_admin(Indicador $indicador){
     $campos_llenos = CampoPrecargado::where('id_indicador', $indicador->id)->get();
     
     return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos'));
+
+}
+
+
+
+
+
+
+//aui empieza el codigo para el llenado de indicadores
+public function llenado_informacion_indicadores(Indicador $indicador, Request $request){
+
+    $request->validate([
+
+        "informacion_indicador" => "required",
+        "id_input" => "required",
+        "id_input_vacio" => "required",
+        "tipo_input" => "required"
+    
+    ]);
+
+
+    $contador = count($request->informacion_indicador);
+
+
+        for($i=0 ; $i < $contador ; $i++ ){
+        
+            InformacionInputVacio::create([
+
+                "id_input_vacio" => $request->id_input_vacio[$i],
+                "informacion" => $request->informacion_indicador[$i],
+                "id_input" => $request->id_input[$i],
+                "tipo" => $request->tipo_input[$i]
+
+            ]);
+
+        }
+
+    return back()->with('success', 'El indicador fue rellenado');
 
 }
 

@@ -82,7 +82,7 @@
 
                     <span class="fw-bold">{{$campo->nombre}}</span>
                     <input type="text" class="form-control"  name="{{$campo->nombre}}" value="{{$campo->informacion_precargada}}" disabled>
-                    <small>{{$campo->descripcion}} Aqui va a ir la descripción de cada campo agregado.</small>
+                    <small>{{$campo->descripcion}}</small>
 
                 </div>                    
                 @empty
@@ -198,7 +198,8 @@
             </div>
             <div class="modal-body py-4">
 
-                <form id="formulario_llenado_indicadores" class="row gap-4 p-2 justify-content-center">
+                <form id="formulario_llenado_indicadores" method="POST" action="{{route('llenado.informacion.indicadores', $indicador->id)}}" class="row gap-4 p-2 justify-content-center">
+                    @csrf
                     @forelse ($campos_vacios as $campo_vacio)
                         <div class="col-11  col-sm-11 col-md-4 col-lg-5 text-start border border-4 mb-4 p-3 shadow-sm campos_vacios">
                             <div class="row justify-content-center">
@@ -206,11 +207,12 @@
                                     <label for="" class="fw-bold">{{$campo_vacio->nombre}}</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="{{$campo_vacio->tipo}}" min="1" class="form-control input" name="{{$campo_vacio->id_input}}" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}">
+                                    <input type="{{$campo_vacio->tipo}}" min="1" class="form-control input" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}">
 
                                     {{-- campos ocultos para llevar informacion al controlador --}}
-                                        <input type="text" name="id_input" value="{{$campo_vacio->id_input}}">
-                                        <input type="text" name="date_input" value="{{$campo_vacio->created_at}}">
+                                        <input type="text" name="id_input[]" value="{{$campo_vacio->id}}">
+                                        <input type="text" name="tipo_input[]" value="{{$campo_vacio->tipo}}">
+                                        <input type="text" name="id_input_vacio[]" value="{{$campo_vacio->id_input}}">
                                     {{-- campos ocultos para llevar informacion al controlador --}}
 
                                 </div>
