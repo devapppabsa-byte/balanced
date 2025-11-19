@@ -221,6 +221,59 @@ public function show_indicador_user(Indicador $indicador){
 }
 
 
+public function input_porcentaje_guardar(Request $request, Indicador $indicador){
+
+    if($request->resultado_final){
+
+        $comprobacion = CampoCalculado::where('id_indicador', $indicador->id)
+            ->whereNotNull('resultado_final')
+            ->where('resultado_final', '!=', '')
+            ->get();
+            
+        
+        if(!$comprobacion->isEmpty()){
+            return back()->with('error_input', 'Ya extiste un campo de resultado final en este indicador, por lo que no se puede crear otro. Thanks!');
+        }
+
+    }
+
+
+    if(count($request->input_porcentaje) < 2 ) return back()->with("error", "Debe agregregar un par de campos");
+
+    $contador = count($request->input_porcentaje);
+    $id_input = Date('ydmHis').rand(0,100);
+
+
+
+    $campo_calculado = CampoCalculado::create([
+
+        "nombre" => $request->nombre,
+        "id_input" => $id_input,
+        "tipo" => "number",
+        "operacion" => "porcentaje",
+        "resultado_final" => $request->resultado_final,
+        "id_indicador" => $indicador->id,
+        "descripcion" => $request->descripcion,
+
+    ]);
+
+    for($i=0; $i < $contador; $i++){
+        
+        CampoInvolucrado::create([
+            "id_input" => $request->input_porcentaje[$i],
+            "tipo" => "number",
+            "id_input_calculado" => $campo_calculado->id
+        ]);
+
+    }
+
+    return back()->with("success", "El campo de porcentaje ha sido creado");
+
+
+}
+
+
+
 public function input_resta_guardar(Request $request, Indicador $indicador){
 
 
@@ -383,11 +436,10 @@ if($request->resultado_final){
 
 
 
-if(!$request->input_suma) return back()->with('error', 'Se debe agregar por lo menos un campo!');
+if( count($request->input_suma) < 2) return back()->with('error', 'Se debe agregar por lo menos dos campos!');
 
     $contador = count($request->input_suma);
-    $fecha = Date('ydmHis');
-    $id_input = strtolower(str_replace(" ","", $fecha.$request->nombre_campo_suma));
+    $id_input = Date('ydmHis').rand(0,100);
 
 
 
@@ -450,13 +502,11 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
 
 
     //validando que no venga vacio
-    if(!$request->input_multiplicado) return back()->with("error", 'Se debe poner por lo menos un campo');
+    if(count($request->input_multiplicado) < 2) return back()->with("error", 'Se debe poner por lo menos un par de campos');
 
     $contador = count($request->input_multiplicado);
 
-    $fecha = Date('ydmHis');
-
-    $id_input = strtolower(str_replace(" ","", $fecha.$request->nombre_campo_multiplicacion));
+    $id_input = Date('ydmHis').rand(0,100);
 
 
     //se crea el nuevo campo calculado, este campo contendra la informacion de todos los campos que los componen, es decir, despues de crear este campo vamos a  crear los registros de los campos involucrados con este campo calculado.
@@ -520,7 +570,7 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
     }
 
 
-    if(!$request->input_promedio) return back()->with("error", 'Debe agregar almenos un campo');
+    if(count($request->input_promedio) < 2) return back()->with("error", 'Debe agregar almenos un par de campos');
     //termina el bloque de comprobacion del campo final
 
 
@@ -530,8 +580,7 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
         
 
        //Sacando el ID para el campo y se pueda gestionar el el combinados de campos al crear nuevos
-       $fecha_creado = date("YmdHis");
-       $id_input = strtolower(str_replace(" ", "", $fecha_creado.$request->nombre_nuevo));
+       $id_input = Date('ydmHis').rand(0,100);
        //Sacando el ID para el campo y se pueda gestionar el el combinados de campos al crear nuevos
         
         

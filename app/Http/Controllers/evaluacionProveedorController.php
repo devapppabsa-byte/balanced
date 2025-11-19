@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\EvaluacionProveedor;
 use App\Models\Proveedor;
+use App\Models\Departamento;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,7 @@ class evaluacionProveedorController extends Controller
     
     public function  evaluaciones_show_user(){
 
-        
+            
         $evaluaciones = EvaluacionProveedor::with('proveedor')->where('id_departamento', Auth::user()->departamento->id )->Simplepaginate();
         $proveedores = Proveedor::get();
         

@@ -32,6 +32,7 @@
                     {{session('editado')}}
                 </div>
             @endif
+
             @if (session('deleted'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -48,6 +49,7 @@
 <div class="container-fluid">
     <div class="row border py-2 justify-content-center bg-white shadow-sm">
 
+        
         <div class="col-3 col-sm-4 col-md-3 col-lg-auto m-1">
             <button class="btn btn-secondary btn-sm w-100"
             data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalCampos">
@@ -217,13 +219,13 @@
 
         
                     <div class="form-outline no-drop" data-mdb-input-init>
-                        <input type="text" id="nombre_campo_promedio" class="form-control form-control-lg no-drop w-100 {{ $errors->first('nombre') ? 'is-invalid' : '' }}" form="promedio_container" name="nombre">
+                        <input type="text" id="nombre_campo_promedio" class="form-control form-control-lg no-drop w-100 {{ $errors->first('nombre') ? 'is-invalid' : '' }}" form="promedio_container" name="nombre" required>
                         <label class="form-label" for="nombre_campo_promedio" >Nombre nuevo campo </label>
                     </div>
 
 
                     <div class="form-outline no-drop mt-3" data-mdb-input-init>
-                        <textarea class="w-100 form-control" id="descripcion_promedio" name="descripcion" form="promedio_container"></textarea>
+                        <textarea class="w-100 form-control" id="descripcion_promedio" name="descripcion" form="promedio_container" required></textarea>
                         <label class="form-label" for="descripcion_promedio">Descripción del campo</label>
                     </div>
                     
@@ -348,13 +350,13 @@
             </div>
             <div class="modal-body p-2">
 
-                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container_suma" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container_suma" ondrop="dropSuma(event)" ondragover="allowDropSuma(event)">
                     <div class="col-12 no-drop m-2">
                         <h6 class="no-drop">Campos Disponibles</h6>
                     </div>
 
                     @forelse ($campos_unidos as $campo_unido)
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStartSuma(event)">
                             <label class="no-drop">{{ $campo_unido->nombre }}</label>
                             <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_suma[]" value="{{$campo_unido->id_input}}">
                         </div>
@@ -381,7 +383,7 @@
                     
                 </div>
 
-                <form action="{{route('input.suma.guardar', $indicador->id)}}" autocomplete="off" id="suma_container" method="POST" class="row  m-3  destino  bg-light  pb-5 border-dashed" ondrop="drop(event)" ondragover="allowDrop(event)" id="suma_container">
+                <form action="{{route('input.suma.guardar', $indicador->id)}}" autocomplete="off" id="suma_container" method="POST" class="row  m-3  destino  bg-light  pb-5 border-dashed" ondrop="dropSuma(event)" ondragover="allowDropSuma(event)" id="suma_container">
                     @csrf
                     <h6 class="no-drop" id="letrero_suma" style="z-index: 1"> Arrastra los campos a sumar. </h6>
                 </form>
@@ -588,7 +590,7 @@
             </div>
             <div class="modal-body p-2">
 
-                <div class="row pb-5 px-2 bg-light border m-3"  id="calculados_container_porcentaje" ondrop="dropPorcentaje(event)" ondragover="allowDropPorcentaje(event)">
+                <div class="row pb-5 px-2 bg-light border m-3 no-drop"  id="calculados_container_porcentaje" ondrop="dropPorcentaje(event)" ondragover="allowDropPorcentaje(event)">
                     <div class="col-12 no-drop m-2">
                         <h6 class"no-drop">Campos Disponibles</h6>
                     </div>
@@ -597,7 +599,7 @@
 
                         <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStartPorcentaje(event)">
                             <label class="no-drop">{{ $campo_unido->nombre }}</label>
-                            <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_promedio[]" value="{{$campo_unido->id_input}}">
+                            <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_porcentaje[]" value="{{$campo_unido->id_input}}">
                         </div>
 
                     @empty
@@ -611,7 +613,7 @@
 
         
                     <div class="form-outline no-drop" data-mdb-input-init>
-                        <input type="text" id="nombre_campo_porcentaje" class="form-control form-control-lg no-drop w-100 {{ $errors->first('nombre_campo_porcentaje') ? 'is-invalid' : '' }}" form="resta_container" name="nombre_campo_porcentaje">
+                        <input type="text" id="nombre_campo_porcentaje" class="form-control form-control-lg no-drop w-100 {{ $errors->first('nombre_campo_porcentaje') ? 'is-invalid' : '' }}" form="porcentaje_container" name="nombre">
                         <label class="form-label" for="nombre_campo_porcentaje" >Nombre nuevo campo </label>
                     </div>
 
@@ -625,15 +627,15 @@
                 
 
 
-                <form action="{{route('input.resta.guardar', $indicador->id)}}" method="POST" id="resta_container" class="row m-3 justify-content-around">
+                <form action="{{route('input.porcentaje.guardar', $indicador->id)}}" method="POST" id="porcentaje_container" class="row m-3 justify-content-around">
                     @csrf
                     
                     <h6 class="my-0">Parte (Cantidad a comparar)</h6>
-                    <div class="row mx-2 bg-light pb-5 border" id="minuendo_container" ondrop="dropPorcentaje(event)" ondragover="allowDropPorcentaje(event)" id="minuendo_container">
+                    <div class="row mx-2 bg-light p-3 pb-5 border" ondrop="dropPorcentaje(event)" ondragover="allowDropPorcentaje(event)" id="parte_container">
                     </div>
                     
-                    <h6 class="my-0">Base (Cantidad sobre la que se va a comparar)</h6>
-                    <div class="row mx-2 bg-light pb-5 mt-1 border" id="sustraendo_container" ondrop="dropPorcentaje(event)" ondragover="allowDropPorcentaje(event)" id="sustraendo_container">
+                    <h6 class="my-0">Total (Cantidad sobre la que se va a comparar)</h6>
+                    <div class="row mx-2 bg-light p-3 pb-5 mt-1 border" ondrop="dropPorcentaje(event)" ondragover="allowDropPorcentaje(event)" id="total_container">
                     </div>
                     
                 </form>
@@ -843,10 +845,12 @@ asi que puse el aterrizado de la variable arriba del codigo del promedio. --}}
     const campos_para_operaciones = @json($campos_unidos);
     //const calculados_container = document.getElementById("calculados_container_promedio");
 </script>
+
 <script src="{{asset('js/drop.js')}}"></script>
 <script src="{{asset('js/drop_division.js')}}"></script>
 <script src="{{asset('js/drop_resta.js')}}"></script>
-
+<script src="{{asset('js/drop_suma.js')}}"></script>
+<script src="{{asset('js/drop_porcentaje.js')}}"></script>
 
 
 

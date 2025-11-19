@@ -158,7 +158,7 @@
                 </tr>
                 <tr>
                     <th>2025</th>
-                    <th scope="row">Septiembre</th>zzz
+                    <th scope="row">Septiembre</th>
                     <td>4000</td>
                     <td>3950</td>
                     <td class="text-success fw-bold">98.75%</td>
@@ -197,7 +197,8 @@
                 <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
             </div>
             <div class="modal-body py-4">
-                <div class="row gap-4 p-2 justify-content-center">
+
+                <form id="formulario_llenado_indicadores" class="row gap-4 p-2 justify-content-center">
                     @forelse ($campos_vacios as $campo_vacio)
                         <div class="col-11  col-sm-11 col-md-4 col-lg-5 text-start border border-4 mb-4 p-3 shadow-sm campos_vacios">
                             <div class="row justify-content-center">
@@ -206,6 +207,12 @@
                                 </div>
                                 <div class="col-12">
                                     <input type="{{$campo_vacio->tipo}}" min="1" class="form-control input" name="{{$campo_vacio->id_input}}" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}">
+
+                                    {{-- campos ocultos para llevar informacion al controlador --}}
+                                        <input type="text" name="id_input" value="{{$campo_vacio->id_input}}">
+                                        <input type="text" name="date_input" value="{{$campo_vacio->created_at}}">
+                                    {{-- campos ocultos para llevar informacion al controlador --}}
+
                                 </div>
                                 <div class="col-11 bg-light m-4">
                                     <small>{{$campo_vacio->descripcion}}</small>
@@ -221,7 +228,8 @@
                             </h2>
                         </div>
                     @endforelse
-                </div>
+                </form>
+
                 <div class="row justify-content-center bg-light  rounded p-4">
                     <div class="col-12">
                         <i class="fa fa-exclamation-circle"></i>
@@ -234,7 +242,7 @@
             </div>
             <div class="modal-footer">
                 @if (!$campos_vacios->isEmpty())
-                <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+                <button  class="btn btn-primary w-100 py-3" form="formulario_llenado_indicadores" data-mdb-ripple-init>
                     <h6>Guardar</h6>
                 </button>
                 @endif

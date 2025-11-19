@@ -9,10 +9,6 @@ const letrero_multiplicacion = document.getElementById('letrero_multiplicacion')
 //variables del campo multiplicacion
 
 
-//variables para el campo de suma
-const suma_container = document.getElementById('suma_container');
-const letrero_suma = document.getElementById('letrero_suma');
-//variables para el campo de suma
 
 
 //variables para el campo de division

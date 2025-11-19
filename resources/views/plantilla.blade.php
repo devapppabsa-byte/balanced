@@ -94,6 +94,12 @@
             </script>
         @endif
 
+        @if (session('deleted'))
+            <script>
+                toastr.error('{{session("deleted")}}', 'Eliminado!');
+            </script>
+        @endif
+
 
         @if (session('success'))
             <script>

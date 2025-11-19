@@ -13,6 +13,7 @@ function dragStartResta(e){
     minuendo_container.classList.add('border-dashed');
     minuendo_container.classList.remove('border');
 
+
     sustraendo_container.classList.add('border-dashed');
     sustraendo_container.classList.remove('border');
     

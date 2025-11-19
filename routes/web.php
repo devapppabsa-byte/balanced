@@ -119,8 +119,9 @@ Route::post('/perfil_admin/agregar_indicadores/indicador/crear_campo_suma/{indic
 Route::post('/perfil_admin/agregar_indicadores/indicador/crear_campo_division/{indicador}', [indicadorController::class, 'input_division_guardar'])->name('input.division.guardar');
 
 
-Route::post('/perfil_admin/agregar_indicadores/indicador/crear_campoo_resta/{indicador}', [indicadorController::class, 'input_resta_guardar'])->name('input.resta.guardar');
+Route::post('/perfil_admin/agregar_indicadores/indicador/crear_campo_resta/{indicador}', [indicadorController::class, 'input_resta_guardar'])->name('input.resta.guardar');
 
+Route::post('/perfil_admin/agregar_indicadores/indicador/crear_campo_porcentaje/{indicador}', [indicadorController::class, 'input_porcentaje_guardar'])->name('input.porcentaje.guardar');
 
 
 Route::post('/perfil_admin', [userController::class, 'cerrar_session'])->name('cerrar.session');

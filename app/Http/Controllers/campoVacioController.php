@@ -10,39 +10,37 @@ use Illuminate\Http\Request;
 class campoVacioController extends Controller
 {
 
-    public function agregar_campo_vacio(Request $request,Indicador $indicador){
+public function agregar_campo_vacio(Request $request,Indicador $indicador){
+
+
+    $request->validate([
+        'nombre_campo_vacio' => 'required',
+        'tipo_dato' => 'required'
+    ]);
 
 
 
-        $request->validate([
-            'nombre_campo_vacio' => 'required',
-            'tipo_dato' => 'required'
-        ]);
-
-
-
-    //Sacando el ID para el campo y se pueda gestionar el el combinados de campos al crear nuevos
-       $fecha_creado = date("YmdHis");
-       $id_input = strtolower(str_replace(" ", "", $fecha_creado.$request->nombre_campo_vacio));
-    //Sacando el ID para el campo y se pueda gestionar el el combinados de campos al crear nuevos
+//Sacando el ID para el campo y se pueda gestionar el el combinados de campos al crear nuevos
+    $id_input = date('YmdHis').rand(0,100); 
+//Sacando el ID para el campo y se pueda gestionar el el combinados de campos al crear nuevos
 
 
 
 
-        CampoVacio::create([
+    CampoVacio::create([
 
-            'nombre' => $request->nombre_campo_vacio,
-            'id_input' => $id_input,
-            'tipo' => $request->tipo_dato,
-            'id_indicador' => $indicador->id,
-            'descripcion' => $request->descripcion
-            
-        ]);
-
+        'nombre' => $request->nombre_campo_vacio,
+        'id_input' => $id_input,
+        'tipo' => $request->tipo_dato,
+        'id_indicador' => $indicador->id,
+        'descripcion' => $request->descripcion
         
-        return back()->with('success', 'El campo vacio fue agregado al indicador');        
+    ]);
 
-    }
+    
+    return back()->with('success', 'El campo vacio fue agregado al indicador');        
+
+}
  
 
 }
