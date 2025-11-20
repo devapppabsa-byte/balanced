@@ -1,6 +1,11 @@
 @extends('plantilla')
 @section('title', 'LLenado de Indicadores')
-
+@php
+    use App\Models\CampoCalculado;
+    use App\Models\CampoInvolucrado;
+    use App\Models\CampoPrecargado;
+    use App\Models\CampoVacio;
+@endphp
     
 
 
@@ -124,10 +129,25 @@
         </div>
 
         <div class="col-11 col-sm-10 col-md-10 col-lg-5  mx-2 bg-white shadow-sm p-5">
+            
             <h5>
                 <i class="fa fa-chart-simple"></i>
                 Seguimiento del Indicador
             </h5>
+
+            {{-- Estoy intentando consultar los datos para las operaciones --}}
+            @forelse ($campo_involucrado as $campi)
+                {{$campi}}
+            @empty
+                
+            @endforelse
+
+
+
+            
+            
+
+            
             <div class="table-responsive  border ">
             <table class="table">
                 <thead class="table-primary fjalla-one-regular">

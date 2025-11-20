@@ -12,14 +12,16 @@ class CampoVacio extends Model
     protected $fillable = ['nombre', 'id_input', 'tipo', 'informacion_llenada', 'id_indicador', 'descripcion'];
 
 
-
-
     public function indicador(){
+        
         return $this->belongsTo(Indicador::class, 'id_indicador');
+
     }
 
     public function informacion_input_vacio(){
-        return $this->hasMany(InformacionInputVacio::class, 'id_input_vacio');
+
+        return $this->hasMany(InformacionInputVacio::class, 'id_input');
+    
     }
 
 

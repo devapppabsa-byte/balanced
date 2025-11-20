@@ -31,6 +31,33 @@ class Indicador extends Model
     
     }
 
+    //relaciones con las tablas hijas
+    public function camposCalculados(){
+
+        return $this->hasMany(CampoCalculado::class, "id_indicador");
+    
+    }
+
+    public function campoVacio(){
+
+        return $this->hasMany(CampoVacio::class, "id_indicador");
+    
+    }
+
+    public function indicadorLleno(){
+
+        return $this->hasMany(IndicadorLleno::class, "id_indicador");
+
+    }
+
+    public function campoPrecargado(){
+
+        return $this->hasMany(CampoPrecargado::class, "id_indicador");
+
+    }
+
+    
+
 
 
 

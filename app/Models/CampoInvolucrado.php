@@ -14,5 +14,11 @@ class CampoInvolucrado extends Model
         $this->belongsTo(CampoCalculado::class, "id_calculado");
     }
 
+    public function campo_vacio(){
+    
+        return $this->belongsTo(CampoVacio::class, "id_input_vacio");
+    
+    }
+
 
 }

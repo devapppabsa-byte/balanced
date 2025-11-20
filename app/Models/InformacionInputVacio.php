@@ -14,7 +14,7 @@ class InformacionInputVacio extends Model
 
     public function input_vacio(){
 
-        return $this->belongsTo(CampoVacio::class, 'id_input_vacio');
+        return $this->belongsTo(CampoVacio::class, 'id_input');
 
     }
 

@@ -218,18 +218,31 @@ public function show_indicador_user(Indicador $indicador){
     //el desmadre que combina los campos y les asigno un ID
 
 
-    //Vamos a consultar los inputs y vamos a realizar la opereaciones, esto no se como va a ser, va a estar tremendo.
+
+    //Ok, vamos de nueo con la logica de esta cosa.
+    //este ciclo me va a dar la oportunidad de recorrer todos los campos calculados
+    foreach($campos_calculados as $calculado){
+
+        //este ciclo me poermitira saber los campos involucrados dentro de cada campo calculado.
+        foreach($calculado->campo_involucrado as $campo_involucrado){
+
+            //aqui se deberian hacer las operaciones
+            //entonces aqui se van a consultar todos los inputs, se van a consultar en sus respectivas tablas y se van a, tengo los campos calculados aqui, AL PARECER TENGO QUE CONSULTAR EL ID_INPUT EN TOOODAS LAS TABLAS, lo que me lleva a pensar que hare varias consultas, por ejemplo:
+             $campis = CampoVacio::where("id_input", $campo_involucrado->id_input)->get();
+
+       
 
 
 
+        }
 
 
+    }
 
-  
-
-   
-
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios'));
+    //Ok, vamos de nuevo con la logica de esta cosa
+ 
+    
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', "campo_involucrado"));
 
 
 
