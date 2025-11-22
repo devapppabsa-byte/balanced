@@ -128,7 +128,7 @@
             
         </div>
 
-        <div class="col-11 col-sm-10 col-md-10 col-lg-5  mx-2 bg-white shadow-sm p-5">
+        <div  class="col-11 col-sm-10 col-md-10 col-lg-10  mx-2 bg-white shadow-sm p-5">
             
             <h5>
                 <i class="fa fa-chart-simple"></i>
@@ -143,11 +143,6 @@
             @endforelse
 
 
-
-            
-            
-
-            
             <div class="table-responsive  border ">
             <table class="table">
                 <thead class="table-primary fjalla-one-regular">

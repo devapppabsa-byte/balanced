@@ -217,7 +217,10 @@ public function show_indicador_user(Indicador $indicador){
 
     //el desmadre que combina los campos y les asigno un ID
 
-
+    $campos_involucrados = [];
+    $contador = 0;
+    $ids_inputs = [];
+    $operaciones = [];
 
     //Ok, vamos de nueo con la logica de esta cosa.
     //este ciclo me va a dar la oportunidad de recorrer todos los campos calculados
@@ -226,19 +229,40 @@ public function show_indicador_user(Indicador $indicador){
         //este ciclo me poermitira saber los campos involucrados dentro de cada campo calculado.
         foreach($calculado->campo_involucrado as $campo_involucrado){
 
+
             //aqui se deberian hacer las operaciones
-            //entonces aqui se van a consultar todos los inputs, se van a consultar en sus respectivas tablas y se van a, tengo los campos calculados aqui, AL PARECER TENGO QUE CONSULTAR EL ID_INPUT EN TOOODAS LAS TABLAS, lo que me lleva a pensar que hare varias consultas, por ejemplo:
-             $campis = CampoVacio::where("id_input", $campo_involucrado->id_input)->get();
-
-       
+            //entonces aqui se van a consultar todos los inputs, se van a consultar en sus respectivas tablas y se van a, tengo los campos calculados aqui, AL PARECER TENGO QUE CONSULTAR EL ID_INPUT EN TODAS LAS TABLAS, lo que me lleva a pensar que hare varias consultas, por ejemplo:
 
 
-
+            //Lo que hace este array es que agrega los campos consultados
+            //a una variable ya que esta cosa es un ciclo y tengo que ir 
+            //guardando los resultados para despues compararlos.
+            array_push($campos_involucrados, CampoVacio::where("id_input", $campo_involucrado->id_input)->get());
+            
+            
         }
+        
+        //se retorna la variable dentro del primer ciclo, ya que si lo retorno afuera de los
+        //dos ciclos me hace una consulta de mas.
+        array_push($ids_inputs, $campos_involucrados[$contador][0]->id_input);
+
+        $contador ++;
 
 
+        //aqui se obtiene la operacion que se va a realizar
+        //return $calculado->operacion;
+
+        array_push($operaciones, $campos_calculados[$contador]->operacion);
+
+        return $operaciones[0]; //aqui se optiene la operacion del input en cuestion
+
+
+        
     }
 
+    //en esta parte se van a realizar las operaciones ya que hasta aqui llegan limpios los datos
+    return $operaciones;
+    return $ids_inputs;
     //Ok, vamos de nuevo con la logica de esta cosa
  
     
