@@ -22,4 +22,11 @@ class CampoCalculado extends Model
     }
 
 
+    public function informacion_input_calculado(){
+
+        return $this->hasMany(InformacionInputCalculado::class, 'id_input_calculado');
+
+    }
+
+
 }

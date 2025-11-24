@@ -23,11 +23,8 @@ class indicadorController extends Controller
     public function agregar_indicadores_index(Departamento $departamento){
 
         $indicadores = Indicador::where('id_departamento', $departamento->id)->get();
-
         $usuarios = User::with('departamento')->where('id_departamento', $departamento->id)->get();
-
         $encuestas = Encuesta::where("id_departamento", $departamento->id)->get();
-
         $normas = Norma::where("id_departamento", $departamento->id)->get();
         
 
@@ -35,10 +32,6 @@ class indicadorController extends Controller
 
         $departamentos = Departamento::get();
         
-
-
-
-
 
         return view('admin.agregar_indicadores', compact('departamento','indicadores', 'usuarios', 'departamentos', 'encuestas', 'normas' ));
 
@@ -198,7 +191,7 @@ public function show_indicador_user(Indicador $indicador){
     $campos_calculados = CampoCalculado::with('campo_involucrado')->where('id_indicador', $indicador->id)->where(function ($q) {
             $q->whereNull('resultado_final')
             ->orWhere('resultado_final', '');
-        })->get();
+        })->orderBy('created_at', 'ASC')->get();
 
 
     //Se consulta el campo de resultado final.
@@ -214,59 +207,63 @@ public function show_indicador_user(Indicador $indicador){
                                     $item->id_nuevo = $index + 1; //con esto empezara en 1
                                     return $item;
     });
+    //para poder hacer las opreaciones tengo que consultar todo.
+    
+    
+
 
     //el desmadre que combina los campos y les asigno un ID
-
     $campos_involucrados = [];
+    $campos_involucrados2 = [];
+    $campos_calculados2 = [];
     $contador = 0;
     $ids_inputs = [];
     $operaciones = [];
 
+
+
+
     //Ok, vamos de nueo con la logica de esta cosa.
     //este ciclo me va a dar la oportunidad de recorrer todos los campos calculados
+
+
+
     foreach($campos_calculados as $calculado){
 
-        //este ciclo me poermitira saber los campos involucrados dentro de cada campo calculado.
+
+        //este ciclo me permitira saber los campos involucrados dentro de cada campo calculado.
         foreach($calculado->campo_involucrado as $campo_involucrado){
 
-
-            //aqui se deberian hacer las operaciones
-            //entonces aqui se van a consultar todos los inputs, se van a consultar en sus respectivas tablas y se van a, tengo los campos calculados aqui, AL PARECER TENGO QUE CONSULTAR EL ID_INPUT EN TODAS LAS TABLAS, lo que me lleva a pensar que hare varias consultas, por ejemplo:
-
-
-            //Lo que hace este array es que agrega los campos consultados
-            //a una variable ya que esta cosa es un ciclo y tengo que ir 
-            //guardando los resultados para despues compararlos.
+            //consulta sql para ver los campos vacios que estan involucrados en este input.
             array_push($campos_involucrados, CampoVacio::where("id_input", $campo_involucrado->id_input)->get());
-            
-            
+
+            //defino la variable que me traera los campos calculados que son involucrados en otro campo calculado.
+            $campos_involucrados_calculados = CampoCalculado::where('id_input', $campo_involucrado->id_input)->get();
+
+            array_push($campos_involucrados2, $campos_involucrados_calculados);
+
         }
+
+
+
+
         
         //se retorna la variable dentro del primer ciclo, ya que si lo retorno afuera de los
         //dos ciclos me hace una consulta de mas.
         array_push($ids_inputs, $campos_involucrados[$contador][0]->id_input);
 
-        $contador ++;
-
-
         //aqui se obtiene la operacion que se va a realizar
         //return $calculado->operacion;
 
+        // return $campos_calculados[1];
         array_push($operaciones, $campos_calculados[$contador]->operacion);
 
-        return $operaciones[0]; //aqui se optiene la operacion del input en cuestion
-
-
-        
     }
 
-    //en esta parte se van a realizar las operaciones ya que hasta aqui llegan limpios los datos
-    return $operaciones;
-    return $ids_inputs;
-    //Ok, vamos de nuevo con la logica de esta cosa
+
  
     
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', "campo_involucrado"));
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios'));
 
 
 

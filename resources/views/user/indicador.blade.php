@@ -1,14 +1,5 @@
 @extends('plantilla')
 @section('title', 'LLenado de Indicadores')
-@php
-    use App\Models\CampoCalculado;
-    use App\Models\CampoInvolucrado;
-    use App\Models\CampoPrecargado;
-    use App\Models\CampoVacio;
-@endphp
-    
-
-
 @section('contenido')
 
 <div class="container-fluid">
@@ -124,8 +115,52 @@
 
 
     <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center">
-        <div class="col-12 mb-3">
+        <div class="col-12 mb-3 border-dashed my-5 p-3">
+            <h3>Campo de pruebas :p</h3>
             
+            @php
+                $fechas = [];
+            @endphp
+
+            @forelse ($campos_calculados as $campo_calculado)
+
+                <br> {{$campo_calculado->nombre .' --- '.$campo_calculado->id_input.' --- '. $campo_calculado->operacion}}
+                
+                <br>
+                {{ $campo_calculado->created_at}}
+
+                
+                
+                @forelse ($campo_calculado->campo_involucrado as $campo_involucrado)
+                
+                <br> 
+                Tipo: {{$campo_involucrado->tipo}} <br>
+                Id_input: {{$campo_involucrado->id_input}} <br>
+                Created_at: {{$campo_involucrado->created_at}}
+
+                @php
+                    array_push($fechas, $campo_involucrado->created_at);
+                @endphp
+
+                
+                @empty
+                
+                @endforelse
+                <br>
+                <span>-------------------------------------------------------------</span>              
+
+
+
+            @empty
+                
+            @endforelse
+
+
+            <br>
+
+
+                
+        
         </div>
 
         <div  class="col-11 col-sm-10 col-md-10 col-lg-10  mx-2 bg-white shadow-sm p-5">
@@ -135,12 +170,6 @@
                 Seguimiento del Indicador
             </h5>
 
-            {{-- Estoy intentando consultar los datos para las operaciones --}}
-            @forelse ($campo_involucrado as $campi)
-                {{$campi}}
-            @empty
-                
-            @endforelse
 
 
             <div class="table-responsive  border ">
