@@ -1,6 +1,13 @@
 @extends('plantilla')
 @section('title', 'LLenado de Indicadores')
 @section('contenido')
+@php
+use App\Models\CampoCalculado;
+use App\Models\CampoInvolucrado;
+use App\Models\CampoPrecargado;
+use App\Models\CampoVacio;
+use App\Models\InformacionInputVacio;
+@endphp
 
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center">
@@ -117,51 +124,85 @@
     <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center">
         <div class="col-12 mb-3 border-dashed my-5 p-3">
             <h3>Campo de pruebas :p</h3>
-            
+            <div class="row">
+
             @php
-                $fechas = [];
+                $informacion_campos_vacios_final = [];
+                $id_inputs_involucrados = [];
+                $informacion_input_vacio = [];
+                $suma = 0;
             @endphp
 
-            @forelse ($campos_calculados as $campo_calculado)
-
-                <br> {{$campo_calculado->nombre .' --- '.$campo_calculado->id_input.' --- '. $campo_calculado->operacion}}
-                
-                <br>
-                {{ $campo_calculado->created_at}}
-
-                
-                
-                @forelse ($campo_calculado->campo_involucrado as $campo_involucrado)
-                
-                <br> 
-                Tipo: {{$campo_involucrado->tipo}} <br>
-                Id_input: {{$campo_involucrado->id_input}} <br>
-                Created_at: {{$campo_involucrado->created_at}}
-
-                @php
-                    array_push($fechas, $campo_involucrado->created_at);
-                @endphp
-
-                
-                @empty
-                
-                @endforelse
-                <br>
-                <span>-------------------------------------------------------------</span>              
 
 
 
-            @empty
+            @forelse ($campos_calculados as $campo_calculado) 
                 
-            @endforelse
+            
+                <div class="col-6 border shadow bg-white p-3">
+
+                    <h4>{{$campo_calculado->nombre}}</h4>
+                    <h5>{{$campo_calculado->operacion}}</h5>
+                    <h6>{{$campo_calculado->id_input}}</h6>
+
+                    <hr>
+
+                    {{-- ciclo hijo, aqui se consultan los inputs involucrados --}}
+                    @foreach ($campo_calculado->campo_involucrado as $campo_involucrado)
+            
+                        @php
+                            //Este cacho de codigo une los registros de la tabla: 
+                            $informacion = InformacionInputVacio::where('id_input_vacio', $campo_involucrado->id_input)->first();
+
+                            array_push($informacion_input_vacio, $informacion );
+                        @endphp
+                        
+                        
+                        *Tipo: {{$campo_involucrado->tipo}} <br>
+                        Id_input: {{$campo_involucrado->id_input}} <br>
+                        Created_at: {{$campo_involucrado->created_at}} <br>
+                        @if ($informacion)
+                        Informacion: {{$informacion->informacion}} <br>
+                        
+                    @endif
+                    
+                    @endforeach
+
+
+                    @foreach ($informacion_input_vacio as $datos)
+                        @php                            
+                            if ($datos){
+                                
+                                if($campo_calculado->operacion === "promedio"){
+
+                                    echo $datos->informacion;
+                                    $suma = $suma + $datos->informacion;
+                                
+                                }
+                            }
+                        @endphp
+                    @endforeach
+
+
+                </div>
+
+
+                <h2>{{$suma/2}}</h2>
+                <br><br><br>
+
+                
+            @endforeach
 
 
             <br>
 
 
-                
-        
+
+            </div>
         </div>
+
+
+
 
         <div  class="col-11 col-sm-10 col-md-10 col-lg-10  mx-2 bg-white shadow-sm p-5">
             

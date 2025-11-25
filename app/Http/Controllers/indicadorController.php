@@ -185,17 +185,20 @@ public function borrar_campo(Request $request, $campo){
 public function show_indicador_user(Indicador $indicador){
 
 
+    //se consultan en la vista para que el usuario los rellene
     $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
+
+    //se consultan en la vista para que el usuario los vea
     $campos_llenos = CampoPrecargado::where('id_indicador', $indicador->id)->get();
 
+    //esta es la consulta que me va a dar el arreglo para hacer los iclos y realizar las operaciones.
     $campos_calculados = CampoCalculado::with('campo_involucrado')->where('id_indicador', $indicador->id)->where(function ($q) {
             $q->whereNull('resultado_final')
             ->orWhere('resultado_final', '');
         })->orderBy('created_at', 'ASC')->get();
 
 
-    //Se consulta el campo de resultado final.
-    $campo_resultado_final = CampoCalculado::where('id_indicador', $indicador->id)->whereNotNull('resultado_final')->where('resultado_final', '!=', '')->first();
+
 
 
     //aqui hay un desmadre, combino todos los campos y les asigno un ID
@@ -208,60 +211,36 @@ public function show_indicador_user(Indicador $indicador){
                                     return $item;
     });
     //para poder hacer las opreaciones tengo que consultar todo.
+
     
-    
-
-
-    //el desmadre que combina los campos y les asigno un ID
-    $campos_involucrados = [];
-    $campos_involucrados2 = [];
-    $campos_calculados2 = [];
-    $contador = 0;
-    $ids_inputs = [];
-    $operaciones = [];
+    //Se consulta el campo de resultado final.
+    $campo_resultado_final = CampoCalculado::where('id_indicador', $indicador->id)->whereNotNull('resultado_final')->where('resultado_final', '!=', '')->first();
 
 
 
 
-    //Ok, vamos de nueo con la logica de esta cosa.
-    //este ciclo me va a dar la oportunidad de recorrer todos los campos calculados
 
 
+    foreach($campos_calculados as $campo_calculado){
 
-    foreach($campos_calculados as $calculado){
+        
 
+        foreach($campo_calculado->campo_involucrado as $campo_involucrado){
 
-        //este ciclo me permitira saber los campos involucrados dentro de cada campo calculado.
-        foreach($calculado->campo_involucrado as $campo_involucrado){
-
-            //consulta sql para ver los campos vacios que estan involucrados en este input.
-            array_push($campos_involucrados, CampoVacio::where("id_input", $campo_involucrado->id_input)->get());
-
-            //defino la variable que me traera los campos calculados que son involucrados en otro campo calculado.
-            $campos_involucrados_calculados = CampoCalculado::where('id_input', $campo_involucrado->id_input)->get();
-
-            array_push($campos_involucrados2, $campos_involucrados_calculados);
 
         }
 
 
-
-
-        
-        //se retorna la variable dentro del primer ciclo, ya que si lo retorno afuera de los
-        //dos ciclos me hace una consulta de mas.
-        array_push($ids_inputs, $campos_involucrados[$contador][0]->id_input);
-
-        //aqui se obtiene la operacion que se va a realizar
-        //return $calculado->operacion;
-
-        // return $campos_calculados[1];
-        array_push($operaciones, $campos_calculados[$contador]->operacion);
-
     }
 
 
- 
+
+
+
+    
+
+
+
     
     return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios'));
 
