@@ -19,5 +19,11 @@ class CampoPrecargado extends Model
 
     }
 
+    public function InformacionInputPrecargado(){
+        
+        return $this->hasMany(InformacionInputPrecargado::class, 'id_input_precargado');
+
+    }
+
 
 }

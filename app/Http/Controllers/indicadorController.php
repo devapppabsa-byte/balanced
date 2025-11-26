@@ -685,6 +685,8 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 //aui empieza el codigo para el llenado de indicadores
 public function llenado_informacion_indicadores(Indicador $indicador, Request $request){
 
+    //Aqui es donde se desarrollara la logica, vamos a ver como.
+
     $request->validate([
 
         "informacion_indicador" => "required",

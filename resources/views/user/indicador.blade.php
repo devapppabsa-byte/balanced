@@ -7,6 +7,8 @@ use App\Models\CampoInvolucrado;
 use App\Models\CampoPrecargado;
 use App\Models\CampoVacio;
 use App\Models\InformacionInputVacio;
+use App\Models\InformacionInputPrecargado;
+use App\Models\InformacionInputCalculado;
 @endphp
 
 <div class="container-fluid">
@@ -123,22 +125,25 @@ use App\Models\InformacionInputVacio;
 
     <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center">
         <div class="col-12 mb-3 border-dashed my-5 p-3">
-            <h3>Campo de pruebas :p</h3>
+            <h3 class="fw-bold">Campo de pruebas :p</h3>
             <div class="row">
 
             @php
                 $informacion_campos_vacios_final = [];
                 $id_inputs_involucrados = [];
                 $informacion_input_vacio = [];
-                $suma = 0;
+                
             @endphp
 
 
 
 
             @forelse ($campos_calculados as $campo_calculado) 
+
+                @php
+                    $suma = 0;
+                @endphp
                 
-            
                 <div class="col-6 border shadow bg-white p-3">
 
                     <h4>{{$campo_calculado->nombre}}</h4>
@@ -151,26 +156,39 @@ use App\Models\InformacionInputVacio;
                     @foreach ($campo_calculado->campo_involucrado as $campo_involucrado)
             
                         @php
-                            //Este cacho de codigo une los registros de la tabla: 
-                            $informacion = InformacionInputVacio::where('id_input_vacio', $campo_involucrado->id_input)->first();
 
-                            array_push($informacion_input_vacio, $informacion );
+                            
+
+//Este cacho de codigo une los registros de la tabla: 
+                            $informacionInputVacio = InformacionInputVacio::where('id_input_vacio', $campo_involucrado->id_input)->first();
+
+                            // $informacionInputPrecargado = informacionInputPrecargado::where('id_input_precargado', $campo_involucrado->id_input)->first();
+
+                            // $informacionInputCalculado = InformacionInputCalculado::where('id_input_calculado', $campo_involucrado->id_input)->first();
+
+                            //echo $informacionInputCalculado;
+                            //ahora vamos a limpiar el arreglo unir los dos resultados
+
+
+
+                            array_push($informacion_input_vacio, $informacionInputVacio );
+
                         @endphp
                         
                         
                         *Tipo: {{$campo_involucrado->tipo}} <br>
                         Id_input: {{$campo_involucrado->id_input}} <br>
                         Created_at: {{$campo_involucrado->created_at}} <br>
-                        @if ($informacion)
-                        Informacion: {{$informacion->informacion}} <br>
-                        
-                    @endif
+                        @if ($informacionInputVacio)
+                        Informacion: {{$informacionInputVacio->informacion}} <br>
+                        @endif
                     
                     @endforeach
 
 
                     @foreach ($informacion_input_vacio as $datos)
                         @php                            
+                            
                             if ($datos){
                                 
                                 if($campo_calculado->operacion === "promedio"){
@@ -180,6 +198,7 @@ use App\Models\InformacionInputVacio;
                                 
                                 }
                             }
+
                         @endphp
                     @endforeach
 
@@ -187,7 +206,7 @@ use App\Models\InformacionInputVacio;
                 </div>
 
 
-                <h2>{{$suma/2}}</h2>
+                <h2>{{$suma}}</h2>
                 <br><br><br>
 
                 
