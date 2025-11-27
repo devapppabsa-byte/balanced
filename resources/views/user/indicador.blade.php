@@ -125,13 +125,15 @@ use App\Models\InformacionInputCalculado;
 
     <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center">
         <div class="col-12 mb-3 border-dashed my-5 p-3">
-            <h3 class="fw-bold">Campo de pruebas :p</h3>
+            <h3 class="fw-bold">Campo de pruebas, aqui se estan consultando los campos calculados :p</h3>
             <div class="row">
 
             @php
                 $informacion_campos_vacios_final = [];
                 $id_inputs_involucrados = [];
                 $informacion_input_vacio = [];
+                $sumaSuma = 0;
+                $sumaPromedio= 0;
                 
             @endphp
 
@@ -159,7 +161,7 @@ use App\Models\InformacionInputCalculado;
 
                             
 
-//Este cacho de codigo une los registros de la tabla: 
+                        //En este cacho de codigo une los registros de la tabla: 
                             $informacionInputVacio = InformacionInputVacio::where('id_input_vacio', $campo_involucrado->id_input)->first();
 
                             // $informacionInputPrecargado = informacionInputPrecargado::where('id_input_precargado', $campo_involucrado->id_input)->first();
@@ -168,11 +170,9 @@ use App\Models\InformacionInputCalculado;
 
                             //echo $informacionInputCalculado;
                             //ahora vamos a limpiar el arreglo unir los dos resultados
-
-
-
                             array_push($informacion_input_vacio, $informacionInputVacio );
 
+                            
                         @endphp
                         
                         
@@ -186,27 +186,60 @@ use App\Models\InformacionInputCalculado;
                     @endforeach
 
 
+
+                    @php
+                        $numero_campos = [];    
+                    @endphp
+
                     @foreach ($informacion_input_vacio as $datos)
                         @php                            
-                            
                             if ($datos){
+
                                 
                                 if($campo_calculado->operacion === "promedio"){
 
+                                    
+                                    //agrega los inputs involucrados y los agrego en un array para luego contar los elementos y usarlo en el campo del
+                                    array_push($numero_campos, $datos->informacion);
+                                    $sumaPromedio = $sumaPromedio + $datos->informacion;
                                     echo $datos->informacion;
-                                    $suma = $suma + $datos->informacion;
+
                                 
                                 }
+
+                                if($campo_calculado->operacion === "suma"){
+                                    
+                                    $sumaSuma = $sumaSuma + $datos->informacion;
+                                    echo $datos->informacion;
+
+                                }
+
+
+
+
+
+
                             }
 
                         @endphp
                     @endforeach
 
 
+
+
                 </div>
 
+                {{-- @php
+                    if($campo_calculado->operacion === "promedio"){
+                        echo '<h2>'.$sumaPromedio / count($numero_campos). '</h2>';
+                    }
 
-                <h2>{{$suma}}</h2>
+                    if($campo_calculado->operacion === "suma"){
+                        echo '<h2>'.$sumaSuma.'</h2>';
+                    }
+
+                @endphp --}}
+
                 <br><br><br>
 
                 

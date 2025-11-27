@@ -9,12 +9,14 @@ use App\Models\CampoPrecargado;
 use App\Models\CampoVacio;
 use App\Models\InformacionInputVacio;
 use App\Models\InformacionForanea;
+use App\Models\InformacionInputPrecargado;
 use Illuminate\Http\Request;
 use App\Models\Departamento;
 use App\Models\Norma;
 use App\Models\Indicador;
 use App\Models\Encuesta;
 use App\Models\User;
+use Carbon\Carbon;
 
 class indicadorController extends Controller
 {
@@ -684,9 +686,18 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
 //aui empieza el codigo para el llenado de indicadores
 public function llenado_informacion_indicadores(Indicador $indicador, Request $request){
+    
+    $year = Carbon::now()->year;
+    $month = Carbon::now()->month;
+
+
+    //validando la insercion de datos
+    
+
+
+
 
     //Aqui es donde se desarrollara la logica, vamos a ver como.
-
     $request->validate([
 
         "informacion_indicador" => "required",
@@ -697,10 +708,9 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
     ]);
 
 
-    $contador = count($request->informacion_indicador);
+    
 
-
-        for($i=0 ; $i < $contador ; $i++ ){
+        for($i=0 ; $i < count($request->informacion_indicador) ; $i++ ){
         
             InformacionInputVacio::create([
 
@@ -713,7 +723,114 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
         }
 
+
+        
+        $grupo_inputs_calculados = [];
+        $grupo_inputs_involucrados = [];
+
+        //obtengo todos los campos calculados a llos que pertenecen mis inputs_vacios
+        foreach($request->id_input_vacio as $input_vacio){
+
+                array_push($grupo_inputs_calculados, CampoCalculado::whereHas('campo_involucrado', function ($q) use ($input_vacio){
+                    $q->where('id_input', $input_vacio);
+                })->get());
+
+        }
+
+
+
+
+        
+        //aqui va el ciclo dentro del otro ciclo, aqui estan todos lo inputs_calculados
+        //este arreglo recorre los g
+        foreach($grupo_inputs_calculados as $inputs_calculados){
+            
+            foreach($inputs_calculados as $input_calculado){
+                
+                //aqui van las operaciones segun el tipo de input calculado
+                if($input_calculado->operacion === "suma"){
+                    //se pone la logica del campo suma (sma todos los )
+                    
+                    //obtenemos todos los inputs involucrados en este campo    
+                    $inputs_involucrados = CampoInvolucrado::where('id_input_calculado', $input_calculado->id)->get();
+                    
+                    //variables que me van a dividir los inputsvacios / precargados / calculados
+                    $inputs_vacios_encontrados = [];
+                    $inputs_precargados_encontrados = [];
+                    $inputs_calculados_encontrados = [];
+                    
+
+                    //se hace el ciclo para consultar cada id_input en las tablas de informacion
+                foreach($inputs_involucrados as $input_involucrado){
+
+                    $existe_input_vacio = CampoVacio::where('id_input', $input_involucrado->id_input)->get();
+                    $existe_input_precargado = CampoPrecargado::where('id_input', $input_involucrado->id_input)->get();
+                    $existe_input_calculado = CampoCalculado::where('id_input', $input_involucrado->id_input)->get();
+
+
+                        //aqui estan las validaciones para ver en que tabla existe este campo.
+                        if($existe_input_vacio->isNotEmpty()){
+                            //si uno de los campos vacios existe dentro del campo calculado de aqui vamos a sacar la informacion, aunque... Iba a poner que por logica tiene que tener uno vacio, pero no siempre va a ser asi, pero de aqui arranca todo, es decir, d los campos vacios y de los precargados se toma la informacion para realizar las opreacines....
+                            //en caso de que el indicador no cuente con campos vacios entonces debera contar con campos precargados...
+                            array_push($inputs_vacios_encontrados, $existe_input_vacio);
+
+                        } 
+
+                        if($existe_input_precargado->isNotEmpty()){
+                            array_push($inputs_precargados_encontrados, $existe_input_precargado);
+                        }
+
+
+                        if($existe_input_calculado->isNotEmpty()){
+                            array_push($inputs_calculados_encontrados, $existe_input_calculado);
+                        }
+
+
+                }
+
+                //aqui es donde se harian los ciclos ya que aqui es donde las variables ya vienen cargadas
+
+                foreach($inputs_vacios_encontrados as $input_vacio_encontrado){
+
+
+                    $array_info = [];
+
+                    foreach($input_vacio_encontrado as $vacio_encontrado){
+
+                        //esto me esta devolviendo tooodos los campos de informacio_input_vacio que estan relacionados a un input que estoy manejando, pero no quiero todos, quiero 
+                        $info = InformacionInputVacio::where('id_input_vacio', $vacio_encontrado->id_input)->whereMonth('created_at', $month)->whereYear('created_at', $year)->get();
+
+                        //vete alv, aqui me esta devolviendo todos los inputs 
+                        array_push($array_info, $info); 
+    
+                    }
+
+                    return $info[1];
+
+                }
+                
+                
+                return $inputs_vacios_encontrados;
+            }
+
+            //aqui se realiza la suma y el guardado de la  informacion.
+            
+            
+            
+        }
+        
+        
+        
+    }
+    
+    
+
+
+
+
     return back()->with('success', 'El indicador fue rellenado');
+
+
 
 }
 
