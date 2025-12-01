@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class InformacionInputVacio extends Model
 {
     protected $table = "informacion_input_vacio";
-    protected $fillable = ["id_input_vacio","id_input", "informacion", "tipo"];
+    protected $fillable = ["id_input_vacio","id_input", "informacion", "tipo", "mes", "year"];
 
 
 

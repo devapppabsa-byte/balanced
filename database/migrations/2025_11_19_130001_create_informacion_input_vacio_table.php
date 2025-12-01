@@ -16,12 +16,16 @@ return new class extends Migration
             $table->id();
             $table->string("id_input_vacio");
             $table->unsignedBigInteger('id_input');
+
             $table->foreign("id_input")
             ->references('id')
             ->on('input_vacio')
             ->onDelete("cascade");
+
             $table->string("tipo");
             $table->string("informacion");
+            $table->string("mes");
+            $table->string("year");
             $table->timestamps();
             
         });

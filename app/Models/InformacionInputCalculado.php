@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class InformacionInputCalculado extends Model
 {
     protected $table = "informacion_input_calculado";
-    protected $fillable = ['informacion', 'id_input_calculado'];
+    protected $fillable = ['informacion', 'id_input_calculado', "mes", "year"];
 
 
 

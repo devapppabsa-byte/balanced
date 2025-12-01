@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('informacion_input_calculado', function (Blueprint $table) {
             $table->id();
             $table->string('informacion');
+            $table->string("mes");
+            $table->string("year");
             $table->unsignedBigInteger('id_input_calculado');
             $table->foreign('id_input_calculado')
                   ->references('id')
