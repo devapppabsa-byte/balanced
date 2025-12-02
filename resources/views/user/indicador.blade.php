@@ -344,7 +344,7 @@ use App\Models\InformacionInputCalculado;
                                     <label for="" class="fw-bold">{{$campo_vacio->nombre}}</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="{{$campo_vacio->tipo}}" min="1" class="form-control input" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}">
+                                    <input type="{{$campo_vacio->tipo}}" min="0" class="form-control input" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}">
 
                                     {{-- campos ocultos para llevar informacion al controlador --}}
                                         <input type="text" name="id_input[]" value="{{$campo_vacio->id}}">

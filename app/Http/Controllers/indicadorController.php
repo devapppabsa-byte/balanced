@@ -689,7 +689,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 public function llenado_informacion_indicadores(Indicador $indicador, Request $request){
     
     $year = Carbon::now()->year;
-    $month = Carbon::now()->month;
+    $mes = Carbon::now()->month;
     //validando la insercion de datos
     
 
@@ -697,14 +697,14 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
 
     //Aqui es donde se desarrollara la logica, vamos a ver como.
-    $request->validate([
+        $request->validate([
 
-        "informacion_indicador" => "required",
-        "id_input" => "required",
-        "id_input_vacio" => "required",
-        "tipo_input" => "required"
-    
-    ]);
+            "informacion_indicador" => "required",
+            "id_input" => "required",
+            "id_input_vacio" => "required",
+            "tipo_input" => "required"
+        
+        ]);
 
 
     
@@ -746,16 +746,46 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
         
         //aqui va el ciclo dentro del otro ciclo, aqui estan todos lo inputs_calculados
         //este arreglo recorre los g
-        foreach($grupo_inputs_calculados as $inputs_calculados){
-            
 
+
+        //aqui se eliminarian los calculados duplicados jojojojjojoj la ctm...
+
+
+        // $tmp = [];
+        $grupo_inputs_calculados_limpios = [];
+
+
+        // foreach($grupo_inputs_calculados as $objeto){
             
-            foreach($inputs_calculados as $input_calculado){
+        //     $hash = json_encode($objeto);
+
+        //     if(!in_array($hash, $tmp)){
+        //         $tmp[] = $hash;
+        //         $grupo_inputs_calculados_limpios[] = $objeto;
+        //     }
+
+        // }
+
+
+
+        $grupo_inputs_calculados_limpios = collect($grupo_inputs_calculados)
+            ->flatten(1)
+            ->unique('id_input')
+            ->values()
+            ->all();
+
+        //aqui se eliminarian los calculados duplicados jojojojjojoj la ctm...
+        //return $grupo_inputs_calculados_limpios;
+
+            //return $grupo_inputs_calculados_limpios;
+            foreach($grupo_inputs_calculados_limpios as $input_calculado){
                    
 
                 //obtenemos todos los inputs involucrados en este campo    
-                $inputs_involucrados = CampoInvolucrado::where('id_input_calculado', $input_calculado->id)->get();
-                    
+               $inputs_involucrados = CampoInvolucrado::where('id_input_calculado', $input_calculado->id)->get();
+
+
+    
 
 
                 //se hace el ciclo para consultar cada id_input en las tablas de informacion
@@ -774,7 +804,7 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                         //aqui estan las validaciones para ver en que tabla existe este campo.
                         if($existe_input_vacio->isNotEmpty()){
                             
-                            $informacion_input_vacio = InformacionInputVacio::where('id_input', $existe_input_vacio[0]->id)->first();
+                            $informacion_input_vacio = InformacionInputVacio::where('id_input', $existe_input_vacio[0]->id)->latest()->first();
                             
                             if(isset($informacion_input_vacio)){
                                 array_push($informacion_inputs_vacios, $informacion_input_vacio->informacion);
@@ -787,7 +817,7 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
                         if($existe_input_precargado->isNotEmpty()){
 
-                            $informacion_input_precargado = InformacionInputPrecargado::where('id_input_precargado', $existe_input_precargado[0]->id)->first();
+                            $informacion_input_precargado = InformacionInputPrecargado::where('id_input_precargado', $existe_input_precargado[0]->id)->latest()->first();
 
                             if(isset($informacion_input_precargado)){
                                 array_push($informacion_inputs_precargados, $informacion_input_precargado->informacion);
@@ -800,78 +830,63 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
                         if($existe_input_calculado->isNotEmpty()){
                             
-                           $informacion_inputs_calculado = InformacionInputCalculado::where('id_input_calculado', $existe_input_calculado[0]->id )->first();
+                           $informacion_inputs_calculado = InformacionInputCalculado::where('id_input_calculado', $existe_input_calculado[0]->id )->latest()->first();
 
                             if(isset($informacion_inputs_calculado)){
                                 array_push($informacion_inputs_calculados, $informacion_inputs_calculado->informacion);
                             }
 
-
                         }
 
-
-
-
-                        
-                        //aqui van las operaciones segun el tipo de input calculado
-                        // if($input_calculado->operacion === "suma"){
-                            
-                        
-                        // }
-                        //se pone la logica del campo suma (sma todos los )
-                        
-                        
                         
                     }
 
+
+
+
+
+
                     //uniendo los arreglos resultantes
-                    $data = array_merge($informacion_inputs_calculados, $informacion_inputs_precargados, $informacion_inputs_vacios);
+                   $data = array_merge($informacion_inputs_calculados, $informacion_inputs_precargados, $informacion_inputs_vacios);
                     
                     //Aqui se podrian recibir los datos 
                     //Aqui podriamos poner las condicionales....
+
+                    //LA PUTA MADRE ARENITA, ESTA MADRE NO ESTA FUNCIONANDO EN EL DE SUMA
+                    //return $request;
+
                     if($input_calculado->operacion === "suma"){
-                        
-                        return array_sum($data);
+
+
+                        InformacionInputCalculado::create([
+
+                            "id_input_calculado" => $input_calculado->id,
+                            "informacion" => array_sum($data),
+                            "mes" => $mes,
+                            "year" => $year 
+
+                        ]);
+
                     }
 
                     
                     if($input_calculado->operacion === "promedio"){
-                    
-                        //Lo que resulte en la operaciones de qui es lo que se va a agregar al valor del input_calculado
 
+                        InformacionInputCalculado::create([
 
-                        return $input_calculado->id;
+                            "id_input_calculado" => $input_calculado->id,
+                            "informacion" => array_sum($data) / count($data),
+                            "mes" => $mes,
+                            "year" => $year
 
-                        return array_sum($data) / count($data);
+                        ]);
                     }
 
-                    
-                
 
-
-
-
-
-
-
-
-
-
-         
             }
-            
-    
-        
-    }
-    
-    
+       
 
-
-
-
-    return back()->with('success', 'El indicador fue rellenado');
-
-
+    return back()->with('success', 'El indicador fue rellenado ');
 
 }
 
