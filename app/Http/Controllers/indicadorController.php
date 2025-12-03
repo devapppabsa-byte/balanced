@@ -775,7 +775,7 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
             ->all();
 
         //aqui se eliminarian los calculados duplicados jojojojjojoj la ctm...
-        //return $grupo_inputs_calculados_limpios;
+        return $grupo_inputs_calculados_limpios;
 
             //return $grupo_inputs_calculados_limpios;
             foreach($grupo_inputs_calculados_limpios as $input_calculado){
@@ -794,7 +794,9 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                 
 
                         $existe_input_vacio = CampoVacio::where('id_input', $input_involucrado->id_input)->get();
+                        
                         $existe_input_precargado = CampoPrecargado::where('id_input', $input_involucrado->id_input)->get();
+
                         $existe_input_calculado = CampoCalculado::where('id_input', $input_involucrado->id_input)->get();
 
 
@@ -852,7 +854,7 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                     //Aqui se podrian recibir los datos 
                     //Aqui podriamos poner las condicionales....
 
-                    //LA PUTA MADRE ARENITA, ESTA MADRE NO ESTA FUNCIONANDO EN EL DE SUMA
+                    //LA PUTA MADRE ARENITA, ESTA MADRE NO ESTA FUNCIONANDO EN EL DE SUMA - Ya funciono!!
                     //return $request;
 
                     if($input_calculado->operacion === "suma"){
