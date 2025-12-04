@@ -57,206 +57,28 @@ use App\Models\InformacionInputCalculado;
 
 <div class="container-fluid">
     <div class="row border-bottom mb-2 bg-white">
+
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-outline-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
                 <i class="fa fa-plus"></i>
                 Llenar este Indicador
             </button>
         </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+            <button class="btn btn-outline-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#informacion_indicador">
+                <i class="fa fa-eye"></i>
+                Ver la informacion que se ocupa para este indicador.
+            </button>
+        </div>
+
     </div>
 </div>
 
 <div class="container-fluid">
 
-    <div class="row gap-4  justify-content-center ">
-
-        <div class="col-12 col-sm-12 border col-md-11 col-lg-10 bg-white boder  shadow shadow-sm py-5 px-5">
-
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <h5>
-                        <i class="fa fa-exclamation-circle text-primary"></i>
-                        Información para este indicador
-                    </h5>
-                </div>
-
-                {{-- aqui vamos a consultar los campos precargados --}}
-
-                @forelse ($campos_unidos as $campo)
-                <div class="col-11 col-sm-11 col-md-5 col-lg-3 border border-4 p-4 shadow-sm m-3">
-
-                    <span class="fw-bold">{{$campo->nombre}}</span>
-                    <input type="text" class="form-control"  name="{{$campo->nombre}}" value="{{$campo->informacion_precargada}}" disabled>
-                    <small>{{$campo->descripcion}}</small>
-
-                </div>                    
-                @empty
-                    
-                @endforelse
-
-
-                {{-- aqui vamos a consultar los campos precargados --}}
-
-
-                {{-- @forelse ($campos_llenos as $campo_lleno)
-                <div class="col-11 col-sm-11 col-md-5 col-lg-3 border border-4 p-4 shadow-sm m-3">
-
-                    <span class="fw-bold">{{$campo_lleno->nombre}}</span>
-                    <input type="text" class="form-control"  name="{{$campo_lleno->nombre}}" value="{{$campo_lleno->informacion_precargada}}" disabled>
-                    <small>{{$campo_lleno->descripcion}} Aqui va a ir la descripción de cada campo agregado.</small>
-
-                </div>
-                @empty
-                    <div class="col-11 border border-4 p-5 text-center">
-                        <h2>
-                            <i class="fa fa-exclamation-circle text-danger"></i>
-                            No se encontraron datos a
-                        </h2> 
-                    </div>
-                @endforelse --}}
-
-            </div>
-
-        </div>
-        
-    </div>
-
-
-
-    <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center">
-        <div class="col-12 mb-3 border-dashed my-5 p-3">
-            <h3 class="fw-bold">Campo de pruebas, aqui se estan consultando los campos calculados :p</h3>
-            <div class="row">
-
-            @php
-                $informacion_campos_vacios_final = [];
-                $id_inputs_involucrados = [];
-                $informacion_input_vacio = [];
-                $sumaSuma = 0;
-                $sumaPromedio= 0;
-                
-            @endphp
-
-
-
-
-            @forelse ($campos_calculados as $campo_calculado) 
-
-                @php
-                    $suma = 0;
-                @endphp
-                
-                <div class="col-6 border shadow bg-white p-3">
-
-                    <h4>{{$campo_calculado->nombre}}</h4>
-                    <h5>{{$campo_calculado->operacion}}</h5>
-                    <h6>{{$campo_calculado->id_input}}</h6>
-
-                    <hr>
-
-                    {{-- ciclo hijo, aqui se consultan los inputs involucrados --}}
-                    @foreach ($campo_calculado->campo_involucrado as $campo_involucrado)
-            
-                        @php
-
-                            
-
-                        //En este cacho de codigo une los registros de la tabla: 
-                            $informacionInputVacio = InformacionInputVacio::where('id_input_vacio', $campo_involucrado->id_input)->first();
-
-                            // $informacionInputPrecargado = informacionInputPrecargado::where('id_input_precargado', $campo_involucrado->id_input)->first();
-
-                            // $informacionInputCalculado = InformacionInputCalculado::where('id_input_calculado', $campo_involucrado->id_input)->first();
-
-                            //echo $informacionInputCalculado;
-                            //ahora vamos a limpiar el arreglo unir los dos resultados
-                            array_push($informacion_input_vacio, $informacionInputVacio );
-
-                            
-                        @endphp
-                        
-                        
-                        *Tipo: {{$campo_involucrado->tipo}} <br>
-                        Id_input: {{$campo_involucrado->id_input}} <br>
-                        Created_at: {{$campo_involucrado->created_at}} <br>
-                        @if ($informacionInputVacio)
-                        Informacion: {{$informacionInputVacio->informacion}} <br>
-                        @endif
-                    
-                    @endforeach
-
-
-
-                    @php
-                        $numero_campos = [];    
-                    @endphp
-
-                    @foreach ($informacion_input_vacio as $datos)
-                        @php                            
-                            if ($datos){
-
-                                
-                                if($campo_calculado->operacion === "promedio"){
-
-                                    
-                                    //agrega los inputs involucrados y los agrego en un array para luego contar los elementos y usarlo en el campo del
-                                    array_push($numero_campos, $datos->informacion);
-                                    $sumaPromedio = $sumaPromedio + $datos->informacion;
-                                    echo $datos->informacion;
-
-                                
-                                }
-
-                                if($campo_calculado->operacion === "suma"){
-                                    
-                                    $sumaSuma = $sumaSuma + $datos->informacion;
-                                    echo $datos->informacion;
-
-                                }
-
-
-
-
-
-
-                            }
-
-                        @endphp
-                    @endforeach
-
-
-
-
-                </div>
-
-                {{-- @php
-                    if($campo_calculado->operacion === "promedio"){
-                        echo '<h2>'.$sumaPromedio / count($numero_campos). '</h2>';
-                    }
-
-                    if($campo_calculado->operacion === "suma"){
-                        echo '<h2>'.$sumaSuma.'</h2>';
-                    }
-
-                @endphp --}}
-
-                <br><br><br>
-
-                
-            @endforeach
-
-
-            <br>
-
-
-
-            </div>
-        </div>
-
-
-
-
-        <div  class="col-11 col-sm-10 col-md-10 col-lg-10  mx-2 bg-white shadow-sm p-5">
+    <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center mt-4">
+        <div  class="col-11 col-sm-10 col-md-10 col-lg-8  mx-2 bg-white shadow-sm p-5">
             
             <h5>
                 <i class="fa fa-chart-simple"></i>
@@ -312,12 +134,15 @@ use App\Models\InformacionInputCalculado;
             </div>
         </div>
 
-        <div class="col-11 col-sm-10 col-md-10 col-lg-5 mt-4 shadow p-5 bg-white" >
-            <select name="" class="form-select border-0" id="periodo">
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-
-            </select>
+        <div class="col-11 col-sm-10 col-md-10 col-lg-8  mx-2 bg-white shadow-sm p-5 mt-4" >
+            <div class="row">
+                <div class="col-6">
+                    <input type="date" class="form-control" name="inicio" id="inicio">
+                </div>
+                <div class="col-6">
+                    <input type="date" class="form-control" name="final" id="final">
+                </div>
+            </div>
             <canvas class="w-100 h-100" id="grafico"></canvas>
         </div>
 
@@ -347,9 +172,9 @@ use App\Models\InformacionInputCalculado;
                                     <input type="{{$campo_vacio->tipo}}" min="0" class="form-control input" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}">
 
                                     {{-- campos ocultos para llevar informacion al controlador --}}
-                                        <input type="text" name="id_input[]" value="{{$campo_vacio->id}}">
-                                        <input type="text" name="tipo_input[]" value="{{$campo_vacio->tipo}}">
-                                        <input type="text" name="id_input_vacio[]" value="{{$campo_vacio->id_input}}">
+                                        <input type="hidden" name="id_input[]" value="{{$campo_vacio->id}}">
+                                        <input type="hidden" name="tipo_input[]" value="{{$campo_vacio->tipo}}">
+                                        <input type="hidden" name="id_input_vacio[]" value="{{$campo_vacio->id_input}}">
                                     {{-- campos ocultos para llevar informacion al controlador --}}
 
                                 </div>
@@ -385,6 +210,59 @@ use App\Models\InformacionInputCalculado;
                     <h6>Guardar</h6>
                 </button>
                 @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="informacion_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog  modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header bg-primary py-4">
+                <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
+                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
+            </div>
+            <div class="modal-body py-4 bg-light">
+
+                <div class="row gap-4  justify-content-center ">
+
+                    <div class="col-12 col-sm-12 border col-md-11 col-lg-10 bg-white boder  shadow shadow-sm py-2 px-5">
+
+                        <div class="row justify-content-center">
+                            <div class="col-12 text-center my-3">
+                                <h4>
+                                    <i class="fa fa-exclamation-circle text-primary"></i>
+                                    Información para este indicador
+                                </h4>
+                                <hr>
+                            </div>
+
+                            {{-- aqui vamos a consultar los campos precargados --}}
+
+                            @forelse ($campos_unidos as $campo)
+                            <div class="col-11 col-sm-11 col-md-5 col-lg-3 border border-4 p-4 shadow-sm m-3">
+
+                                <span class="fw-bold">{{$campo->nombre}}</span>
+                                <input type="text" class="form-control"  name="{{$campo->nombre}}" value="{{$campo->informacion_precargada}}" disabled>
+                                <small>{{$campo->descripcion}}</small>
+
+                            </div>                    
+                            @empty
+                                
+                            @endforelse
+
+                            <div class="col-12 p-3 bg-light">
+                                <p><i class="fa fa-info-circle text-primary"></i> {{$indicador->descripcion}}</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    
+                </div>
+
             </div>
         </div>
     </div>

@@ -275,13 +275,13 @@
             </div>
             <div class="modal-body p-2">
 
-                <div class="row pb-5 px-2 bg-light border m-3"  ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="row pb-5 px-2 bg-light border m-3"  ondrop="dropMultiplicacion(event)" ondragover="allowDropMultiplicacion(event)">
                     <div class="col-12 no-drop my-2">
                         <h4 class="no-drop">Campos Disponibles</h4>
                     </div>
 
                     @forelse ($campos_unidos as $campo_unido)
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white m-1" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStart(event)">
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 p-3 border no-drop bg-white m-1" draggable="true" id="{{$campo_unido->id_input}}" ondragstart="dragStartMultiplicacion(event)">
                             <label class="no-drop">{{ $campo_unido->nombre }}</label>
                             <input class="form-control form-control-sm no-drop" placeholder="{{ $campo_unido->nombre }}" id="{{$campo_unido->id_input}}" disabled type="{{ $campo_unido->tipo_dato }}"><input type="hidden" name="input_multiplicado[]" value="{{$campo_unido->id_input}}">
                         </div>
@@ -308,7 +308,7 @@
                 </div>
 
 
-                <form action="{{route('input.multiplicacion.guardar', $indicador->id)}}" id="multiplicacion_container" autocomplete="off" method="POST" class="row justify-content-center m-3  destino  bg-light  pb-5" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <form action="{{route('input.multiplicacion.guardar', $indicador->id)}}" id="multiplicacion_container" autocomplete="off" method="POST" class="row justify-content-center m-3  destino  bg-light  pb-5" ondrop="drop(event)" ondragover="allowDropMultiplicacion(event)">
                     @csrf
                     <h6 class="no-drop" id="letrero_multiplicacion" style="z-index: 1"> Arrastra los campos a multiplicar </h6>
                     <br class="no-drop">
@@ -852,4 +852,6 @@ asi que puse el aterrizado de la variable arriba del codigo del promedio. --}}
 <script src="{{asset('js/drop_resta.js')}}"></script>
 <script src="{{asset('js/drop_suma.js')}}"></script>
 <script src="{{asset('js/drop_porcentaje.js')}}"></script>
+<script src="{{asset('js/drop_multiplicacion.js')}}" ></script>
+
 @endsection

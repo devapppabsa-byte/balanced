@@ -216,47 +216,27 @@ public function show_indicador_user(Indicador $indicador){
     //para poder hacer las opreaciones tengo que consultar todo.
 
     
+
+
+
+
+
     //Se consulta el campo de resultado final.
     $campo_resultado_final = CampoCalculado::where('id_indicador', $indicador->id)->whereNotNull('resultado_final')->where('resultado_final', '!=', '')->first();
 
 
 
-
-
-
-    foreach($campos_calculados as $campo_calculado){
-
-        
-
-        foreach($campo_calculado->campo_involucrado as $campo_involucrado){
-
-
-        }
-
-
-    }
-
-
-
-
-
     
 
 
 
-    
+
     return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios'));
 
 
 
     
 }//cierra el metodo de show_indicador_user
-
-
-
-
-
-
 
 
 
@@ -389,11 +369,7 @@ public function input_resta_guardar(Request $request, Indicador $indicador){
 public function input_division_guardar(Request $request, Indicador $indicador){
 
 
-
-
-
-     //$request->input_division[0] -> el mero divisor, el que va a dividir
-    //$request->input_division[1] -> el dividendo,es al que se van a dividor
+    //COMPROBACION DEL CAMPO FINAL, SI YA HAY UN CAMPO FINAL NO SE PODRA AGREGAR OTRO
     if($request->resultado_final){
 
         $comprobacion = CampoCalculado::where('id_indidcador', $indicador->id)
@@ -410,9 +386,8 @@ public function input_division_guardar(Request $request, Indicador $indicador){
     }
 
 
-
+    //COMPROBACION PARA QUE VENGAN DOS CAMPOS POR LO MENOS
     if(count($request->input_division) < 2 ) return back()->with('error', 'Se deben agregar un par de campos');
-
 
     $id_input  = Date('ydmHis').rand(0,100);
 
@@ -457,6 +432,8 @@ public function input_division_guardar(Request $request, Indicador $indicador){
     return back()->with("success", "Se a creado el nuevo campo de división");
 
 }
+
+
 
 
 public function input_suma_guardar(Request $request, Indicador $indicador){
@@ -712,7 +689,9 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                 "id_input_vacio" => $request->id_input_vacio[$i],
                 "informacion" => $request->informacion_indicador[$i],
                 "id_input" => $request->id_input[$i],
-                "tipo" => $request->tipo_input[$i]
+                "tipo" => $request->tipo_input[$i],
+                "mes" => $mes,
+                "year" => $year
 
             ]);
 
@@ -733,6 +712,10 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
             $informacion_campos_vacios_encontrados = [];
             $informacion_campos_precargados_encontrados = [];
             $informacion_campos_calculados_encontrados = [];
+
+            $campos_vacios_encontrados = [];
+            $campos_precargados_encontrados = [];
+            $campos_calculados_encontrados = [];
             
             
             //arrays que me ayudan a guardar la info de los campos encontrados
@@ -753,7 +736,10 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                       $info_campo_vacio = InformacionInputVacio::where('id_input', $existe_en_vacios->id)->latest()->first();
 
                         if(isset($info_campo_vacio)){
+
                             array_push($informacion_campos_vacios_encontrados, $info_campo_vacio->informacion);
+                            array_push($campos_vacios_encontrados, $existe_en_vacios);
+
                         }
                     
 
@@ -764,7 +750,9 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                         $info_campo_precargado = InformacionInputPrecargado::where('id_input_precargado', $existe_en_precargados->id)->latest()->first();
 
                         if(isset($info_campo_precargado)){
+
                             array_push($informacion_campos_precargados_encontrados, $info_campo_precargado->informacion);
+                            array_push($campos_precargados_encontrados, $existe_en_precargados);
                         }
 
                     }
@@ -775,7 +763,10 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                         $info_campo_calculado = InformacionInputCalculado::where('id_input_calculado', $existe_en_calculados->id)->latest()->first();
 
                         if(isset($info_campo_calculado)){
+
                            array_push($informacion_campos_calculados_encontrados, $info_campo_calculado->informacion);
+                           array_push($campos_calculados_encontrados, $existe_en_calculados); 
+
                         }
 
                     }
@@ -785,13 +776,12 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                     
                 }
 
-                
-                
+                    $datos = array_merge($informacion_campos_calculados_encontrados, $informacion_campos_precargados_encontrados, $informacion_campos_vacios_encontrados);
 
-                //aqui va la insercion de la info en el campo calculado
+    
+                    //aqui va la insercion de la info en el campo calculado
                     if($campo_calculado->operacion === "suma"){
 
-                        $datos = array_merge($informacion_campos_calculados_encontrados, $informacion_campos_precargados_encontrados, $informacion_campos_vacios_encontrados);
                         
 
                         InformacionInputCalculado::create([
@@ -811,9 +801,7 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
 
                     if($campo_calculado->operacion === "promedio"){
-                   
-                       $datos = array_merge($informacion_campos_calculados_encontrados, $informacion_campos_precargados_encontrados, $informacion_campos_vacios_encontrados);
-                        
+                                           
     
                         InformacionInputCalculado::create([
 
@@ -826,6 +814,75 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                         ]);
 
                     }
+
+
+                    if($campo_calculado->operacion === "division"){
+                        
+                        InformacionInputCalculado::create([
+
+                            'id_input_calculado' => $campo_calculado->id,
+                            'tipo' => $campo_involucrado->tipo,
+                            'informacion' => $datos[0] / $datos[1],
+                            'mes' => $mes,
+                            'year' => $year
+
+
+                        ]);
+
+                    }
+
+
+
+
+                    if($campo_calculado->operacion === "porcentaje"){
+
+                        InformacionInputCalculado::create([
+
+                            'id_input_calculado' => $campo_calculado->id,
+                            'tipo' => $campo_involucrado->tipo,
+                            'informacion' => (($datos[0]/$datos[1])*100),  //(Parte/Total)*100
+                            'mes' => $mes,
+                            'year' => $year
+
+                        ]);
+
+                    }
+
+
+                    if($campo_calculado->operacion === "resta"){
+
+                        InformacionInputCalculado::create([
+                            'id_input_calculado' => $campo_calculado->id,
+                            'tipo' => $campo_involucrado->tipo,
+                            'informacion' => ($datos[0] - $datos[1]),
+                            'mes' => $mes,
+                            'year' => $year
+                        ]);
+
+                    }
+
+                    if($campo_calculado->operacion === "multiplicacion"){
+
+                        InformacionInputCalculado::create([
+
+                            'id_input_calculado' => $campo_calculado->id,
+                            'tipo' => $campo_involucrado->tipo,
+                            'informacion' => array_product($datos),
+                            'mes' => $mes,
+                            'year' => $year
+
+                        ]);
+
+
+
+                    }
+
+
+
+
+
+
+
    
         }
         
