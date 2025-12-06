@@ -78,62 +78,20 @@ use App\Models\InformacionInputCalculado;
 <div class="container-fluid">
 
     <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center mt-4">
-        <div  class="col-11 col-sm-10 col-md-10 col-lg-8  mx-2 bg-white shadow-sm p-5">
+        <div  class="col-11 mx-2 bg-white shadow-sm p-5">
             
             <h5>
                 <i class="fa fa-chart-simple"></i>
                 Seguimiento del Indicador
             </h5>
 
+            <div class="row">
+                {{$datos}}
 
-
-            <div class="table-responsive  border ">
-            <table class="table">
-                <thead class="table-primary fjalla-one-regular">
-                <tr>
-                    <th scope="col">Año</th>
-                    <th scope="col">Mes</th>
-                    <th scope="col">Toneladas Presupuestadas</th>
-                    <th scope="col">Toneladas Producidas</th>
-                    <th scope="col">% Cumplimiento</th>
-                </tr>
-                </thead>
-                <tbody>
-
-                <tr>
-                    <th>2025</th>
-                    <th scope="row">Julio</th>
-                    <td>4000</td>
-                    <td>3950</td>
-                    <td class="text-success fw-bold">98.75%</td>
-                </tr>                    
-
-                <tr>
-                    <th>2025</th>
-                    <th scope="row">Agosto</th>
-                    <td>4000</td>
-                    <td>2000</td>
-                    <td class="text-danger fw-bold">50%</td>
-                </tr>
-                <tr>
-                    <th>2025</th>
-                    <th scope="row">Septiembre</th>
-                    <td>4000</td>
-                    <td>3950</td>
-                    <td class="text-success fw-bold">98.75%</td>
-                </tr>
-                <tr>
-                    <th>2025</th>
-                    <th scope="row">Octubre</th>
-                    <td>4000</td>
-                    <td>3950</td>
-                    <td class="text-success fw-bold">98.75%</td>
-                </tr>
-                </tbody>
-            </table>
             </div>
-        </div>
 
+        </div>
+        
         <div class="col-11 col-sm-10 col-md-10 col-lg-8  mx-2 bg-white shadow-sm p-5 mt-4" >
             <div class="row">
                 <div class="col-6">

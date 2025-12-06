@@ -36,7 +36,14 @@ function dropMultiplicacion(e){
 
     if(nodo_arrastrado_multiplicacion){
 
-        const existe = Array.from(AudioDestinationNode.children).some(child => child.dataset.originalId === id);
+        let destino = e.target;
+        const id = e.dataTransfer.getData('text');
+        
+        if(!destino.classList.contains('no-drop')){
+
+
+
+        const existe = Array.from(destino.children).some(child => child.dataset.originalId === id);
 
 
         if(existe){
@@ -48,9 +55,9 @@ function dropMultiplicacion(e){
 
 
         copia.dataset.originalId = id;
-        AudioDestinationNode.appendChild(copia);
+        destino.appendChild(copia);
 
-
+    }
     }
 
 

@@ -275,7 +275,7 @@
             </div>
             <div class="modal-body p-2">
 
-                <div class="row pb-5 px-2 bg-light border m-3"  ondrop="dropMultiplicacion(event)" ondragover="allowDropMultiplicacion(event)">
+                <div class="row pb-5 px-2 bg-light border m-3 no-drop"  ondrop="dropMultiplicacion(event)" ondragover="allowDropMultiplicacion(event)">
                     <div class="col-12 no-drop my-2">
                         <h4 class="no-drop">Campos Disponibles</h4>
                     </div>
@@ -308,7 +308,7 @@
                 </div>
 
 
-                <form action="{{route('input.multiplicacion.guardar', $indicador->id)}}" id="multiplicacion_container" autocomplete="off" method="POST" class="row justify-content-center m-3  destino  bg-light  pb-5" ondrop="drop(event)" ondragover="allowDropMultiplicacion(event)">
+                <form action="{{route('input.multiplicacion.guardar', $indicador->id)}}" id="multiplicacion_container" autocomplete="off" method="POST" class="row justify-content-center m-3  destino  bg-light  pb-5" ondrop="dropMultiplicacion(event)" ondragover="allowDropMultiplicacion(event)">
                     @csrf
                     <h6 class="no-drop" id="letrero_multiplicacion" style="z-index: 1"> Arrastra los campos a multiplicar </h6>
                     <br class="no-drop">

@@ -188,6 +188,8 @@ public function borrar_campo(Request $request, $campo){
 public function show_indicador_user(Indicador $indicador){
 
 
+
+    //CONSULTA DE LOS CAMPOS
     //se consultan en la vista para que el usuario los rellene
     $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
 
@@ -201,9 +203,6 @@ public function show_indicador_user(Indicador $indicador){
         })->orderBy('created_at', 'ASC')->get();
 
 
-
-
-
     //aqui hay un desmadre, combino todos los campos y les asigno un ID
     $campos_unidos = $campos_vacios->concat($campos_llenos)
                                     ->concat($campos_calculados)
@@ -215,9 +214,26 @@ public function show_indicador_user(Indicador $indicador){
     });
     //para poder hacer las opreaciones tengo que consultar todo.
 
+    //CONSULTA DE LOS CAMPOS
+
+
+    //CONSULTA DE LA INDFORMACION
+
+
+    //Bloque de odigo que me va a dar la informacion en forma de tabla
+
+     $datos = Indicador::with([
+        'camposCalculados.informacion_input_calculado',
+        'campoVacio.informacion_input_vacio',
+        'campoPrecargado.informacion_input_precargado'
+    ])->find($indicador->id);
+
     
 
 
+
+
+    //INformacion en tabla
 
 
 
@@ -227,11 +243,7 @@ public function show_indicador_user(Indicador $indicador){
 
 
     
-
-
-
-
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios'));
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'datos'));
 
 
 
