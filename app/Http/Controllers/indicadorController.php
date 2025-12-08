@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Models\Departamento;
 use App\Models\Norma;
 use App\Models\Indicador;
+use App\Models\IndicadorLleno;
 use App\Models\Encuesta;
 use App\Models\User;
 use Carbon\Carbon;
@@ -222,16 +223,17 @@ public function show_indicador_user(Indicador $indicador){
 
     //Bloque de odigo que me va a dar la informacion en forma de tabla
 
-     $datos = Indicador::with([
-        'camposCalculados.informacion_input_calculado',
-        'campoVacio.informacion_input_vacio',
-        'campoPrecargado.informacion_input_precargado'
-    ])->find($indicador->id);
+    // $datos = Indicador::with([
+    //     'camposCalculados.informacion_input_calculado',
+    //     'campoVacio.informacion_input_vacio',
+    //     'campoPrecargado.informacion_input_precargado'
+    // ])->find($indicador->id);
+
+    $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get() ;
+
+    $grupos = $datos->groupBy('id_movimiento');
 
     
-
-
-
 
     //INformacion en tabla
 
@@ -243,7 +245,7 @@ public function show_indicador_user(Indicador $indicador){
 
 
     
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'datos'));
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'datos', 'grupos'));
 
 
 
@@ -384,7 +386,7 @@ public function input_division_guardar(Request $request, Indicador $indicador){
     //COMPROBACION DEL CAMPO FINAL, SI YA HAY UN CAMPO FINAL NO SE PODRA AGREGAR OTRO
     if($request->resultado_final){
 
-        $comprobacion = CampoCalculado::where('id_indidcador', $indicador->id)
+        $comprobacion = CampoCalculado::where('id_indicador', $indicador->id)
                         ->whereNotNull('resultado_final')
                         ->where('resultado_final', '!=', '')
                         ->get();
@@ -515,7 +517,6 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
 
     
 
-    
 
     if($request->resultado_final){
 
@@ -674,14 +675,14 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 //aui empieza el codigo para el llenado de indicadores
 public function llenado_informacion_indicadores(Indicador $indicador, Request $request){
 
-       
+
     $year = Carbon::now()->year;
     $mes = Carbon::now()->month;
+    $id_movimiento = str_replace(' ','',Carbon::now().'-'.rand(0, 50000000000)); //exagere un poquis, pero poatra que no de error
+
+
     //validando la insercion de datos
-    
 
-
-    //Aqui es donde se desarrollara la logica, vamos a ver como.
         $request->validate([
 
             "informacion_indicador" => "required",
@@ -707,6 +708,20 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
             ]);
 
+            //paso la informacion al la tabla de indicador lleno
+            IndicadorLleno::create([
+
+                "nombre_campo" => $request->nombre_input_vacio[$i],
+                "informacion_campo" => $request->informacion_indicador[$i],
+                "id_indicador" =>$indicador->id,
+                "id_movimiento" => $id_movimiento
+
+
+            ]);
+
+
+
+
         }
 
 
@@ -715,12 +730,15 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
         $campos_calculados_indicador = CampoCalculado::with('campo_involucrado')->where('id_indicador', $indicador->id)->get();
 
 
+        //Aqui es donde se desarrollara la logica, vamos a ver como.
         
         
         //se recorren los campos_calculados encontrados en el indicador
         foreach($campos_calculados_indicador as $index_calculado => $campo_calculado) {
             
-            
+
+
+
             $informacion_campos_vacios_encontrados = [];
             $informacion_campos_precargados_encontrados = [];
             $informacion_campos_calculados_encontrados = [];
@@ -790,22 +808,34 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
                     $datos = array_merge($informacion_campos_calculados_encontrados, $informacion_campos_precargados_encontrados, $informacion_campos_vacios_encontrados);
 
-    
+
                     //aqui va la insercion de la info en el campo calculado
                     if($campo_calculado->operacion === "suma"){
 
                         
-
                         InformacionInputCalculado::create([
                             
                             'id_input_calculado' => $campo_calculado->id,
                             'tipo' => $campo_involucrado->tipo,
-                            'informacion' => array_sum($datos),
+                            'informacion' => round(array_sum($datos), 4),
                             'mes' => $mes,
                             'year' => $year
 
                         ]);
 
+
+
+                        //paso la informacion a la tabla de indicadores llenos
+                      
+                        IndicadorLleno::create([
+
+                            'nombre_campo' => $campo_calculado->nombre,
+                            'informacion_campo' => round(array_sum($datos), 4),
+                            'id_indicador' => $indicador->id,
+                            'id_movimiento' => $id_movimiento,
+                            'final' => $campo_calculado->resultado_final
+
+                        ]);
                         
 
                     }
@@ -819,27 +849,60 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
                             'id_input_calculado' => $campo_calculado->id,
                             'tipo' => $campo_involucrado->tipo,
-                            'informacion' => array_sum($datos) / count($datos),
+                            'informacion' => round(array_sum($datos) / count($datos), 4),
                             'mes' => $mes,
                             'year' => $year
 
                         ]);
 
+
+
+                        IndicadorLleno::create([
+
+                            'nombre_campo' => $campo_calculado->nombre,
+                            'informacion_campo' => round(array_sum($datos) / count($datos), 4),
+                            'id_indicador' => $indicador->id,
+                            'id_movimiento' => $id_movimiento,
+                            'final' => $campo_calculado->resultado_final
+
+                        ]);
+
+
+
                     }
 
 
+
+
+
+
                     if($campo_calculado->operacion === "division"){
+
                         
                         InformacionInputCalculado::create([
 
                             'id_input_calculado' => $campo_calculado->id,
                             'tipo' => $campo_involucrado->tipo,
-                            'informacion' => $datos[0] / $datos[1],
+                            'informacion' => round($datos[0] / $datos[1], 4),
                             'mes' => $mes,
                             'year' => $year
 
+                        ]);
+
+
+
+                        IndicadorLleno::create([
+
+                            'nombre_campo' => $campo_calculado->nombre,
+                            'informacion_campo' => round($datos[0] / $datos[1], 4),
+                            'id_indicador' => $indicador->id,
+                            'id_movimiento' => $id_movimiento,
+                            'final' => $campo_calculado->resultado_final
 
                         ]);
+
+
+
 
                     }
 
@@ -848,17 +911,39 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
                     if($campo_calculado->operacion === "porcentaje"){
 
+
+
+
                         InformacionInputCalculado::create([
 
                             'id_input_calculado' => $campo_calculado->id,
                             'tipo' => $campo_involucrado->tipo,
-                            'informacion' => (($datos[0]/$datos[1])*100),  //(Parte/Total)*100
+                            'informacion' => round((($datos[0]/$datos[1])*100), 4),  //(Parte/Total)*100
                             'mes' => $mes,
                             'year' => $year
 
                         ]);
 
+                        
+
+                        IndicadorLleno::create([
+
+                            'nombre_campo' => $campo_calculado->nombre,
+                            'informacion_campo' => round((($datos[0]/$datos[1])*100), 4),
+                            'id_indicador' => $indicador->id,
+                            'id_movimiento' => $id_movimiento,
+                            'final' => $campo_calculado->resultado_final
+
+                        ]);
+
+
+
                     }
+
+
+
+
+
 
 
                     if($campo_calculado->operacion === "resta"){
@@ -866,33 +951,59 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                         InformacionInputCalculado::create([
                             'id_input_calculado' => $campo_calculado->id,
                             'tipo' => $campo_involucrado->tipo,
-                            'informacion' => ($datos[0] - $datos[1]),
+                            'informacion' => round(($datos[0] - $datos[1]), 4),
                             'mes' => $mes,
                             'year' => $year
                         ]);
 
+
+                        IndicadorLleno::create([
+
+                            'nombre_campo' => $campo_calculado->nombre,
+                            'informacion_campo' => round(($datos[0] - $datos[1]), 4),
+                            'id_indicador' => $indicador->id,
+                            'id_movimiento' => $id_movimiento,
+                            'final' => $campo_calculado->resultado_final
+
+                        ]);
+
+
+
                     }
 
+
+
+
+
                     if($campo_calculado->operacion === "multiplicacion"){
+
+
 
                         InformacionInputCalculado::create([
 
                             'id_input_calculado' => $campo_calculado->id,
                             'tipo' => $campo_involucrado->tipo,
-                            'informacion' => array_product($datos),
+                            'informacion' => round(array_product($datos), 4),
                             'mes' => $mes,
                             'year' => $year
+
+                        ]);
+
+            
+
+                        IndicadorLleno::create([
+
+                            'nombre_campo' => $campo_calculado->nombre,
+                            'informacion_campo' => round(array_product($datos), 4),
+                            'id_indicador' => $indicador->id,
+                            'id_movimiento' => $id_movimiento,
+                            'final' => $campo_calculado->resultado_final
 
                         ]);
 
 
 
                     }
-
-
-
-
-
 
 
    

@@ -9,6 +9,8 @@ use App\Models\CampoVacio;
 use App\Models\InformacionInputVacio;
 use App\Models\InformacionInputPrecargado;
 use App\Models\InformacionInputCalculado;
+use Carbon\Carbon;
+
 @endphp
 
 <div class="container-fluid">
@@ -72,36 +74,76 @@ use App\Models\InformacionInputCalculado;
             </button>
         </div>
 
+        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+            <button class="btn btn-outline-primary btn-sm w-100"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
+                <i class="fa-solid fa-chart-pie"></i>
+                Grafico
+            </button>
+        </div>
+
     </div>
 </div>
 
 <div class="container-fluid">
 
     <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center mt-4">
-        <div  class="col-11 mx-2 bg-white shadow-sm p-5">
+        <div  class="col-12 mx-2 bg-white shadow-sm p-5">
             
-            <h5>
-                <i class="fa fa-chart-simple"></i>
-                Seguimiento del Indicador
-            </h5>
+            <div class="row justify-content-around">
+                
+                <div class="col-12">
+                    <h5><i class="fa fa-chart-simple"></i>
+                        Historico de llenado del Indicador
+                    </h5>
+                </div>
 
-            <div class="row">
-                {{$datos}}
+
+                
+                @forelse($grupos as $movimiento => $items)
+
+                <div class="col-10 col-sm-5 col-md-5 col-lg-2  shadow-sm m-1 border rounded mt-4">
+                    @php
+                        $fecha = Carbon::parse(explode('-', $movimiento)[0]);
+                        Carbon::setLocale('es');
+                        $mes = $fecha->translatedformat('F');
+                        $year = $fecha->format('Y');
+                    @endphp
+
+                    <div class="row">
+                        
+                            <div class="col-12 bg-primary text-white p-2 mb-4">
+                                <h3 class="text-center fw-bold">
+                                 <i class="fa-solid fa-calendar-days"></i> {{ $mes.' - '.$year }}
+                                </h3>
+                            </div>
+                        
+                        @foreach($items as $item)
+
+                        
+                        {{-- Se hace la consulta de la informaion del indiacor lleno, y se hace la condicional  para saber si esta el campo final --}}
+                        @if ($item->final === "on")
+                            <br> <br> <hr> 
+                            <h5 class="text-center ">{{ $item['nombre_campo'] }}: </h5> 
+                            <h2 class="text-center">{{ $item['informacion_campo'] }} </h2>
+                        
+                        @else
+                            <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
+                            <span class="h5">{{ $item['informacion_campo'] }}</span> <br>                
+                        @endif
+
+
+
+                        @endforeach
+                        
+                    </div>
+                </div>
+                
+                    
+                @empty
+
+                @endforelse
 
             </div>
-
-        </div>
-        
-        <div class="col-11 col-sm-10 col-md-10 col-lg-8  mx-2 bg-white shadow-sm p-5 mt-4" >
-            <div class="row">
-                <div class="col-6">
-                    <input type="date" class="form-control" name="inicio" id="inicio">
-                </div>
-                <div class="col-6">
-                    <input type="date" class="form-control" name="final" id="final">
-                </div>
-            </div>
-            <canvas class="w-100 h-100" id="grafico"></canvas>
         </div>
 
     </div>
@@ -133,6 +175,8 @@ use App\Models\InformacionInputCalculado;
                                         <input type="hidden" name="id_input[]" value="{{$campo_vacio->id}}">
                                         <input type="hidden" name="tipo_input[]" value="{{$campo_vacio->tipo}}">
                                         <input type="hidden" name="id_input_vacio[]" value="{{$campo_vacio->id_input}}">
+                                        <input type="hidden" name="nombre_input_vacio[]" value="{{$campo_vacio->nombre}}"">
+
                                     {{-- campos ocultos para llevar informacion al controlador --}}
 
                                 </div>
@@ -168,6 +212,30 @@ use App\Models\InformacionInputCalculado;
                     <h6>Guardar</h6>
                 </button>
                 @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog  modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary py-4">
+                <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
+                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
+            </div>
+            <div class="modal-body py-4 bg-light">
+                <div class="col-12  mx-2 bg-white shadow-sm p-5 mt-4" >
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="date" class="form-control" name="inicio" id="inicio">
+                        </div>
+                        <div class="col-6">
+                            <input type="date" class="form-control" name="final" id="final">
+                        </div>
+                    </div>
+                    <canvas class="w-100 h-100" id="grafico"></canvas>
+                </div>
             </div>
         </div>
     </div>

@@ -16,7 +16,9 @@ return new class extends Migration
             $table->id();
             $table->string("nombre_campo");
             $table->string("informacion_campo");
+            $table->string("id_movimiento");
             $table->unsignedBigInteger('id_indicador');
+            $table->string('final');
 
             $table->foreign('id_indicador')
                   ->references('id')
