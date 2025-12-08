@@ -22,7 +22,8 @@ return new class extends Migration
 
             $table->foreign('id_indicador')
                   ->references('id')
-                  ->on('indicadores');
+                  ->on('indicadores')
+                  ->onDelete('cascade');
                   
             $table->timestamps();
             

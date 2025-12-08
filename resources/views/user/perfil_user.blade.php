@@ -71,15 +71,27 @@
      </div>
 
     <div class="row">
+      
+      @if ($ponderacion == 100)
+          
         @forelse ($indicadores as $indicador)
-        <div class="col-auto m-2">
+          <div class="col-auto m-2">
             <a href="{{route('show.indicador.user', $indicador->id)}}" class="btn btn-outline-primary">
-                {{$indicador->nombre}}
+              {{$indicador->nombre}}
             </a>
-        </div>
+          </div>
         @empty
-        <li>No hay datos </li>
+          <li>No hay datos </li>
         @endforelse
+
+      @else
+
+          <div class="alert alert-info">
+            <i class="fa fa-info-circle"></i>
+            La sumatoria de la ponderación no da 100%. Actualmente da <b> %{{$ponderacion}} </b>
+          </div>
+
+      @endif
     </div>
 </div>
 
@@ -114,13 +126,13 @@
             <!-- Tabs content -->
             <div class="tab-content" id="ex2-content">
                 <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
-                    <canvas class="w-100 h-100" id="grafico"></canvas>
+                    <canvas class="w-100" id="grafico"></canvas>
                 </div>
                 <div class="tab-pane" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
-                    <canvas  class="w-100 h-100" id="chartLinea"></canvas>
+                    <canvas  class="w-100" id="chartLinea"></canvas>
                 </div>
                 <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                    <canvas  class="w-100 h-100" id="chartBurbuja"></canvas>
+                    <canvas  class="w-100" id="chartBurbuja"></canvas>
                 </div>
             </div>
             <!-- Tabs content -->

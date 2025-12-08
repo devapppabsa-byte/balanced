@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('encuestas', function (Blueprint $table) {
             $table->id();
             $table->string("nombre");
-
             $table->unsignedBigInteger("id_departamento");
+            $table->string("ponderacion");
 
             $table->foreign("id_departamento")
                   ->references('id')

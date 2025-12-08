@@ -19,7 +19,7 @@ use App\Models\IndicadorLleno;
 use App\Models\Encuesta;
 use App\Models\User;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Auth;
 class indicadorController extends Controller
 {
 
@@ -30,14 +30,40 @@ class indicadorController extends Controller
         $usuarios = User::with('departamento')->where('id_departamento', $departamento->id)->get();
         $encuestas = Encuesta::where("id_departamento", $departamento->id)->get();
         $normas = Norma::where("id_departamento", $departamento->id)->get();
-        
-
-
-
         $departamentos = Departamento::get();
+
+
+
+    
+        //Teniendo el departamento tomo los indicadores que se le estan registrando.
+        $indicadores_ponderaciones = Indicador::where('id_departamento', $departamento->id)->get();
+        $ponderacion_indicadores = [];
+        foreach($indicadores_ponderaciones as $indicador_ponderacion){
+            array_push($ponderacion_indicadores, $indicador_ponderacion->ponderacion);
+        }
+
+
+
+        $normas_ponderaciones = Norma::where('id_departamento', $departamento->id)->get();
+        $ponderacion_normas = [];
+        foreach($normas_ponderaciones as $norma_ponderacion){
+            array_push($ponderacion_normas, $norma_ponderacion->ponderacion);
+        }
+
+
+
+        $encuestas_ponderaciones = Encuesta::where('id_departamento', $departamento->id)->get();
+        $ponderacion_encuestas = [];
+        foreach($encuestas_ponderaciones as $encuesta_ponderacion){
+            array_push($ponderacion_encuestas, $encuesta_ponderacion->ponderacion);
+        }
+
+
+        $ponderacion = array_sum(array_merge($ponderacion_indicadores, $ponderacion_normas, $ponderacion_encuestas));
+
         
 
-        return view('admin.agregar_indicadores', compact('departamento','indicadores', 'usuarios', 'departamentos', 'encuestas', 'normas' ));
+        return view('admin.agregar_indicadores', compact('departamento','indicadores', 'usuarios', 'departamentos', 'encuestas', 'normas', 'ponderacion' ));
 
     }
 
@@ -376,7 +402,6 @@ public function input_resta_guardar(Request $request, Indicador $indicador){
 
 
 }
-
 
 
 

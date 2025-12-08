@@ -10,6 +10,8 @@ use App\Models\EvaluacionProveedor;
 use App\Models\Departamento;
 use App\Models\Indicador;
 use App\Models\Proveedor;
+use App\Models\Norma;
+use App\Models\Encuesta;
 
 class userController extends Controller
 {
@@ -52,7 +54,39 @@ class userController extends Controller
         $id_dep = Auth::user()->departamento->id;
         $indicadores = Indicador::where('id_departamento', $id_dep)->get();
 
-        return view('user.perfil_user', compact('indicadores'));
+    
+        //Teniendo el departamento tomo los indicadores que se le estan registrando.
+        $indicadores_ponderaciones = Indicador::where('id_departamento', $id_dep)->get();
+        $ponderacion_indicadores = [];
+        foreach($indicadores_ponderaciones as $indicador_ponderacion){
+            array_push($ponderacion_indicadores, $indicador_ponderacion->ponderacion);
+        }
+
+
+
+        $normas_ponderaciones = Norma::where('id_departamento', $id_dep)->get();
+        $ponderacion_normas = [];
+        foreach($normas_ponderaciones as $norma_ponderacion){
+            array_push($ponderacion_normas, $norma_ponderacion->ponderacion);
+        }
+
+
+
+        $encuestas_ponderaciones = Encuesta::where('id_departamento', $id_dep)->get();
+        $ponderacion_encuestas = [];
+        foreach($encuestas_ponderaciones as $encuesta_ponderacion){
+            array_push($ponderacion_encuestas, $encuesta_ponderacion->ponderacion);
+        }
+
+
+        $ponderacion = array_sum(array_merge($ponderacion_indicadores, $ponderacion_normas, $ponderacion_encuestas));
+        
+
+
+
+ 
+
+        return view('user.perfil_user', compact('indicadores', 'ponderacion'));
 
     }
 
