@@ -109,6 +109,30 @@ class indicadorController extends Controller
     }
 
 
+    public function indicador_edit(Request $request, Indicador $indicador){
+
+        $request->validate([
+
+            "meta_minima" => "required",
+            "meta_esperada" => "required",
+            "ponderacion_indicador_edit" => "required"
+
+        ]);
+
+
+
+
+        $indicador->meta_esperada = $request->meta_esperada;
+        $indicador->meta_minima = $request->meta_minima;
+        $indicador->ponderacion = $request->ponderacion_indicador_edit;
+
+        $indicador->update();
+
+        return back()->with('success', 'El indicador fue actualizado!');
+
+    }
+
+
 
     public function indicador_index(Indicador $indicador){
 
@@ -241,37 +265,24 @@ public function show_indicador_user(Indicador $indicador){
     });
     //para poder hacer las opreaciones tengo que consultar todo.
 
-    //CONSULTA DE LOS CAMPOS
 
 
-    //CONSULTA DE LA INDFORMACION
 
-
-    //Bloque de odigo que me va a dar la informacion en forma de tabla
-
-    // $datos = Indicador::with([
-    //     'camposCalculados.informacion_input_calculado',
-    //     'campoVacio.informacion_input_vacio',
-    //     'campoPrecargado.informacion_input_precargado'
-    // ])->find($indicador->id);
 
     $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get() ;
 
-    $grupos = $datos->groupBy('id_movimiento');
+    $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();;
 
-    
-
-    //INformacion en tabla
-
-
+ 
 
     //Se consulta el campo de resultado final.
     $campo_resultado_final = CampoCalculado::where('id_indicador', $indicador->id)->whereNotNull('resultado_final')->where('resultado_final', '!=', '')->first();
 
-
-
+    //datos para graficar...
+    $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+                           ->where('final', 'on')->get();
     
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'datos', 'grupos'));
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'datos', 'grupos', 'graficar'));
 
 
 

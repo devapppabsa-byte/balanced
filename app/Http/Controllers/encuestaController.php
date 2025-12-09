@@ -120,7 +120,8 @@ class encuestaController extends Controller
         $request->validate([
 
             "nombre_encuesta_edit" => "required|unique:encuestas,nombre,".$encuesta->id,
-            "descripcion_encuesta_edit" => "required"
+            "descripcion_encuesta_edit" => "required",
+            "ponderacion_encuesta_edit" => "required"
 
         ]);
 
@@ -130,17 +131,16 @@ class encuestaController extends Controller
         $encuesta->update([
 
             "nombre" => $request->nombre_encuesta_edit,
-            "descripcion" => $request->descripcion_encuesta_edit
+            "descripcion" => $request->descripcion_encuesta_edit,
+            "ponderacion" => $request->ponderacion_encuesta_edit
 
         ]);
 
 
 
-        return back()->with("editado", "La encuesta fue editada");
+        return back()->with("actualizado", "La encuesta fue editada");
 
     }
-
-
 
     public function pregunta_store(Encuesta $encuesta, Request $request){
 

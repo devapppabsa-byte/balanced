@@ -95,6 +95,9 @@ Route::get('/perfil_admin/agregar_indicadores/indicador/{indicador}', [indicador
 
 Route::delete('/perfil_admin/agregar_indicadores/{indicador}', [indicadorController::class, 'borrar_indicador'])->name('borrar.indicador');
 
+Route::patch('/perfil_admin/agregar_indicadores/editando_indicador/{indicador}', [indicadorController::class, 'indicador_edit'])->name('indicador.edit');
+
+
 
 //Rutas que agregan los campos de los indicadores
 Route::post('/perfil_admin/agregar_indicadores/indicador/agregar_campo_vacio/{indicador}', [campoVacioController::class, 'agregar_campo_vacio'])->name('agregar.campo.vacio');

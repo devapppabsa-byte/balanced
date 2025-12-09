@@ -47,6 +47,17 @@
 
     @include('admin.assets.nav')
 
+    @if ($ponderacion != 100)
+        <div class="row bg-danger py-2">
+            <div class="col-12 text-white pt-2">
+                <h5>    
+                    <i class="fa fa-exclamation-circle text-white"></i>
+                    La suma de la ponderación de los indicadores es: <b class="bg-white text-danger rounded-pill p-1">%{{$ponderacion}}</b>
+                </h5>
+            </div>
+        </div>
+    @endif
+
 </div>
 
 
@@ -130,7 +141,7 @@
                                                 <i class="fa fa-trash"></i> 
                                             </a>
 
-                                            <a href="#" class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#update_indicador">
+                                            <a  class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#upd_indi{{$indicador->id}}">
                                                 <i class="fa fa-edit"></i>
                                             </a>
 
@@ -515,9 +526,8 @@
   </div>
 </div>
 
-
-
-<div class="modal fade" id="update_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+@foreach ($indicadores as $indicador)
+<div class="modal fade" id="upd_indi{{$indicador->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-primary py-4">
@@ -525,8 +535,8 @@
         <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body py-4">
-        <form action="#" method="post">
-            @csrf
+        <form action="{{route('indicador.edit', $indicador->id)}}" method="post">
+            @csrf @method('PATCH')
             <div class="row">
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 mt-4 border-left">
@@ -536,13 +546,13 @@
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <input type="number" min="1" value="50%" class="form-control" name="meta_minima" placeholder="% Minimo" required>
+                                <input type="number" min="1" value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="% Minimo" required>
                             </div>
                         </div>
                         
                         <div class="col-6">
                             <div class="form-group">
-                                <input type="number" min="1" class="form-control" value="100%" name="meta_esperada" placeholder="% Máximo"  required>
+                                <input type="number" min="1" class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder="% Máximo"  required>
                             </div>
                         </div>
 
@@ -550,10 +560,10 @@
                 </div>
 
                 <div class="col-12 mt-3 ">
-                    <div class="form-group mt-3">
+                    <div class="form-group mt-3 ">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="number" min="1" max="100" value="30%" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador1" name="ponderacion_indicador" required ></textarea>
-                            <label class="form-label" for="ponderacion_indicador">Ponderación % Indicador dentro de la evaluación total</label>
+                            <input type="number" min="1" max="100" value="{{$indicador->ponderacion}}" class="form-control fs-3 form-control-lg w-100 {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador_edit" name="ponderacion_indicador_edit" required />
+                            <label class="form-label" for="ponderacion_indicador_edit">Ponderación % Indicador dentro de la evaluación total</label>
                         </div>
                     </div>
                 </div>
@@ -570,6 +580,10 @@
     </div>
   </div>
 </div>
+@endforeach
+
+
+
 
 
 <div class="modal fade" id="agregar_usuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
@@ -818,6 +832,17 @@
                             </div>
                         </div>
                     </div>
+            
+                    <div class="col-12 text-center">
+                        <div class="form-group mt-3">
+                            <div class="form-outline" data-mdb-input-init>
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input class="form-control w-100 fs-3{{ $errors->first('ponderacion_encuesta_edit') ? 'is-invalid' : '' }}" id="ponderacion_encuesta" value="{{$encuesta->ponderacion}}" name="ponderacion_encuesta_edit" required >
+                                    <label class="form-label" for="ponderacion_encuesta_edit">Ponderacion del la Encuesta</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -1012,7 +1037,7 @@
                     
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg w-100{{ $errors->first('nombre_norma_edit') ? 'is-invalid' : '' }} " id="nombre_norm{{$norma->id}}" name="nombre_norma" value="{{old('nombre_norma', $norma->nombre)}}" style="font-size: 30px">
+                            <input type="text" class="form-control form-control-lg w-100{{ $errors->first('nombre_norma_edit') ? 'is-invalid' : '' }} " id="nombre_norm{{$norma->id}}" name="nombre_norma_edit" value="{{old('nombre_norma', $norma->nombre)}}" style="font-size: 30px">
                             <label class="form-label" for="nombre_norm{{$norma->id}}" >Nombre </label>
                         </div>
                     </div>
@@ -1021,6 +1046,13 @@
                         <div class="form-outline" data-mdb-input-init>
                             <textarea type="text" rows="5" class="form-control form-control-lg w-100 h-100 lh-sm{{ $errors->first('descripcion_norma_edit') ? 'is-invalid' : '' }} " id="descrip_norm_edit{{$norma->id}}" name="descripcion_norma_edit" value="{{old('descripcion_norma_edit', $norma->descripcion)}}">{{$norma->descripcion}}</textarea>
                             <label class="form-label" for="descrip_norm_edit{{$norma->id}}" >Descripción </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text"  class="form-control form-control-lg fs-3{{ $errors->first('ponderacion_norma_edit') ? 'is-invalid' : '' }} " id="ponderacion_norm_edit{{$norma->id}}" name="ponderacion_norma_edit" value="{{old('ponderacion_norma_edit', $norma->ponderacion)}}">
+                            <label class="form-label" for="ponderacion_norm_edit{{$norma->id}}" >Ponderación </label>
                         </div>
                     </div>
 

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Norma;
 use App\Models\Departamento;
 use App\Models\ApartadoNorma;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
 class normaController extends Controller
@@ -58,12 +59,25 @@ class normaController extends Controller
 
     public function norma_update(Norma $norma, Request $request){
 
-        $norma->nombre = $request->nombre_norma;
+
+        $request->validate([
+            "nombre_norma_edit" => [
+                'required',
+                Rule::unique('norma', 'nombre')->ignore($norma->id) // <-- Ignora el registro actual
+            ],
+            "descripcion_norma_edit" => 'required',
+            "ponderacion_norma_edit" => 'required'
+        ]);
+
+
+
+        $norma->nombre = $request->nombre_norma_edit;
         $norma->descripcion = $request->descripcion_norma_edit;
+        $norma->ponderacion = $request->ponderacion_norma_edit;
 
         $norma->update();
 
-        return back()->with('editado', 'La norma fue actualizada');
+        return back()->with('actualizado', 'La norma fue actualizada');
         
 
     }

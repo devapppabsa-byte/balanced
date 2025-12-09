@@ -12,6 +12,7 @@ use App\Models\Indicador;
 use App\Models\Proveedor;
 use App\Models\Norma;
 use App\Models\Encuesta;
+use App\Models\IndicadorLleno;
 
 class userController extends Controller
 {
@@ -80,7 +81,18 @@ class userController extends Controller
 
 
         $ponderacion = array_sum(array_merge($ponderacion_indicadores, $ponderacion_normas, $ponderacion_encuestas));
-        
+
+        //se deben consultar las encuestas, indicadores y el cumplimiento normativo de cada area.
+        $indicadores = Indicador::where('id_departamento', $id_dep)->get();
+        foreach($indicadores as $index_indicador => $indicador){
+            //Aqui es donde se van a consultar los resultados de los demas indicadores, se va a tomar la ponder
+             $indicador->ponderacion;
+            return IndicadorLleno::where('id_indicador', $indicador->id)->get();
+        }
+
+
+        $normas = Norma::where('id_departamento', $id_dep)->get();
+        $encuestas = Encuesta::where('id_departamento', $id_dep)->where('final')->get();
 
 
 

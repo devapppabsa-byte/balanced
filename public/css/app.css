@@ -121,10 +121,10 @@ body{
 .zoom_link:hover{
     background-color: rgb(1, 67, 121);
     transform: scale(1.05);
-    border-radius: 50px;
+
   }
   
 .link_selected{
     background-color: rgb(1, 67, 121);
-    border-radius: 50px;
+
   }

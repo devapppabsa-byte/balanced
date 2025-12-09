@@ -64,7 +64,7 @@
     <div class="row justify-content-center">
         @forelse ($departamentos as $departamento)
 
-        <div class="col-10 col-sm-10 col-md-5 col-lg-3 mt-2">
+        <div class="col-12 col-sm-12 col-md-5 col-lg-5 mt-2">
             <div class="card shadow-3 rounded-4 p-3 border" style="max-width: 400px;">
 
             <div class="card-body p-1">

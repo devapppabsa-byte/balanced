@@ -89,19 +89,19 @@ use Carbon\Carbon;
     <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center mt-4">
         <div  class="col-12 mx-2 bg-white shadow-sm p-5">
             
-            <div class="row justify-content-around">
+            <div class="row justify-content-center">
                 
                 <div class="col-12">
-                    <h5><i class="fa fa-chart-simple"></i>
+                    <h3><i class="fa fa-chart-simple"></i>
                         Historico de llenado del Indicador
-                    </h5>
+                    </h3>
                 </div>
 
 
                 
                 @forelse($grupos as $movimiento => $items)
 
-                <div class="col-10 col-sm-5 col-md-5 col-lg-2  shadow-sm m-1 border rounded mt-4">
+                <div class="col-10 col-sm-5 col-md-5 col-lg-3  shadow-sm mx-4 border rounded mt-4">
                     @php
                         $fecha = Carbon::parse(explode('-', $movimiento)[0]);
                         Carbon::setLocale('es');
@@ -109,26 +109,34 @@ use Carbon\Carbon;
                         $year = $fecha->format('Y');
                     @endphp
 
-                    <div class="row">
+                    <div class="row justify-content-center">
                         
-                            <div class="col-12 bg-primary text-white p-2 mb-4">
-                                <h3 class="text-center fw-bold">
-                                 <i class="fa-solid fa-calendar-days"></i> {{ $mes.' - '.$year }}
-                                </h3>
-                            </div>
+                        <div class="col-12 bg-info text-white pt-3 pb-2 mb-4 rounded">
+                            <h3 class="text-center fw-bold">
+                                <i class="fa-solid fa-calendar-days"></i> {{ $mes.' - '.$year }}
+                            </h3>
+                        </div>
                         
                         @foreach($items as $item)
 
                         
                         {{-- Se hace la consulta de la informaion del indiacor lleno, y se hace la condicional  para saber si esta el campo final --}}
                         @if ($item->final === "on")
-                            <br> <br> <hr> 
-                            <h5 class="text-center ">{{ $item['nombre_campo'] }}: </h5> 
+                        <div class="col-8  fw-bold  rounded-5 border zoom_link {{($indicador->meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3">
+                            
+                             
+                            <h5 class="text-center ">
+                                <i class="fa {{($indicador->meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
+                                {{ $item['nombre_campo'] }}: 
+                            </h5> 
                             <h2 class="text-center">{{ $item['informacion_campo'] }} </h2>
                         
+                        </div>
                         @else
+                        <div class="col-12">
                             <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
-                            <span class="h5">{{ $item['informacion_campo'] }}</span> <br>                
+                            <span class="h3">{{ $item['informacion_campo'] }}</span> <br>                
+                        </div>
                         @endif
 
 
@@ -226,14 +234,6 @@ use Carbon\Carbon;
             </div>
             <div class="modal-body py-4 bg-light">
                 <div class="col-12  mx-2 bg-white shadow-sm p-5 mt-4" >
-                    <div class="row">
-                        <div class="col-6">
-                            <input type="date" class="form-control" name="inicio" id="inicio">
-                        </div>
-                        <div class="col-6">
-                            <input type="date" class="form-control" name="final" id="final">
-                        </div>
-                    </div>
                     <canvas class="w-100 h-100" id="grafico"></canvas>
                 </div>
             </div>
@@ -315,45 +315,70 @@ use Carbon\Carbon;
 
 
 @section('scripts')
-
-
 <script>
+
+// ESTO VIENE DINÁMICO DESDE LARAVEL
+const datos = @json($graficar);
+
+
+// Meses en español
+const mesesES = [
+  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
+
+// Labels: sacamos el mes del created_at
+const labels = datos.map(item => {
+    const fecha = new Date(item.created_at);
+    return mesesES[fecha.getMonth()];
+});
+
+// Valores: costo por tonelada
+const valores = datos.map(item => parseFloat(item.informacion_campo));
+
+// Niveles dinámicos (puedes modificar)
+const MINIMO = {{$indicador->meta_minima}};
+const MAXIMO = {{$indicador->meta_esperada}};
+
 const ctx = document.getElementById('grafico').getContext('2d');
 
 new Chart(ctx, {
   data: {
-    labels: ["Enero", "Febrero", "Marzo", "Abril"],
+    labels: labels,
     datasets: [
       {
-        type: "bar",  // Barras
-        label: "Ventas",
-        data: [30, 50, 40, 60],
+        type: "bar",
+        label: "Costo por tonelada",
+        data: valores,
 
         backgroundColor: function(context) {
           const value = context.raw;
-          return value < 50
-            ? "rgba(255, 99, 132, 0.7)"  // rojo
-            : "rgba(75, 192, 75, 0.7)";  // verde
+          return value < MINIMO
+            ? "rgba(255, 99, 132, 0.7)" // rojo
+            : "rgba(75, 192, 75, 0.7)"; // verde
         },
         borderColor: function(context) {
           const value = context.raw;
-          return value < 50 ? "red" : "green";
+          return value < MINIMO ? "red" : "green";
         },
-
         borderWidth: 1
       },
+
+      // Línea de nivel mínimo
       {
-        type: "line", // Línea sobrepuesta
-        label: "Mínimo",
-        data: [50, 50, 50, 50],
+        type: "line",
+        label: "Nivel mínimo",
+        data: valores.map(() => MINIMO),
         borderColor: "red",
         borderWidth: 2,
         fill: false
       },
+
+      // Línea de nivel máximo
       {
-        type: "line", // Línea sobrepuesta
-        label: "Máximo",
-        data: [100, 100, 100, 100],
+        type: "line",
+        label: "Nivel máximo",
+        data: valores.map(() => MAXIMO),
         borderColor: "green",
         borderWidth: 2,
         fill: false
@@ -371,5 +396,7 @@ new Chart(ctx, {
   }
 });
 </script>
+
+
 
 @endsection

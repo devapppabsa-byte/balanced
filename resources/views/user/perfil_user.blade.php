@@ -86,9 +86,9 @@
 
       @else
 
-          <div class="alert alert-info">
+          <div class="alert alert-danger border border-2 border-danger">
             <i class="fa fa-info-circle"></i>
-            La sumatoria de la ponderación no da 100%. Actualmente da <b> %{{$ponderacion}} </b>
+            La sumatoria de la ponderación no da 100%. Actualmente da <b>  {{$ponderacion}}%</b>
           </div>
 
       @endif
