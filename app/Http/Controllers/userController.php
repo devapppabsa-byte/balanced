@@ -80,19 +80,61 @@ class userController extends Controller
         }
 
 
+
+
+
         $ponderacion = array_sum(array_merge($ponderacion_indicadores, $ponderacion_normas, $ponderacion_encuestas));
 
+
         //se deben consultar las encuestas, indicadores y el cumplimiento normativo de cada area.
+        //$indicadores = Indicador::with('indicadorLleno')->where('id_departamento', $id_dep)->get();
+
+        //use Carbon\Carbon;
+
         $indicadores = Indicador::where('id_departamento', $id_dep)->get();
+
+
+        $informacion_indicadores_conjunta = [];
+
         foreach($indicadores as $index_indicador => $indicador){
-            //Aqui es donde se van a consultar los resultados de los demas indicadores, se va a tomar la ponder
-             $indicador->ponderacion;
-            return IndicadorLleno::where('id_indicador', $indicador->id)->get();
+
+            //me devuelve los registros que tienen marcado como finañ
+            $indicadores_llenos = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->get();    
+
+            foreach($indicadores_llenos as $indicador_lleno){
+                
+                array_push($informacion_indicadores_conjunta, $indicador_lleno );
+
+            }
+            
+            
         }
+        
+        $coleccion = collect($informacion_indicadores_conjunta);
+
+        return $porMes = $coleccion->groupBy(function ($item) {
+            return Carbon::parse($item['created_at'])->format('Y-m');
+        });
 
 
-        $normas = Norma::where('id_departamento', $id_dep)->get();
-        $encuestas = Encuesta::where('id_departamento', $id_dep)->where('final')->get();
+
+        
+
+
+
+        
+        
+        
+        // Transformar agregando suma y ponderado
+
+
+
+
+
+
+
+        $normas = Norma::where('id_departamento', $id_dep)->get();       
+        $encuestas = Encuesta::where('id_departamento', $id_dep)->get();
 
 
 
