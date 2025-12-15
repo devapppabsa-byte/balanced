@@ -65,7 +65,7 @@
 
 <div class="container-fluid">
     <div class="row  border-bottom mb-5 bg-white">
-        <div class="col-12 col-sm-12 col-md-4 col-lg-1 my-1">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-auto my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_apartado_norma">
                 <i class="fa fa-plus-circle"></i>
                 Agregar Apartado Norma

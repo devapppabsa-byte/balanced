@@ -11,11 +11,9 @@ class campoPrecargadoController extends Controller
 {
  
 
+    //este es para el campo de prueba
     public function agregar_campo_precargado(Indicador $indicador, Request $request){
 
-    
-        
-        
         $request->validate([
         
             'campo_precargado' => 'required'
@@ -27,10 +25,6 @@ class campoPrecargadoController extends Controller
         $fecha_creado = date("YmdHis");
 
         $id_input = strtolower(str_replace(" ", "", $fecha_creado.$nombre));
-
-
-
-
     
         CampoPrecargado::create([
            
@@ -46,8 +40,36 @@ class campoPrecargadoController extends Controller
         return back()->with('success', 'El campo fue agregado!');
 
 
+    }//este es para el campo de prueba
+
+
+
+
+    public function crear_campo_precargado(Request $request){
+
+
+        $request->validate([
+
+            "nombre_precargado" => 'required',
+            "descripcion_precargado" => 'required'
+
+        ]);
+
+         $id_input = date('YmdHis').rand(0,5000); 
+
+         
+        CampoPrecargado::create([
+
+            'id_input' => $id_input,
+            
+
+
+
+        ]);
+
 
     }
+
 
 
 }

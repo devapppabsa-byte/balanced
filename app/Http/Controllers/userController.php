@@ -13,6 +13,9 @@ use App\Models\Proveedor;
 use App\Models\Norma;
 use App\Models\Encuesta;
 use App\Models\IndicadorLleno;
+use App\Models\ApartadoNorma;
+use App\Models\CumplimientoNorma;
+use Illuminate\Support\Facades\DB;
 
 class userController extends Controller
 {
@@ -52,9 +55,14 @@ class userController extends Controller
 
     public function perfil_user(){   
 
+        $year = Carbon::now()->year;
+
         $id_dep = Auth::user()->departamento->id;
         $indicadores = Indicador::where('id_departamento', $id_dep)->get();
 
+
+
+        //TODO EL DESMADRE DE ABAJO ES PARA PODER OBTENER LA PONDERACION Y QUE NO SE LLENEN INDICADORES SI LA PONDERACION CAMBIA
     
         //Teniendo el departamento tomo los indicadores que se le estan registrando.
         $indicadores_ponderaciones = Indicador::where('id_departamento', $id_dep)->get();
@@ -79,53 +87,133 @@ class userController extends Controller
             array_push($ponderacion_encuestas, $encuesta_ponderacion->ponderacion);
         }
 
-
-
-
-
         $ponderacion = array_sum(array_merge($ponderacion_indicadores, $ponderacion_normas, $ponderacion_encuestas));
 
-
-        //se deben consultar las encuestas, indicadores y el cumplimiento normativo de cada area.
-        //$indicadores = Indicador::with('indicadorLleno')->where('id_departamento', $id_dep)->get();
-
-        //use Carbon\Carbon;
-
-        $indicadores = Indicador::where('id_departamento', $id_dep)->get();
+        //TODO EL DESMADRE DE ARRIBA ES PARA PODER OBTENER LA PONDERACION Y QUE NO SE LLENEN INDICADORES SI LA PONDERACION CAMBIA
 
 
-        $informacion_indicadores_conjunta = [];
 
-        foreach($indicadores as $index_indicador => $indicador){
 
-            //me devuelve los registros que tienen marcado como finañ
-            $indicadores_llenos = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->get();    
 
-            foreach($indicadores_llenos as $indicador_lleno){
-                
-                array_push($informacion_indicadores_conjunta, $indicador_lleno );
+        
+        //DE AQUI SE SACA EL CUMPLIMIENTO DE LOS INDICADORES
+        $indicadores_graficas = Indicador::where('id_departamento', $id_dep)->pluck('ponderacion', 'id');
+        $registros = IndicadorLleno::where('final', 'on')->get();
 
+
+         $datosGrafica = collect($registros)
+            ->groupBy(function ($item) {
+                return Carbon::parse($item->created_at)->format('Y-m');
+            })
+            ->map(function ($itemsPorMes) use ($indicadores_graficas) {
+
+                $totalMes = 0;
+
+                foreach ($itemsPorMes as $item) {
+                    $ponderacion = ($indicadores_graficas[$item->id_indicador] ?? 0) / 100;
+                    $totalMes += floatval($item->informacion_campo) * $ponderacion;
+                }
+
+                return round($totalMes, 2);
+            });
+
+
+
+            $labels_indicadores = $datosGrafica->keys()->values();
+            $data_indicadores   = $datosGrafica->values();
+
+        //DE AQUI SE SACA EL CUMPLIMIENTO DE LOS INDICADORES
+        
+
+
+
+
+    //AQUI TERMINA LA GENERACION DE GRAFICAS DEL CUMPLIMIENTO NORMATIVO
+        // Se consultan todas las normas del departamento
+        $normas = Norma::where('id_departamento', $id_dep)->get();
+
+        // Meses a graficar (últimos 12)
+        $meses = collect(range(0, 11))
+            ->map(fn ($i) => now()->subMonths($i)->format('Y-m'))
+            ->reverse()
+            ->values();
+
+        $resultado_normas = [];
+
+        foreach ($normas as $norma) {
+
+            $apartados = ApartadoNorma::where('id_norma', $norma->id)->get();
+            $data = [];
+
+            foreach ($meses as $mes) {
+
+                $totalApartados = $apartados->count();
+                $apartadosCumplidos = 0;
+
+                foreach ($apartados as $apartado) {
+
+                    $cumple = CumplimientoNorma::where('id_apartado_norma', $apartado->id)
+                        ->whereYear('created_at', substr($mes, 0, 4))
+                        ->whereMonth('created_at', substr($mes, 5, 2))
+                        ->exists();
+
+                    if ($cumple) {
+                        $apartadosCumplidos++;
+                    }
+                }
+
+                $data[] = $totalApartados > 0
+                    ? round(($apartadosCumplidos / $totalApartados) * 100, 2)
+                    : 0;
             }
-            
-            
+
+            $resultado_normas[] = [
+                'norma'  => $norma->nombre,
+                'labels' => $meses,
+                'data'   => $data
+            ];
         }
-        
-        $coleccion = collect($informacion_indicadores_conjunta);
+    
+    //AQUI TERMINA LA GENERACION DE GRAFICAS DEL CUMPLIMIENTO NORMATIVO
 
-        return $porMes = $coleccion->groupBy(function ($item) {
-            return Carbon::parse($item['created_at'])->format('Y-m');
-        });
+    
 
 
 
-        
+    $resultado_encuestas = DB::table('encuestas as e')
+    ->join('preguntas as p', 'p.id_encuesta', '=', 'e.id')
+    ->leftJoin('respuestas as r', 'r.id_pregunta', '=', 'p.id')
+    ->where('e.id_departamento', $id_dep)
+    ->where(function ($q) {
+        $q->where('p.cuantificable', 'on')
+          ->orWhere('p.cuantificable', 1);
+    })
+    ->select(
+        'e.id',
+        'e.nombre as encuesta',
+        DB::raw("DATE_FORMAT(r.created_at, '%Y-%m') as mes"),
+        DB::raw('COALESCE(AVG(r.respuesta),0) as total')
+    )
+    ->groupBy('e.id', 'e.nombre', 'mes')
+    ->orderBy('mes')
+    ->get()
+    ->groupBy('encuesta')
+    ->map(function ($items, $encuesta) {
+        return [
+            'encuesta' => $encuesta,
+            'labels'   => $items->pluck('mes')->filter()->values(),
+            'data'     => $items->pluck('total')->values()
+        ];
+    })
+    ->values();
+
+
+    //de aqui se van a sacar las graficas de las encuestas a los clientes
 
 
 
-        
-        
-        
-        // Transformar agregando suma y ponderado
+
+    
 
 
 
@@ -133,14 +221,7 @@ class userController extends Controller
 
 
 
-        $normas = Norma::where('id_departamento', $id_dep)->get();       
-        $encuestas = Encuesta::where('id_departamento', $id_dep)->get();
-
-
-
- 
-
-        return view('user.perfil_user', compact('indicadores', 'ponderacion'));
+        return view('user.perfil_user', compact('indicadores', 'ponderacion', 'labels_indicadores', 'data_indicadores', 'resultado_normas', 'resultado_encuestas'));
 
     }
 

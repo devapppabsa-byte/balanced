@@ -47,19 +47,28 @@
 <div class="container-fluid">
     <div class="row  border-bottom  bg-white border-bottom shadow-sm">
 
-        <div class="col-12 col-sm-12 col-md-4 col-lg-2 my-1">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-auto my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#precargar_campos">
                 <i class="fa fa-plus"></i>
                 Precargar Campos - para pruebas
             </button>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-3 col-lg-2 my-1">
+        <div class="col-12 col-sm-12 col-md-3 col-lg-auto my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#cargar_excel">
                 <i class="fa fa-file-excel mx-1"></i>
                 Cargar Excel
             </button>
         </div>
+
+        <div class="col-12 col-sm-12 co-md-3 col-lg-auto my-1">
+            <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#crear_campo_precargado" >
+                <i class="fa fa-field"></i>
+                Crear campo precargado
+            </button>
+        </div>
+
+
     </div>
 </div>
 
@@ -208,6 +217,54 @@
                         </div>
                     </div>
                 </div>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+                <h6>Guardar</h6>
+            </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="crear_campo_precargado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary py-4">
+        <h3 class="text-white" id="exampleModalLabel">Creando campo precargado</h3>
+        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        <form action="{{route('crear_campo_precargado')}}"  method="post">
+            @csrf 
+            <div class="row">
+
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <input type="text" class="form-control form-control-lg" name="nombre_precargado" required>
+                            <label class="form-label" for="" >Nombre </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <textarea type="text" class="form-control form-control-lg" name="descripcion_precargado" required></textarea>
+                            <label for="" class="form-label">Descripción</label>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
         </div>

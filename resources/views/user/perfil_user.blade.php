@@ -105,19 +105,19 @@
                 <li class="nav-item" role="presentation">
                     <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
                       <i class="fa fa-chart-simple"></i>  
-                      Barras
+                      Grafica de los indicadores
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
                       <i class="fa fa-chart-line"></i> 
-                      Lineas
+                      Grafica del cumplimiento normativo
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
                       <i class="fa fa-circle"></i>  
-                     Burbuja
+                     Grafica de satisfacción del cliente
                     </a>
                 </li>
             </ul>
@@ -129,10 +129,10 @@
                     <canvas class="w-100" id="grafico"></canvas>
                 </div>
                 <div class="tab-pane" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
-                    <canvas  class="w-100" id="chartLinea"></canvas>
+                    <canvas  class="w-100" id="grafico_normas"></canvas>
                 </div>
                 <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                    <canvas  class="w-100" id="chartBurbuja"></canvas>
+                    <canvas id="grafico_encuestas" class="w-100"></canvas>
                 </div>
             </div>
             <!-- Tabs content -->
@@ -151,60 +151,240 @@
 @section('scripts')
 
 <script>
-const ctx = document.getElementById('grafico').getContext('2d');
 
-new Chart(ctx, {
-  data: {
-    labels: ["Enero", "Febrero", "Marzo", "Abril"],
-    datasets: [
-      {
-        type: "bar",  // Barras
-        label: "Ventas",
-        data: [30, 50, 40, 60],
+    const labelsRaw = @json($labels_indicadores);
+    const data = @json($data_indicadores);
+    const meses = [
+    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+  ];
 
-        backgroundColor: function(context) {
-          const value = context.raw;
-          return value < 50
-            ? "rgba(255, 99, 132, 0.7)"  // rojo
-            : "rgba(75, 192, 75, 0.7)";  // verde
+  const labels = labelsRaw.map(fecha => {
+    const [year, month] = fecha.split("-");
+    return `${meses[month - 1]} ${year}`;
+  });
+
+//Se pueden poner los limites e las lineas de las graficas
+  const minimo = 50;
+  const maximo = 100;
+
+  const lineaMin = Array(data.length).fill(minimo);
+  const lineaMax = Array(data.length).fill(maximo);
+
+  const ctx = document.getElementById('grafico').getContext('2d');
+
+  new Chart(ctx, {
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          type: "bar",
+          label: "Cumplimiento",
+          data: data,
+
+          backgroundColor: function(context) {
+            const value = context.raw;
+            return value < minimo
+              ? "rgba(255, 99, 132, 0.7)"
+              : "rgba(75, 192, 75, 0.7)";
+          },
+          borderColor: function(context) {
+            const value = context.raw;
+            return value < minimo ? "red" : "green";
+          },
+          borderWidth: 1
         },
-        borderColor: function(context) {
-          const value = context.raw;
-          return value < 50 ? "red" : "green";
+        {
+          type: "line",
+          label: "Mínimo",
+          data: lineaMin,
+          borderColor: "red",
+          borderWidth: 2,
+          fill: false
         },
-
-        borderWidth: 1
-      },
-      {
-        type: "line", // Línea sobrepuesta
-        label: "Mínimo",
-        data: [50, 50, 50, 50],
-        borderColor: "red",
-        borderWidth: 2,
-        fill: false
-      },
-      {
-        type: "line", // Línea sobrepuesta
-        label: "Máximo",
-        data: [100, 100, 100, 100],
-        borderColor: "green",
-        borderWidth: 2,
-        fill: false
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: "top" }
+        {
+          type: "line",
+          label: "Máximo",
+          data: lineaMax,
+          borderColor: "green",
+          borderWidth: 2,
+          fill: false
+        }
+      ]
     },
-    scales: {
-      y: { beginAtZero: true }
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "top" }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100
+        }
+      }
     }
-  }
-});
+  });
+
+
 </script>
 
+<script>
+  const graficas = @json($resultado_normas);
+
+  if (!graficas || graficas.length === 0) {
+    console.warn('No hay datos para graficar');
+  } else {
+
+    const meses = [
+      "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+      "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+    ];
+
+    // Labels (meses)
+    const labels = graficas[0].labels.map(fecha => {
+      const [year, month] = fecha.split("-");
+      return `${meses[month - 1]} ${year}`;
+    });
+
+    // Colores automáticos
+    const colores = [
+      "rgba(54, 162, 235, 0.7)",
+      "rgba(255, 99, 132, 0.7)",
+      "rgba(75, 192, 192, 0.7)",
+      "rgba(255, 159, 64, 0.7)",
+      "rgba(153, 102, 255, 0.7)",
+      "rgba(201, 203, 207, 0.7)"
+    ];
+
+    // Datasets por norma
+    const datasets = graficas.map((g, index) => ({
+      label: g.norma,
+      data: g.data,
+      backgroundColor: colores[index % colores.length],
+      borderColor: colores[index % colores.length].replace('0.7', '1'),
+      borderWidth: 1
+    }));
+
+    const ctx = document
+      .getElementById('grafico_normas')
+      .getContext('2d');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.dataset.label}: ${context.raw}%`;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              callback: value => value + '%'
+            }
+          }
+        }
+      }
+    });
+  }
+</script>
+
+<script>
+const graficas_encuestas = @json($resultado_encuestas);
+
+if (!graficas_encuestas || graficas_encuestas.length === 0) {
+  console.warn('No hay datos para graficar');
+} else {
+
+  const meses = [
+    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+  ];
+
+  // 🔹 Labels globales (todos los meses usados)
+  const labelsRaw = [...new Set(
+    graficas_encuestas.flatMap(g => g.labels)
+  )].sort();
+
+  const labels = labelsRaw.map(fecha => {
+    const [year, month] = fecha.split("-");
+    return `${meses[month - 1]} ${year}`;
+  });
+
+  // 🔹 Colores automáticos
+  const colores = [
+    "rgba(54, 162, 235, 0.7)",
+    "rgba(255, 99, 132, 0.7)",
+    "rgba(75, 192, 192, 0.7)",
+    "rgba(255, 159, 64, 0.7)",
+    "rgba(153, 102, 255, 0.7)",
+    "rgba(201, 203, 207, 0.7)"
+  ];
+
+  // 🔹 Datasets por encuesta (alineados por mes)
+  const datasets = graficas_encuestas.map((g, index) => {
+    const dataAlineada = labelsRaw.map(mes => {
+      const pos = g.labels.indexOf(mes);
+      return pos !== -1 ? g.data[pos] : 0;
+    });
+
+    return {
+      label: g.encuesta,
+      data: dataAlineada,
+      backgroundColor: colores[index % colores.length],
+      borderColor: colores[index % colores.length].replace('0.7', '1'),
+      borderWidth: 1
+    };
+  });
+
+  const ctx = document
+    .getElementById('grafico_encuestas')
+    .getContext('2d');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `${context.dataset.label}: ${context.raw}`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+</script>
 
 
 
@@ -215,7 +395,7 @@ new Chart(ctx, {
 {{-- Grafico de Pie --}}
 
 
-
+{{-- 
 <script>
 const ctx2 = document.getElementById('chartLinea');
 
@@ -250,7 +430,7 @@ new Chart(ctx2, {
   },
   options: { responsive: true }
 });
-</script>
+</script> --}}
 
 
 
@@ -260,7 +440,7 @@ new Chart(ctx2, {
 {{-- grafico de burbuja --}}
 
 
-
+{{-- 
 <script>
 const ctx3 = document.getElementById('chartBurbuja');
 
@@ -293,7 +473,7 @@ new Chart(ctx3, {
     }
   }
 });
-</script>
+</script> --}}
 
 
 @endsection

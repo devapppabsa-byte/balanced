@@ -74,8 +74,6 @@ Route::post('/perfil_admin/agregar_indicadores/agregar_indicador/{departamento}'
 
 
 
-
-
 Route::patch('/perfil_admin/agregar_indicadores/editar_usuario/{usuario}', [userController::class, 'editar_usuario'])->name('editar.usuario');
 
 
@@ -108,6 +106,15 @@ Route::post('/perfil_admin/agregar_indicadores/indicador/agregar_campo_precargad
 
 //Agregando la informacion foranea
 Route::post('/perfil_admin/agregar_info_foranea', [informacionForaneaController::class, 'agregar_informacion_foranea'])->name('agregar.info.foranea');
+
+
+
+//CREAR INPUT_PRECARGADO que sera llenado con la informacion mes a mes...
+Route::post('/perfil_admin/informaion_foranea/agregar_campo_precargado', [campoPrecargadoController::class, 'crear_campo_precargado'])->name('crear_campo_precargado');
+
+
+
+
 
 
 

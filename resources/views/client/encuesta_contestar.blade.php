@@ -88,10 +88,18 @@
                                 @if ($pregunta->cuantificable)
                                     <div class="col-9">
                                         <select name="respuestas[]" class="form-select" id="" required>
-                                            <option value="" disabled selected>Seleccione una Opción</option>
-                                            <option value="0" >En Desacuerdo</option>
-                                            <option value="5" >Medianamente de acuerdo</option>
-                                            <option value="10" >Completamente de acuerdo</option>
+                                            <option value="" disabled selected>Calificación del 1 al 10</option>
+                                            <option value="0" >0 Puntos</option>
+                                            <option value="1" >1 Puntos</option>
+                                            <option value="2" >2 Puntos</option>
+                                            <option value="3" >3 Puntos</option>
+                                            <option value="4" >4 Puntos</option>
+                                            <option value="5" >5 Puntos</option>
+                                            <option value="6" >6 Puntos</option>
+                                            <option value="7" >7 Puntos</option>
+                                            <option value="8" >8 Puntos</option>
+                                            <option value="9" >9 Puntos</option>
+                                            <option value="10" >10 Puntos</option>
                                         </select>
                                     </div>
                                 @endif
