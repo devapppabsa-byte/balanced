@@ -11,18 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('input_precargado', function (Blueprint $table) {
+        Schema::create('campos_foraneos', function (Blueprint $table) {
             $table->id();
-            $table->string("id_input");
-            $table->string("id_input_foraneo");
+            $table->string('id_input');
             $table->string('nombre');
-            $table->unsignedBigInteger('id_indicador');
-            $table->foreign('id_indicador')
-                  ->references('id')
-                  ->on('indicadores')
-                  ->onDelete('cascade');
-
-
+            $table->string('descripcion');
             $table->timestamps();
         });
     }
@@ -32,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('input_precargado');
+        Schema::dropIfExists('campos_foraneos');
     }
 };

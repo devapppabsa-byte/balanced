@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\CampoCalculado;
+use App\Models\CampoForaneo;
 use App\Models\CampoInvolucrado;
 use App\Models\CampoPrecargado;
 use App\Models\CampoVacio;
@@ -170,7 +171,7 @@ class indicadorController extends Controller
 
 
         //Llamar a la informacion 
-        $informacion_foranea = InformacionForanea::get();
+        $informacion_foranea = CampoForaneo::get();
 
         return view('admin.indicador', compact('indicador', 'campos_vacios','campos_precargados', 'informacion_foranea', 'campos_unidos'));
 

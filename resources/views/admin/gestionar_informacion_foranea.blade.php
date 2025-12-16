@@ -47,21 +47,21 @@
 <div class="container-fluid">
     <div class="row  border-bottom  bg-white border-bottom shadow-sm">
 
-        <div class="col-12 col-sm-12 col-md-4 col-lg-auto my-1">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#precargar_campos">
                 <i class="fa fa-plus"></i>
                 Precargar Campos - para pruebas
             </button>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-3 col-lg-auto my-1">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#cargar_excel">
                 <i class="fa fa-file-excel mx-1"></i>
                 Cargar Excel
             </button>
         </div>
 
-        <div class="col-12 col-sm-12 co-md-3 col-lg-auto my-1">
+        <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#crear_campo_precargado" >
                 <i class="fa fa-field"></i>
                 Crear campo precargado
@@ -149,19 +149,19 @@
         <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
         <div class="modal-body py-4">
-            <form action="#"  method="post">
-                @csrf 
+            <form action="{{route('importar_excel')}}" enctype="multipart/form-data"  method="post" id="form_excel">
+                @csrf @method('POST')
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group mt-3">
-                            <input type="file" accept=".xlsx,xls" class="form-control form-control-lg" name="nombre_info" required>
+                            <input type="file" accept=".xlsx,xls" class="form-control form-control-lg" name="archivo" required>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+            <button  class="btn btn-primary w-100 py-3" form="form_excel" data-mdb-ripple-init>
                 <h6>Guardar</h6>
             </button>
 

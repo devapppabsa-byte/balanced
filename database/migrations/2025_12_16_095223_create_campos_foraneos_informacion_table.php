@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('informacion_foranea', function (Blueprint $table) {
+        Schema::create('campos_foraneos_informacion', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_info');
-            $table->string('contenido');
-            $table->string('descripcion');
-            $table->string('tipo_dato');
+            $table->string('informacion');
+            $table->unsignedBigInteger('id_campo_foraneo');
+            $table->foreign('id_campo_foraneo')
+                  ->references('id')
+                  ->on('campos_foraneos')
+                  ->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('informacion_foranea');
+        Schema::dropIfExists('campos_foraneos_informacion');
     }
 };

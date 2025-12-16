@@ -16,6 +16,7 @@ use App\Http\Controllers\indicadorController;
 use App\Http\Controllers\indicadoresLlenosController;
 use App\Http\Controllers\informacionForaneaController;
 use App\Http\Controllers\evaluacionProveedorController;
+use App\Http\Controllers\CamposForaneosImportController;
 use App\Http\Controllers\userController;
 use App\Models\CampoPrecargado;
 use App\Models\Indicador;
@@ -113,7 +114,11 @@ Route::post('/perfil_admin/agregar_info_foranea', [informacionForaneaController:
 Route::post('/perfil_admin/informaion_foranea/agregar_campo_precargado', [campoPrecargadoController::class, 'crear_campo_precargado'])->name('crear_campo_precargado');
 
 
+///PRUEBAS CON EL ARCHIVO DE EXCEL
 
+Route::post('/perfil_admin/informacion_foranea/cargando_excel', [CamposForaneosImportController::class, 'importar'])->name('importar_excel');
+
+//PRUEBAS CON EL ARCHIVO DE EXCEL
 
 
 

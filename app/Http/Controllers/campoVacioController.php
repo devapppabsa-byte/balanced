@@ -21,7 +21,7 @@ public function agregar_campo_vacio(Request $request,Indicador $indicador){
 
 
 //Sacando el ID para el campo y se pueda gestionar el el combinados de campos al crear nuevos
-    $id_input = date('YmdHis').rand(0,100); 
+    $id_input = date('YmdHis').rand(0,5000); 
 //Sacando el ID para el campo y se pueda gestionar el el combinados de campos al crear nuevos
 
 

@@ -9,7 +9,7 @@ class CampoPrecargado extends Model
     
 
     protected $table = "input_precargado";
-    protected $fillable = ['nombre', 'informacion_precargada', 'id_indicador', 'tipo_dato', 'id_input'];
+    protected $fillable = ['nombre', 'descripcion', 'id_indicador', 'id_input'];
 
 
 

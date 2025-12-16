@@ -698,13 +698,13 @@
                         <option value="" disabled selected>
                             Selecciona un campo precargado
                         </option>
-                        @forelse ($informacion_foranea as $informacion)
+                        @foreach ($informacion_foranea as $informacion)
                         
-                            <option value="{{$informacion->contenido}}|{{$informacion->tipo_dato}}|{{$informacion->nombre_info}}">{{$informacion->nombre_info}}</option>
+                            <option value="{{$informacion->id_input}}|{{$informacion->id}}|{{$informacion->nombre}}|{{$informacion->descripcion}}">                   
+                                {{$informacion->nombre}}
+                            </option>
 
-                        @empty
-
-                        @endforelse
+                        @endforeach
                     </select>
 
                 </div>

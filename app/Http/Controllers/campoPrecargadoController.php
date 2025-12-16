@@ -14,27 +14,52 @@ class campoPrecargadoController extends Controller
     //este es para el campo de prueba
     public function agregar_campo_precargado(Indicador $indicador, Request $request){
 
-        $request->validate([
-        
-            'campo_precargado' => 'required'
-
-        ]);
 
 
-        list($informacion, $tipo, $nombre) = explode('|', $request->campo_precargado);
-        $fecha_creado = date("YmdHis");
+        //Se separan los datos para poder  
+            $datos = [];
+            $datos = explode('|', $request->campo_precargado);
+            $id_input_informacion = $datos[0];
+            $id = $datos[1];
+            $nombre = $datos[2];
+            $descripcion = $datos[3];
+        //Se separan los datos
 
-        $id_input = strtolower(str_replace(" ", "", $fecha_creado.$nombre));
-    
-        CampoPrecargado::create([
-           
-            'nombre' => $nombre,
-            'id_input' => $id_input, 
-            'informacion_precargada'  => $informacion,
-            'tipo_dato' => $tipo,
-            'id_indicador' => $indicador->id
 
-        ]);
+
+
+            $request->validate([
+
+                'campo_precargado' => 'required'
+
+            ]);
+
+            //Aqui tengo que poner la logica, ahora, se supone que en el request vienen los datos....
+            
+            //se toma el id del input precargado  y el id del indicador para saber donde ponerlo...
+            $id_input = date('YmdHis').rand(0,5000);
+
+
+
+            //Aqui voy a crear el input en el perfil del departamento, lo qu
+            // al momento de guardar este input seria bueno guardar la informacion, pero algo me falta, como voy a actualizar 
+            // la informacion mes con mes, puedo agregar la informacion aqui y despues al momento de cagar os nuevs datos, pero como
+            //los identifico.
+            CampoPrecargado::create([
+                'id_input' => $id_input,
+                'id_input_foraneo' => $id_input_informacion,
+                'nombre' => $nombre,
+                'id_indicador' => $indicador->id,
+                'descripcion' => $datos[3]
+            ]);
+
+
+
+
+
+
+
+
 
 
         return back()->with('success', 'El campo fue agregado!');
@@ -61,10 +86,10 @@ class campoPrecargadoController extends Controller
         CampoPrecargado::create([
 
             'id_input' => $id_input,
+            'nombre' => $request->nombre_precargado,
+            'descripcion' => $request->descripcion_precargado,
+            ''
             
-
-
-
         ]);
 
 
