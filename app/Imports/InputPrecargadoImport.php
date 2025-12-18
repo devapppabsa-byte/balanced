@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\InformacionInputPrecargado;
+use App\Models\CampoPrecargado;
 //use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\CampoForaneo;
 use App\Models\CampoForaneoInformacion;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 
 class InputPrecargadoImport implements ToCollection, WithHeadingRow
 {
@@ -21,6 +23,12 @@ class InputPrecargadoImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows)
     {
         DB::transaction(function () use ($rows) {
+
+            $fecha = Carbon::now();
+            $mes = $fecha->month;
+            $year = $fecha->year;
+
+
 
                 foreach ($rows as $row) {
 
@@ -39,19 +47,21 @@ class InputPrecargadoImport implements ToCollection, WithHeadingRow
                     CampoForaneoInformacion::create([
                         'id_campo_foraneo' => $campoForaneo->id,
                         'informacion'      => $row['informacion'],
-                        'mes'              => $row['mes'],
-                        'year'             => $row['year'],
+                        'mes'              => $mes,
+                        'year'             => $year,
                     ]);
 
 
                     //Aqui puedo poner la logica 
-                    $input_precargado = CampoPrecargado::where('id_input_foraneo', $campoForaneo->id)->firts();
+                    $input_precargado = CampoPrecargado::where('id_input_foraneo', $campoForaneo->id_input)->first();
 
                     if($input_precargado){
 
                         InformacionInputPrecargado::create([
                             'informacion' => $row['informacion'],
                             'id_input_precargado' => $input_precargado->id,
+                            'mes' => $mes,
+                            'year' => $year
                             
                         ]);
 

@@ -96,90 +96,93 @@ class userController extends Controller
 
 
         
-        //DE AQUI SE SACA EL CUMPLIMIENTO DE LOS INDICADORES
-        $indicadores_graficas = Indicador::where('id_departamento', $id_dep)->pluck('ponderacion', 'id');
-        $registros = IndicadorLleno::where('final', 'on')->get();
+    //DE AQUI SE SACA EL CUMPLIMIENTO DE LOS INDICADORES
+    $indicadores_graficas = Indicador::where('id_departamento', $id_dep)->pluck('ponderacion', 'id');
+    $registros = IndicadorLleno::where('final', 'on')->get();
 
 
-         $datosGrafica = collect($registros)
-            ->groupBy(function ($item) {
-                return Carbon::parse($item->created_at)->format('Y-m');
-            })
-            ->map(function ($itemsPorMes) use ($indicadores_graficas) {
+        $datosGrafica = collect($registros)
+        ->groupBy(function ($item) {
+            return Carbon::parse($item->created_at)->format('Y-m');
+        })
+        ->map(function ($itemsPorMes) use ($indicadores_graficas) {
 
-                $totalMes = 0;
+            $totalMes = 0;
 
-                foreach ($itemsPorMes as $item) {
-                    $ponderacion = ($indicadores_graficas[$item->id_indicador] ?? 0) / 100;
-                    $totalMes += floatval($item->informacion_campo) * $ponderacion;
-                }
+            foreach ($itemsPorMes as $item) {
+                $ponderacion = ($indicadores_graficas[$item->id_indicador] ?? 0) / 100;
+                $totalMes += floatval($item->informacion_campo) * $ponderacion;
+            }
 
-                return round($totalMes, 2);
-            });
+            return round($totalMes, 2);
+        });
 
 
 
-            $labels_indicadores = $datosGrafica->keys()->values();
-            $data_indicadores   = $datosGrafica->values();
+        $labels_indicadores = $datosGrafica->keys()->values();
+        $data_indicadores   = $datosGrafica->values();
 
-        //DE AQUI SE SACA EL CUMPLIMIENTO DE LOS INDICADORES
+    //DE AQUI SE SACA EL CUMPLIMIENTO DE LOS INDICADORES
         
 
 
 
 
     //AQUI TERMINA LA GENERACION DE GRAFICAS DEL CUMPLIMIENTO NORMATIVO
-        // Se consultan todas las normas del departamento
-        $normas = Norma::where('id_departamento', $id_dep)->get();
+    // Se consultan todas las normas del departamento
+    $normas = Norma::where('id_departamento', $id_dep)->get();
 
-        // Meses a graficar (últimos 12)
-        $meses = collect(range(0, 11))
-            ->map(fn ($i) => now()->subMonths($i)->format('Y-m'))
-            ->reverse()
-            ->values();
+    // Meses a graficar (últimos 12)
+    $meses = collect(range(0, 11))
+        ->map(fn ($i) => now()->subMonths($i)->format('Y-m'))
+        ->reverse()
+        ->values();
 
-        $resultado_normas = [];
+    $resultado_normas = [];
 
-        foreach ($normas as $norma) {
+    foreach ($normas as $norma) {
 
-            $apartados = ApartadoNorma::where('id_norma', $norma->id)->get();
-            $data = [];
+        $apartados = ApartadoNorma::where('id_norma', $norma->id)->get();
+        $data = [];
 
-            foreach ($meses as $mes) {
+        foreach ($meses as $mes) {
 
-                $totalApartados = $apartados->count();
-                $apartadosCumplidos = 0;
+            $totalApartados = $apartados->count();
+            $apartadosCumplidos = 0;
 
-                foreach ($apartados as $apartado) {
+            foreach ($apartados as $apartado) {
 
-                    $cumple = CumplimientoNorma::where('id_apartado_norma', $apartado->id)
-                        ->whereYear('created_at', substr($mes, 0, 4))
-                        ->whereMonth('created_at', substr($mes, 5, 2))
-                        ->exists();
+                $cumple = CumplimientoNorma::where('id_apartado_norma', $apartado->id)
+                    ->whereYear('created_at', substr($mes, 0, 4))
+                    ->whereMonth('created_at', substr($mes, 5, 2))
+                    ->exists();
 
-                    if ($cumple) {
-                        $apartadosCumplidos++;
-                    }
+                if ($cumple) {
+                    $apartadosCumplidos++;
                 }
-
-                $data[] = $totalApartados > 0
-                    ? round(($apartadosCumplidos / $totalApartados) * 100, 2)
-                    : 0;
             }
 
-            $resultado_normas[] = [
-                'norma'  => $norma->nombre,
-                'labels' => $meses,
-                'data'   => $data
-            ];
+            $data[] = $totalApartados > 0
+                ? round(($apartadosCumplidos / $totalApartados) * 100, 2)
+                : 0;
         }
-    
+
+        $resultado_normas[] = [
+            'norma'  => $norma->nombre,
+            'labels' => $meses,
+            'data'   => $data
+        ];
+    }
+
     //AQUI TERMINA LA GENERACION DE GRAFICAS DEL CUMPLIMIENTO NORMATIVO
 
     
 
 
 
+
+
+//PARA LA GRAFICA DE LAS ENCUESTAS
     $resultado_encuestas = DB::table('encuestas as e')
     ->join('preguntas as p', 'p.id_encuesta', '=', 'e.id')
     ->leftJoin('respuestas as r', 'r.id_pregunta', '=', 'p.id')
@@ -207,16 +210,10 @@ class userController extends Controller
     })
     ->values();
 
+    //PARA LAS GRAFICAS DE LAS ENCUESTAS
+
 
     //de aqui se van a sacar las graficas de las encuestas a los clientes
-
-
-
-
-    
-
-
-
 
 
 

@@ -807,11 +807,12 @@
                 @csrf @method('DELETE')
 
                 <div class="form-group">
-                    <input type="text" name="id_input" value="{{$campo->id_input}}" >
-                    <input type="text" name="campo_vacio" value="{{$campo->tipo}}">
-                    <input type="text" name="campo_precargado" value="{{$campo->informacion_precargada}}">
-                    <input type="text" name="campo_calculado" value="{{$campo->operacion}}">
+                    <input type="hidden" name="id_input" value="{{$campo->id_input}}" >
+                    <input type="hidden" name="campo_vacio" value="{{$campo->tipo}}">
+                    <input type="hidden" name="campo_precargado" value="{{$campo->id_input_foraneo}}">
+                    <input type="hidden" name="campo_calculado" value="{{$campo->operacion}}">
                 </div>
+
 
                 <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
                     <h6>Eliminar</h6>

@@ -7,7 +7,9 @@ use App\Models\Encuesta;
 use App\Models\Departamento;
 use App\Models\Pregunta;
 use App\Models\Cliente;
+use App\Models\Respuesta;
 use App\Models\ClienteEncuesta;
+use Illuminate\Support\Facades\DB;
 
 
 class encuestaController extends Controller
@@ -31,11 +33,37 @@ class encuestaController extends Controller
         $clientes = Cliente::whereIn('id', $cliente_arr)->get();
 
 
+
+
+//DATOS PARA LA GRAFICA DE LA ENCUESTA
+$resultados = Respuesta::join('preguntas', 'respuestas.id_pregunta', '=', 'preguntas.id')
+        ->join('clientes', 'respuestas.id_cliente', '=', 'clientes.id')
+        ->where('preguntas.id_encuesta', $encuesta->id)
+        ->where('preguntas.cuantificable', 1)
+        ->groupBy('clientes.id', 'clientes.nombre')
+        ->select(
+            'clientes.nombre as cliente',
+            DB::raw('AVG(respuestas.respuesta) as puntuacion')
+        )
+        ->get();
+
+    $labels  = $resultados->pluck('cliente');
+    $valores = $resultados->pluck('puntuacion')->map(fn($v) => round($v, 2));
+
+
+//DATOS PARA LA HGRAFICA DE LA ENCUESTA
         
 
 
 
-        return view('admin.gestionar_preguntas', compact('encuesta', 'preguntas', 'existe', 'clientes'));
+
+
+
+
+
+
+
+        return view('admin.gestionar_preguntas', compact('encuesta', 'preguntas', 'existe', 'clientes', 'labels', 'valores'));
 
     }
 

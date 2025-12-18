@@ -1,8 +1,9 @@
 @extends('plantilla')
 @section('title', 'Información Foranea')
-
 @section('contenido')
-
+@php
+    use Carbon\Carbon;
+@endphp
 
 <div class="container-fluid">
     <div class="row bg-primary  d-flex align-items-center">
@@ -47,12 +48,12 @@
 <div class="container-fluid">
     <div class="row  border-bottom  bg-white border-bottom shadow-sm">
 
-        <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
+        {{-- <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#precargar_campos">
                 <i class="fa fa-plus"></i>
                 Precargar Campos - para pruebas
             </button>
-        </div>
+        </div> --}}
 
         <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#cargar_excel">
@@ -61,12 +62,12 @@
             </button>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
+        {{-- <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#crear_campo_precargado" >
                 <i class="fa fa-field"></i>
                 Crear campo precargado
             </button>
-        </div>
+        </div> --}}
 
 
     </div>
@@ -89,44 +90,32 @@
                 </div>
             </div>
 
-            <div class="row justify-content-around mt-5">
+            <div class="row justify-content-center mt-5">
 
-                <div class="col-12 col-sm-12 col-md-5 my-2 col-lg-3 text-center py-4 border border-4 border-dark">
-                    <h2 class="text-dark">Toneladas Vendidas</h2>
-                    <span class="fs-1 fw-bold">
-                        3000
-                    </span> <br>
-                    <span class="fw-bold">
-                        <i class="fa fa-calendar"></i>
-                        Octubre 2025
-                    </span>
-                </div>
+                @foreach ($informacion_foranea as $index_foranea => $foranea)
 
-                <div class="col-12 col-sm-12 col-md-5 my-2 col-lg-3 text-center py-4 border border-4 border-dark">
-                    <h2 class="text-dark">Costo de mano de Obra</h2>
-                    <span class="fs-1 fw-bold">
-                        3000
-                    </span> <br>
-                    <small class="fw-bold">
-                        <i class="fa fa-calendar"></i>
-                        Octubre 2025
-                    </small>
-                </div>
-            
-                <div class="col-12 col-sm-12 col-md-5 my-2 col-lg-3 text-center py-4 border border-4 border-dark">
-                    <h2 class="text-dark">Costo de mano de Obra</h2>
-                    <span class="fs-1 fw-bold">
-                        3000
-                    </span> <br>
-                    <small class="fw-bold">
-                        <i class="fa fa-calendar"></i>
-                        Octubre 2025
-                    </small>
-                </div>
-
+                    <div class="col-12 col-sm-12 col-md-5  col-lg-3  mx-3 my-2 text-center py-4 border border-4 border-dark">
+                        <h4 class="text-dark">{{$foranea->nombre}}</h4>
+                        <div class="row justify-content-start">
+                        @foreach ($foranea->campo_foraneo_informacion as $informacion)
+                                <div class="col-5 text-center border m-2 rounded p-2 zoom">
+                                    <h5>
+                                        {{ucfirst(Carbon::create()->month(intval($informacion->mes))->locale('es')->monthName)}}
+                                        {{$informacion->year}}
+                                    </h5>
+                                    <h6 class="fw-bold">
+                                    
+                                        {{$informacion->informacion}}
+                                        
+                                    </h6>
+                                </div>
+                                @endforeach
+                            </div>
+                    </div>
+                    
+                @endforeach
 
             </div>
-
         </div>
     </div>
 </div>

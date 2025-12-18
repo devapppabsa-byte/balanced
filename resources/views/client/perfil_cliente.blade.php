@@ -4,6 +4,7 @@
 @php
     use App\Models\ClienteEncuesta;
 @endphp
+
 <div class="container-fluid">
     <div class="row bg-primary  d-flex align-items-center ">
         <div class="col-9 col-sm-9 col-md-8 col-lg-10 pt-2 text-white">
@@ -184,7 +185,7 @@
                     <canvas  class="" id="chartLinea"></canvas>
                 </div>
                 <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                    <canvas  class="" id="chartBurbuja"></canvas>
+                    <canvas  class="" id="chartPie"></canvas>
                 </div>
             </div>
             <!-- Tabs content -->
@@ -203,42 +204,46 @@
 @section('scripts')
 
 <script>
-    const ctx = document.getElementById('grafico').getContext('2d');
+const labels = @json($labels);
+const data = @json($data);
+const minimo = @json($minimo);
+const maximo = @json($maximo);
 
-    new Chart(ctx, {
+const ctx = document.getElementById('grafico').getContext('2d');
+
+new Chart(ctx, {
     data: {
-        labels: ["Enero", "Febrero", "Marzo", "Abril"],
+        labels: labels,
         datasets: [
         {
-            type: "bar",  // Barras
-            label: "Ventas",
-            data: [30, 50, 40, 60],
+            type: "bar",
+            label: "Satisfacción",
+            data: data,
 
             backgroundColor: function(context) {
-            const value = context.raw;
-            return value < 50
-                ? "rgba(255, 99, 132, 0.7)"  // rojo
-                : "rgba(75, 192, 75, 0.7)";  // verde
+                const value = context.raw;
+                return value < 5
+                    ? "rgba(255, 99, 132, 0.7)"   // rojo
+                    : "rgba(75, 192, 75, 0.7)";  // verde
             },
             borderColor: function(context) {
-            const value = context.raw;
-            return value < 50 ? "red" : "green";
+                const value = context.raw;
+                return value < 5 ? "red" : "green";
             },
-
             borderWidth: 1
         },
         {
-            type: "line", // Línea sobrepuesta
+            type: "line",
             label: "Mínimo",
-            data: [50, 50, 50, 50],
+            data: minimo,
             borderColor: "red",
             borderWidth: 2,
             fill: false
         },
         {
-            type: "line", // Línea sobrepuesta
+            type: "line",
             label: "Máximo",
-            data: [100, 100, 100, 100],
+            data: maximo,
             borderColor: "green",
             borderWidth: 2,
             fill: false
@@ -247,16 +252,20 @@
     },
     options: {
         responsive: true,
-
         plugins: {
-        legend: { position: "top" }
+            legend: { position: "top" }
         },
         scales: {
-        y: { beginAtZero: true }
+            y: {
+                beginAtZero: true,
+                min: 0,
+                max: 10
+            }
         }
     }
-    });
+});
 </script>
+
 
 
 
@@ -269,17 +278,21 @@
 
 
 
+<canvas id="chartLinea"></canvas>
+
 <script>
+
+
 const ctx2 = document.getElementById('chartLinea');
 
 new Chart(ctx2, {
   type: 'line',
   data: {
-    labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
+    labels: labels,
     datasets: [
       {
-        label: 'Ventas',
-        data: [30, 50, 40, 60],
+        label: 'Satisfacción',
+        data: data,
         borderColor: '#36a2eb',
         backgroundColor: 'rgba(54,162,235,0.2)',
         fill: true,
@@ -287,23 +300,32 @@ new Chart(ctx2, {
       },
       {
         label: 'Mínimo',
-        data: [50, 50, 50, 50],
+        data: minimo,
         borderColor: 'red',
         borderDash: [5, 5],
         fill: false
       },
       {
         label: 'Máximo',
-        data: [100, 100, 100, 100],
+        data: maximo,
         borderColor: 'green',
         borderDash: [5, 5],
         fill: false
       }
     ]
   },
-  options: { responsive: true }
+  options: {
+    responsive: true,
+    scales: {
+      y: {
+        min: 0,
+        max: 10
+      }
+    }
+  }
 });
 </script>
+
 
 
 
@@ -314,39 +336,52 @@ new Chart(ctx2, {
 
 
 
-<script>
-const ctx3 = document.getElementById('chartBurbuja');
 
-new Chart(ctx3, {
-  type: 'bubble',
+
+<canvas id="chartPie"></canvas>
+
+<script>
+const ctxPie = document.getElementById('chartPie');
+
+new Chart(ctxPie, {
+  type: 'pie',
   data: {
+    labels: labels,
     datasets: [
       {
-        label: 'Ventas por mes',
-        data: [
-          {x: 1, y: 30, r: 10},
-          {x: 2, y: 50, r: 15},
-          {x: 3, y: 40, r: 12},
-          {x: 4, y: 60, r: 18}
-        ],
-        backgroundColor: ['#ff6384','#4bc0c0','#ffce56','#36a2eb']
+        label: 'Satisfacción por mes',
+        data: data,
+        backgroundColor: [
+          '#ff6384',
+          '#36a2eb',
+          '#ffce56',
+          '#4bc0c0',
+          '#9966ff',
+          '#ff9f40'
+        ]
       }
     ]
   },
   options: {
-    scales: {
-      x: {
-        ticks: { callback: (val) => ['Ene','Feb','Mar','Abr'][val-1] },
-        title: { display: true, text: 'Mes' }
-      },
-      y: {
-        beginAtZero: true,
-        title: { display: true, text: 'Valor' }
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const value = context.raw;
+            const percent = ((value / total) * 100).toFixed(1);
+            return `${context.label}: ${value} (${percent}%)`;
+          }
+        }
       }
     }
   }
 });
 </script>
+
+
 
 
 @endsection

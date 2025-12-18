@@ -3,7 +3,7 @@
 @section('contenido')
 <style>
     body{
-        background-image: url("{{asset('img/fondo.avif')}}");
+        background-image: url("{{asset('img/background_client.png')}}");
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;

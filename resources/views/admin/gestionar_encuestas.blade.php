@@ -222,6 +222,13 @@
                     </div>
                 </div>
 
+
+                <div class="col-12">
+                    <div class="form-group mt-3">
+                        <input type="text" class="form-control" name="ponderacion_encuesta">
+                    </div>
+                </div>
+
             </div>
         </div>
         <div class="modal-footer">

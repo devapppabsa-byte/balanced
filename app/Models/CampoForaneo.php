@@ -15,4 +15,8 @@ class CampoForaneo extends Model
         return $this->hasMany(InputPrecargado::class, 'id_input', 'id_input');
         
     }
+
+    public function campo_foraneo_informacion(){
+        return $this->hasMany(CampoForaneoInformacion::class, 'id_campo_foraneo');
+    }
 }

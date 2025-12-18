@@ -45,12 +45,14 @@ class campoPrecargadoController extends Controller
             // al momento de guardar este input seria bueno guardar la informacion, pero algo me falta, como voy a actualizar 
             // la informacion mes con mes, puedo agregar la informacion aqui y despues al momento de cagar os nuevs datos, pero como
             //los identifico.
-            CampoPrecargado::create([
+          CampoPrecargado::create([
+
                 'id_input' => $id_input,
                 'id_input_foraneo' => $id_input_informacion,
                 'nombre' => $nombre,
                 'id_indicador' => $indicador->id,
                 'descripcion' => $datos[3]
+                
             ]);
 
 

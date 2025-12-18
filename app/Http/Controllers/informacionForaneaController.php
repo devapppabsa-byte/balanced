@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\InformacionForanea;
+use App\Models\CampoForaneo;
 use Illuminate\Http\Request;
 
 class informacionForaneaController extends Controller
@@ -13,9 +14,9 @@ class informacionForaneaController extends Controller
 
     public function informacion_foranea_show_admin(){
 
+        $informacion_foranea = CampoForaneo::with('campo_foraneo_informacion')->orderBy('created_at', 'desc')->get();
 
-
-        return view('admin.gestionar_informacion_foranea');
+        return view('admin.gestionar_informacion_foranea', compact('informacion_foranea'));
 
     }
     

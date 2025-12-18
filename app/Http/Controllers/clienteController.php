@@ -9,11 +9,13 @@ use App\Models\Pregunta;
 use App\Models\Respuesta;
 use App\Models\MensajeQuejas;
 use App\Models\Queja;
+use Carbon\Carbon;
 use App\Models\ClienteEncuesta;
 use App\Models\Encuesta;
 use App\Models\Cliente;
 use App\Models\MensajeQueja;
 use App\Models\EvidenciaQuejas;
+use Illuminate\Support\Facades\DB;
 
 class clienteController extends Controller
 {
@@ -30,9 +32,48 @@ class clienteController extends Controller
     public function perfil_cliente(){
 
         $encuestas = Encuesta::get();  //
+        $id_cliente = Auth::guard('cliente')->user()->id;
+
+        //aqui mero van las graficas del cliente:
+
+        $datos = Respuesta::query()
+            ->join('preguntas as p', 'p.id', '=', 'respuestas.id_pregunta')
+            ->where('respuestas.id_cliente', $id_cliente)
+            ->where('p.cuantificable', '1')
+            ->select(
+                DB::raw("DATE_FORMAT(respuestas.created_at, '%Y-%m') as mes"),
+                DB::raw('AVG(respuestas.respuesta) as promedio')
+            )
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->get();
+
+            $labels = $datos->pluck('mes')->map(function ($mes) {
+                return ucfirst(
+                    Carbon::createFromFormat('Y-m', $mes)
+                        ->locale('es')
+                        ->monthName
+                );
+            });
+
+            $data = $datos->pluck('promedio')->map(fn ($v) => round($v, 2));
+
+            // Líneas de referencia (1–10)
+            $minimo = array_fill(0, count($data), 5);
+            $maximo = array_fill(0, count($data), 10);
+
+
+        $burbujas = $datos->map(function ($item) {
+            return [
+                'x' => (int) $item->mes_num,              // mes
+                'y' => round($item->promedio, 2),         // satisfacción
+                'r' => max(8, $item->promedio * 2),       // tamaño burbuja
+            ];
+        });
+
         
 
-        return view("client.perfil_cliente", compact('encuestas'));
+        return view("client.perfil_cliente", compact('encuestas', 'labels', 'data', 'minimo', 'maximo', 'burbujas'));
     }
 
 

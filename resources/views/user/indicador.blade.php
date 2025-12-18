@@ -271,7 +271,7 @@ use Carbon\Carbon;
                             <div class="col-11 col-sm-11 col-md-5 col-lg-3 border border-4 p-4 shadow-sm m-3">
 
                                 <span class="fw-bold">{{$campo->nombre}}</span>
-                                <input type="text" class="form-control"  name="{{$campo->nombre}}" value="{{$campo->informacion_precargada}}" disabled>
+                                <input type="text" class="form-control"  name="{{$campo->nombre}}" value="" disabled>
                                 <small>{{$campo->descripcion}}</small>
 
                             </div>                    

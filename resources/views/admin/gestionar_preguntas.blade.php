@@ -310,7 +310,7 @@
                     <li class="nav-item" role="presentation">
                         <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
                             <i class="fa fa-circle"></i>
-                            Grafico de Burbuja
+                            Grafico de Pie
                         </a>
                     </li>
                 </ul>
@@ -319,13 +319,13 @@
                 <!-- Tabs content -->
                 <div class="tab-content" id="ex2-content">
                     <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
-                        <canvas id="chartBarrasCondicional"></canvas>
+                        <canvas id="chartBarras"></canvas>
                     </div>
                     <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
                         <canvas id="chartLinea"></canvas>
                     </div>
                     <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                        <canvas id="chartBurbujaCondicional"></canvas>
+                        <canvas id="chartPie"></canvas>
                     </div>
                 </div>
                 <!-- Tabs content -->
@@ -431,155 +431,158 @@
 
 @section('scripts')
 
+<script>
+const etiquetas = @json($labels);
+const valores   = @json($valores);
 
- <script>
-
-
-    // --- BAR CHART ---
-const ctx = document.getElementById('chartBarrasCondicional').getContext('2d');
-
-const etiquetas = [
-  'Calidad del producto',
-  'Atención del personal',
-  'Tiempos de entrega',
-  'Precio',
-  'Experiencia general'
-];
-
-const valores = [8, 6, 7, 5, 9];  // Resultados
 const minimo = 5;
-const maximo = 10;
 
-// Colores condicionales: rojo si está por debajo del mínimo, verde si está igual o por encima
-const colores = valores.map(v => v < minimo ? '#e74c3c' : '#2ecc71'); // 🔥 rojo / verde
+const colores = valores.map(v =>
+    v < minimo ? '#e74c3c' : '#2ecc71'
+);
+
+const ctx = document.getElementById('chartBarras').getContext('2d');
 
 new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: etiquetas,
-    datasets: [
-      {
-        label: 'Promedio de satisfacción',
-        data: valores,
-        backgroundColor: colores,
-        borderColor: '#333',
-        borderWidth: 1
-      },
-      {
-        label: 'Mínimo esperado',
-        data: Array(valores.length).fill(minimo),
-        borderColor: 'red',
-        borderWidth: 2,
-        fill: false,
-        type: 'line',
-        pointRadius: 3
-      },
-      {
-        label: 'Máximo posible',
-        data: Array(valores.length).fill(maximo),
-        borderColor: 'green',
-        borderWidth: 2,
-        fill: false,
-        type: 'line',
-        pointRadius: 3
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'top' },
-      title: {
-        display: true,
-        text: 'Resultados de Encuesta - Colores según umbral'
-      }
+    type: 'bar',
+    data: {
+        labels: etiquetas,
+        datasets: [{
+            label: 'Puntuación promedio por cliente',
+            data: valores,
+            backgroundColor: colores,
+            borderColor: '#2c3e50',
+            borderWidth: 1
+        }]
     },
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 10,
-        ticks: { stepSize: 1 }
-      }
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Resultados de la encuesta por cliente'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 10,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
     }
-  }
-});
-
- </script>
-
-<script>
-const ctx2 = document.getElementById('chartLinea');
-
-new Chart(ctx2, {
-  type: 'line',
-  data: {
-    labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
-    datasets: [
-      {
-        label: 'Ventas',
-        data: [30, 50, 40, 60],
-        borderColor: '#36a2eb',
-        backgroundColor: 'rgba(54,162,235,0.2)',
-        fill: true,
-        tension: 0.3
-      },
-      {
-        label: 'Mínimo',
-        data: [50, 50, 50, 50],
-        borderColor: 'red',
-        borderDash: [5, 5],
-        fill: false
-      },
-      {
-        label: 'Máximo',
-        data: [100, 100, 100, 100],
-        borderColor: 'green',
-        borderDash: [5, 5],
-        fill: false
-      }
-    ]
-  },
-  options: { responsive: true }
 });
 </script>
 
- <script>
-    // --- BUBBLE CHART ---
-    const ctxBubble = document.getElementById('chartBurbujaCondicional').getContext('2d');
-    // Para burbuja, mapeamos valores a (x,y,r) y a color correspondiente
-    const dataBubbles = valores.map((v, i) => ({ x: i + 1, y: v, r: 6 + v }));
-    const coloresBurbuja = coloresPorValor(valores);
 
-    new Chart(ctxBubble, {
-      type: 'bubble',
-      data: {
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+
+
+
+const coloresPuntos = valores.map(v =>
+    v < minimo ? '#e74c3c' : '#2ecc71'
+);
+
+const ctxlinea = document.getElementById('chartLinea').getContext('2d');
+
+new Chart(ctxlinea, {
+    type: 'line',
+    data: {
+        labels: etiquetas,
         datasets: [{
-          label: 'Resultados por aspecto',
-          data: dataBubbles,
-          backgroundColor: coloresBurbuja,
-          borderColor: '#333',
-          borderWidth: 1
+            label: 'Puntuación promedio por cliente',
+            data: valores,
+            borderColor: '#2980b9',
+            backgroundColor: 'rgba(52, 152, 219, 0.15)',
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: coloresPuntos,
+            pointBorderColor: '#2c3e50',
+            pointRadius: 6,
+            pointHoverRadius: 8
         }]
-      },
-      options: {
+    },
+    options: {
         responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Resultados de la encuesta por cliente'
+            }
+        },
         scales: {
-          x: {
-            ticks: {
-              stepSize: 1,
-              callback: function(val) {
-                // val está en índice (1..n)
-                const idx = parseInt(val) - 1;
-                return labels[idx] ? labels[idx].split(' ')[0] : '';
-              }
-            },
-            title: { display: true, text: 'Aspecto' },
-            min: 0.5,
-            max: labels.length + 0.5
-          },
-          y: { beginAtZero: true, max: 10 }
+            y: {
+                beginAtZero: true,
+                max: 10,
+                ticks: {
+                    stepSize: 1
+                }
+            }
         }
-      }
+    }
+});
+</script>
+
+<script>
+    // Colores automáticos (uno por cliente)
+    const coloresPie = etiquetas.map((_, i) => {
+        const paleta = [
+            '#3498db', '#2ecc71', '#e74c3c', '#f1c40f',
+            '#9b59b6', '#1abc9c', '#e67e22', '#34495e'
+        ];
+        return paleta[i % paleta.length];
     });
 
-  </script>
+    const ctxPie = document.getElementById('chartPie').getContext('2d');
+
+    new Chart(ctxPie, {
+        type: 'doughnut',
+        data: {
+            labels: etiquetas,
+            datasets: [{
+                label: 'Puntuación por cliente',
+                data: valores,
+                backgroundColor: coloresPie,
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Distribución de puntuación por cliente'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const valor = context.parsed;
+                            const porcentaje = ((valor / total) * 100).toFixed(1);
+                            return `${context.label}: ${valor} (${porcentaje}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+
+ 
 @endsection

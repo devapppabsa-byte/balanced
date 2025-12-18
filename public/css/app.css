@@ -128,3 +128,13 @@ body{
     background-color: rgb(1, 67, 121);
 
   }
+
+
+  .zoom{
+    transition: transform 0.2s ease;
+    cursor: pointer;
+  }
+
+  .zoom:hover{
+    transform: scale(1.05);
+  }

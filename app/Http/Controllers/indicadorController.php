@@ -186,7 +186,8 @@ public function borrar_campo(Request $request, $campo){
 
         //vamos a buscar el id_input en la base de datos de los campos involucrados
 
-         $id_indicador = CampoInvolucrado::where('id_input',$request->id_input)->first();
+
+        $id_indicador = CampoInvolucrado::where('id_input',$request->id_input)->first();
 
         //  return $id_indicador;
 
@@ -239,8 +240,6 @@ public function borrar_campo(Request $request, $campo){
     
 public function show_indicador_user(Indicador $indicador){
 
-
-
     //CONSULTA DE LOS CAMPOS
     //se consultan en la vista para que el usuario los rellene
     $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
@@ -253,6 +252,8 @@ public function show_indicador_user(Indicador $indicador){
             $q->whereNull('resultado_final')
             ->orWhere('resultado_final', '');
         })->orderBy('created_at', 'ASC')->get();
+
+    
 
 
     //aqui hay un desmadre, combino todos los campos y les asigno un ID
@@ -270,9 +271,9 @@ public function show_indicador_user(Indicador $indicador){
 
 
 
-    $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get() ;
+    $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get();
 
-    $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();;
+    $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
 
  
 
@@ -283,6 +284,7 @@ public function show_indicador_user(Indicador $indicador){
     $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
                            ->where('final', 'on')->get();
     
+
     return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'datos', 'grupos', 'graficar'));
 
 
@@ -687,30 +689,70 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
 
 
 
+
+
+
 public function lista_indicadores_admin(Departamento $departamento){
 
-    $indicadores = Indicador::where('id_departamento', $departamento->id)->get();
+
+    $indicadores = Indicador::with('indicadorLleno')->where('id_departamento', $departamento->id)->get();
     $encuestas = Encuesta::where('id_departamento', $departamento->id)->get();
     $normas = Norma::where('id_departamento', $departamento->id)->get();
 
     return view('admin.lista_indicadores', compact('indicadores', 'departamento', 'encuestas', 'normas'));
 
+
+
 }
+
+
+
+
+
+
 
 
 public function indicador_lleno_show_admin(Indicador $indicador){
 
+    //Para lgraficar los datos del indicador
+    $graficar = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->get();
+    //para graficar os datos del indicaor
+
+
+    //Para mostrar los datos del indicador
+    $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get();
+    $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
+
+ 
+    //Se consulta el campo de resultado final.
+
+    $campo_resultado_final = CampoCalculado::where('id_indicador', $indicador->id)->whereNotNull('resultado_final')->where('resultado_final', '!=', '')->first();
+    //Para mostrar los datos el indicador
+
     $campos_llenos = CampoPrecargado::where('id_indicador', $indicador->id)->get();
+
     
-    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos'));
+
+    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos'));
 
 }
+
+
+
+
+
+
+
+
 
 
 
 
 //aui empieza el codigo para el llenado de indicadores
 public function llenado_informacion_indicadores(Indicador $indicador, Request $request){
+
+
+ 
 
 
     $year = Carbon::now()->year;
@@ -730,8 +772,7 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
         ]);
 
 
-    
-
+//EN ESTA PARTE SE CARGAN LOS CAMPOS VACIOS AL INDICADORE LLENO....
         for($i=0 ; $i < count($request->informacion_indicador) ; $i++ ){
         
             InformacionInputVacio::create([
@@ -745,7 +786,8 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
             ]);
 
-            //paso la informacion al la tabla de indicador lleno
+            //creo que es aqui, es u for que de acuerdo al numero de campos vacios 
+            // 
             IndicadorLleno::create([
 
                 "nombre_campo" => $request->nombre_input_vacio[$i],
@@ -755,11 +797,35 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
 
             ]);
-
-
-
-
         }
+
+//EN ESTA PARTE SE CARGAN LOS CAMPOS VACIOS AL INDICADORE LLENO....
+
+
+//SE AGREGAN LOS INPUTS PRECARGADOS AL INDICADOR LLENO
+
+$inputs_precargados = CampoPrecargado::where('id_indicador', $indicador->id)->get();
+
+
+
+foreach($inputs_precargados as $index_precargados => $precargado){
+
+        $informacion = InformacionInputPrecargado::where('id_input_precargado', $precargado->id)->first();
+
+
+        IndicadorLleno::create([
+
+            "nombre_campo" => $precargado->nombre,
+            "informacion_campo" => $informacion->informacion,
+            "id_indicador" =>$indicador->id,
+            "id_movimiento" => $id_movimiento
+
+
+        ]);  
+}
+
+//SE AGREGAN LOS INPUTS PRECARGADOS AL INDICADOR LLENO
+
 
 
         //Aqui esta la logica nueva 03 de diciembre del 2025
@@ -773,9 +839,6 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
         //se recorren los campos_calculados encontrados en el indicador
         foreach($campos_calculados_indicador as $index_calculado => $campo_calculado) {
             
-
-
-
             $informacion_campos_vacios_encontrados = [];
             $informacion_campos_precargados_encontrados = [];
             $informacion_campos_calculados_encontrados = [];
@@ -1050,6 +1113,13 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
 
 }
+
+
+
+
+
+
+
 
 
 

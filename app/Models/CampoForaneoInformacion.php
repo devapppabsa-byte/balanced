@@ -10,4 +10,7 @@ class CampoForaneoInformacion extends Model
     protected $fillable =['id_campo_foraneo', 'mes', 'year', 'informacion'];
 
 
+
+ 
+
 }
