@@ -55,12 +55,7 @@
 
                                         @if ($pregunta->cuantificable === 1 )
                                             <td >
-                                                {{ match($respuesta->respuesta) {
-                                                    '0' => "En Desacuerdo",
-                                                    '5' => "Parcialmente de Acuerdo",
-                                                    '10' => "Completamente de Acuerdo",
-                                                    default => 'null'    
-                                                } }}
+                                                {{ $respuesta->respuesta}}
                                                 <input type="hidden" value="{{$respuesta->respuesta}}" class="sumar">
                                             </td>
                                             

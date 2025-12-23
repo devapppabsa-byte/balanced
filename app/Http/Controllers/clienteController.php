@@ -63,17 +63,9 @@ class clienteController extends Controller
             $maximo = array_fill(0, count($data), 10);
 
 
-        $burbujas = $datos->map(function ($item) {
-            return [
-                'x' => (int) $item->mes_num,              // mes
-                'y' => round($item->promedio, 2),         // satisfacción
-                'r' => max(8, $item->promedio * 2),       // tamaño burbuja
-            ];
-        });
-
         
 
-        return view("client.perfil_cliente", compact('encuestas', 'labels', 'data', 'minimo', 'maximo', 'burbujas'));
+        return view("client.perfil_cliente", compact('encuestas', 'labels', 'data', 'minimo', 'maximo'));
     }
 
 

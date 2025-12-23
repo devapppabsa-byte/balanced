@@ -139,7 +139,7 @@
 
                                     @if ($suma>0)
                                         {{-- Aqui esta el porcentaje de cumplimiento --}}
-                                        <h6 class="badge fs-6  p-2 {{($suma/($contador*10)*100 > 50) ? "badge-success border border border-success" : "badge-danger border border-danger" }}" data-mdb-tooltip-init title="{{round($suma/($contador*10)*100, 3)}}%">
+                                        <h6 class="badge fs-6  p-2 {{($suma/($contador*10)*100 > $encuesta->meta_minima) ? "badge-success border border border-success" : "badge-danger border border-danger" }}" data-mdb-tooltip-init title="{{round($suma/($contador*10)*100, 3)}}%">
                                             {{round(($suma/($contador*10))*100, 3) }} %
                                             <i class="fa {{($suma/($contador*10)*100 > 50) ? "fa-check-circle" : "fa-xmark-circle" }} "></i>
                                         </h6>
@@ -317,12 +317,45 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-6">
+                        <div class="form-group mt-3">
+                            <div class="form-outline" data-mdb-input-init>
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input type="number" value="{{$encuesta->meta_minima}}" min="0" max="100" class="form-control w-100 {{ $errors->first('meta_minima_encuesta_edit') ? 'is-invalid' : '' }}" id="meta_minima_encuesta_edit" name="meta_minima_encuesta_edit" required >
+                                    <label class="form-label" for="meta_minima_encuesta_edit">Meta Minima</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-6">
+                        <div class="form-group mt-3">
+                            <div class="form-outline" data-mdb-input-init>
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input type="number" value="{{$encuesta->meta_esperada}}" min="0" max="100" class="form-control w-100 {{ $errors->first('meta_esperada_encuesta_edit') ? 'is-invalid' : '' }}" id="meta_esperada_encuesta_edit" name="meta_esperada_encuesta_edit" required >
+                                    <label class="form-label" for="meta_esperada_encuesta_edit">Meta Esperada</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-group mt-3">
+                            <div class="form-outline" data-mdb-input-init>
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input type="number" value="{{$encuesta->ponderacion}}" min="0" max="100" class="form-control w-100 {{ $errors->first('ponderacion_encuesta_edit') ? 'is-invalid' : '' }}" id="ponderacion_encuesta_edit" name="ponderacion_encuesta_edit" required >
+                                    <label class="form-label" for="ponderacion_encuesta_edit">Ponderación</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="col-12 text-center">
                         <div class="form-group mt-3">
                             <div class="form-outline" data-mdb-input-init>
                                 <div class="form-outline" data-mdb-input-init>
-                                    <textarea class="form-control w-100 {{ $errors->first('descripcion_encuesta_edit') ? 'is-invalid' : '' }}" id="descrpcion_encuesta" name="descripcion_encuesta_edit" required >{{$encuesta->descripcion}}</textarea>
+                                    <textarea class="form-control w-100 {{ $errors->first('descripcion_encuesta_edit') ? 'is-invalid' : '' }}" id="descrpcion_encuesta_edit" name="descripcion_encuesta_edit" required >{{$encuesta->descripcion}}</textarea>
                                     <label class="form-label" for="descrpcion_encuesta_edit">Descripción del la Encuesta</label>
                                 </div>
                             </div>

@@ -106,6 +106,7 @@ class encuestaController extends Controller
     public function encuesta_store_two(Request $request){
 
 
+     
         $request->validate([
 
             "nombre_encuesta" => "required|unique:encuestas,nombre",
@@ -154,7 +155,9 @@ class encuestaController extends Controller
 
             "nombre_encuesta_edit" => "required|unique:encuestas,nombre,".$encuesta->id,
             "descripcion_encuesta_edit" => "required",
-            "ponderacion_encuesta_edit" => "required"
+            "ponderacion_encuesta_edit" => "required",
+            'meta_minima_encuesta_edit' => "required",
+            'meta_esperada_encuesta_edit' => "required"
 
         ]);
 
@@ -165,7 +168,9 @@ class encuestaController extends Controller
 
             "nombre" => $request->nombre_encuesta_edit,
             "descripcion" => $request->descripcion_encuesta_edit,
-            "ponderacion" => $request->ponderacion_encuesta_edit
+            "ponderacion" => $request->ponderacion_encuesta_edit,
+            "meta_minima" => $request->meta_minima_encuesta_edit,
+            "meta_esperada" => $request->meta_esperada_encuesta_edit
 
         ]);
 
