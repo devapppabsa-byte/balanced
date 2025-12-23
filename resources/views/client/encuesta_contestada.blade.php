@@ -1,6 +1,9 @@
 @extends('plantilla')
 @section('title', 'Encuesta contestada')
 @section('contenido')
+@php
+    use App\Models\Respuesta;
+@endphp
 
 <div class="container-fluid">
     <div class="row bg-primary  d-flex align-items-center">
@@ -58,32 +61,22 @@
             </div>
 
             <div class="col-12  p-5 gap-2 my-3 bg-light rounded-7 ">
-
                 <div class="row">
-                    @forelse ($preguntas as $pregunta)
-                        
-                        <div class="col-12 m-2">
-                            <h5 class="fw-bold">{{$pregunta->pregunta}}</h5>
-                            @foreach ($pregunta->respuestas as $respuesta)
+                @foreach($preguntas as $pregunta)
+                    <h4>{{ $pregunta->pregunta }}</h4>
 
-                                @if ($pregunta->cuantificable === 1)
-                                    {{
-                                        match($respuesta->respuesta){
-                                            '0' => "En Desacuerdo",
-                                            '5' => "Parcialmente de Acuerdo",
-                                            '10' => "Completamento de Acuerdo",
-                                            default => 'null'
-                                        }
-                                    }}
-                                @else
-                                    <h6>R= {{$respuesta->respuesta}}</h6>    
-                                @endif
-
-                            @endforeach
-                        </div>
-                    @empty
-                        
-                    @endforelse
+                    @if($pregunta->respuestas->isNotEmpty())
+                    <p class="mb-3">
+                            Calificación:
+                            <b>
+                                {{ $pregunta->respuestas->first()->respuesta }} 
+                            </b>
+                            Puntos 
+                    </p>
+                    @else
+                        <em>Sin respuesta</em>
+                    @endif
+                @endforeach
 
                 </div>            
             </div>

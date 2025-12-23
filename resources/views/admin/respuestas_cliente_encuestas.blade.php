@@ -132,8 +132,8 @@
 
     //Esto me ayuda a sacar el porcentaje de las respuestas gardadas por el usurio
     puntuacion_maxima.textContent = celdas.length*10;
-    puntuacion_obtenida.textContent = suma/celdas.length;
-    cumplimiento.textContent =  (Number(puntuacion_obtenida.textContent) / Number(puntuacion_maxima.textContent)) * 100 + "%";  
+    puntuacion_obtenida.textContent = suma;
+    cumplimiento.textContent =  ((Number(puntuacion_obtenida.textContent) / Number(puntuacion_maxima.textContent)) * 100 );  
 
 </script>
 @endsection

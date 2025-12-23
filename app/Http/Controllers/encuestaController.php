@@ -35,24 +35,22 @@ class encuestaController extends Controller
 
 
 
-//DATOS PARA LA GRAFICA DE LA ENCUESTA
-$resultados = Respuesta::join('preguntas', 'respuestas.id_pregunta', '=', 'preguntas.id')
-        ->join('clientes', 'respuestas.id_cliente', '=', 'clientes.id')
-        ->where('preguntas.id_encuesta', $encuesta->id)
-        ->where('preguntas.cuantificable', 1)
-        ->groupBy('clientes.id', 'clientes.nombre')
-        ->select(
-            'clientes.nombre as cliente',
-            DB::raw('AVG(respuestas.respuesta) as puntuacion')
-        )
-        ->get();
+        //DATOS PARA LA GRAFICA DE LA ENCUESTA
+        $resultados = Respuesta::join('preguntas', 'respuestas.id_pregunta', '=', 'preguntas.id')
+                ->join('clientes', 'respuestas.id_cliente', '=', 'clientes.id')
+                ->where('preguntas.id_encuesta', $encuesta->id)
+                ->where('preguntas.cuantificable', 1)
+                ->groupBy('clientes.id', 'clientes.nombre')
+                ->select(
+                    'clientes.nombre as cliente',
+                    DB::raw('AVG(respuestas.respuesta) as puntuacion')
+                )
+                ->get();
 
-    $labels  = $resultados->pluck('cliente');
-    $valores = $resultados->pluck('puntuacion')->map(fn($v) => round($v, 2));
-
-
-//DATOS PARA LA HGRAFICA DE LA ENCUESTA
-        
+            $labels  = $resultados->pluck('cliente');
+            $valores = $resultados->pluck('puntuacion')->map(fn($v) => round($v, 2));
+        //DATOS PARA LA HGRAFICA DE LA ENCUESTA
+                
 
 
 
@@ -81,7 +79,9 @@ $resultados = Respuesta::join('preguntas', 'respuestas.id_pregunta', '=', 'pregu
         $request->validate([
             "nombre_encuesta" => "required|unique:encuestas,nombre",
             "descripcion_encuesta" => "required",
-            "ponderacion_encuesta" => "required"
+            "ponderacion_encuesta" => "required",
+            "meta_esperada_encuesta" => "required",
+            "meta_minima_encuesta" => "required"
 
         ]);
 
@@ -90,7 +90,9 @@ $resultados = Respuesta::join('preguntas', 'respuestas.id_pregunta', '=', 'pregu
             "nombre" => $request->nombre_encuesta,
             "descripcion" => $request->descripcion_encuesta,
             "id_departamento" => $departamento->id,
-            "ponderacion" => $request->ponderacion_encuesta
+            "ponderacion" => $request->ponderacion_encuesta,
+            "meta_minima" => $request->meta_minima_encuesta,
+            "meta_esperada" => $request->meta_esperada_encuesta
         ]);
 
 
@@ -108,7 +110,9 @@ $resultados = Respuesta::join('preguntas', 'respuestas.id_pregunta', '=', 'pregu
 
             "nombre_encuesta" => "required|unique:encuestas,nombre",
             "descripcion_encuesta" => "required",
-            "ponderacion_encuesta" => "required"
+            "ponderacion_encuesta" => "required",
+            "meta_esperada_encuesta" => "required",
+            "meta_minima_encuesta" => "required"
 
         ]);
 
@@ -118,8 +122,9 @@ $resultados = Respuesta::join('preguntas', 'respuestas.id_pregunta', '=', 'pregu
             "nombre" => $request->nombre_encuesta,
             "descripcion" => $request->descripcion_encuesta,
             "id_departamento" => $request->departamento,
-            "ponderacion" => $request->ponderacion_encuesta
-
+            "ponderacion" => $request->ponderacion_encuesta,
+            "meta_minima" => $request->meta_minima_encuesta,
+            "meta_esperada" => $request->meta_esperada_encuesta
 
         ]);
 

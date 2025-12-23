@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Norma;
+use App\Models\CumplimientoNorma;
 use App\Models\Departamento;
 use App\Models\ApartadoNorma;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
@@ -29,7 +31,9 @@ class normaController extends Controller
 
             "titulo_norma" => 'required|unique:norma,nombre',
             "descripcion_norma" => 'required',
-            "ponderacion_norma" => 'required'
+            "ponderacion_norma" => 'required',
+            "meta_minima_norma" => 'required',
+            "meta_esperada_norma" => 'required'
         ]);
 
 
@@ -38,6 +42,8 @@ class normaController extends Controller
             "nombre" => $request->titulo_norma,
             "descripcion" => $request->descripcion_norma,
             "id_departamento" => $departamento->id,
+            "meta_minima" => $request->meta_minima_norma,
+            "meta_esperada" => $request->meta_esperada_norma,
             "ponderacion" => $request->ponderacion_norma
 
         ]);
@@ -86,7 +92,62 @@ class normaController extends Controller
     public function apartado_norma(Norma $norma){
 
         $apartados = ApartadoNorma::where('id_norma',$norma->id)->get();
-        return view('admin.apartados_norma', compact('norma', 'apartados'));
+
+
+        //mega grafica
+
+        $totalesApartados = ApartadoNorma::select('id_norma')
+            ->selectRaw('COUNT(*) as total_apartados')
+            ->where('id_norma', $norma->id)
+            ->groupBy('id_norma');
+
+
+        $cumplimientos = CumplimientoNorma::join(
+                'apartado_norma',
+                'cumplimiento_norma.id_apartado_norma',
+                '=',
+                'apartado_norma.id'
+            )
+            ->where('apartado_norma.id_norma', $norma->id)
+            ->select(
+                'apartado_norma.id_norma',
+                'cumplimiento_norma.mes',
+                DB::raw('COUNT(DISTINCT cumplimiento_norma.id_apartado_norma) as cumplidos')
+            )
+            ->groupBy('apartado_norma.id_norma', 'cumplimiento_norma.mes');
+
+        $grafica = DB::table('norma')
+            ->where('norma.id', $norma->id)
+            ->joinSub($totalesApartados, 'totales', function ($join) {
+                $join->on('norma.id', '=', 'totales.id_norma');
+            })
+            ->leftJoinSub($cumplimientos, 'cumple', function ($join) {
+                $join->on('norma.id', '=', 'cumple.id_norma');
+            })
+            ->select(
+                'norma.id',
+                'norma.nombre',
+                'norma.meta_minima',
+                'norma.meta_esperada',
+                'cumple.mes',
+                DB::raw('IFNULL(ROUND((cumple.cumplidos / totales.total_apartados) * 100, 2), 0) as porcentaje')
+            )
+            ->orderBy('cumple.mes')
+            ->get();
+
+
+
+            $labels = $grafica->pluck('mes');
+            $valores = $grafica->pluck('porcentaje');
+
+            $metaMinima   = optional($grafica->first())->meta_minima ?? 0;
+            $metaEsperada = optional($grafica->first())->meta_esperada ?? 0;
+
+
+        //mega grafica
+
+
+        return view('admin.apartados_norma', compact('norma', 'apartados', 'labels', 'valores', 'metaMinima', 'metaEsperada'));
    
     }
 

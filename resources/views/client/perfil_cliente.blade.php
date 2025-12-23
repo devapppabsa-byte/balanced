@@ -170,7 +170,7 @@
                 <li class="nav-item" role="presentation">
                     <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
                     <i class="fa fa-circle"></i>  
-                    Burbuja
+                    Pie
                     </a>
                 </li>
             </ul>

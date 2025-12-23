@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\CampoCalculado;
 use App\Models\CampoForaneo;
+use App\Models\CumplimientoNorma;
 use App\Models\CampoInvolucrado;
 use App\Models\CampoPrecargado;
 use App\Models\CampoVacio;
@@ -20,6 +21,7 @@ use App\Models\IndicadorLleno;
 use App\Models\Encuesta;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 class indicadorController extends Controller
 {
@@ -696,20 +698,80 @@ public function lista_indicadores_admin(Departamento $departamento){
 
 
     $indicadores = Indicador::with('indicadorLleno')->where('id_departamento', $departamento->id)->get();
-    $encuestas = Encuesta::where('id_departamento', $departamento->id)->get();
-    $normas = Norma::where('id_departamento', $departamento->id)->get();
 
-    return view('admin.lista_indicadores', compact('indicadores', 'departamento', 'encuestas', 'normas'));
+
+
+
+
+    //Este codigo es para sacar el cumplimiento normativo
+
+    $inicio = Carbon::now()->startOfMonth();
+    $fin = Carbon::now()->endOfMonth();
+    $diasMes = $inicio->daysInMonth;
+
+
+    $normas = Norma::withCount('apartados')->get();
+
+
+
+
+    $resultado_normas = $normas->map(function ($norma) use ($inicio, $fin, $diasMes) {
+
+        $registros = CumplimientoNorma::whereHas('apartado', function ($q) use ($norma) {
+                $q->where('id_norma', $norma->id);
+            })
+            ->whereBetween('created_at', [$inicio, $fin])
+            ->count();
+
+        $totalEsperado = $norma->apartados_count * $diasMes;
+
+        $cumplimiento = $totalEsperado > 0
+            ? round(($registros / $totalEsperado) * 100, 2)
+            : 0;
+
+        return [
+            'id_norma'      => $norma->id,
+            'norma'         => $norma->nombre,
+            'cumplimiento'  => $cumplimiento,
+            'meta_minima'   => $norma->meta_minima,
+            'meta_esperada' => $norma->meta_esperada,
+        ];
+    });
+
+    //Este codigo es para sacara el cumplimiento normativo
+    
+
+
+//CODIGO QUE ME AYUDA A MOSTRAR EL CUMPLIMIENTO DE LAS ENCUESTAS
+
+
+
+
+$encuestas = DB::table('encuestas as e')
+    ->leftJoin('preguntas as p', function ($join) {
+        $join->on('p.id_encuesta', '=', 'e.id')
+             ->where('p.cuantificable', 1);
+    })
+    ->leftJoin('respuestas as r', 'r.id_pregunta', '=', 'p.id')
+    ->where('e.id_departamento', $departamento->id)
+    ->select(
+        'e.id',
+        'e.nombre',
+        DB::raw('MAX(e.meta_minima) as meta_minima'),
+        DB::raw('MAX(e.meta_esperada) as meta_esperada'),
+        DB::raw('COALESCE(ROUND((AVG(r.respuesta) / 10) * 100, 2), 0) as porcentaje_cumplimiento')
+    )
+    ->groupBy('e.id', 'e.nombre')
+    ->get();
+
+//CODIGO QUE ME AYUDA A MOSTRAR EL CUMPLIMIENTO DE LAS ENCUESTAS
+
+
+ return view('admin.lista_indicadores', compact('indicadores', 'departamento', 'encuestas', 'resultado_normas'));
 
 
 
 }
-
-
-
-
-
-
 
 
 public function indicador_lleno_show_admin(Indicador $indicador){

@@ -130,11 +130,18 @@ class clienteController extends Controller
 
     public function index_encuesta_contestada(Encuesta $encuesta){
 
+        $id_cliente = Auth::guard('cliente')->user()->id;
                 //checo si la encuesta ya fue contestada
         $existe = ClienteEncuesta::where('id_encuesta', $encuesta->id)->get();
         
         //Esto me trae todas las preguntas de la encuesta con sus respuestas 
-        $preguntas = Pregunta::with('respuestas')->where('id_encuesta', $encuesta->id)->get();
+       //return $preguntas = Pregunta::with('respuestas')->where('id_encuesta', $encuesta->id)->get();
+
+        $preguntas = Pregunta::with(['respuestas' => function ($q) use ($id_cliente) {
+                $q->where('id_cliente', $id_cliente);
+            }])
+            ->where('id_encuesta', $encuesta->id)
+            ->get();
 
 
 
@@ -207,6 +214,7 @@ public function show_respuestas(Cliente $cliente, Encuesta $encuesta){
                 $q->where('id_cliente', $clienteId);
             }])
             ->where('id_encuesta', $encuestaId)
+            ->where('cuantificable', 1)
             ->get();
 
 

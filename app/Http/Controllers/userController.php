@@ -180,41 +180,75 @@ class userController extends Controller
 
 
 
+ $resultado_encuestas = DB::table(DB::raw('
+    (
+        SELECT
+            e.id AS encuesta_id,
+            e.nombre AS encuesta,
+            DATE_FORMAT(r.created_at, "%Y-%m") AS mes,
+            r.id_cliente,
+            AVG(r.respuesta) AS promedio_cliente
+        FROM respuestas r
+        JOIN preguntas p ON p.id = r.id_pregunta
+        JOIN encuestas e ON e.id = p.id_encuesta
+        WHERE e.id_departamento = '.$id_dep.'
+          AND (p.cuantificable = 1 OR p.cuantificable = "on")
+        GROUP BY e.id, r.id_cliente, mes
+    ) AS t
+'))
+->select(
+    'encuesta_id',
+    'encuesta',
+    'mes',
+    DB::raw('ROUND(AVG(promedio_cliente),2) AS total')
+)
+->groupBy('encuesta_id', 'encuesta', 'mes')
+->orderBy('mes')
+->get()
+->groupBy('encuesta')
+->map(function ($items, $encuesta) {
+    return [
+        'encuesta' => $encuesta,
+        'labels'   => $items->pluck('mes')->values(),
+        'data'     => $items->pluck('total')->values()
+    ];
+})
+->values();
+
 
 
 //PARA LA GRAFICA DE LAS ENCUESTAS
-    $resultado_encuestas = DB::table('encuestas as e')
-    ->join('preguntas as p', 'p.id_encuesta', '=', 'e.id')
-    ->leftJoin('respuestas as r', 'r.id_pregunta', '=', 'p.id')
-    ->where('e.id_departamento', $id_dep)
-    ->where(function ($q) {
-        $q->where('p.cuantificable', 'on')
-          ->orWhere('p.cuantificable', 1);
-    })
-    ->select(
-        'e.id',
-        'e.nombre as encuesta',
-        DB::raw("DATE_FORMAT(r.created_at, '%Y-%m') as mes"),
-        DB::raw('COALESCE(AVG(r.respuesta),0) as total')
-    )
-    ->groupBy('e.id', 'e.nombre', 'mes')
-    ->orderBy('mes')
-    ->get()
-    ->groupBy('encuesta')
-    ->map(function ($items, $encuesta) {
-        return [
-            'encuesta' => $encuesta,
-            'labels'   => $items->pluck('mes')->filter()->values(),
-            'data'     => $items->pluck('total')->values()
-        ];
-    })
-    ->values();
+    // $resultado_encuestas = DB::table('encuestas as e')
+    // ->join('preguntas as p', 'p.id_encuesta', '=', 'e.id')
+    // ->leftJoin('respuestas as r', 'r.id_pregunta', '=', 'p.id')
+    // ->where('e.id_departamento', $id_dep)
+    // ->where(function ($q) {
+    //     $q->where('p.cuantificable', 'on')
+    //       ->orWhere('p.cuantificable', 1);
+    // })
+    // ->select(
+    //     'e.id',
+    //     'e.nombre as encuesta',
+    //     DB::raw("DATE_FORMAT(r.created_at, '%Y-%m') as mes"),
+    //     DB::raw('COALESCE(AVG(r.respuesta),0) as total')
+    // )
+    // ->groupBy('e.id', 'e.nombre', 'mes')
+    // ->orderBy('mes')
+    // ->get()
+    // ->groupBy('encuesta')
+    // ->map(function ($items, $encuesta) {
+    //     return [
+    //         'encuesta' => $encuesta,
+    //         'labels'   => $items->pluck('mes')->filter()->values(),
+    //         'data'     => $items->pluck('total')->values()
+    //     ];
+    // })
+    // ->values();
 
     //PARA LAS GRAFICAS DE LAS ENCUESTAS
 
 
     //de aqui se van a sacar las graficas de las encuestas a los clientes
-
 
 
 

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string("nombre");
             $table->unsignedBigInteger("id_departamento");
             $table->string("ponderacion");
+            $table->string("meta_minima");
+            $table->string("meta_esperada");
 
             $table->foreign("id_departamento")
                   ->references('id')

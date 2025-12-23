@@ -223,11 +223,41 @@
                 </div>
 
 
-                <div class="col-12">
+                <div class="col-6">
                     <div class="form-group mt-3">
-                        <input type="text" class="form-control" name="ponderacion_encuesta">
+                        <div class="form-outline" data-mdb-input-init>
+                            <div class="form-outline" data-mdb-input-init>
+                                <input type="number" min="0" max="100" class="form-control w-100 {{ $errors->first('meta_minima_encuesta') ? 'is-invalid' : '' }}" id="meta_minima_encuesta" name="meta_minima_encuesta" required >
+                                <label class="form-label" for="meta_minima_encuesta">Meta Minima</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+
+                <div class="col-6">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <div class="form-outline" data-mdb-input-init>
+                                <input type="number" min="0" max="100" class="form-control w-100 {{ $errors->first('meta_esperada_encuesta') ? 'is-invalid' : '' }}" id="meta_esperada_encuesta" name="meta_esperada_encuesta" required >
+                                <label class="form-label" for="meta_esperada_encuesta">Meta Esperada</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group mt-3">
+                        <div class="form-outline" data-mdb-input-init>
+                            <div class="form-outline" data-mdb-input-init>
+                                <input type="number" min="0" max="100" class="form-control w-100 {{ $errors->first('descripcion_cuestionario') ? 'is-invalid' : '' }}" id="ponderacion_encuesta" name="ponderacion_encuesta" required >
+                                <label class="form-label" for="ponderacion_encuesta">Ponderación</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
 
             </div>
         </div>

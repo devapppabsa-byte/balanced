@@ -234,7 +234,7 @@
                     <li class="nav-item" role="presentation">
                         <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
                             <i class="fa fa-circle"></i>
-                            Grafico de Burbuja
+                            Grafico de Dona
                         </a>
                     </li>
                 </ul>
@@ -249,7 +249,7 @@
                         <canvas id="chartLinea"></canvas>
                     </div>
                     <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                        <canvas id="chartBurbuja"></canvas>
+                        <canvas id="chartDonut"></canvas>
                     </div>
                 </div>
                 <!-- Tabs content -->
@@ -346,59 +346,85 @@
 
 
 <script>
+const labels        = @json($labels);
+const valores       = @json($valores);
+const metaMinima    = Number(@json($metaMinima));
+const metaEsperada  = Number(@json($metaEsperada));
+
+const lineaMinima   = labels.map(() => metaMinima);
+const lineaEsperada = labels.map(() => metaEsperada);
 
 const ctx = document.getElementById('chartBar').getContext('2d');
 
 new Chart(ctx, {
+  type: 'bar', // 
   data: {
-    labels: ["Enero", "Febrero", "Marzo", "Abril"],
+    labels: labels,
     datasets: [
       {
-        type: "bar",  // Barras
-        label: "Cumplimiento Normativo",
-        data: [30, 50, 40, 60],
-
-        backgroundColor: function(context) {
-          const value = context.raw;
-          return value < 50
-            ? "rgba(255, 99, 132, 0.7)"  // rojo
-            : "rgba(75, 192, 75, 0.7)";  // verde
+        type: 'bar',
+        label: 'Cumplimiento (%)',
+        data: valores,
+        backgroundColor: (context) => {
+          const v = context.raw;
+          return v < metaMinima
+            ? 'rgba(231, 76, 60, 0.7)'   // rojo
+            : 'rgba(46, 204, 113, 0.7)'; // verde
         },
-        borderColor: function(context) {
-          const value = context.raw;
-          return value < 50 ? "red" : "green";
+        borderColor: (context) => {
+          const v = context.raw;
+          return v < metaMinima ? '#c0392b' : '#27ae60';
         },
-
-        borderWidth: 1
+        borderWidth: 1,
+        order: 2 //
       },
       {
-        type: "line", // Línea sobrepuesta
-        label: "Mínimo",
-        data: [50, 50, 50, 50],
-        borderColor: "red",
+        type: 'line',
+        label: 'Meta mínima',
+        data: lineaMinima,
+        borderColor: 'red',
         borderWidth: 2,
-        fill: false
+        borderDash: [6, 6],
+        pointRadius: 0,
+        fill: false,
+        order: 1 // 
       },
       {
-        type: "line", // Línea sobrepuesta
-        label: "Máximo",
-        data: [100, 100, 100, 100],
-        borderColor: "green",
+        type: 'line',
+        label: 'Meta esperada',
+        data: lineaEsperada,
+        borderColor: 'green',
         borderWidth: 2,
-        fill: false
+        borderDash: [4, 4],
+        pointRadius: 0,
+        fill: false,
+        order: 1
       }
     ]
   },
   options: {
     responsive: true,
     plugins: {
-      legend: { position: "top" }
+      legend: { position: 'top' },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.raw + '%'
+        }
+      }
     },
     scales: {
-      y: { beginAtZero: true }
+      y: {
+        beginAtZero: true,
+        max: 100,
+        ticks: {
+          callback: v => v + '%'
+        }
+      }
     }
   }
 });
+
+
 </script>
 
 
@@ -409,38 +435,67 @@ new Chart(ctx, {
 
 <script>
 const ctx2 = document.getElementById('chartLinea');
-
 new Chart(ctx2, {
   type: 'line',
   data: {
-    labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
+    labels: labels,
     datasets: [
       {
-        label: 'Ventas',
-        data: [30, 50, 40, 60],
+        label: 'Cumplimiento (%)',
+        data: valores,
         borderColor: '#36a2eb',
-        backgroundColor: 'rgba(54,162,235,0.2)',
+        backgroundColor: 'rgba(54,162,235,0.15)',
         fill: true,
-        tension: 0.3
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: valores.map(v =>
+          v < metaMinima ? '#e74c3c' : '#2ecc71'
+        )
       },
       {
-        label: 'Mínimo',
-        data: [50, 50, 50, 50],
+        label: 'Meta mínima',
+        data: labels.map(() => metaMinima),
         borderColor: 'red',
-        borderDash: [5, 5],
+        borderDash: [6, 6],
+        borderWidth: 2,
+        pointRadius: 0,
         fill: false
       },
       {
-        label: 'Máximo',
-        data: [100, 100, 100, 100],
+        label: 'Meta esperada',
+        data: labels.map(() => metaEsperada),
         borderColor: 'green',
-        borderDash: [5, 5],
+        borderDash: [4, 4],
+        borderWidth: 2,
+        pointRadius: 0,
         fill: false
       }
     ]
   },
-  options: { responsive: true }
+  options: {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,   // 👈 ESTO ES CLAVE
+        ticks: {
+          callback: v => v + '%'
+        }
+      }
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.raw + '%'
+        }
+      },
+      legend: {
+        position: 'top'
+      }
+    }
+  }
 });
+
 </script>
 
 
@@ -453,37 +508,42 @@ new Chart(ctx2, {
 
 
 <script>
-const ctx3 = document.getElementById('chartBurbuja');
+const ctx3 = document.getElementById('chartDonut');
 
 new Chart(ctx3, {
-  type: 'bubble',
+  type: 'doughnut',
   data: {
-    datasets: [
-      {
-        label: 'Ventas por mes',
-        data: [
-          {x: 1, y: 30, r: 10},
-          {x: 2, y: 50, r: 15},
-          {x: 3, y: 40, r: 12},
-          {x: 4, y: 60, r: 18}
-        ],
-        backgroundColor: ['#ff6384','#4bc0c0','#ffce56','#36a2eb']
-      }
-    ]
+    labels: ['Cumplido', 'No cumplido'],
+    datasets: [{
+      data: [
+        valores[0],                 // cumplimiento
+        100 - valores[0]             // restante
+      ],
+      backgroundColor: [
+        valores[0] < metaMinima
+          ? 'rgba(231,76,60,0.8)'    // rojo
+          : 'rgba(46,204,113,0.8)', // verde
+        'rgba(189,195,199,0.4)'
+      ],
+      borderWidth: 0
+    }]
   },
   options: {
-    scales: {
-      x: {
-        ticks: { callback: (val) => ['Ene','Feb','Mar','Abr'][val-1] },
-        title: { display: true, text: 'Mes' }
+    responsive: true,
+    cutout: '65%',
+    plugins: {
+      legend: {
+        position: 'bottom'
       },
-      y: {
-        beginAtZero: true,
-        title: { display: true, text: 'Valor' }
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.raw + '%'
+        }
       }
     }
   }
 });
+
 </script>
 
 

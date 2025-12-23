@@ -11,8 +11,18 @@ class ApartadoNorma extends Model
 
     public function norma(){
 
+
         return $this->belongsTo(Norma::class, 'id_norma');
 
+
     } 
+
+
+    public function cumplimientos(){
+
+        return $this->hasMany(CumplimientoNorma::class, 'id_apartado_norma');
+    
+    }
+
 
 }

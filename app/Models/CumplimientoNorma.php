@@ -21,4 +21,9 @@ class CumplimientoNorma extends Model
         return $this->hasMany(EvidenciaCumplimientoNorma::class, 'id_cumplimiento_norma');
     }
 
+
+    public function apartado(){
+        return $this->belongsTo(ApartadoNorma::class, 'id_apartado_norma');
+    }
+
 }
