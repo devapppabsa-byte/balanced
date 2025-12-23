@@ -138,3 +138,19 @@ body{
   .zoom:hover{
     transform: scale(1.05);
   }
+
+
+.tab-pane.fade.show {
+  animation: fadeSlide 0.25s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

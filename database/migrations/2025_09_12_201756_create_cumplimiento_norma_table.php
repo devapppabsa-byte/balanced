@@ -18,7 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger("id_apartado_norma");
             $table->foreign("id_apartado_norma")
                   ->references("id")
-                  ->on("apartado_norma");
+                  ->on("apartado_norma")
+                  ->onDelete('cascade');
                   
             $table->timestamps();
         });

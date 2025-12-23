@@ -102,321 +102,378 @@
 
 <div class="container-fluid">
     <div class="row justify-content-evenly ">
-        <div class="col-12 col-sm-11 col-md-11 col-lg-5 ">
-            <div class="row">
-                <div class="col-12  mx-1 mt-2 bg-white rounded shadow shadow-sm p-5">
-                        <div class="col-12 text-center">
-                            <h4>
-                                <i class="fa fa-chart-line"></i>
-                                Indicadores de {{$departamento->nombre}}
-                            </h4>
-                        </div>
 
-                        <div class="col-12">
-                            <div class="row ">
-                                <div class="col-12">
-                                @if ($indicadores->isEmpty())
-                                @else
-                                    <table class="table mb-0 border  shadow-sm">
-                                        <thead class="table-primary text-white">
+
+
+        <div class="col-8 mt-5">
+            <!-- Tabs navs -->
+            <ul class="nav nav-tabs  bg-white border  rounded mb-2 justify-content-center" id="ex1" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a data-mdb-tab-init class="nav-link active" id="ex1-tab-1" href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">
+                        Usuarios del area de {{$departamento->nombre}}
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a data-mdb-tab-init class="nav-link" id="ex1-tab-2" href="#ex1-tabs-2" role="tab" aria-controls="ex1-tabs-2" aria-selected="false">
+                        Indicadores de {{$departamento->nombre}}
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a data-mdb-tab-init class="nav-link" id="ex1-tab-3" href="#ex1-tabs-3" role="tab" aria-controls="ex1-tabs-3" aria-selected="false" >
+                        Seguimiento a normas {{$departamento->nombre}}
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a data-mdb-tab-init class="nav-link" id="ex1-tab-4" href="#ex1-tabs-4" role="tab" aria-controls="ex1-tabs-4" aria-selected="false" >
+                        Encuestas de {{$departamento->nombre}}
+                    </a>
+                </li>
+            </ul>
+            <!-- Tabs navs -->
+
+            <!-- Tabs content -->
+            <div class="tab-content" id="ex1-content">
+
+                <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1">
+                    <div class="row">
+                        <div class="col-12   rounded shadow shadow-sm bg-white p-5">
+                            <div class="row">
+
+                                <div class="col-12 text-center">
+                                    <h4>
+                                        <i class="fa fa-users"></i>
+                                        Usuarios de {{$departamento->nombre}}  
+                                    </h4>
+                                    @if (session('eliminado_user'))
+                                        <h5 class="text-danger">
+                                            <i class="fa fa-exclamation-circle"></i>
+                                            {{session('eliminado_user')}}
+                                        </h5>
+                                    @endif
+                                </div>                
+                                <div class="col-12 table-responsive">
+
+                                    <div class="row border  shadow-sm">
+
+                                        @if ($usuarios->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
+                                        @else
+                                            <table class="table mb-0 ">
+                                                <thead class="table-primary text-white">
+                                                    <tr>
+                                                        <th scope="col">Nombre</th>
+                                                        <th scope="col">Correo</th>
+                                                        <th scope="col">Puesto</th>
+                                                        <th scope="col">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                            <tbody>
+                                        @endif
+
+                                        @forelse ($usuarios as $usuario)
                                             <tr>
-                                                <th>Nombre</th>
-                                                <th>Acciones</th>
+                                                <th>{{$usuario->name}}</th>
+                                                <td>{{$usuario->email}}</td>
+                                                <td>{{$usuario->puesto}}</td>
+
+                                                <td class=""> 
+                                                    <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
+                                                    <a class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                    <tbody>
-                                @endif
-                                
-                                @forelse ($indicadores as $indicador)
-                                    <tr>
-                                        <td>
-                                            <a href="{{route('indicador.index', $indicador->id)}}" class="">
-                                                {{$indicador->nombre}}
-                                            </a>
-                                        </td>
+                                        @empty
+                                            <div class="col-12 p-5 text-center p-5 ">
 
+                                                <div class="row">
+                                                    
+                                                    <div class="col-12">
+                                                        <i class="fa fa-exclamation-circle text-danger"></i>
+                                                        No cuenta con usuarios, pero los puedes agregar aqui
+                                                    </div>
+                                                    
+                                                    <div class="col-12">
+                                                        <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
+                                                            <i class="fa fa-plus"></i>
+                                                            Agregar Usuario
+                                                        </a>
+                                                    </div>
 
-                                        <td class="">
-                                            <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#bo{{$indicador->id}}">
-                                                <i class="fa fa-trash"></i> 
-                                            </a>
-
-                                            <a  class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#upd_indi{{$indicador->id}}">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-
-                                            <a href="{{route('indicador.index', $indicador->id)}}" class="text-dark">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @empty
-
-                                <div class="col-12 p-5 text-center p-5 border">
-
-                                    <div class="row">
-                                        
-                                        <div class="col-12">
-                                            <i class="fa fa-exclamation-circle text-danger"></i>
-                                            No cuenta con indicadores.
-                                        </div>
-                                        
-                                        <div class="col-12">
-                                            <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_indicador">
-                                                <i class="fa fa-plus"></i>
-                                                Agregar Indicador
-                                            </a>
-                                        </div>
-
+                                                </div>
+                                                <h5>
+                                                </h5>
+                                            </div>
+                                        @endforelse
+                                        </tbody>
+                                        </table>
                                     </div>
-                                    <h5>
-                                    </h5>
-                                </div>
-                                    
-                                @endforelse
-                                </tbody>
-                                </table>
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </div>
-            </div>
+
+
+
+
+
+                <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
+                    <div class="row">
+                        <div class="col-12  mx-1 bg-white rounded shadow shadow-sm p-5">
+                                <div class="col-12 text-center">
+                                    <h4>
+                                        <i class="fa fa-chart-line"></i>
+                                        Indicadores de {{$departamento->nombre}}
+                                    </h4>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row ">
+                                        <div class="col-12">
+                                        @if ($indicadores->isEmpty())
+                                        @else
+                                            <table class="table mb-0 border  shadow-sm">
+                                                <thead class="table-primary text-white">
+                                                    <tr>
+                                                        <th>Nombre</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                            <tbody>
+                                        @endif
+                                        
+                                        @forelse ($indicadores as $indicador)
+                                            <tr>
+                                                <td>
+                                                    <a href="{{route('indicador.index', $indicador->id)}}" class="">
+                                                        {{$indicador->nombre}}
+                                                    </a>
+                                                </td>
+
+
+                                                <td class="">
+                                                    <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#bo{{$indicador->id}}">
+                                                        <i class="fa fa-trash"></i> 
+                                                    </a>
+
+                                                    <a  class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#upd_indi{{$indicador->id}}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+
+                                                    <a href="{{route('indicador.index', $indicador->id)}}" class="text-dark">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @empty
+
+                                        <div class="col-12 p-5 text-center p-5 border">
+
+                                            <div class="row">
+                                                
+                                                <div class="col-12">
+                                                    <i class="fa fa-exclamation-circle text-danger"></i>
+                                                    No cuenta con indicadores.
+                                                </div>
+                                                
+                                                <div class="col-12">
+                                                    <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_indicador">
+                                                        <i class="fa fa-plus"></i>
+                                                        Agregar Indicador
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                            <h5>
+                                            </h5>
+                                        </div>
+                                            
+                                        @endforelse
+                                        </tbody>
+                                        </table>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>    
+                </div>
+
+
+
+
+                
+                <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
+                    <div class="row">
+                        <div class="col-12    rounded shadow shadow-sm bg-white p-5">
+                            <div class="col-12 text-center">
+                                <h4>
+                                    <i class="fa-regular fa-newspaper"></i>
+                                    Seguimiento a Normas {{$departamento->nombre}}
+                                </h4>
+                            </div>
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-12">
+                                        @if ($normas->isEmpty())
+                                        @else
+                                            <table class="table mb-0 border  shadow-sm">
+                                                <thead class="table-primary text-white">
+                                                    <tr>
+                                                        <th>Nombre</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                            <tbody>
+                                        @endif
+                                        
+                                        @forelse ($normas as $norma)
+                                            <tr>
+                                                <td>
+                                                    <a href="{{route('apartado.norma', $norma->id)}}" class="">
+                                                        {{$norma->nombre}}
+                                                    </a>
+                                                </td>
+
+
+                                                <td class="">
+                                                    <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_norm{{$norma->id}}">
+                                                        <i class="fa fa-trash"></i> 
+                                                    </a>
+                                                    <a class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_norm{{$norma->id}}">
+                                                        <i class="fa fa-edit"></i> 
+                                                    </a>
+                                                    <a href="{{route('apartado.norma', $norma->id)}}" class="text-dark">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @empty
+
+                                        <div class="col-12 p-5 text-center p-5 border">
+
+                                            <div class="row">
+                                                
+                                                <div class="col-12">
+                                                    <i class="fa fa-exclamation-circle text-danger"></i>
+                                                    No cuenta con seguiminetos a normas.
+                                                </div>
+                                                
+                                                <div class="col-12">
+                                                    <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_norma">
+                                                        <i class="fa fa-plus"></i>
+                                                        Agregar Norma
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                            <h5>
+                                            </h5>
+                                        </div>
+                                            
+                                        @endforelse
+                                        </tbody>
+                                        </table>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+                <div class="tab-pane fade" id="ex1-tabs-4" role="tabpanel" aria-labelledby="ex1-tab-4">
+                    <div class="row">
+                        <div class="col-12 mx-1  col-12   mb-3 rounded shadow shadow-sm bg-white p-5">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h4>
+                                    <i class="fa fa-circle-question"></i>
+                                        Encuestas de {{$departamento->nombre}}
+                                    </h4>
+                                </div>
+                                <div class="col-12">
+                                    <div class="row">
             
-            <div class="row">
-                <div class="col-12  mt-3  rounded shadow shadow-sm bg-white p-5">
-                    <div class="col-12 text-center">
-                        <h4>
-                            <i class="fa-regular fa-newspaper"></i>
-                            Seguimiento a Normas {{$departamento->nombre}}
-                        </h4>
-                    </div>
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-12">
-                                @if ($normas->isEmpty())
-                                @else
-                                    <table class="table mb-0 border  shadow-sm">
-                                        <thead class="table-primary text-white">
+                                        @if ($encuestas->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
+                                        @else
+                                            <table class="table table mb-0 border  shadow-sm">
+                                                <thead class="table-primary text-white">
+                                                    <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Descripción</th>
+                                                    <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                            <tbody>
+                                        @endif
+            
+                                        @forelse ($encuestas as $encuesta)
                                             <tr>
-                                                <th>Nombre</th>
-                                                <th>Acciones</th>
+                                                <td>
+                                                    <a href="{{route('encuesta.index', $encuesta->id)}}">
+                                                        {{$encuesta->nombre}}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    {{$encuesta->descripcion}}
+                                                </td>
+            
+                                                <td class="">
+                                                    <a class="text-danger cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_en{{$encuesta->id}}" style="cursor: pointer">
+                                                        <i class="fa fa-trash"></i> 
+                                                    </a>
+            
+                                                    <a class="text-primary cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_en{{$encuesta->id}}"  style="cursor: pointer">
+                                                        <i class="fa fa-edit"></i> 
+                                                    </a>
+            
+                                                </td>
                                             </tr>
-                                        </thead>
-                                    <tbody>
-                                @endif
-                                
-                                @forelse ($normas as $norma)
-                                    <tr>
-                                        <td>
-                                            <a href="{{route('apartado.norma', $norma->id)}}" class="">
-                                                {{$norma->nombre}}
-                                            </a>
-                                        </td>
-
-
-                                        <td class="">
-                                            <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_norm{{$norma->id}}">
-                                                <i class="fa fa-trash"></i> 
-                                            </a>
-                                            <a class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_norm{{$norma->id}}">
-                                                <i class="fa fa-edit"></i> 
-                                            </a>
-                                            <a href="{{route('apartado.norma', $norma->id)}}" class="text-dark">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @empty
-
-                                <div class="col-12 p-5 text-center p-5 border">
-
-                                    <div class="row">
-                                        
-                                        <div class="col-12">
-                                            <i class="fa fa-exclamation-circle text-danger"></i>
-                                            No cuenta con seguiminetos a normas.
-                                        </div>
-                                        
-                                        <div class="col-12">
-                                            <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_norma">
-                                                <i class="fa fa-plus"></i>
-                                                Agregar Norma
-                                            </a>
-                                        </div>
-
+                                        @empty
+                                            <div class="col-12 p-5 text-center p-5 border">
+            
+                                                <div class="row">
+                                                    
+                                                    <div class="col-12">
+                                                        <i class="fa fa-exclamation-circle text-danger"></i>
+                                                        No cuenta con indicadores, pero los puedes agregar aqui
+                                                    </div>
+                                                    
+                                                    <div class="col-12">
+                                                        <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
+                                                            <i class="fa fa-plus"></i>
+                                                            Agregar Cuestionario
+                                                        </a>
+                                                    </div>
+            
+                                                </div>
+                                                <h5>
+                                                </h5>
+                                            </div>
+                                        @endforelse
+                                        </tbody>
+                                        </table>
                                     </div>
-                                    <h5>
-                                    </h5>
-                                </div>
-                                    
-                                @endforelse
-                                </tbody>
-                                </table>
                                 </div>
                             </div>
                         </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-12 col-sm-11 mt-2 col-md-11 col-lg-5 mb-4">
-            <div class="row">
-                <div class="col-12 mx-1  col-12   mb-3 rounded shadow shadow-sm bg-white p-5">
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <h4>
-                               <i class="fa fa-circle-question"></i>
-                                Encuestas de {{$departamento->nombre}}
-                            </h4>
-                        </div>
-                        <div class="col-12">
-                            <div class="row">
-    
-                                @if ($encuestas->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
-                                @else
-                                    <table class="table table mb-0 border  shadow-sm">
-                                        <thead class="table-primary text-white">
-                                            <tr>
-                                            <th>Nombre</th>
-                                            <th>Descripción</th>
-                                            <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                    <tbody>
-                                @endif
-    
-                                @forelse ($encuestas as $encuesta)
-                                    <tr>
-                                        <td>
-                                            <a href="{{route('encuesta.index', $encuesta->id)}}">
-                                                {{$encuesta->nombre}}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {{$encuesta->descripcion}}
-                                        </td>
-    
-                                        <td class="">
-                                            <a class="text-danger cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_en{{$encuesta->id}}" style="cursor: pointer">
-                                                <i class="fa fa-trash"></i> 
-                                            </a>
-    
-                                            <a class="text-primary cursor-pointer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_en{{$encuesta->id}}"  style="cursor: pointer">
-                                                <i class="fa fa-edit"></i> 
-                                            </a>
-    
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <div class="col-12 p-5 text-center p-5 border">
-    
-                                        <div class="row">
-                                            
-                                            <div class="col-12">
-                                                <i class="fa fa-exclamation-circle text-danger"></i>
-                                                No cuenta con indicadores, pero los puedes agregar aqui
-                                            </div>
-                                            
-                                            <div class="col-12">
-                                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
-                                                    <i class="fa fa-plus"></i>
-                                                    Agregar Cuestionario
-                                                </a>
-                                            </div>
-    
-                                        </div>
-                                        <h5>
-                                        </h5>
-                                    </div>
-                                @endforelse
-                                </tbody>
-                                </table>
-                            </div>
-                        </div>
                     </div>
                 </div>
+
             </div>
-
-            <div class="row">
-                <div class="col-12   rounded shadow shadow-sm bg-white p-5">
-                    <div class="row">
-
-                        <div class="col-12 text-center">
-                            <h4>
-                                <i class="fa fa-users"></i>
-                                Usuarios de {{$departamento->nombre}}  
-                            </h4>
-                            @if (session('eliminado_user'))
-                                <h5 class="text-danger">
-                                    <i class="fa fa-exclamation-circle"></i>
-                                    {{session('eliminado_user')}}
-                                </h5>
-                            @endif
-                        </div>                
-                        <div class="col-12 table-responsive">
-
-                            <div class="row border  shadow-sm">
-
-                                @if ($usuarios->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
-                                @else
-                                    <table class="table mb-0 ">
-                                        <thead class="table-primary text-white">
-                                            <tr>
-                                                <th scope="col">Nombre</th>
-                                                <th scope="col">Correo</th>
-                                                <th scope="col">Puesto</th>
-                                                <th scope="col">Acciones</th>
-                                            </tr>
-                                        </thead>
-                                    <tbody>
-                                @endif
-
-                                @forelse ($usuarios as $usuario)
-                                    <tr>
-                                        <th>{{$usuario->name}}</th>
-                                        <td>{{$usuario->email}}</td>
-                                        <td>{{$usuario->puesto}}</td>
-
-                                        <td class=""> 
-                                            <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
-                                            <a class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_user{{$usuario->id}}">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <div class="col-12 p-5 text-center p-5 ">
-
-                                        <div class="row">
-                                            
-                                            <div class="col-12">
-                                                <i class="fa fa-exclamation-circle text-danger"></i>
-                                                No cuenta con usuarios, pero los puedes agregar aqui
-                                            </div>
-                                            
-                                            <div class="col-12">
-                                                <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_usuario">
-                                                    <i class="fa fa-plus"></i>
-                                                    Agregar Usuario
-                                                </a>
-                                            </div>
-
-                                        </div>
-                                        <h5>
-                                        </h5>
-                                    </div>
-                                @endforelse
-                                </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Tabs content -->
         </div>
+
+
+
+
     </div>
 </div>
 
@@ -541,17 +598,16 @@
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 mt-4 border-left">
                     <div class="row d-flex align-items-center justify-content-center">
-                        <div class="col-12">
-                            <h6>Actualizando meta porcentual de cumplimiento %</h6>
-                        </div>
                         <div class="col-6">
                             <div class="form-group">
+                                <label for="">Meta Minima %</label>
                                 <input type="number" min="1" value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="% Minimo" required>
                             </div>
                         </div>
                         
                         <div class="col-6">
                             <div class="form-group">
+                                <label for="">Meta esperada %</label>
                                 <input type="number" min="1" class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder="% Máximo"  required>
                             </div>
                         </div>
@@ -877,12 +933,34 @@
                             </div>
                         </div>
                     </div>
-            
+                    <div class="col-6">
+                        <div class="form-group mt-3">
+                            <div class="form-outline" data-mdb-input-init>
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input type="number" value="{{$encuesta->meta_minima}}" min="0" max="100" class="form-control w-100 {{ $errors->first('meta_minima_encuesta_edit') ? 'is-invalid' : '' }}" id="meta_minima_encuesta_edit" name="meta_minima_encuesta_edit" required >
+                                    <label class="form-label" for="meta_minima_encuesta_edit">Meta Minima</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-6">
+                        <div class="form-group mt-3">
+                            <div class="form-outline" data-mdb-input-init>
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input type="number" value="{{$encuesta->meta_esperada}}" min="0" max="100" class="form-control w-100 {{ $errors->first('meta_esperada_encuesta_edit') ? 'is-invalid' : '' }}" id="meta_esperada_encuesta_edit" name="meta_esperada_encuesta_edit" required >
+                                    <label class="form-label" for="meta_esperada_encuesta_edit">Meta Esperada</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-12 text-center">
                         <div class="form-group mt-3">
                             <div class="form-outline" data-mdb-input-init>
                                 <div class="form-outline" data-mdb-input-init>
-                                    <input class="form-control w-100 fs-3{{ $errors->first('ponderacion_encuesta_edit') ? 'is-invalid' : '' }}" id="ponderacion_encuesta" value="{{$encuesta->ponderacion}}" name="ponderacion_encuesta_edit" required >
+                                    <input type="number" class="form-control w-100 fs-3{{ $errors->first('ponderacion_encuesta_edit') ? 'is-invalid' : '' }}" id="ponderacion_encuesta" value="{{$encuesta->ponderacion}}" name="ponderacion_encuesta_edit" required >
                                     <label class="form-label" for="ponderacion_encuesta_edit">Ponderacion del la Encuesta</label>
                                 </div>
                             </div>
@@ -1096,7 +1174,7 @@
 
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text"  class="form-control form-control-lg fs-3{{ $errors->first('ponderacion_norma_edit') ? 'is-invalid' : '' }} " id="ponderacion_norm_edit{{$norma->id}}" name="ponderacion_norma_edit" value="{{old('ponderacion_norma_edit', $norma->ponderacion)}}">
+                            <input type="number"  class="form-control form-control-lg fs-3{{ $errors->first('ponderacion_norma_edit') ? 'is-invalid' : '' }} " id="ponderacion_norm_edit{{$norma->id}}" name="ponderacion_norma_edit" value="{{old('ponderacion_norma_edit', $norma->ponderacion)}}">
                             <label class="form-label" for="ponderacion_norm_edit{{$norma->id}}" >Ponderación </label>
                         </div>
                     </div>
@@ -1128,6 +1206,12 @@
 
 
 
+@section('scripts')
 
+
+
+
+
+@endsection
 
 

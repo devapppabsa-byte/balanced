@@ -69,7 +69,7 @@
         @forelse ($cumplimientos as $cumplimiento)
             <div class="col-10 my-1">
                 <div class="accordion" id="accordionExample">
-                    <div class="accordion-item border-2 border-primary">
+                    <div class="accordion-item border shadow">
                         <h2 class="accordion-header" id="headingTwo">
                             <button data-mdb-collapse-init class="accordion-button fw-bold  collapsed" type="button" data-mdb-target="#cump{{$cumplimiento->id}}" aria-expanded="false" aria-controls="collapseTwo">
                                Evidencias del mes de {{$cumplimiento->mes}} - {{$cumplimiento->descripcion}}

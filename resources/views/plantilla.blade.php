@@ -119,6 +119,12 @@
             </script>
         @endif
 
+        @if (session('editado'))
+            <script>
+                toastr.success('{{session("editado")}}', 'Exito!');
+            </script>
+        @endif
+
         @if (session('eliminado_user'))
             <script>
                 toastr.warning('{{session("eliminado_user")}}', 'Exito!');
@@ -135,6 +141,35 @@
 
 
     {{-- notificaciones de todo --}}
+
+
+
+
+    {{-- Esto hace que el tab-panel se regrese al lugar donde lo dejaste despues de cargar la pagina --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const tabLinks = document.querySelectorAll('[data-mdb-tab-init]');
+        const tabContent = document.getElementById('ex1-content');
+
+        const savedTab = localStorage.getItem('activeTab');
+
+        if (savedTab) {
+            const tabTrigger = document.querySelector(`[href="${savedTab}"]`);
+            if (tabTrigger) {
+            new mdb.Tab(tabTrigger).show();
+            }
+        }
+
+        // Mostrar contenido una vez listo
+        tabContent.classList.remove('d-none');
+
+        tabLinks.forEach(tab => {
+            tab.addEventListener('shown.mdb.tab', e => {
+            localStorage.setItem('activeTab', e.target.getAttribute('href'));
+            });
+        });
+        });
+</script>
 
 </body>
 </html>

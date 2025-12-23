@@ -151,86 +151,114 @@
 @section('scripts')
 
 <script>
+const labelsRaw = @json($labels_indicadores);
+const data = @json($data_indicadores);
 
-    const labelsRaw = @json($labels_indicadores);
-    const data = @json($data_indicadores);
-    const meses = [
-    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
-    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
-  ];
+const meses = [
+  "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+  "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+];
 
-  const labels = labelsRaw.map(fecha => {
-    const [year, month] = fecha.split("-");
-    return `${meses[month - 1]} ${year}`;
-  });
+const labels = labelsRaw.map(fecha => {
+  const [year, month] = fecha.split("-");
+  return `${meses[month - 1]} ${year}`;
+});
 
-//Se pueden poner los limites e las lineas de las graficas
-  const minimo = 50;
-  const maximo = 100;
+// 🔹 Límites
+const minimo = 50;
+const maximo = 100;
 
-  const lineaMin = Array(data.length).fill(minimo);
-  const lineaMax = Array(data.length).fill(maximo);
+const lineaMin = Array(data.length).fill(minimo);
+const lineaMax = Array(data.length).fill(maximo);
 
-  const ctx = document.getElementById('grafico').getContext('2d');
+const ctx = document.getElementById('grafico').getContext('2d');
 
-  new Chart(ctx, {
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          type: "bar",
-          label: "Cumplimiento",
-          data: data,
-
-          backgroundColor: function(context) {
-            const value = context.raw;
-            return value < minimo
-              ? "rgba(255, 99, 132, 0.7)"
-              : "rgba(75, 192, 75, 0.7)";
-          },
-          borderColor: function(context) {
-            const value = context.raw;
-            return value < minimo ? "red" : "green";
-          },
-          borderWidth: 1
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: labels,
+    datasets: [
+      // 🔹 Barras
+      {
+        label: "Cumplimiento",
+        data: data,
+        backgroundColor: context => {
+          const value = context.raw;
+          return value < minimo
+            ? "rgba(255, 99, 132, 0.7)"
+            : "rgba(75, 192, 75, 0.7)";
         },
-        {
-          type: "line",
-          label: "Mínimo",
-          data: lineaMin,
-          borderColor: "red",
-          borderWidth: 2,
-          fill: false
+        borderColor: context => {
+          const value = context.raw;
+          return value < minimo ? "red" : "green";
         },
-        {
-          type: "line",
-          label: "Máximo",
-          data: lineaMax,
-          borderColor: "green",
-          borderWidth: 2,
-          fill: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: "top" }
+        borderWidth: 1,
+        order: 2
       },
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 100
+
+      //  Línea mínimo
+      {
+        type: 'line',
+        label: 'Mínimo',
+        data: lineaMin,
+        borderColor: 'red',
+        borderWidth: 2,
+        backgroundColor: 'transparent',
+        pointRadius: 5,
+        pointHoverRadius: 6,
+        tension: 0,
+        fill: false,
+        yAxisID: 'y'
+      },
+
+      //  Línea máximo
+      {
+        type: 'line',
+        label: 'Máximo',
+        data: lineaMax,
+        borderColor: 'green',
+        borderWidth: 2,
+        backgroundColor: 'transparent',
+        pointRadius: 5,
+        pointHoverRadius: 6,
+        tension: 0,
+        fill: false,
+        yAxisID: 'y'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top'
+      },
+      tooltip: {
+        callbacks: {
+          label: context => `${context.dataset.label}: ${context.raw}%`
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+        ticks: {
+          callback: value => value + '%'
         }
       }
     }
-  });
+  }
+});
+
 
 
 </script>
 
 <script>
   const graficas = @json($resultado_normas);
+
+  console.log(graficas)
 
   if (!graficas || graficas.length === 0) {
     console.warn('No hay datos para graficar');
@@ -270,37 +298,57 @@
       .getElementById('grafico_normas')
       .getContext('2d');
 
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: datasets
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: "Cumplimiento",
+        data,
+        backgroundColor: ctx =>
+          ctx.raw < minimo
+            ? "rgba(255, 99, 132, 0.7)"
+            : "rgba(75, 192, 75, 0.7)",
+        borderColor: ctx => (ctx.raw < minimo ? "red" : "green"),
+        borderWidth: 1
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top'
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                return `${context.dataset.label}: ${context.raw}%`;
-              }
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            ticks: {
-              callback: value => value + '%'
-            }
-          }
-        }
+      {
+        type: 'line',
+        label: 'Mínimo',
+        data: lineaMin,
+        borderColor: 'red',
+        borderWidth: 2,
+        backgroundColor: 'transparent',
+        pointRadius: 5,
+        tension: 0,
+        fill: false,
+        yAxisID: 'y'
+      },
+      {
+        type: 'line',
+        label: 'Máximo',
+        data: lineaMax,
+        borderColor: 'green',
+        borderWidth: 2,
+        backgroundColor: 'transparent',
+        pointRadius: 5,
+        tension: 0,
+        fill: false,
+        yAxisID: 'y'
       }
-    });
+    ]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100
+      }
+    }
+  }
+});
+
   }
 </script>
 
@@ -340,7 +388,7 @@ if (!graficas_encuestas || graficas_encuestas.length === 0) {
   const datasets = graficas_encuestas.map((g, index) => {
     const dataAlineada = labelsRaw.map(mes => {
       const pos = g.labels.indexOf(mes);
-      return pos !== -1 ? g.data[pos] : 0;
+      return pos !== -1 ? g.data[pos] * 10 : 0;
     });
 
     return {
@@ -362,26 +410,33 @@ if (!graficas_encuestas || graficas_encuestas.length === 0) {
       labels: labels,
       datasets: datasets
     },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top'
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return `${context.dataset.label}: ${context.raw}`;
-            }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true
+options: {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top'
+    },
+    tooltip: {
+      callbacks: {
+        label: function(context) {
+          return `${context.dataset.label}: ${context.raw}%`;
         }
       }
     }
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      max: 100,
+      ticks: {
+        callback: function(value) {
+          return value + '%';
+        }
+      }
+    }
+  }
+}
+
   });
 }
 </script>

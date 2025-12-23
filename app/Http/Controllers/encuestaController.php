@@ -204,6 +204,7 @@ class encuestaController extends Controller
     }
 
 
+    
     public function pregunta_delete(Pregunta $pregunta){
 
 

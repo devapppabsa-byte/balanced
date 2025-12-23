@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('apartado_norma', function (Blueprint $table) {
+
             $table->id();
             $table->string("apartado");
             $table->string("descripcion");
@@ -22,6 +23,7 @@ return new class extends Migration
                   ->onDelete("cascade");
             $table->timestamps();
         });
+        
     }
 
     /**
