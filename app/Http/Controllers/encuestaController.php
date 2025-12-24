@@ -16,6 +16,7 @@ class encuestaController extends Controller
 {
 
     public function encuesta_index(Encuesta $encuesta){
+        
 
         //checo si la encuesta ya fue contestada
         $existe = ClienteEncuesta::where('id_encuesta', $encuesta->id)->get();
@@ -51,6 +52,12 @@ class encuestaController extends Controller
             $valores = $resultados->pluck('puntuacion')->map(fn($v) => round($v, 2));
         //DATOS PARA LA HGRAFICA DE LA ENCUESTA
                 
+
+
+
+
+
+
 
 
 
@@ -121,6 +128,7 @@ class encuestaController extends Controller
             "meta_esperada" => $request->meta_esperada_encuesta
 
         ]);
+
 
 
 
@@ -216,7 +224,49 @@ class encuestaController extends Controller
         $encuestas = Encuesta::with(['departamento', 'preguntas', 'respuestas'])->get();
         $departamentos = Departamento::get();
 
-        return view ('admin.gestionar_encuestas', compact('encuestas', 'departamentos'));
+
+        //ESTO ME DA LAS GRAFICAS POR MES DE LAS ENCUESTAS
+        $resultado_encuestas = DB::table(DB::raw('
+            (
+                SELECT
+                    e.id AS encuesta_id,
+                    e.nombre AS encuesta,
+                    DATE_FORMAT(r.created_at, "%Y-%m") AS mes,
+                    r.id_cliente,
+                    AVG(r.respuesta) AS promedio_cliente
+                FROM respuestas r
+                JOIN preguntas p ON p.id = r.id_pregunta
+                JOIN encuestas e ON e.id = p.id_encuesta
+                WHERE (p.cuantificable = 1 OR p.cuantificable = "on")
+                GROUP BY e.id, r.id_cliente, mes
+            ) AS t
+        '))
+        ->select(
+            'encuesta_id',
+            'encuesta',
+            'mes',
+            DB::raw('ROUND(AVG(promedio_cliente),2) AS total')
+        )
+        ->groupBy('encuesta_id', 'encuesta', 'mes')
+        ->orderBy('mes')
+        ->get()
+        ->groupBy('encuesta')
+        ->map(function ($items, $encuesta) {
+            return [
+                'encuesta' => $encuesta,
+                'labels'   => $items->pluck('mes')->values(),
+                'data'     => $items->pluck('total')->values()
+            ];
+        })
+        ->values();
+        //ESTO ME DA LAS GRAFICAS POR MES DE LAS ENCUESTAS
+
+
+
+
+
+
+        return view ('admin.gestionar_encuestas', compact('encuestas', 'departamentos', 'resultado_encuestas'));
 
     }
 

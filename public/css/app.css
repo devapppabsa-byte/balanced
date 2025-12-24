@@ -109,7 +109,16 @@ body{
   right: 10px;
   padding: 10px;
   font-size: 10px;
-  border-radius: 100px;
+
+}
+
+.flotante2{
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  padding: 10px;
+  font-size: 10px;
+
 }
 
 

@@ -90,7 +90,7 @@
                         @forelse ($encuestas as $encuesta)
                             <tr>
                                 <td>
-                                    <a href="{{route('encuesta.index.user', ['cliente' => $cliente->id, 'encuesta' => $encuesta->id]}}" data-mdb-tooltip-init title="Detalles de {{$encuesta->nombre}}" class="text-decoration-none text-dark fw-bold">
+                                    <a href="{{route('encuesta.index.user', $encuesta->id)}}" data-mdb-tooltip-init title="Detalles de {{$encuesta->nombre}}" class="text-decoration-none text-dark fw-bold">
                                         {{$encuesta->nombre}}
                                     </a>
                                     <p>

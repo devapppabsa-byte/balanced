@@ -57,6 +57,7 @@ class adminController extends Controller
 
     public function agregar_usuario(Request $request){
     
+
         
         $request->validate([
             'nombre_usuario' => 'required',
@@ -75,7 +76,8 @@ class adminController extends Controller
             'puesto' => $request->puesto_usuario,
             'planta' => $request->planta,
             'password' => $request->password_usuario,
-            'id_departamento' => $request->departamento
+            'id_departamento' => $request->departamento,
+            'tipo_usuario' => $request->tipo_usuario
         ]);
 
 

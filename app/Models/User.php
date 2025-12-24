@@ -24,6 +24,7 @@ class User extends Authenticatable
         'puesto',
         'planta',
         'id_departamento',
+        'tipo_usuario'
         
     ];
 

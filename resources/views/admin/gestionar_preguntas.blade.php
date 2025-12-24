@@ -2,9 +2,15 @@
 @section('title', 'Encuesta')
     
 @section('contenido')
-<button class="btn btn-danger flotante btn-lg " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico">
-    <i class="fa-solid fa-chart-pie fa-4x "></i>
+<button class="btn btn-danger flotante btn-lg" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico">
+   <h6 class="mt-2">
+        <i class="fa fa-users"></i>
+       Graficas por usuario
+   </h6> 
 </button>
+
+
+
 
 
 <div class="container-fluid">
@@ -341,6 +347,11 @@
 
 
 
+
+
+
+
+
 {{--Aqui van a estar los ciclos que me generalk los modales--}}
 
 @forelse ($preguntas as $pregunta)
@@ -481,13 +492,6 @@ new Chart(ctx, {
 
 
 
-
-
-
-
-
-
-
 <script>
 
 
@@ -582,6 +586,33 @@ new Chart(ctxlinea, {
         }
     });
 </script>
+
+
+
+
+
+
+{{-- AQUI COMIENZAN LOS RAFICOS POR MES --}}
+
+
+
+
+
+
+
+{{-- AQUI COMIENZAN LOS RAFICOS POR MES --}}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
  

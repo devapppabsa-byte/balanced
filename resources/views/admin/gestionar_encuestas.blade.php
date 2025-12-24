@@ -53,6 +53,15 @@
 </div>
 
 
+<button class="btn btn-primary flotante2 btn-lg" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_mes">
+   <h6 class="mt-2">
+    <i class="fa fa-calendar"></i>
+       Graficas 
+   </h6> 
+</button>
+
+
+
 
 <div class="container-fluid">
     <div class="row justify-content-center">
@@ -63,6 +72,7 @@
                         <i class="fa-regular fa-newspaper"></i>
                         Encuestas
                     </h2>
+                    <p>Promedio total de los resultados contando clientes y meses.</p>
                 </div>
             </div>
             <div class="row">
@@ -247,7 +257,7 @@
                 </div>
 
                 <div class="col-12">
-                    <div class="form-group mt-3">
+                    <div class="form-group mt-3">100
                         <div class="form-outline" data-mdb-input-init>
                             <div class="form-outline" data-mdb-input-init>
                                 <input type="number" min="0" max="100" class="form-control w-100 {{ $errors->first('descripcion_cuestionario') ? 'is-invalid' : '' }}" id="ponderacion_encuesta" name="ponderacion_encuesta" required >
@@ -379,6 +389,336 @@
 @endforelse
 
 
+
+
+
+
+
+
+{{-- modal de la grafica de cumplimiento por mes de las encuestas --}}
+<div class="modal fade" id="grafico_mes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-xl modal-fullscreen-sm-down">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Gráfica</h5>
+        <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <div class="modal-body">
+            <div class="col-12" >
+                <!-- Tabs navs -->
+                <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
+                            <i class="fa-solid fa-chart-simple"></i>
+                            Grafico de Barras
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
+                            <i class="fa fa-chart-line"></i>
+                            Grafico de Linea
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
+                            <i class="fa fa-circle"></i>
+                            Grafico de Pie
+                        </a>
+                    </li>
+                </ul>
+                <!-- Tabs navs -->
+
+                <!-- Tabs content -->
+                <div class="tab-content" id="ex2-content">
+                    <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
+                        <canvas id="grafico_encuestas_barras_"></canvas>
+                    </div>
+                    <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+                        <canvas id="grafico_encuestas_lineas"></canvas>
+                    </div>
+                    <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
+                        <canvas id="grafico_encuestas_pie"></canvas>
+                    </div>
+                </div>
+                <!-- Tabs content -->
+
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+@endsection
+
+
+@section('scripts')
+    
+
+
+
+<script>
+
+const graficas_encuestas = @json($resultado_encuestas);
+
+if (!graficas_encuestas || graficas_encuestas.length === 0) {
+  console.warn('No hay datos para graficar');
+} else {
+
+  const meses = [
+    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+  ];
+
+  // 🔹 Labels globales (todos los meses usados)
+  const labelsRaw = [...new Set(
+    graficas_encuestas.flatMap(g => g.labels)
+  )].sort();
+
+  const labels = labelsRaw.map(fecha => {
+    const [year, month] = fecha.split("-");
+    return `${meses[month - 1]} ${year}`;
+  });
+
+  // 🔹 Colores automáticos
+  const colores = [
+    "rgba(54, 162, 235, 0.7)",
+    "rgba(255, 99, 132, 0.7)",
+    "rgba(75, 192, 192, 0.7)",
+    "rgba(255, 159, 64, 0.7)",
+    "rgba(153, 102, 255, 0.7)",
+    "rgba(201, 203, 207, 0.7)"
+  ];
+
+  // 🔹 Datasets por encuesta (alineados por mes)
+  const datasets = graficas_encuestas.map((g, index) => {
+    const dataAlineada = labelsRaw.map(mes => {
+      const pos = g.labels.indexOf(mes);
+      return pos !== -1 ? g.data[pos] * 10 : 0;
+    });
+
+    return {
+      label: g.encuesta,
+      data: dataAlineada,
+      backgroundColor: colores[index % colores.length],
+      borderColor: colores[index % colores.length].replace('0.7', '1'),
+      borderWidth: 1
+    };
+  });
+
+  const ctx = document
+    .getElementById('grafico_encuestas_barras_')
+    .getContext('2d');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: datasets
+    },
+options: {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top'
+    },
+    tooltip: {
+      callbacks: {
+        label: function(context) {
+          return `${context.dataset.label}: ${context.raw}%`;
+        }
+      }
+    }
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      max: 100,
+      ticks: {
+        callback: function(value) {
+          return value + '%';
+        }
+      }
+    }
+  }
+}
+
+  });
+}
+
+</script>
+
+
+
+<script>
+
+if (!graficas_encuestas || graficas_encuestas.length === 0) {
+  console.warn('No hay datos para graficar');
+} else {
+
+  const meses = [
+    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+  ];
+
+  // 🔹 Labels globales (todos los meses usados)
+  const labelsRaw = [...new Set(
+    graficas_encuestas.flatMap(g => g.labels)
+  )].sort();
+
+  const labels = labelsRaw.map(fecha => {
+    const [year, month] = fecha.split("-");
+    return `${meses[month - 1]} ${year}`;
+  });
+
+  // 🔹 Colores automáticos
+  const colores = [
+    "rgba(54, 162, 235, 1)",
+    "rgba(255, 99, 132, 1)",
+    "rgba(75, 192, 192, 1)",
+    "rgba(255, 159, 64, 1)",
+    "rgba(153, 102, 255, 1)",
+    "rgba(201, 203, 207, 1)"
+  ];
+
+  // 🔹 Datasets por encuesta (alineados por mes)
+  const datasets = graficas_encuestas.map((g, index) => {
+
+    const dataAlineada = labelsRaw.map(mes => {
+      const pos = g.labels.indexOf(mes);
+      return pos !== -1 ? g.data[pos] * 10 : null; // null rompe la línea
+    });
+
+    return {
+      label: g.encuesta,
+      data: dataAlineada,
+      borderColor: colores[index % colores.length],
+      backgroundColor: colores[index % colores.length],
+      borderWidth: 2,
+      tension: 0.3,
+      fill: false,
+      pointRadius: 4,
+      pointHoverRadius: 6
+    };
+  });
+
+  const ctx = document
+    .getElementById('grafico_encuestas_lineas')
+    .getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `${context.dataset.label}: ${context.raw}%`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {
+            callback: function(value) {
+              return value + '%';
+            }
+          }
+        }
+      }
+    }
+  });
+
+}
+</script>
+
+
+
+<script>
+
+
+
+if (!graficas_encuestas || graficas_encuestas.length === 0) {
+  console.warn('No hay datos para graficar');
+} else {
+
+  // 🔹 Obtener el último mes global
+  const labelsRaw = [...new Set(
+    graficas_encuestas.flatMap(g => g.labels)
+  )].sort();
+
+  const ultimoMes = labelsRaw[labelsRaw.length - 1];
+
+  // 🔹 Datos del pie (una rebanada por encuesta)
+  const labelsPie = [];
+  const dataPie = [];
+
+  graficas_encuestas.forEach(g => {
+    const pos = g.labels.indexOf(ultimoMes);
+    if (pos !== -1) {
+      labelsPie.push(g.encuesta);
+      dataPie.push(g.data[pos] * 10); // a %
+    }
+  });
+
+  // 🔹 Colores
+  const colores = [
+    "rgba(54, 162, 235, 0.8)",
+    "rgba(255, 99, 132, 0.8)",
+    "rgba(75, 192, 192, 0.8)",
+    "rgba(255, 159, 64, 0.8)",
+    "rgba(153, 102, 255, 0.8)",
+    "rgba(201, 203, 207, 0.8)"
+  ];
+
+  const ctx = document
+    .getElementById('grafico_encuestas_pie')
+    .getContext('2d');
+
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: labelsPie,
+      datasets: [{
+        data: dataPie,
+        backgroundColor: colores.slice(0, labelsPie.length),
+        borderColor: '#fff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'right'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `${context.label}: ${context.raw}%`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+}
+
+
+
+</script>
 
 
 

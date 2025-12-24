@@ -371,14 +371,58 @@ class userController extends Controller
     }
 
 
-    public function show_respuestas_cliente(Cliente $cliente, Encuesta $encuesta){
+    // public function show_respuestas_cliente(Cliente $cliente, Encuesta $encuesta){
 
+
+    //     $existe = ClienteEncuesta::where('id_encuesta', $encuesta->id)->get();
+        
+    //     //Esto me trae todas las preguntas de la encuesta con sus respuestas 
+    //     $preguntas = Pregunta::with('respuestas')->where('id_encuesta', $encuesta->id)->get();
+
+
+    //     //me ayuda a agregar los clientes que ya respondieron las preguntas
+    //     $cliente_arr = [];
+    //     foreach($existe as $cliente ){
+    //         array_push($cliente_arr, $cliente->id_cliente);
+    //     }
+    //     //los clientes que ya contestaron la encuesta.
+    //     $clientes = Cliente::whereIn('id', $cliente_arr)->get();
+
+
+
+
+    //     //DATOS PARA LA GRAFICA DE LA ENCUESTA
+    //     $resultados = Respuesta::join('preguntas', 'respuestas.id_pregunta', '=', 'preguntas.id')
+    //             ->join('clientes', 'respuestas.id_cliente', '=', 'clientes.id')
+    //             ->where('preguntas.id_encuesta', $encuesta->id)
+    //             ->where('preguntas.cuantificable', 1)
+    //             ->groupBy('clientes.id', 'clientes.nombre')
+    //             ->select(
+    //                 'clientes.nombre as cliente',
+    //                 DB::raw('AVG(respuestas.respuesta) as puntuacion')
+    //             )
+    //             ->get();
+
+    //         $labels  = $resultados->pluck('cliente');
+    //         $valores = $resultados->pluck('puntuacion')->map(fn($v) => round($v, 2));
+    //     //DATOS PARA LA HGRAFICA DE LA ENCUESTA
+                
+
+
+
+    //     return view('user.detalle_encuesta', compact('encuesta', 'preguntas', 'existe', 'clientes', 'labels', 'valores'));
+
+
+    // }
+
+
+    public function show_respuestas_usuario(Cliente $cliente, Encuesta $encuesta){
 
         $clienteId = $cliente->id;
         $encuestaId = $encuesta->id;
 
 
-       return $preguntas = Pregunta::with(['respuestas' => function ($q) use ($clienteId) {
+        $preguntas = Pregunta::with(['respuestas' => function ($q) use ($clienteId) {
                 $q->where('id_cliente', $clienteId);
             }])
             ->where('id_encuesta', $encuestaId)
@@ -386,12 +430,11 @@ class userController extends Controller
             ->get();
 
 
-
+        //se necesitan las respuestas de las encuestas, es decir, consultar las preguntas con su respuesta, todo estom vendra de la tabla auxiliar.
+        return view("admin.respuestas_cliente_encuestas", compact('preguntas', 'cliente'));
 
 
     }
-
-
 
 
 

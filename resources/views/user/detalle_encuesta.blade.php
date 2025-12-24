@@ -58,6 +58,9 @@
 </div> 
 
 
+<button class="btn btn-danger flotante btn-lg " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico">
+    <i class="fa-solid fa-chart-pie fa-4x "></i>
+</button>
 
 
 
@@ -152,7 +155,7 @@
                                                 Ver Respuestas
                                             </a>
                                         </td>
-                                    
+
 
                                 </tr>
                             @empty
@@ -493,11 +496,10 @@ new Chart(ctx, {
 
 <script>
 
+const valoresPorcentaje = valores.map(v => v * 10);
 
-
-
-const coloresPuntos = valores.map(v =>
-    v < minimo ? '#e74c3c' : '#2ecc71'
+const coloresPuntos = valoresPorcentaje.map(v =>
+    v < minimo * 10 ? '#e74c3c' : '#2ecc71'
 );
 
 const ctxlinea = document.getElementById('chartLinea').getContext('2d');
@@ -507,8 +509,8 @@ new Chart(ctxlinea, {
     data: {
         labels: etiquetas,
         datasets: [{
-            label: 'Puntuación promedio por cliente',
-            data: valores,
+            label: 'Puntuación promedio por cliente (%)',
+            data: valoresPorcentaje,
             borderColor: '#2980b9',
             backgroundColor: 'rgba(52, 152, 219, 0.15)',
             fill: true,
@@ -521,23 +523,19 @@ new Chart(ctxlinea, {
     },
     options: {
         responsive: true,
-        plugins: {
-            title: {
-                display: true,
-                text: 'Resultados de la encuesta por cliente'
-            }
-        },
         scales: {
             y: {
                 beginAtZero: true,
-                max: 10,
+                max: 100,
                 ticks: {
-                    stepSize: 1
+                    callback: value => value + '%'
                 }
             }
         }
     }
 });
+
+
 </script>
 
 <script>
@@ -553,7 +551,7 @@ new Chart(ctxlinea, {
     const ctxPie = document.getElementById('chartPie').getContext('2d');
 
     new Chart(ctxPie, {
-        type: 'doughnut',
+        type: 'pie',
         data: {
             labels: etiquetas,
             datasets: [{

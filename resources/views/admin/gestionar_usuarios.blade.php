@@ -181,7 +181,7 @@
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="form-group mt-3">
-                        <select class="form-control form-control-lg" id="">
+                        <select class="form-control form-control-lg" name="tipo_usuario" id="">
                             <option value="" disabled selected>Tipo de usuarios</option>
                             <option value="principal">Principal</option>
                             <option value="lecura">Solo lectura</option>
