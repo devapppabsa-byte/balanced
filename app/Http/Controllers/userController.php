@@ -11,6 +11,10 @@ use App\Models\Departamento;
 use App\Models\Indicador;
 use App\Models\Proveedor;
 use App\Models\Norma;
+use App\Models\ClienteEncuesta;
+use App\Models\Pregunta;
+use App\Models\Cliente;
+use App\Models\Respuesta;
 use App\Models\Encuesta;
 use App\Models\IndicadorLleno;
 use App\Models\ApartadoNorma;
@@ -180,77 +184,40 @@ class userController extends Controller
 
 
 
- $resultado_encuestas = DB::table(DB::raw('
-    (
-        SELECT
-            e.id AS encuesta_id,
-            e.nombre AS encuesta,
-            DATE_FORMAT(r.created_at, "%Y-%m") AS mes,
-            r.id_cliente,
-            AVG(r.respuesta) AS promedio_cliente
-        FROM respuestas r
-        JOIN preguntas p ON p.id = r.id_pregunta
-        JOIN encuestas e ON e.id = p.id_encuesta
-        WHERE e.id_departamento = '.$id_dep.'
-          AND (p.cuantificable = 1 OR p.cuantificable = "on")
-        GROUP BY e.id, r.id_cliente, mes
-    ) AS t
-'))
-->select(
-    'encuesta_id',
-    'encuesta',
-    'mes',
-    DB::raw('ROUND(AVG(promedio_cliente),2) AS total')
-)
-->groupBy('encuesta_id', 'encuesta', 'mes')
-->orderBy('mes')
-->get()
-->groupBy('encuesta')
-->map(function ($items, $encuesta) {
-    return [
-        'encuesta' => $encuesta,
-        'labels'   => $items->pluck('mes')->values(),
-        'data'     => $items->pluck('total')->values()
-    ];
-})
-->values();
-
-
-
-//PARA LA GRAFICA DE LAS ENCUESTAS
-    // $resultado_encuestas = DB::table('encuestas as e')
-    // ->join('preguntas as p', 'p.id_encuesta', '=', 'e.id')
-    // ->leftJoin('respuestas as r', 'r.id_pregunta', '=', 'p.id')
-    // ->where('e.id_departamento', $id_dep)
-    // ->where(function ($q) {
-    //     $q->where('p.cuantificable', 'on')
-    //       ->orWhere('p.cuantificable', 1);
-    // })
-    // ->select(
-    //     'e.id',
-    //     'e.nombre as encuesta',
-    //     DB::raw("DATE_FORMAT(r.created_at, '%Y-%m') as mes"),
-    //     DB::raw('COALESCE(AVG(r.respuesta),0) as total')
-    // )
-    // ->groupBy('e.id', 'e.nombre', 'mes')
-    // ->orderBy('mes')
-    // ->get()
-    // ->groupBy('encuesta')
-    // ->map(function ($items, $encuesta) {
-    //     return [
-    //         'encuesta' => $encuesta,
-    //         'labels'   => $items->pluck('mes')->filter()->values(),
-    //         'data'     => $items->pluck('total')->values()
-    //     ];
-    // })
-    // ->values();
-
-    //PARA LAS GRAFICAS DE LAS ENCUESTAS
-
-
-    //de aqui se van a sacar las graficas de las encuestas a los clientes
-
-
+        $resultado_encuestas = DB::table(DB::raw('
+            (
+                SELECT
+                    e.id AS encuesta_id,
+                    e.nombre AS encuesta,
+                    DATE_FORMAT(r.created_at, "%Y-%m") AS mes,
+                    r.id_cliente,
+                    AVG(r.respuesta) AS promedio_cliente
+                FROM respuestas r
+                JOIN preguntas p ON p.id = r.id_pregunta
+                JOIN encuestas e ON e.id = p.id_encuesta
+                WHERE e.id_departamento = '.$id_dep.'
+                AND (p.cuantificable = 1 OR p.cuantificable = "on")
+                GROUP BY e.id, r.id_cliente, mes
+            ) AS t
+        '))
+        ->select(
+            'encuesta_id',
+            'encuesta',
+            'mes',
+            DB::raw('ROUND(AVG(promedio_cliente),2) AS total')
+        )
+        ->groupBy('encuesta_id', 'encuesta', 'mes')
+        ->orderBy('mes')
+        ->get()
+        ->groupBy('encuesta')
+        ->map(function ($items, $encuesta) {
+            return [
+                'encuesta' => $encuesta,
+                'labels'   => $items->pluck('mes')->values(),
+                'data'     => $items->pluck('total')->values()
+            ];
+        })
+        ->values();
 
         return view('user.perfil_user', compact('indicadores', 'ponderacion', 'labels_indicadores', 'data_indicadores', 'resultado_normas', 'resultado_encuestas'));
 
@@ -340,6 +307,95 @@ class userController extends Controller
 
 
     }
+
+
+
+
+    public function encuesta_clientes_user(){
+        
+         $id_user = Auth::user()->id;
+         $id_depto = Auth::user()->departamento->id;
+         $encuestas = Encuesta::where('id_departamento', $id_depto)->get();
+
+
+
+         return view('user.encuestas_clientes', compact('encuestas'));
+
+
+    }
+
+
+    public function encuesta_index_user(Encuesta $encuesta){
+
+        
+         
+        //checo si la encuesta ya fue contestada
+        $existe = ClienteEncuesta::where('id_encuesta', $encuesta->id)->get();
+        
+        //Esto me trae todas las preguntas de la encuesta con sus respuestas 
+        $preguntas = Pregunta::with('respuestas')->where('id_encuesta', $encuesta->id)->get();
+
+
+        //me ayuda a agregar los clientes que ya respondieron las preguntas
+        $cliente_arr = [];
+        foreach($existe as $cliente ){
+            array_push($cliente_arr, $cliente->id_cliente);
+        }
+        //los clientes que ya contestaron la encuesta.
+        $clientes = Cliente::whereIn('id', $cliente_arr)->get();
+
+
+
+
+        //DATOS PARA LA GRAFICA DE LA ENCUESTA
+       $resultados = Respuesta::join('preguntas', 'respuestas.id_pregunta', '=', 'preguntas.id')
+                ->join('clientes', 'respuestas.id_cliente', '=', 'clientes.id')
+                ->where('preguntas.id_encuesta', $encuesta->id)
+                ->where('preguntas.cuantificable', 1)
+                ->groupBy('clientes.id', 'clientes.nombre')
+                ->select(
+                    'clientes.nombre as cliente',
+                    DB::raw('AVG(respuestas.respuesta) as puntuacion')
+                )
+                ->get();
+
+            $labels  = $resultados->pluck('cliente');
+            $valores = $resultados->pluck('puntuacion')->map(fn($v) => round($v, 2));
+        //DATOS PARA LA HGRAFICA DE LA ENCUESTA
+
+
+
+        return view('user.detalle_encuesta', compact('resultados', 'existe', 'encuesta', 'preguntas', 'clientes', 'labels', 'valores'));
+
+
+    }
+
+
+    public function show_respuestas_cliente(Cliente $cliente, Encuesta $encuesta){
+
+
+        $clienteId = $cliente->id;
+        $encuestaId = $encuesta->id;
+
+
+       return $preguntas = Pregunta::with(['respuestas' => function ($q) use ($clienteId) {
+                $q->where('id_cliente', $clienteId);
+            }])
+            ->where('id_encuesta', $encuestaId)
+            ->where('cuantificable', 1)
+            ->get();
+
+
+
+
+
+    }
+
+
+
+
+
+
 
     public function cerrar_session(Request $request){
 

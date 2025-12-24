@@ -122,25 +122,56 @@ use Carbon\Carbon;
                         
                         {{-- Se hace la consulta de la informaion del indiacor lleno, y se hace la condicional  para saber si esta el campo final --}}
                         @if ($item->final === "on")
-                        <div class="col-8  fw-bold  rounded-5 border zoom_link {{($indicador->meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3">
+                            <div class="col-8  fw-bold  rounded-5 border zoom_link {{($indicador->meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3">
+                                
+                                
+                                <h5 class="text-center ">
+                                    <i class="fa {{($indicador->meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
+                                    {{ $item['nombre_campo'] }}: 
+                                </h5> 
+                                <h2 class="text-center">{{ $item['informacion_campo'] }} </h2>
                             
-                             
-                            <h5 class="text-center ">
-                                <i class="fa {{($indicador->meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
-                                {{ $item['nombre_campo'] }}: 
-                            </h5> 
-                            <h2 class="text-center">{{ $item['informacion_campo'] }} </h2>
-                        
-                        </div>
+                            </div>
+
                         @else
-                        <div class="col-12">
-                            <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
-                            <span class="h3">{{ $item['informacion_campo'] }}</span> <br>                
-                        </div>
+
+                        @if ($item->final === 'comentario')
+
+                            <button class="btn btn-light btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#com{{$item->id}}">
+                                <i class="fa fa-comment"></i>
+                                Comentario
+                            </button>
+                            {{-- jajajaja vete alv, voy a tener que poner el modal aqui jajaja --}}
+
+                            <div class="modal fade" id="com{{$item['id']}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+                                <div class="modal-dialog  modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary py-4">
+                                            <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
+                                            <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
+                                        </div>
+                                        <div class="modal-body py-4 bg-light">
+                                            <div class="col-12  mx-2 bg-white shadow-sm p-3 mt-4" >
+                                                <b class="h3">Comentario: </b>
+                                                <p class="h5 mt-2">
+                                                    {{$item['informacion_campo']}} 
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        @else
+                            
+                            <div class="col-11">
+                                <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
+                                <span class="h3">{{ $item['informacion_campo'] }}</span> <br>                
+                            </div>
+
                         @endif
-
-
-
+                        @endif
                         @endforeach
                         
                     </div>
@@ -202,6 +233,12 @@ use Carbon\Carbon;
                             </h2>
                         </div>
                     @endforelse
+                    @if ($campos_vacios)
+                        <div class="col-sm-10 col-md-8 col-lg-8">
+                            <label>Comentario dle Indicador: </label>
+                            <textarea type="text" name="comentario" placeholder="Comentario" class="form-control"></textarea>
+                        </div>
+                    @endif
                 </form>
 
                 <div class="row justify-content-center bg-light  rounded p-4">

@@ -44,7 +44,7 @@
                 <table class="table border shadow-sm">
                     <thead class="table-secondary border">
                         <th scope="col">Pregunta</th>
-                        <th scope="col">Respuesta</th>
+                        <th scope="col">Calificación</th>
                       
                     </thead>
                     <tbody class="">
@@ -55,13 +55,13 @@
 
                                         @if ($pregunta->cuantificable === 1 )
                                             <td >
-                                                {{ $respuesta->respuesta}}
+                                                {{ $respuesta->respuesta}} Puntos
                                                 <input type="hidden" value="{{$respuesta->respuesta}}" class="sumar">
                                             </td>
                                             
                                         @else
                                             <td>
-                                                {{$respuesta->respuesta}}
+                                                {{$respuesta->respuesta}} 
                                             </td>
                                         @endif
                                     @endforeach
@@ -128,7 +128,7 @@
     //Esto me ayuda a sacar el porcentaje de las respuestas gardadas por el usurio
     puntuacion_maxima.textContent = celdas.length*10;
     puntuacion_obtenida.textContent = suma;
-    cumplimiento.textContent =  ((Number(puntuacion_obtenida.textContent) / Number(puntuacion_maxima.textContent)) * 100 );  
+    cumplimiento.textContent =  ((Number(puntuacion_obtenida.textContent) / Number(puntuacion_maxima.textContent)) * 100 ) + " %" ;
 
 </script>
 @endsection

@@ -54,13 +54,6 @@ class encuestaController extends Controller
 
 
 
-
-
-
-
-
-
-
         return view('admin.gestionar_preguntas', compact('encuesta', 'preguntas', 'existe', 'clientes', 'labels', 'valores'));
 
     }
@@ -216,11 +209,6 @@ class encuestaController extends Controller
 
 
 
-    public function cuestionario_contestado(){
-
-
-
-    }
 
 
     public function encuestas_show_admin(){

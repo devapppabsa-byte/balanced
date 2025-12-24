@@ -38,6 +38,10 @@ Route::post('/perfil_usuario/cumplimiento_normativo/registro_cumplimiento_normat
 Route::get('/perfil_usuario/cumplimiento_normativo/registro_cumplimiento_normativo/registro_actividad/evidencias/{apartado}', [apartadoNormaController::class, 'ver_evidencia_cumplimiento_normativo'])->name('ver.evidencia.cumplimiento.normativo');
 
 
+// esta es la ruta del las evaluaciondes de los clientes
+Route::get('/perfil_usuario/encuestas_clientes/', [userController::class, 'encuesta_clientes_user'])->name('encuesta.clientes.user');
+Route::get('/perfil_usuario/encuestas_clientes/encuesta/{encuesta}', [userController::class, 'encuesta_index_user'])->name('encuesta.index.user');
+Route::get('/perfil_usuario/cuencuestas_clientes/respuestas/{encuesta}', [userController::class, 'show_respuestas_cliente'])->name('show.respuestas.usuario');
 
 
 // aqui van a estar las rutas para el fucking llenado de indicadores

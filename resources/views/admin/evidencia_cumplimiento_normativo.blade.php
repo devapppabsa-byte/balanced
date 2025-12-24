@@ -62,6 +62,7 @@
             <h2>
                 <i class="fa-solid fa-photo-film"></i>
                 Evidencias del cumplimiento normativo
+                {{$cumplimientos}}
             </h2>
         </div>
     </div>

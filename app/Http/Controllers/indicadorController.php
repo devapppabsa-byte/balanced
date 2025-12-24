@@ -896,8 +896,6 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
 
         //Aqui es donde se desarrollara la logica, vamos a ver como.
-        
-        
         //se recorren los campos_calculados encontrados en el indicador
         foreach($campos_calculados_indicador as $index_calculado => $campo_calculado) {
             
@@ -908,7 +906,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
             $campos_vacios_encontrados = [];
             $campos_precargados_encontrados = [];
             $campos_calculados_encontrados = [];
-            
+                        
+
             
             //arrays que me ayudan a guardar la info de los campos encontrados
             foreach($campo_calculado->campo_involucrado as $index_involucrado => $campo_involucrado){
@@ -1170,6 +1169,26 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
    
         }
+
+
+
+
+        //DEsde aqui se guarda el campo del comenatario
+        if($request->comentario != null){
+
+            IndicadorLleno::create([
+
+                'nombre_campo' => "comentario",
+                'informacion_campo' => $request->comentario,
+                'id_indicador' => $indicador->id,
+                'id_movimiento' => $id_movimiento,
+                'final' => 'comentario'
+
+            ]);
+        }
+        //Desde aqui se guarda el campo del comentario
+
+
         
         return back()->with('success', 'El indicador fue rellenado ');
 

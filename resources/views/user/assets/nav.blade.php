@@ -21,4 +21,12 @@
         </a>
     </div>
 
+    {{-- ponerla solo visible para atencio al clientes --}}
+    <div class="col-auto  zoom_link {{ request()->routeIs('encuesta.clientes.user') ? 'link_selected' : '' }}">
+        <a href="{{route("encuesta.clientes.user")}}" class="btn btn-transparent text-white text-decoration-none fw-bold ">
+            <i class="fa-solid fa-users mx-1"></i>
+            Encuestas a Clientes
+        </a>
+    </div>
+
 </div>

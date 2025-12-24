@@ -69,6 +69,9 @@
                         <i class="fa-regular fa-file-lines"></i>
                         Apartados de {{$norma->nombre}}
                     </h2>
+                    <p style="text-align: justify">
+                        {{$norma->descripcion}}
+                    </p>
                     @if (session('eliminado'))
                         <h5 class="">
                             <i class="fa fa-exclamation-circle text-danger"></i>

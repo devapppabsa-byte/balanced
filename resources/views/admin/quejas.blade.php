@@ -101,7 +101,7 @@
                                                         </div>
                                                     </div>
                                                 @empty
-                                                    
+                                                    <i class="fa-regular fa-comment"> No hay quejas ni sugerencias.</i>
                                                 @endforelse
                                             </div>
                                         </div>

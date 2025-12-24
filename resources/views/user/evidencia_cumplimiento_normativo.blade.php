@@ -63,8 +63,10 @@
             <div class="col-12 text-center">
                 <h2>
                     <i class="fa-solid fa-camera-retro"></i>
-                    Evidencias del cumplimiento normativo
+                    Evidencias
                 </h2>
+                <h3>{{$apartado->apartado}}</h3>
+                <p>{{$apartado->descripcion}}</p>
             </div>
             <div class="col-12 mt-5">
                 <div class="row justify-content-center">

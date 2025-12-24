@@ -138,6 +138,10 @@ class apartadoNormaController extends Controller
 
         $cumplimientos  = CumplimientoNorma::with('evidencia_cumplimiento_norma')->where('id_apartado_norma', $apartado->id)->orderBy('created_at', 'desc')->get();
 
+
+        
+       
+
         return view('user.evidencia_cumplimiento_normativo', compact('apartado', 'cumplimientos'));
 
 
@@ -147,6 +151,8 @@ class apartadoNormaController extends Controller
     public function ver_evidencia_cumplimiento_normativo_admin(ApartadoNorma $apartado){
 
         $cumplimientos  = CumplimientoNorma::with('evidencia_cumplimiento_norma')->where('id_apartado_norma', $apartado->id)->orderBy('created_at', 'desc')->get();
+
+        
 
         return view('admin.evidencia_cumplimiento_normativo', compact('apartado', 'cumplimientos'));
 
