@@ -105,7 +105,7 @@
 
 
 
-        <div class="col-8 mt-5">
+        <div class="col-10 mt-5">
             <!-- Tabs navs -->
             <ul class="nav nav-tabs  bg-white border  rounded mb-2 justify-content-center" id="ex1" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -238,6 +238,8 @@
                                                 <thead class="table-primary text-white">
                                                     <tr>
                                                         <th>Nombre</th>
+                                                        <th>Autor</th>
+                                                        <th>Creado</th>
                                                         <th>Acciones</th>
                                                     </tr>
                                                 </thead>
@@ -251,6 +253,12 @@
                                                         {{$indicador->nombre}}
                                                     </a>
                                                 </td>
+
+                                                <td>
+                                                    {{$indicador->creador}}
+                                                </td>
+
+                                                <td>{{$indicador->created_at}}</td>
 
 
                                                 <td class="">
@@ -322,6 +330,8 @@
                                                 <thead class="table-primary text-white">
                                                     <tr>
                                                         <th>Nombre</th>
+                                                        <th>Autor</th>
+                                                        <th>Creado</th>
                                                         <th>Acciones</th>
                                                     </tr>
                                                 </thead>
@@ -334,6 +344,14 @@
                                                     <a href="{{route('apartado.norma', $norma->id)}}" class="">
                                                         {{$norma->nombre}}
                                                     </a>
+                                                </td>
+
+                                                <td>
+                                                    {{$norma->autor}}
+                                                </td>
+
+                                                <td>
+                                                    {{$norma->created_at}}
                                                 </td>
 
 
@@ -408,6 +426,8 @@
                                                     <tr>
                                                     <th>Nombre</th>
                                                     <th>Descripción</th>
+                                                    <th>Autor</th>
+                                                    <th>Creado</th>
                                                     <th>Acciones</th>
                                                     </tr>
                                                 </thead>
@@ -423,6 +443,14 @@
                                                 </td>
                                                 <td>
                                                     {{$encuesta->descripcion}}
+                                                </td>
+
+                                                <td>
+                                                    {{$encuesta->autor}}    
+                                                </td>
+
+                                                <td>
+                                                    {{$encuesta->created_at}}
                                                 </td>
             
                                                 <td class="">
@@ -518,17 +546,17 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-5 mt-4 border-left">
                     <div class="row d-flex align-items-center justify-content-center">
                         <div class="col-12">
-                            <h6>% Porcentaje de cumplimiento</h6>
+                            <h6>Meta</h6>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <input type="number" min="1" class="form-control" name="meta_minima" placeholder="% Minimo" required>
+                                <input type="number" min="1" class="form-control" name="meta_minima" placeholder="Minimo" required>
                             </div>
                         </div>
                         
                         <div class="col-6">
                             <div class="form-group">
-                                <input type="number" min="1" class="form-control" name="meta_esperada" placeholder="% Máximo"  required>
+                                <input type="number" min="1" class="form-control" name="meta_esperada" placeholder="Máximo"  required>
                             </div>
                         </div>
 
@@ -600,14 +628,14 @@
                     <div class="row d-flex align-items-center justify-content-center">
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="">Meta Minima %</label>
+                                <label for="">Meta Minima</label>
                                 <input type="number" min="1" value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="% Minimo" required>
                             </div>
                         </div>
                         
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="">Meta esperada %</label>
+                                <label for="">Meta esperada</label>
                                 <input type="number" min="1" class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder="% Máximo"  required>
                             </div>
                         </div>

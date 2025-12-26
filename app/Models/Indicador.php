@@ -17,7 +17,8 @@ class Indicador extends Model
         'planta_1', 
         'planta_2', 
         'planta_3',
-        'ponderacion'
+        'ponderacion',
+        'creador'
     ];
 
 

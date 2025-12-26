@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string("ponderacion");
             $table->string("meta_minima");
             $table->string("meta_esperada");
+            $table->string("autor");
 
             $table->foreign("id_departamento")
                   ->references('id')

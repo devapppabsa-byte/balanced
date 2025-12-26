@@ -41,11 +41,13 @@
                 @endphp
             @foreach($indicador->indicadorLleno as $indicador_lleno)
 
-                @if ($indicador_lleno->final)
+                @if ($indicador_lleno->final == 'on')
+
                     @php
                         $contador++;
                         $suma = $suma + $indicador_lleno->informacion_campo;
                     @endphp
+
                 @endif
 
 
@@ -89,13 +91,13 @@
             @else
 
                 <div class="col-10 col-sm-10 col-md-6 col-lg-3 my-3">
-                    <div class="card text-white bg-danger shadow-2-strong">
+                    <div class="card text-white bg-dark shadow-2-strong">
                         <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-7 ">
-                                    <h5 class="card-title fw-bold display-6 x">
-                                        Aún no se tienen registros en este indicador.
+                                    <h5 class="card-title fw-bold  x">
+                                        Sin registros aún.
                                     </h5>
                                     <p class="card-text fw-bold">{{$indicador->nombre}}</p>
                                 </div>
@@ -214,7 +216,7 @@
     </div>
 
 
-    @if ($encuestas->isEmpty() && $normas->isEmpty()  &&  $indicadores->isEmpty() )
+    @if ($encuestas->isEmpty() && $resultado_normas->isEmpty()  &&  $indicadores->isEmpty() )
         <div class="row mt-5 justify-content-center">
             <div class="col-9 p-5 text-center bg-white shadow shadow-sm border">
                 <h4>

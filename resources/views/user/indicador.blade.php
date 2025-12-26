@@ -13,7 +13,7 @@ use Carbon\Carbon;
 
 @endphp
 
-<div class="container-fluid">
+<div class="container-fluid sticky-top">
     <div class="row bg-primary d-flex align-items-center">
 
         <div class="col-8 col-sm-8 col-md-6 col-lg-9  py-4  py-4 ">
@@ -164,11 +164,25 @@ use Carbon\Carbon;
 
 
                         @else
-                            
+
+                        @if ($item->final === 'registro')
+                        
+                            <div class="col-11 p-3 mb-3 bg-light border  rounded ">
+                                <small class="fw-bold">{{ $item['nombre_campo'] }}: </small> <br>
+                                <small class="text-center"> <b>{{ $item['informacion_campo'] }} </b>- {{ $item['created_at'] }} </small> 
+                               
+                                <br>                
+                            </div>
+
+                        @else
+
                             <div class="col-11">
                                 <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
                                 <span class="h3">{{ $item['informacion_campo'] }}</span> <br>                
                             </div>
+                            
+                        @endif
+                            
 
                         @endif
                         @endif
@@ -234,8 +248,8 @@ use Carbon\Carbon;
                         </div>
                     @endforelse
                     @if ($campos_vacios)
-                        <div class="col-sm-10 col-md-8 col-lg-8">
-                            <label>Comentario dle Indicador: </label>
+                        <div class="col-11">
+                            <label>Comentario del Indicador: </label>
                             <textarea type="text" name="comentario" placeholder="Comentario" class="form-control"></textarea>
                         </div>
                     @endif

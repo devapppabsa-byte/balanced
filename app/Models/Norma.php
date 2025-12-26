@@ -7,7 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Norma extends Model
 {
     protected $table= "norma";
-    protected $fillable = ['nombre', 'descripcion','ponderacion', 'id_departamento', 'meta_minima', 'meta_esperada'];
+    protected $fillable = [
+        'nombre', 
+        'descripcion',
+        'ponderacion', 
+        'id_departamento', 
+        'meta_minima', 
+        'meta_esperada',
+        'autor'
+    ];
 
 
     public function apartados(){

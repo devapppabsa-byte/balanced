@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Http\Controllers\Controller;
 use App\Models\CampoCalculado;
 use App\Models\CampoForaneo;
@@ -28,6 +27,8 @@ class indicadorController extends Controller
 
 
     public function agregar_indicadores_index(Departamento $departamento){
+
+   
 
         $indicadores = Indicador::where('id_departamento', $departamento->id)->get();
         $usuarios = User::with('departamento')->where('id_departamento', $departamento->id)->get();
@@ -75,12 +76,16 @@ class indicadorController extends Controller
 
     public function agregar_indicadores_store(Request $request, Departamento $departamento){
     
+        $nombre_admin = Auth::guard('admin')->user()->nombre;
+        $puesto = Auth::guard('admin')->user()->puesto;
+
 
         $request->validate([
 
             'nombre_indicador' => 'required'
 
         ]);
+
 
 
         $indicador = new Indicador();
@@ -93,6 +98,7 @@ class indicadorController extends Controller
         if ($indicador->planta_1) $request->planta_1;
         if ($indicador->planta_2) $request->planta_2;
         if ($indicador->planta_3) $request->planta_3; 
+        $indicador->creador = $nombre_admin . ' - ' . $puesto;
         $indicador->save();
 
         
@@ -813,10 +819,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 //aui empieza el codigo para el llenado de indicadores
 public function llenado_informacion_indicadores(Indicador $indicador, Request $request){
 
-
- 
-
-
+    $nombre_usuario = auth()->user()->name;
     $year = Carbon::now()->year;
     $mes = Carbon::now()->month;
     $id_movimiento = str_replace(' ','',Carbon::now().'-'.rand(0, 50000000000)); //exagere un poquis, pero poatra que no de error
@@ -1171,7 +1174,19 @@ foreach($inputs_precargados as $index_precargados => $precargado){
         }
 
 
+        //AQUI ESTA EL CODIGO De la persona que gusrada el indicador
 
+        IndicadorLleno::create([
+
+                "nombre_campo" => 'Registro',
+                "informacion_campo" => $nombre_usuario,
+                "id_indicador" =>$indicador->id,
+                "id_movimiento" => $id_movimiento,
+                "final" => 'registro'
+
+
+        ]);
+        //AQUI ESTA EL CODIGO De la persona que gusrada el indicador        
 
         //DEsde aqui se guarda el campo del comenatario
         if($request->comentario != null){
@@ -1187,6 +1202,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
             ]);
         }
         //Desde aqui se guarda el campo del comentario
+
+
 
 
         

@@ -13,7 +13,7 @@
         <div class="col-6 text-end">
             <a href="{{route('admin.login.index')}}" class="btn btn-primary btn-lg">
                 <i  class="fa fa-user-tie mx-1"></i>
-                Adminnistrador
+                Administrador
             </a>
         </div>
     </div>

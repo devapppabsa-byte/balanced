@@ -26,7 +26,10 @@ class normaController extends Controller
 
 
     public function norma_store(Request $request, Departamento $departamento){
-        
+
+         $autor = Auth::guard('admin')->user()->nombre;
+         $puesto = Auth::guard('admin')->user()->puesto;
+
         $request->validate([
 
             "titulo_norma" => 'required|unique:norma,nombre',
@@ -44,7 +47,8 @@ class normaController extends Controller
             "id_departamento" => $departamento->id,
             "meta_minima" => $request->meta_minima_norma,
             "meta_esperada" => $request->meta_esperada_norma,
-            "ponderacion" => $request->ponderacion_norma
+            "ponderacion" => $request->ponderacion_norma,
+            "autor" => $autor." - ".$puesto,
 
         ]);
 

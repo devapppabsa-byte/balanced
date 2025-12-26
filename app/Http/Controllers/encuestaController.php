@@ -74,6 +74,8 @@ class encuestaController extends Controller
 
     public function encuesta_store(Request $request, Departamento $departamento){
 
+        $autor = auth()->guard('admin')->user()->nombre;
+        $puesto = auth()->guard('admin')->user()->puesto;
 
         
         $request->validate([
@@ -92,7 +94,8 @@ class encuestaController extends Controller
             "id_departamento" => $departamento->id,
             "ponderacion" => $request->ponderacion_encuesta,
             "meta_minima" => $request->meta_minima_encuesta,
-            "meta_esperada" => $request->meta_esperada_encuesta
+            "meta_esperada" => $request->meta_esperada_encuesta,
+            "autor" => $autor." - ".$puesto      
         ]);
 
 

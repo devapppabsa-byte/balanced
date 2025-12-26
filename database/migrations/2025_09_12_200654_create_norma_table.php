@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('meta_minima');
             $table->string('meta_esperada');
             $table->string("ponderacion");
+            $table->string('autor');
             $table->unsignedBigInteger('id_departamento');
             $table->foreign('id_departamento')->references('id')->on('departamentos')->onDelete('cascade');
             $table->timestamps();

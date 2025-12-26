@@ -16,13 +16,18 @@
     }
 </style>
 
-
+<button class="btn btn-primary btn-lg flotante"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
+   <h5 class="mt-2">
+       <i class="fa-solid fa-chart-pie"></i>
+           Grafico
+    </h5> 
+</button>
 
 <div class="container-fluid sticky-top">
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10 pt-2">
-            <h3 class="text-white league-spartan">Detalle del {{$indicador->nombre}}</h3>
+            <h3 class="text-white league-spartan">Detalle del  indicador:  {{$indicador->nombre}}</h3>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -118,10 +123,24 @@
 </div>
 
 
-    <div class="row justify-content-center">
+<div class="container-fluid">
+
+    <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center mt-4">
+        <div  class="col-12 mx-2 bg-white shadow-sm p-5">
+            
+            <div class="row justify-content-center">
+                
+                <div class="col-12">
+                    <h3><i class="fa fa-chart-simple"></i>
+                        Historico de llenado del Indicador
+                    </h3>
+                </div>
+
+
+                
                 @forelse($grupos as $movimiento => $items)
 
-                <div class="col-10 col-sm-5 col-md-5 col-lg-3  shadow-sm mx-4 border rounded mt-4 bg-white">
+                <div class="col-10 col-sm-5 col-md-5 col-lg-3  shadow-sm mx-4 border rounded mt-4">
                     @php
                         $fecha = Carbon::parse(explode('-', $movimiento)[0]);
                         Carbon::setLocale('es');
@@ -142,25 +161,73 @@
                         
                         {{-- Se hace la consulta de la informaion del indiacor lleno, y se hace la condicional  para saber si esta el campo final --}}
                         @if ($item->final === "on")
-                        <div class="col-8  fw-bold  rounded-5 border zoom_link {{($indicador->meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3">
+                            <div class="col-8  fw-bold  rounded-5 border zoom_link {{($indicador->meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3">
+                                
+                                
+                                <h5 class="text-center ">
+                                    <i class="fa {{($indicador->meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
+                                    {{ $item['nombre_campo'] }}: 
+                                </h5> 
+                                <h2 class="text-center">{{ $item['informacion_campo'] }} </h2>
                             
-                             
-                            <h5 class="text-center ">
-                                <i class="fa {{($indicador->meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
-                                {{ $item['nombre_campo'] }}: 
-                            </h5> 
-                            <h2 class="text-center">{{ $item['informacion_campo'] }} </h2>
-                        
-                        </div>
+                            </div>
+
                         @else
-                        <div class="col-12">
-                            <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
-                            <span class="h3">{{ $item['informacion_campo'] }}</span> <br>                
-                        </div>
+
+
+                        @if ($item->final === 'registro')
+                        
+                            <div class="col-11 p-3 mb-3 bg-light border  rounded ">
+                                <small class="fw-bold">{{ $item['nombre_campo'] }}: </small> <br>
+                                <small class="text-center"> <b>{{ $item['informacion_campo'] }} </b>- {{ $item['created_at'] }} </small> 
+                               
+                                <br>                
+                            </div>
+
+                        @else
+
+
+
+                        @if ($item->final === 'comentario')
+
+                            <button class="btn btn-light btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#com{{$item->id}}">
+                                <i class="fa fa-comment"></i>
+                                Comentario
+                            </button>
+                            {{-- jajajaja vete alv, voy a tener que poner el modal aqui jajaja --}}
+
+                            <div class="modal fade" id="com{{$item['id']}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+                                <div class="modal-dialog  modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary py-4">
+                                            <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
+                                            <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
+                                        </div>
+                                        <div class="modal-body py-4 bg-light">
+                                            <div class="col-12  mx-2 bg-white shadow-sm p-3 mt-4" >
+                                                <b class="h3">Comentario: </b>
+                                                <p class="h5 mt-2">
+                                                    {{$item['informacion_campo']}} 
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        @else
+
+                            <div class="col-11">
+                                <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
+                                <span class="h3">{{ $item['informacion_campo'] }}</span> <br>                
+                            </div>
+                            
                         @endif
+                            
 
-
-
+                        @endif
+                        @endif
                         @endforeach
                         
                     </div>
@@ -170,113 +237,81 @@
                 @empty
 
                 @endforelse
-    </div>
 
-
-    <div class="row  pb-5  mt-2 d-flex align-items-center justify-content-around">
-        
-
-        {{-- <div class="col-11 col-sm-10 col-md-9 col-lg-6 mt-5 shadow p-5 bg-white" >
-            <div class="col-auto ">
-                <h5 class="my-2">
-                    <i class="fa-solid fa-chart-simple"></i>
-                    Seguimiento del Indicador de Ventas
-                </h5>
-                <div class="table-responsive p-0 border shadow-sm ">
-                <table class="table">
-                    <thead class="table-primary">
-                    <tr>
-                        <th scope="col">Mes</th>
-                        <th scope="col">Toneladas Presupuestadas</th>
-                        <th scope="col">Toneladas Producidas</th>
-                        <th scope="col">Cumplimiento</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    <tr>
-                        <th scope="row">Enero</th>
-                        <td>4000</td>
-                        <td>3950</td>
-                        <td class="text-success fw-bold">98.75%</td>
-                    </tr>                    
-
-                    <tr>
-                        <th scope="row">Febrero</th>
-                        <td>4000</td>
-                        <td>2000</td>
-                        <td class="text-danger fw-bold">50%</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Marzo</th>
-                        <td>4000</td>
-                        <td>3950</td>
-                        <td class="text-success fw-bold">98.75%</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Abril</th>
-                        <td>4000</td>
-                        <td>3950</td>
-                        <td class="text-success fw-bold">98.75%</td>
-                    </tr>
-                    </tbody>
-                </table>
-                </div>
             </div>
-        </div> --}}
-
-
-
-
-
-
-
-
-        <div class="col-11 col-sm-10 col-md-9 col-lg-5 mt-5 shadow px-5 pb-5 pt-4 bg-white" >
-            <!-- Tabs navs -->
-            <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
-                        <i class="fa fa-chart-simple"></i>
-                        Barras
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
-                        <i class="fa fa-chart-pie"></i>
-                        Pie
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
-                        <i class="fa fa-circle"></i>
-                        Burbuja
-                    </a>
-                </li>
-            </ul>
-            <!-- Tabs navs -->
-
-            <!-- Tabs content -->
-            <div class="tab-content" id="ex2-content">
-                <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
-                    <canvas class="w-100 h-100" id="grafico"></canvas>
-                </div>
-                <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
-                   <div class="row justify-content-center">
-                        <div class="col-8 text-center">
-                            <canvas id="graficoPie"></canvas>
-                        </div>
-                   </div>
-                </div>
-                <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                    <canvas id="graficoLine"></canvas>
-                </div>
-            </div>
-            <!-- Tabs content -->
-
         </div>
 
     </div>
+</div>
+
+
+
+
+
+
+<div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog  modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary py-4">
+                <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
+                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
+            </div>
+            <div class="modal-body  row juatify-content-center" >
+
+ 
+                    
+                    <div class="col-12" >
+                        <!-- Tabs navs -->
+                        <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
+                                    <i class="fa fa-chart-simple"></i>
+                                    Barras
+                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
+                                    <i class="fa fa-chart-pie"></i>
+                                    Pie
+                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
+                                    <i class="fa fa-circle"></i>
+                                    Lineas
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Tabs navs -->
+
+                        <!-- Tabs content -->
+                        <div class="tab-content" id="ex2-content">
+                            <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
+                                <canvas class="w-100 h-100" id="grafico"></canvas>
+                            </div>
+                            <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+                            <div class="row justify-content-center">
+                                    <div class="col-8 text-center">
+                                        <canvas id="graficoPie"></canvas>
+                                    </div>
+                            </div>
+                            </div>
+                            <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
+                                <canvas id="graficoLine"></canvas>
+                            </div>
+                        </div>
+                        <!-- Tabs content -->
+
+    
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
 </div>
 
 
@@ -474,14 +509,15 @@ new Chart(ctx, {
       tooltip: {
         callbacks: {
           label: function(context) {
-            return `${context.label}: ${context.parsed}`;
+            return `${context.label}: ${context.parsed.y}`;
           }
         }
       }
     },
     scales: {
       y: {
-        beginAtZero: true
+        beginAtZero: true,
+        max:100
       }
     }
   }
