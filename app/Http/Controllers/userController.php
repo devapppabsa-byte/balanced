@@ -13,6 +13,7 @@ use App\Models\Proveedor;
 use App\Models\Norma;
 use App\Models\ClienteEncuesta;
 use App\Models\Pregunta;
+use App\Models\LogBalanced;
 use App\Models\Cliente;
 use App\Models\Respuesta;
 use App\Models\Encuesta;
@@ -228,9 +229,22 @@ class userController extends Controller
 
     public function eliminar_usuario(User $usuario){
 
+        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+
+
         $usuario_eliminado = User::findOrFail($usuario->id);
 
         $usuario_eliminado->delete();
+
+
+        //registro del log
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "Se elimino el usuario : ".$usuario->name,                
+        ]);
+        //registro del log
+
 
         return back()->with('eliminado_user', 'El usuario ' .$usuario->name. ' fue eliminado');
 
@@ -239,6 +253,7 @@ class userController extends Controller
 
     public function editar_usuario(User $usuario, Request $request){
 
+        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
         $request->validate([
 
@@ -264,6 +279,18 @@ class userController extends Controller
         }
 
         $usuario_editar->save();
+
+
+
+
+
+        //registro del log
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "Se edito el usuario : ".$usuario_editar->name. ' con id  ' . $usuario_editar->id,                
+        ]);
+        //registro del log
+
         
         return back()->with('editado', 'El usuario fue actualizado!');
 

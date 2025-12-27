@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\User;
 use App\Models\Departamento;
+use App\Models\LogBalanced;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -58,6 +59,8 @@ class adminController extends Controller
     public function agregar_usuario(Request $request){
     
 
+        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
         
         $request->validate([
             'nombre_usuario' => 'required',
@@ -67,10 +70,10 @@ class adminController extends Controller
             'departamento' =>'required',
             'password_usuario' => 'required'
         ]);
-
-
+        
+        
         User::create([
-
+            
             'name' => $request->nombre_usuario,
             'email' => $request->correo_usuario,
             'puesto' => $request->puesto_usuario,
@@ -79,6 +82,18 @@ class adminController extends Controller
             'id_departamento' => $request->departamento,
             'tipo_usuario' => $request->tipo_usuario
         ]);
+        
+        
+        //registro del log
+        $departamento = Departamento::where('id', $request->departamento)->first();
+
+
+        
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "Se agrego al usuario : ".$request->nombre_usuario. ' en el departamento de: '. $departamento->nombre               
+        ]);
+        //registro del log
 
 
         return back()->with('success', 'El usuario fue agregado con exito!');
@@ -93,6 +108,11 @@ class adminController extends Controller
 
     public function agregar_departamento(Request $request){
 
+        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+
+
+        
         $request->validate([
 
             'nombre_departamento' => 'required |unique:departamentos,nombre'
@@ -103,6 +123,14 @@ class adminController extends Controller
         $departamento = new Departamento();
         $departamento->nombre = $request->nombre_departamento;
         $departamento->save();
+
+        //registro del log
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "Se agrego el departamento : ".$departamento->nombre,                
+        ]);
+        //registro del log
+
 
 
 

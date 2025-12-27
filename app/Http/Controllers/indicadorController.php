@@ -19,6 +19,7 @@ use App\Models\Indicador;
 use App\Models\IndicadorLleno;
 use App\Models\Encuesta;
 use App\Models\User;
+use App\Models\LogBalanced;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -28,8 +29,7 @@ class indicadorController extends Controller
 
     public function agregar_indicadores_index(Departamento $departamento){
 
-   
-
+        
         $indicadores = Indicador::where('id_departamento', $departamento->id)->get();
         $usuarios = User::with('departamento')->where('id_departamento', $departamento->id)->get();
         $encuestas = Encuesta::where("id_departamento", $departamento->id)->get();
@@ -65,6 +65,10 @@ class indicadorController extends Controller
 
         $ponderacion = array_sum(array_merge($ponderacion_indicadores, $ponderacion_normas, $ponderacion_encuestas));
 
+
+
+
+
         
 
         return view('admin.agregar_indicadores', compact('departamento','indicadores', 'usuarios', 'departamentos', 'encuestas', 'normas', 'ponderacion' ));
@@ -76,6 +80,8 @@ class indicadorController extends Controller
 
     public function agregar_indicadores_store(Request $request, Departamento $departamento){
     
+         $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+         
         $nombre_admin = Auth::guard('admin')->user()->nombre;
         $puesto = Auth::guard('admin')->user()->puesto;
 
@@ -101,6 +107,16 @@ class indicadorController extends Controller
         $indicador->creador = $nombre_admin . ' - ' . $puesto;
         $indicador->save();
 
+
+        //registro del log
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "Se agrego el indicador con nombre : ".$indicador->nombre,                
+        ]);
+        //registro del log
+
+
+
         
         return back()->with('success', 'El indicador fue creado!');
 
@@ -109,8 +125,21 @@ class indicadorController extends Controller
 
     public function borrar_indicador(Indicador $indicador){
 
+        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+
 
         $indicador->delete();
+
+
+        //registro del log
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "Se elimino el indicador con nombre : ".$indicador->nombre,                
+        ]);
+        //registro del log
+
+
 
         return back()->with('eliminado', 'El indicador fue eliminado');
 
@@ -119,6 +148,9 @@ class indicadorController extends Controller
 
 
     public function indicador_edit(Request $request, Indicador $indicador){
+
+        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
 
         $request->validate([
 
@@ -136,6 +168,16 @@ class indicadorController extends Controller
         $indicador->ponderacion = $request->ponderacion_indicador_edit;
 
         $indicador->update();
+
+
+        //registro del log
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "Se actualizo el indicador  : ".$indicador->nombre               
+        ]);
+        //registro del log
+
+
 
         return back()->with('success', 'El indicador fue actualizado!');
 
@@ -193,6 +235,8 @@ class indicadorController extends Controller
 public function borrar_campo(Request $request, $campo){
 
         //vamos a buscar el id_input en la base de datos de los campos involucrados
+
+
 
 
         $id_indicador = CampoInvolucrado::where('id_input',$request->id_input)->first();

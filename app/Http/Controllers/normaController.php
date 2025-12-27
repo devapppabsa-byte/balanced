@@ -7,6 +7,7 @@ use App\Models\Norma;
 use App\Models\CumplimientoNorma;
 use App\Models\Departamento;
 use App\Models\ApartadoNorma;
+use App\Models\LogBalanced;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -27,8 +28,15 @@ class normaController extends Controller
 
     public function norma_store(Request $request, Departamento $departamento){
 
-         $autor = Auth::guard('admin')->user()->nombre;
-         $puesto = Auth::guard('admin')->user()->puesto;
+
+        $autor = Auth::guard('admin')->user()->nombre;
+        $puesto = Auth::guard('admin')->user()->puesto;
+
+        $autor_log = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+        $ip = $request->ip();
+
+
+        
 
         $request->validate([
 
@@ -51,6 +59,17 @@ class normaController extends Controller
             "autor" => $autor." - ".$puesto,
 
         ]);
+
+
+
+        //registro del log
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "Se agrego la norma: ". $request->titulo_norma,
+            'ip' => $ip              
+        ]);
+        //registro del log
+
 
 
         return back()->with('success', 'La norma fue agregada!');

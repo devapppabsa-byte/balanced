@@ -10,7 +10,8 @@ class LogBalanced extends Model
     protected $table = "logs_balanced";
     protected $fillable = [
         'autor',
-        'accion'
+        'accion',
+        'ip'
     ];
 
 
