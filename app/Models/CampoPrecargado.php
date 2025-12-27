@@ -12,7 +12,9 @@ class CampoPrecargado extends Model
     protected $fillable = [
         'nombre', 
         'descripcion', 
-        'id_indicador', 'id_input', 'id_input_foraneo'];
+        'id_indicador', 'id_input', 'id_input_foraneo',
+        'autor'
+    ];
 
 
 

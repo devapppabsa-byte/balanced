@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('id_input');
-            $table->string('informacion')->nullable();
+            $table->string('autor')->nullable();
             $table->string('descripcion')->nullable()->default('Sin descripción');
             $table->string('tipo');
             $table->string('operacion');

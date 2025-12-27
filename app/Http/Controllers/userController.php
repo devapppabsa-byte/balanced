@@ -453,5 +453,18 @@ class userController extends Controller
     }
 
 
+    public function cerrar_session_cliente(Request $request){
+
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/login_cliente');
+
+
+}
+
+
 
 }

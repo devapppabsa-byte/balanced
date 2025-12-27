@@ -64,7 +64,7 @@
     <div class="row justify-content-center">
         @forelse ($departamentos as $departamento)
 
-        <div class="col-12 col-sm-12 col-md-5 col-lg-5 mt-2">
+        <div class="col-auto mt-2">
             <div class="card shadow-3 rounded-4 p-3 border" style="max-width: 400px;">
 
             <div class="card-body p-1">
@@ -72,9 +72,14 @@
 
 
 
-                <!-- Gráfico -->
-                <canvas id="{{$departamento->id}}" class="" height="200"></canvas>
+                <!-- AQUI ESTA LA GRAFICA DEL CUMPLIMIENTO GENERAL-->
+             <canvas id="{{$departamento->id}}" class="" height="200"></canvas> 
 
+
+
+     {{-- GRAFICOS DE CADA INDICADOR --}}
+
+        {{-- 
                 <div class="mt-3">
                 <p class="fw-bold text-muted mb-2">Indicadores (4)</p>
 
@@ -103,7 +108,7 @@
 
 
 
-                    <div class="d-flex align-items-center justify-content-between mb-2">
+               <div class="d-flex align-items-center justify-content-between mb-2">
                         <div class="d-flex align-items-center">
                         <div class="position-relative me-2">
 
@@ -119,8 +124,7 @@
                             <small class="bg-dark text-white px-2 py-1 rounded-pill">23%</small>
                         </div>
                         </div>
-                    </div>
-
+                    </div> 
 
 
 
@@ -165,9 +169,11 @@
 
 
 
-                </div>
+                </div>--}}
 
-                <div class="text-center mt-4">
+            {{-- GRAFICOS DE CADA INDICADOR --}}
+                
+                    <div class="text-center mt-4">
                 <a href="{{route('lista.indicadores.admin', $departamento->id)}}" class="btn btn-primary btn-sm rounded-pill">
                     Ver todo <i class="fas fa-arrow-right ms-1"></i>
                 </a>

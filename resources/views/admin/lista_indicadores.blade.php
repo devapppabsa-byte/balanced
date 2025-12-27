@@ -66,7 +66,7 @@
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-7 ">
                                     <h3 class="card-title fw-bold display-6 x">
-                                        {{round($cumplimiento, 3)}}   %
+                                        {{round($cumplimiento, 3)}}   
                                     </h3>
                                     <p class="card-text fw-bold">{{$indicador->nombre}}</p>
                                 </div>

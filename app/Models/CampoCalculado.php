@@ -8,7 +8,7 @@ class CampoCalculado extends Model
 {
     
     protected $table = "input_calculado";
-    protected $fillable = ['nombre', 'informacion', 'tipo', 'operacion', 'tipo', 'id_indicador', 'id_input', 'resultado_final', 'descripcion'];
+    protected $fillable = ['nombre', 'autor', 'tipo', 'operacion', 'tipo', 'id_indicador', 'id_input', 'resultado_final', 'descripcion'];
 
 
 

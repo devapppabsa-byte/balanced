@@ -12,10 +12,10 @@ class campoVacioController extends Controller
 
 public function agregar_campo_vacio(Request $request,Indicador $indicador){
 
+    $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
     $request->validate([
         'nombre_campo_vacio' => 'required',
-        'tipo_dato' => 'required'
     ]);
 
 
@@ -31,7 +31,7 @@ public function agregar_campo_vacio(Request $request,Indicador $indicador){
 
         'nombre' => $request->nombre_campo_vacio,
         'id_input' => $id_input,
-        'tipo' => $request->tipo_dato,
+        'autor' => $autor,
         'id_indicador' => $indicador->id,
         'descripcion' => $request->descripcion
         

@@ -309,6 +309,11 @@ public function show_indicador_user(Indicador $indicador){
 
 public function input_porcentaje_guardar(Request $request, Indicador $indicador){
 
+   $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+    
+
+
+
     if($request->resultado_final){
 
         $comprobacion = CampoCalculado::where('id_indicador', $indicador->id)
@@ -335,6 +340,7 @@ public function input_porcentaje_guardar(Request $request, Indicador $indicador)
 
         "nombre" => $request->nombre,
         "id_input" => $id_input,
+        "autor" => $autor,
         "tipo" => "number",
         "operacion" => "porcentaje",
         "resultado_final" => $request->resultado_final,
@@ -362,6 +368,8 @@ public function input_porcentaje_guardar(Request $request, Indicador $indicador)
 
 public function input_resta_guardar(Request $request, Indicador $indicador){
 
+    $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
 
     if($request->resultado_final){
 
@@ -387,6 +395,7 @@ public function input_resta_guardar(Request $request, Indicador $indicador){
 
             "nombre" => $request->nombre_campo_resta,
             "id_input" => $id_input,
+            "autor" => $autor,
             "tipo" => "number",
             "operacion" => "resta",
             "resultado_final" => $request->resultado_final,
@@ -429,6 +438,8 @@ public function input_resta_guardar(Request $request, Indicador $indicador){
 
 public function input_division_guardar(Request $request, Indicador $indicador){
 
+       $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
 
     //COMPROBACION DEL CAMPO FINAL, SI YA HAY UN CAMPO FINAL NO SE PODRA AGREGAR OTRO
     if($request->resultado_final){
@@ -457,6 +468,7 @@ public function input_division_guardar(Request $request, Indicador $indicador){
 
         "nombre" => $request->nombre_campo_division,
         "id_input" => $id_input,
+        "autor" => $autor,
         "tipo" => "number",
         "operacion" => "division",
         "resultado_final" => $request->resultado_final,
@@ -499,6 +511,7 @@ public function input_division_guardar(Request $request, Indicador $indicador){
 
 public function input_suma_guardar(Request $request, Indicador $indicador){
 
+    $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
 
@@ -530,6 +543,7 @@ if( count($request->input_suma) < 2) return back()->with('error', 'Se debe agreg
         "nombre" => $request->nombre_campo_suma,
         "id_input" => $id_input,
         "tipo" => "number",
+        "autor" => $autor,
         "operacion" => "suma",
         "resultado_final" => $request->resultado_final,
         "id_indicador" => $indicador->id,
@@ -562,7 +576,8 @@ if( count($request->input_suma) < 2) return back()->with('error', 'Se debe agreg
 
 public function input_multiplicacion_guardar(Request $request, Indicador $indicador){
 
-    
+       $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
 
 
     if($request->resultado_final){
@@ -599,6 +614,7 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
         "nombre" => $request->nombre_campo_multiplicacion,
         "id_input" => $id_input,
         "tipo" => "number",
+        "autor" => $autor,
         "operacion" => "multiplicacion",
         "resultado_final" => $request->resultado_final,
         "id_indicador" => $indicador->id,
@@ -629,6 +645,8 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
 
 
 public function input_promedio_guardar(Request $request, Indicador $indicador){
+
+       $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
        
     //aqui se hace la verificación si el campo combinado de promedio qued marcado como campo final
@@ -670,6 +688,7 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
             "nombre" => $request->nombre,
             "id_input" => $id_input,
             "tipo" => "number",
+            "autor" => $autor,
             "operacion" => "promedio",
             "resultado_final" => $request->resultado_final, 
             "id_indicador" => $indicador->id,

@@ -13,7 +13,7 @@
             </h3>
         </div>
         <div class="col-6 text-end">
-            <a href="{{route('index')}}" class="btn btn-primary btn-lg">
+            <a href="{{route('login')}}" class="btn btn-primary btn-lg">
                 <i  class="fa fa-users mx-1"></i>
                 Usuarios
             </a>

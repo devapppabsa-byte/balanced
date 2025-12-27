@@ -92,20 +92,22 @@
             <div id="info_precargada" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#accordionExample">
                 <div class="accordion-body">
                     <div class="row gap-4  justify-content-start d-flex align-items-center">
-                        @forelse ($campos_llenos as $campo_lleno)
-                        <div class="col-2 p-2 text-center  bg-white mb-4 border border-dark border-4 rounded-5">
-                            <h5 class="fw-bold">{{$campo_lleno->nombre}}</h5>
 
-                            <h5  class="lh-1">
-                                @php
-                                    $last_info = InformacionInputPrecargado::latest()->first();
-                                    $meses = ["0","Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-                                @endphp
-                                {{$last_info->informacion}}
-                            </h5>
-                            <p>{{$meses[$last_info->mes]}} {{$last_info->year}}</p>
-                            <small>{{$campo_lleno->descripcion}}</small>
-                        </div>
+
+                        @forelse ($campos_llenos as $campo_lleno)
+                            <div class="col-5 col-sm-5 col-md-5 col-lg-auto  text-center  bg-white   pt-2 rounded shadow-sm">
+                                <h5 class="fw-bold">{{$campo_lleno->nombre}}</h5>
+
+                                <h5  class="">
+                                    @php
+                                        $last_info = InformacionInputPrecargado::where('id_input_precargado', $campo_lleno->id)->latest()->first();
+                                        $meses = ["0","Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                                    @endphp
+                                    {{$last_info->informacion}}
+                                </h5>
+                                <p>{{$meses[$last_info->mes]}} {{$last_info->year}}</p>
+                                <small>{{$campo_lleno->descripcion}}</small>
+                            </div>
                         @empty
                             <div class="col-12 border border-4 p-5 text-center">
                                 <h2>
@@ -114,6 +116,8 @@
                                 </h2>
                             </div>
                         @endforelse
+
+
                     </div>
                 </div>
             </div>

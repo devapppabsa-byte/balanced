@@ -44,7 +44,7 @@
                 @csrf 
                 <button  class="btn btn-primary text-danger text-white fw-bold">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    Cerrar Sesión
+                    Cerrar Sesiónss
                 </button>
             </form>
         </div>

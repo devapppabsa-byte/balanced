@@ -47,7 +47,7 @@
         </div>
 
         <div class="col-3 col-sm-3 col-md-4 col-lg-2 text-center ">
-            <form action="{{route('cerrar.session')}}" method="POST">
+            <form action="{{route('cerrar.session.cliente')}}" method="POST">
                 @csrf 
                 <button  class="btn  btn-sm text-danger text-white fw-bold">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -81,6 +81,8 @@
 
         <div class="col-12 col-sm-12 col-md-8 col-lg-6 mt-2">
             <div class="table-responsive shadow-sm">
+
+                @if (empty($encuestas))
                 <table class="table  table-responsive mb-0 border shadow-sm table-hover">
                         <thead class="bree-serif-regular table-primary">
                             <tr>
@@ -90,6 +92,9 @@
                             </tr>
                         </thead>
                     <tbody>
+                    
+                @endif
+
                     @forelse ($encuestas as $encuesta)
                             @php //Esta logica es engorrosa pero la necesito de momento para diferenciar las encuestas //contestadas de las no contestadas
                                 $existe = ClienteEncuesta::where('id_cliente', Auth::guard('cliente')->user()->id)
@@ -136,12 +141,13 @@
                             @endif
    
                     @empty
-                        <div class="col-12 p-5 text-center p-5 border">
+                        <div class="col-12 p-5 text-center p-5 border bg-white">
                             <div class="row">
         
                                 <div class="col-12">
                                     <i class="fa fa-exclamation-circle text-danger"></i>
-                                    No cuenta hay encuestas aún.
+                                    No hay encuestas aún.
+                                    <img src="{{asset('/img/empty.gif')}}" class="img-fluid" alt="">
                                 </div>
                             
                             </div>

@@ -132,8 +132,8 @@
                         <thead class="table-primary border">
                             <th scope="col">Id</th>
                             <th scope="col">Nombre del campo</th>
-                            <th scope="col">Tipo</th>
                             <th scope="col">Descripción</th>
+                            <th scope="col">Autor</th>
                             <th scope="col">Acciones</th>
                         </thead>
                         <tbody class="" id="contenedor">
@@ -142,8 +142,13 @@
                                 <tr>
                                     <td>{{$campo->id}}</td>
                                     <td>{{$campo->nombre}}</td>
-                                    <td>{{($campo->tipo) ? $campo->tipo : $campo->tipo_dato}}</td>
                                     <td>{!!($campo->descripcion) ? $campo->descripcion : ' <i class="fa fa-info-circle text-primary"></i> No hay descripción disponible'!!}</td>
+
+                                    <td class="fw-bold">
+                                        <i class="fa fa-pencil"></i>
+                                        {{$campo->autor}}
+                                    </td>
+
                                     <td>
                                         <buttton class="btn btn-danger btn-control-sm py-2 px-3" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del{{$campo->id_input}}">
                                             <i class="fa fa-trash"></i>
@@ -738,7 +743,7 @@
                 @csrf
                 <div class="row">
 
-                    <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="col-12 ">
                         <div class="form-group mt-3">
                             <div class="form-outline" data-mdb-input-init>
                                 <input type="text" class="form-control form-control-lg w-100" id="nombre_campo_vacio" name="nombre_campo_vacio" required>
@@ -747,17 +752,6 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-sm-12 col-md-6 col-lg-6">
-                        <div class="form-group mt-3">
-                        <select id="departamentoSelect" name="tipo_dato" class="form-control form-control-lg" data-mdb-select-init data-mdb-filter="true"
-                        data-mdb-clear-button="true" required>
-                            <option value="" disabled selected>Tipo de dato</option>
-                                <option value="number">Número</option>
-                                <option value="string">Texto</option>
-
-                        </select>
-                        </div>
-                    </div>
 
                     <div class="col-12">
                         <div class="form-group mt-3">

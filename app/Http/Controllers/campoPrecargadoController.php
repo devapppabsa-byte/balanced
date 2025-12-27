@@ -14,6 +14,7 @@ class campoPrecargadoController extends Controller
     //este es para el campo de prueba
     public function agregar_campo_precargado(Indicador $indicador, Request $request){
 
+       $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
         //Se separan los datos para poder  
@@ -50,6 +51,7 @@ class campoPrecargadoController extends Controller
                 'id_input' => $id_input,
                 'id_input_foraneo' => $id_input_informacion,
                 'nombre' => $nombre,
+                "autor" => $autor,
                 'id_indicador' => $indicador->id,
                 'descripcion' => $datos[3]
                 

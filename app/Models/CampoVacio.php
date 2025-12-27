@@ -9,7 +9,7 @@ class CampoVacio extends Model
     
 
     protected $table = 'input_vacio';
-    protected $fillable = ['nombre', 'id_input', 'tipo', 'informacion_llenada', 'id_indicador', 'descripcion'];
+    protected $fillable = ['nombre', 'id_input', 'autor', 'id_indicador', 'descripcion'];
 
 
     public function indicador(){
