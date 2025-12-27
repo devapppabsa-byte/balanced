@@ -102,7 +102,7 @@
 
                 @forelse ($informacion_foranea as $index_foranea => $foranea)
 
-                    <div class="col-12 col-sm-12 col-md-5  col-lg-3  mx-3 my-2 text-center py-4 border border-4 border-primary rounded" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#info{{$foranea->id}}" style="cursor: pointer">
+                    <div class="col-12 col-sm-12 col-md-5  col-lg-3  mx-3 my-2 text-center py-4  rounded shadow-sm border" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#info{{$foranea->id}}" style="cursor: pointer">
                         <h4 class="text-dark" >{{$foranea->nombre}}</h4>
 
 
