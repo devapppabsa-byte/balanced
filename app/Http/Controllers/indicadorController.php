@@ -80,7 +80,8 @@ class indicadorController extends Controller
 
     public function agregar_indicadores_store(Request $request, Departamento $departamento){
     
-         $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
          
         $nombre_admin = Auth::guard('admin')->user()->nombre;
         $puesto = Auth::guard('admin')->user()->puesto;
@@ -111,7 +112,9 @@ class indicadorController extends Controller
         //registro del log
         LogBalanced::create([
             'autor' => $autor,
-            'accion' => "Se agrego el indicador con nombre : ".$indicador->nombre,                
+            'accion' => "add",
+            'descripcion' => "Se agrego el indicador : ".$indicador->nombre . " con el id: ". $indicador->id,
+            'ip' => $request->ip() 
         ]);
         //registro del log
 
@@ -125,7 +128,7 @@ class indicadorController extends Controller
 
     public function borrar_indicador(Indicador $indicador){
 
-        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
 
@@ -135,7 +138,9 @@ class indicadorController extends Controller
         //registro del log
         LogBalanced::create([
             'autor' => $autor,
-            'accion' => "Se elimino el indicador con nombre : ".$indicador->nombre,                
+            'accion' => "deleted",
+            'descripcion' => "Se elimino el indicador : ".$indicador->nombre . " con el id: ". $indicador->id,
+            'ip' => request()->ip() 
         ]);
         //registro del log
 
@@ -149,7 +154,7 @@ class indicadorController extends Controller
 
     public function indicador_edit(Request $request, Indicador $indicador){
 
-        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
         $request->validate([
@@ -173,7 +178,9 @@ class indicadorController extends Controller
         //registro del log
         LogBalanced::create([
             'autor' => $autor,
-            'accion' => "Se actualizo el indicador  : ".$indicador->nombre               
+            'accion' => "update",
+            'descripcion' => "Se actualizo el indicador : ".$indicador->nombre . " con el id: ". $indicador->id,
+            'ip' => request()->ip() 
         ]);
         //registro del log
 

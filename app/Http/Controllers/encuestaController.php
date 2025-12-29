@@ -7,6 +7,7 @@ use App\Models\Encuesta;
 use App\Models\Departamento;
 use App\Models\Pregunta;
 use App\Models\Cliente;
+use App\Models\LogBalanced;
 use App\Models\Respuesta;
 use App\Models\ClienteEncuesta;
 use Illuminate\Support\Facades\DB;
@@ -55,12 +56,6 @@ class encuestaController extends Controller
 
 
 
-
-
-
-
-
-
         return view('admin.gestionar_preguntas', compact('encuesta', 'preguntas', 'existe', 'clientes', 'labels', 'valores'));
 
     }
@@ -73,6 +68,10 @@ class encuestaController extends Controller
 
 
     public function encuesta_store(Request $request, Departamento $departamento){
+
+
+
+        $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
         $autor = auth()->guard('admin')->user()->nombre;
         $puesto = auth()->guard('admin')->user()->puesto;
@@ -88,7 +87,7 @@ class encuestaController extends Controller
         ]);
 
 
-        Encuesta::create([
+       $encuesta =  Encuesta::create([
             "nombre" => $request->nombre_encuesta,
             "descripcion" => $request->descripcion_encuesta,
             "id_departamento" => $departamento->id,
@@ -96,6 +95,15 @@ class encuestaController extends Controller
             "meta_minima" => $request->meta_minima_encuesta,
             "meta_esperada" => $request->meta_esperada_encuesta,
             "autor" => $autor." - ".$puesto      
+        ]);
+
+
+
+        LogBalanced::create([
+            'autor' => $autor_log,
+            'accion' => "add",
+            'descripcion' => "Se agrego la encuesta : ".$encuesta->nombre . " con el id: ". $encuesta->id,
+            'ip' => request()->ip() 
         ]);
 
 
@@ -107,6 +115,15 @@ class encuestaController extends Controller
 
 
     public function encuesta_store_two(Request $request){
+
+
+
+        $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+        $autor = auth()->guard('admin')->user()->nombre;
+        $puesto = auth()->guard('admin')->user()->puesto;
+
+
 
 
      
@@ -121,19 +138,25 @@ class encuestaController extends Controller
         ]);
 
 
-        Encuesta::create([
+       $encuesta = Encuesta::create([
 
             "nombre" => $request->nombre_encuesta,
             "descripcion" => $request->descripcion_encuesta,
             "id_departamento" => $request->departamento,
             "ponderacion" => $request->ponderacion_encuesta,
             "meta_minima" => $request->meta_minima_encuesta,
-            "meta_esperada" => $request->meta_esperada_encuesta
+            "meta_esperada" => $request->meta_esperada_encuesta,
+            "autor" => $autor." - ".$puesto     
 
         ]);
 
 
-
+        LogBalanced::create([
+            'autor' => $autor_log,
+            'accion' => "add",
+            'descripcion' => "Se agrego la encuesta : ".$encuesta->nombre . " con el id: ". $encuesta->id,
+            'ip' => request()->ip() 
+        ]);
 
         return back()->with('success', 'La encuesta fue agregada!');
 
@@ -145,7 +168,19 @@ class encuestaController extends Controller
 
     public function encuesta_delete(Encuesta $encuesta){
 
+        $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+    
+
         $encuesta->delete();
+
+
+        LogBalanced::create([
+            'autor' => $autor_log,
+            'accion' => "deleted",
+            'descripcion' => "Se elimino la encuesta : ".$encuesta->nombre . " con el id: ". $encuesta->id,
+            'ip' => request()->ip() 
+        ]);
+
 
         return back()->with('eliminado', 'La encuesta fue eliminada!');
 
@@ -154,6 +189,10 @@ class encuestaController extends Controller
 
 
     public function encuesta_edit(Encuesta $encuesta, Request $request){
+
+
+        $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
 
         $request->validate([
 
@@ -177,6 +216,16 @@ class encuestaController extends Controller
             "meta_esperada" => $request->meta_esperada_encuesta_edit
 
         ]);
+
+
+
+        LogBalanced::create([
+            'autor' => $autor_log,
+            'accion' => "update",
+            'descripcion' => "Se edito la encuesta : ".$encuesta->nombre . " con el id: ". $encuesta->id,
+            'ip' => request()->ip() 
+        ]);
+
 
 
 

@@ -146,13 +146,8 @@ Route::post('/perfil_admin/informacion_foranea/cargando_excel', [CamposForaneosI
 
 //PRUEBAS CON EL ARCHIVO DE EXCEL
 
-
-
-
 //Eliminando campos la ctm
 Route::delete('/perfil_admin/agregar_indicadores/indicador/campo_borrado/{campo}', [indicadorController::class, 'borrar_campo'])->name('eliminar.campo')->middleware('auth:admin');
-
-
 
 //Creando el campo promedio
 Route::post("/perfil_admin/agregar_indicadores/indicador/crear_campo_promedio/{indicador}", [indicadorController::class, "input_promedio_guardar"])->name("input.promedio.guardar")->middleware('auth:admin');
@@ -171,14 +166,7 @@ Route::post('/perfil_admin/agregar_indicadores/indicador/crear_campo_resta/{indi
 
 Route::post('/perfil_admin/agregar_indicadores/indicador/crear_campo_porcentaje/{indicador}', [indicadorController::class, 'input_porcentaje_guardar'])->name('input.porcentaje.guardar')->middleware('auth:admin');
 
-
 Route::post('/perfil_admin', [userController::class, 'cerrar_session'])->name('cerrar.session')->middleware('auth:admin');
-
-
-
-
-
-
 
 //Aui van las rutas de las encuestas para los clientes
 Route::post('/perfil_admin/agregar_indicadores/agregar_encuesta/{departamento}', [encuestaController::class, 'encuesta_store'])->name('encuesta.store')->middleware('auth:admin');
@@ -193,8 +181,6 @@ Route::post('/perfil_admin/agregar_indicadores/encuesta/agregar_pregunta/{encues
 
 Route::delete('/perfil_admin/agregar_indicadores/encuesta/eliminar_pregunta/{pregunta}', [encuestaController::class, 'pregunta_delete'])->name('pregunta.delete')->middleware('auth:admin');
 
-
-
 //Reacomodando los HTML
 Route::get('/perfil_admin/departamentos', [departamentoController::class, "departamentos_show_admin"])->name('departamentos.show.admin')->middleware('auth:admin');
 
@@ -208,7 +194,6 @@ Route::get('/perfil_admin/encuestas/preguntas/{encuesta}', [encuestaController::
 
 Route::get('/perfil_admin/reclamaciones', [quejasController::class, 'index_quejas'])->name('lista.quejas.cliente')->middleware('auth:admin');
 
-
 Route::get('/perfil_admin/proveedores', [proveedorController::class, 'proveedores_show_admin'])->name('proveedores.show.admin')->middleware('auth:admin');
 
 
@@ -217,17 +202,11 @@ Route::delete('/perfil_admin/proveedores/eliminar/{proveedor}', [proveedorContro
 
 Route::get('/perfil_admin/proveedores/detalle_evaluacion/{proveedor}', [evaluacionProveedorController::class, 'detalle_evaluacion_proveedor'])->name('detalle.evaluacion.proveedor')->middleware('auth:admin');
 
-
 Route::get('/perfil_admin/informacion_foranea', [informacionForaneaController::class, 'informacion_foranea_show_admin'])->name('informacion.foranea.show.admin')->middleware('auth:admin');
-
-
 
 Route::get('/perfil_admin/encuestas/respuestas_clientes/{cliente}/{encuesta}', [clienteController::class, 'show_respuestas'])->name('show.respuestas')->middleware('auth:admin');
 
 Route::get('perfil_admin/lista_indicadores/encuesta/{encuesta}', [encuestaController::class, 'encuesta_llena_show_admin'] )->name('encuesta.llena.show.admin')->middleware('auth:admin');
-
-
-
 
 Route::get('/perfil_admin/normas/', [normaController::class, 'cumplimiento_norma_show_admin'])->name('cumplimiento.norma.show.admin')->middleware('auth:admin');
 
@@ -253,26 +232,18 @@ Route::get('/perfil_admin/lista_indicadores/{departamento}', [indicadorControlle
 
 Route::get('/perfil_admin/lista_indicadores/detalle_indicador/{indicador}', [indicadorController::class, 'indicador_lleno_show_admin'])->name('indicador.lleno.show.admin')->middleware('auth:admin');
 
-
-
-
-
-
-
-
 //Rutas del seguimiento de las quejas desde el perifl del admin
 Route::get('/perfil_admin/quejas/seguimiento_quejas/{queja}',[quejasController::class, 'seguimiento_quejas_admin'])->name('seguimiento_quejas.admin')->middleware('auth:admin');
 
-
-
-
-
-
-
-
-
 //rutas de las evaluaciones de los proveedores
 Route::post('/perfil_admin/proveedores/', [proveedorController::class, 'proveedor_store'])->name('proveedor.store')->middleware('auth:admin');
+
+
+Route::get('/perfil_admin/logs', [adminController::class, 'logs'])->name('logs.show.admin');
+
+
+
+
 
 
 

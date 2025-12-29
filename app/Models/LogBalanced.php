@@ -11,7 +11,8 @@ class LogBalanced extends Model
     protected $fillable = [
         'autor',
         'accion',
-        'ip'
+        'ip',
+        'descripcion'
     ];
 
 

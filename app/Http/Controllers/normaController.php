@@ -29,6 +29,9 @@ class normaController extends Controller
     public function norma_store(Request $request, Departamento $departamento){
 
 
+        $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+
         $autor = Auth::guard('admin')->user()->nombre;
         $puesto = Auth::guard('admin')->user()->puesto;
 
@@ -48,7 +51,7 @@ class normaController extends Controller
         ]);
 
 
-        Norma::create([
+        $norma = Norma::create([
 
             "nombre" => $request->titulo_norma,
             "descripcion" => $request->descripcion_norma,
@@ -64,9 +67,10 @@ class normaController extends Controller
 
         //registro del log
         LogBalanced::create([
-            'autor' => $autor,
-            'accion' => "Se agrego la norma: ". $request->titulo_norma,
-            'ip' => $ip              
+            'autor' => $autor_log,
+            'accion' => "add",
+            'descripcion' => "Se  agrego la norma : ".$norma->nombre . " con el id: ". $norma->id,
+            'ip' => request()->ip() 
         ]);
         //registro del log
 
@@ -78,35 +82,78 @@ class normaController extends Controller
 
 
 
+
+
+
+
+
+
     public function norma_delete(Request $request, Norma $norma){
 
+        $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+
         $norma->delete();
+
+        //registro del log
+        LogBalanced::create([
+            'autor' => $autor_log,
+            'accion' => "deleted",
+            'descripcion' => "Se  elimino la norma : ".$norma->nombre . " con el id: ". $norma->id,
+            'ip' => request()->ip() 
+        ]);
+        //registro del log
+
 
         return back()->with('eliminado', 'La norma fue eliminada!');
 
     }
 
+
+
+
+
+
     public function norma_update(Norma $norma, Request $request){
 
-
-        $request->validate([
-            "nombre_norma_edit" => [
-                'required',
-                Rule::unique('norma', 'nombre')->ignore($norma->id) // <-- Ignora el registro actual
-            ],
-            "descripcion_norma_edit" => 'required',
-            "ponderacion_norma_edit" => 'required'
-        ]);
+    $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
 
-        $norma->nombre = $request->nombre_norma_edit;
-        $norma->descripcion = $request->descripcion_norma_edit;
-        $norma->ponderacion = $request->ponderacion_norma_edit;
+    $request->validate([
+        "nombre_norma_edit" => [
+            'required',
+            Rule::unique('norma', 'nombre')->ignore($norma->id) // <-- Ignora el registro actual
+        ],
+        "descripcion_norma_edit" => 'required',
+        "ponderacion_norma_edit" => 'required'
+    ]);
 
-        $norma->update();
 
-        return back()->with('actualizado', 'La norma fue actualizada');
+
+    $norma->nombre = $request->nombre_norma_edit;
+    $norma->descripcion = $request->descripcion_norma_edit;
+    $norma->ponderacion = $request->ponderacion_norma_edit;
+
+    $norma->update();
+
+
+
+    //registro del log
+    LogBalanced::create([
+        'autor' => $autor_log,
+        'accion' => "update",
+        'descripcion' => "Se  actualizo la norma : ".$norma->nombre . " con el id: ". $norma->id,
+        'ip' => request()->ip() 
+    ]);
+    //registro del log
+
+
+
+
+
+
+    return back()->with('actualizado', 'La norma fue actualizada');
         
 
     }

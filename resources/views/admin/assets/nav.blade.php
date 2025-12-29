@@ -51,7 +51,7 @@
   </div>
 
   <div class="sidebar-body px-3 pb-3" style="font-size:14px;">
-    
+
     <a href="{{route('perfil.admin')}}" class="d-block text-white fw-bold mb-2 zoom_link {{ request()->routeIs('perfil.admin') ? 'link_selected' : '' }}">
       <i class="fa fa-home mr-2"></i> Inicio
     </a>
@@ -99,13 +99,15 @@
   });
 </script> --}}
 
+
+
 <div class="row py-2" style="background-color: #5476ac; font-size:14px">
 
     <div class="col-auto  mx-1 zoom_link {{ request()->routeIs('perfil.admin') ? 'link_selected' : '' }}">
         <a href="{{route("perfil.admin")}}" class="text-white text-decoration-none fw-bold ">
             <i class="fa fa-home"></i>
             Inicio
-        </a> 
+        </a>
     </div>
 
     <div class="col-auto mx-1 zoom_link {{ request()->routeIs('departamentos.show.admin') ? 'link_selected' : '' }}">
@@ -117,7 +119,7 @@
 
     <div class="col-auto mx-1 zoom_link {{ request()->routeIs('usuarios.show.admin') ? 'link_selected' : '' }}">
         <a href="{{route("usuarios.show.admin")}}" class="text-white text-decoration-none fw-bold  ">
-            <i class="fa fa-users"></i> 
+            <i class="fa fa-users"></i>
             Usuarios
         </a>
     </div>
@@ -151,11 +153,19 @@
             Evaluaciones a Proveedores
         </a>
     </div>
-    
+
     <div class="col-auto mx-1 zoom_link {{ request()->routeIs('informacion.foranea.show.admin') ? 'link_selected' : '' }}">
         <a href="{{route("informacion.foranea.show.admin")}}" class="text-white text-decoration-none fw-bold ">
             <i class="fa-solid fa-exclamation-circle"></i>
             Cargar información
+        </a>
+    </div>
+
+
+    <div class="col-auto mx-1 zoom_link {{ request()->routeIs('logs.show.admin') ? 'link_selected' : '' }}">
+        <a href="{{route("logs.show.admin")}}" class="text-white text-decoration-none fw-bold ">
+            <i class="fa-solid fa-book"></i>
+            Logs
         </a>
     </div>
 

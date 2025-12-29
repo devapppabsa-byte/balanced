@@ -58,8 +58,7 @@ class adminController extends Controller
 
     public function agregar_usuario(Request $request){
     
-
-        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
         
         $request->validate([
@@ -72,7 +71,7 @@ class adminController extends Controller
         ]);
         
         
-        User::create([
+        $usuario = User::create([
             
             'name' => $request->nombre_usuario,
             'email' => $request->correo_usuario,
@@ -84,14 +83,16 @@ class adminController extends Controller
         ]);
         
         
-        //registro del log
         $departamento = Departamento::where('id', $request->departamento)->first();
-
-
         
+        
+        
+        //registro del log
         LogBalanced::create([
             'autor' => $autor,
-            'accion' => "Se agrego al usuario : ".$request->nombre_usuario. ' en el departamento de: '. $departamento->nombre               
+            'accion' => "deleted",
+            'descripcion' => "Se agrego el usuario : ".$usuario->name . " con el id: ". $usuario->id,
+            'ip' => $request->ip() 
         ]);
         //registro del log
 
@@ -108,7 +109,7 @@ class adminController extends Controller
 
     public function agregar_departamento(Request $request){
 
-        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
 
@@ -127,7 +128,9 @@ class adminController extends Controller
         //registro del log
         LogBalanced::create([
             'autor' => $autor,
-            'accion' => "Se agrego el departamento : ".$departamento->nombre,                
+            'accion' => "add",
+            'descripcion' => "Se agrego el departamento : ".$departamento->nombre . "  con el id: ". $departamento->id,
+            'ip' => $request->ip()                
         ]);
         //registro del log
 
@@ -142,7 +145,10 @@ class adminController extends Controller
 
     public function agregar_cliente(Request $request){
 
-        
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+
+
          $request->validate([
              "id_cliente" => "required|unique:clientes,id_interno",
              "nombre_cliente" => "required",
@@ -156,7 +162,7 @@ class adminController extends Controller
          $password = bcrypt($request->password_cliente);
 
 
-         Cliente::create([
+         $cliente = Cliente::create([
 
             "id_interno" => $request->id_cliente,
             "nombre" => $request->nombre_cliente,
@@ -166,6 +172,17 @@ class adminController extends Controller
             "telefono" => $request->telefono_cliente
 
          ]);
+
+
+
+        //registro del log
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "add",
+            'descripcion' => "Se agrego al cliente : ".$cliente->nombre . "  con el id: ". $cliente->id,
+            'ip' => $request->ip()                
+        ]);
+        //registro del log
 
 
 
@@ -180,14 +197,29 @@ class adminController extends Controller
     public function eliminar_cliente(Cliente $cliente){
 
 
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
         $cliente->delete();
         
+
+        LogBalanced::create([
+
+            'autor' => $autor,
+            'accion' => "deleted",
+            'descripcion' => "Se elimino al cliente : ".$cliente->nombre . "  con el id: ". $cliente->id,
+            'ip' => request()->ip()
+
+        ]);
+
         return back()->with("eliminado", "El cliente fue eliminado");
 
 
     }
 
     public function editar_cliente(Cliente $cliente, Request $request){
+
+
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
         $password = bcrypt($request->password_cliente_edit);
@@ -211,6 +243,18 @@ class adminController extends Controller
 
         $cliente->update();
 
+
+        LogBalanced::create([
+
+            'autor' => $autor,
+            'accion' => "update",
+            'descripcion' => "Se edito al cliente : ".$cliente->nombre . "  con el id: ". $cliente->id,
+            'ip' => request()->ip()
+
+        ]);
+
+
+
         return  back()->with("actualizado", "El cliente fue editado");
 
     }
@@ -218,6 +262,16 @@ class adminController extends Controller
 
 
 
+
+
+    public function logs(){
+
+
+        $logs = LogBalanced::orderBy('created_at', 'desc' )->get();
+
+        return view('admin.logs', compact('logs'));
+
+    }
 
 
 

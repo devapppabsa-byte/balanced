@@ -64,7 +64,7 @@
 
 
         <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
-            <a href="{{asset('img/plantilla.xlsx')}}" class="btn btn-sm btn-outline-dark w-100" download="PlantillaExcel.xlsx" >
+            <a href="{{asset('img/plantilla.xlsx')}}" class="btn btn-sm btn-outline-success w-100" download="PlantillaExcel.xlsx" >
                 <i class="fa fa-download mx-1"></i>
                 Descargar Plantilla
             </a>
@@ -102,51 +102,51 @@
 
                 @forelse ($informacion_foranea as $index_foranea => $foranea)
 
-                    <div class="col-12 col-sm-12 col-md-5  col-lg-3  mx-3 my-2 text-center py-4  rounded shadow-sm border" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#info{{$foranea->id}}" style="cursor: pointer">
+                    <div class="col-12 col-sm-12 col-md-5  col-lg-3  mx-3 my-2 text-center py-4  rounded shadow-sm border " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#info{{$foranea->id}}" style="cursor: pointer">
                         <h4 class="text-dark" >{{$foranea->nombre}}</h4>
+                        <small><b> Ultima actualizacion: </b>{{$foranea->updated_at->locale('es')->translatedFormat('d F Y')}}</small>
+                    </div>
 
 
-                        <div class="modal fade" id="info{{$foranea->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                <div class="modal-header bg-primary py-4">
-                                    <h3 class="text-white" id="exampleModalLabel">
-                                        <i class="fa fa-calendar mx-1"></i>
-                                    Historial
-                                    </h3>
-                                    <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+
+
+                    <div class="modal fade" id="info{{$foranea->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                            <div class="modal-header bg-primary py-4">
+                                <h3 class="text-white" id="exampleModalLabel">
+                                    <i class="fa fa-calendar mx-1"></i>
+                                Historial
+                                </h3>
+                                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                                <div class="modal-body py-4">
+                                    <div class="row justify-content-center px-4">
+                                        @foreach ($foranea->campo_foraneo_informacion->sortByDesc('created_at') as $informacion)
+                                                <div class="col-12 text-center border m-2 rounded p-2 zoom">
+                                                    <h5>
+                                                        {{ucfirst(Carbon::create()->month(intval($informacion->mes))->locale('es')->monthName)}}
+                                                        {{$informacion->year}}
+                                                    </h5>
+                                                    <h3 class="fw-bold ">
+                                                        {{$informacion->informacion}}
+                                                    </h3>
+                                                    <small class="fw-bold"> 
+                                                        {{ $informacion->created_at->format('d/m/Y') }}
+                                                    </small>
+                                                </div>
+                                        @endforeach
+                                    </div>
                                 </div>
-                                    <div class="modal-body py-4">
-                                        <div class="row justify-content-center px-4">
-                                            @foreach ($foranea->campo_foraneo_informacion->sortByDesc('created_at') as $informacion)
-                                                    <div class="col-12 text-center border m-2 rounded p-2 zoom">
-                                                        <h5>
-                                                            {{ucfirst(Carbon::create()->month(intval($informacion->mes))->locale('es')->monthName)}}
-                                                            {{$informacion->year}}
-                                                        </h5>
-                                                        <h3 class="fw-bold ">
-                                                            {{$informacion->informacion}}
-                                                        </h3>
-                                                        <small class="fw-bold"> 
-                                                            {{ $informacion->created_at->format('d/m/Y') }}
-                                                        </small>
-                                                    </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
+                                <div class="modal-footer">
 
-                                    </div>
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
-
                     </div>
+
+
+
 
                 @empty
                     <div class="col-12 text-center">

@@ -16,19 +16,30 @@ class departamentoController extends Controller
 
         try{
 
-            $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+            $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+
 
             $departamento->delete();
 
 
-            //registro del log
-            LogBalanced::create([
-                'autor' => $autor,
-                'accion' => "Se elimino el departamento de : ".$departamento->nombre,                
-            ]);
-            //registro del log
+     //registro del log
+        LogBalanced::create([
+            'autor' => $autor,
+            'descripcion' => "Se elimino el departamento : ".$departamento->nombre . "con el id: ". $departamento->id,
+            'accion'=> "deleted",
+            'ip' => request()->ip() 
+        ]);
+     //registro del log
 
-            return back()->with('eliminado', 'El departamento fue eliminado!');
+
+
+        return back()->with('eliminado', 'El departamento fue eliminado!');
+
+
+
+
+
         
         } catch (\Illuminate\Database\QueryException $e) {
             
@@ -62,7 +73,9 @@ class departamentoController extends Controller
             //registro del log
             LogBalanced::create([
                 'autor' => $autor,
-                'accion' => "Se actualizo el departamento : ".$departamento->nombre,                
+                'accion' => "update",
+                'descripcion' => "Se actualizo el departamento: ".$departamento->nombre . " con el id: ". $departamento->id,
+                'ip' => $request->ip()
             ]);
             //registro del log
 

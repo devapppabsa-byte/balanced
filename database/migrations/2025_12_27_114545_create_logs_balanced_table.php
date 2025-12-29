@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('autor');
             $table->string('accion');
+            $table->string('descripcion');
             $table->string('ip');
             $table->timestamps();
         });

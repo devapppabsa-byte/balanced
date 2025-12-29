@@ -629,14 +629,14 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Meta Minima</label>
-                                <input type="number" min="1" value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="% Minimo" required>
+                                <input type="number" min="1" max="100"  value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="% Minimo" required>
                             </div>
                         </div>
                         
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Meta esperada</label>
-                                <input type="number" min="1" class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder="% Máximo"  required>
+                                <input type="number" min="1" max="100" class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder="% Máximo"  required>
                             </div>
                         </div>
 
@@ -772,7 +772,7 @@
                 <div class="col-12 text-center">
                     <div class="form-group mt-2">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_encuesta') ? 'is-invalid' : '' }} " id="nombre_encuesta" name="nombre_encuesta" required>
+                            <input type="text" class="form-control form-control-lg {{ $errors->first('nombre_encuesta') ? 'is-invalid' : '' }} " id="nombre_encuesta" value="{{old('nombre_encuesta')}}" name="nombre_encuesta" required>
                             <label class="form-label" for="nombre_encuesta" >Nombre para la Encuesta</label>
                         </div>
                     </div>
@@ -782,7 +782,7 @@
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
                             <div class="form-outline" data-mdb-input-init>
-                                <textarea class="form-control w-100 {{ $errors->first('descripcion_cuestionario') ? 'is-invalid' : '' }}" id="descrpcion_encuesta1" name="descripcion_encuesta" required ></textarea>
+                                <textarea class="form-control w-100 {{ $errors->first('descripcion_cuestionario') ? 'is-invalid' : '' }}" id="descrpcion_encuesta1" name="descripcion_encuesta" required >{{old('descripcion_encuesta')}}</textarea>
                                 <label class="form-label" for="descrpcion_encuesta">Descripción de la Encuesta</label>
                             </div>
                         </div>
@@ -793,7 +793,7 @@
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
                             <div class="form-outline" data-mdb-input-init>
-                                <input type="number" min="0" max="100" class="form-control w-100 {{ $errors->first('meta_minima_encuesta') ? 'is-invalid' : '' }}" id="meta_minima_encuesta" name="meta_minima_encuesta" required >
+                                <input type="number" min="0" max="100" class="form-control w-100 {{ $errors->first('meta_minima_encuesta') ? 'is-invalid' : '' }}" id="meta_minima_encuesta" name="meta_minima_encuesta" value="{{old('meta_minima_encuesta')}}"  required >
                                 <label class="form-label" for="meta_minima_encuesta">Meta Minima</label>
                             </div>
                         </div>
@@ -805,7 +805,7 @@
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
                             <div class="form-outline" data-mdb-input-init>
-                                <input type="number" min="0" max="100" class="form-control w-100 {{ $errors->first('meta_esperada_encuesta') ? 'is-invalid' : '' }}" id="meta_esperada_encuesta" name="meta_esperada_encuesta" required >
+                                <input type="number" min="0" max="100" class="form-control w-100 {{ $errors->first('meta_esperada_encuesta') ? 'is-invalid' : '' }}" id="meta_esperada_encuesta" name="meta_esperada_encuesta" value="{{old('meta_esperada_encuesta')}}" required >
                                 <label class="form-label" for="meta_esperada_encuesta">Meta Esperada</label>
                             </div>
                         </div>
@@ -815,7 +815,7 @@
                 <div class="col-12 mt-4 ">
                     <div class="form-group mt-2">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="number" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_encuesta') ? 'is-invalid' : '' }}" id="ponderacion_indicador" name="ponderacion_encuesta" required ></textarea>
+                            <input type="number" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_encuesta') ? 'is-invalid' : '' }}" id="ponderacion_indicador" value="{{old('ponderacion_encuesta')}}" name="ponderacion_encuesta" required >
                             <label class="form-label" for="ponderacion_encuesta">Ponderación de la encuesta dentro de la evaluación total</label>
                         </div>
                     </div>

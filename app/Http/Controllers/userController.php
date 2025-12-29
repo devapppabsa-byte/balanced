@@ -229,7 +229,7 @@ class userController extends Controller
 
     public function eliminar_usuario(User $usuario){
 
-        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
 
@@ -241,7 +241,9 @@ class userController extends Controller
         //registro del log
         LogBalanced::create([
             'autor' => $autor,
-            'accion' => "Se elimino el usuario : ".$usuario->name,                
+            'accion' => "deleted",
+            'descripcion' => "Se elimino el usuario : ".$usuario->name . " con el id: ". $usuario->id,
+            'ip' => request()->ip() 
         ]);
         //registro del log
 
@@ -253,7 +255,8 @@ class userController extends Controller
 
     public function editar_usuario(User $usuario, Request $request){
 
-        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+    $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
 
         $request->validate([
 
@@ -278,16 +281,17 @@ class userController extends Controller
 
         }
 
+
         $usuario_editar->save();
-
-
 
 
 
         //registro del log
         LogBalanced::create([
             'autor' => $autor,
-            'accion' => "Se edito el usuario : ".$usuario_editar->name. ' con id  ' . $usuario_editar->id,                
+            'accion' => "update",
+            'descripcion' => "Se edito el usuario : ".$usuario_editar->name . " con el id: ". $usuario_editar->id,
+            'ip' => request()->ip() 
         ]);
         //registro del log
 
