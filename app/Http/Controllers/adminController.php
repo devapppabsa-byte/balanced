@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 class adminController extends Controller
 {
+
+
     public function login(){
 
         return view('admin.login_admin');
@@ -19,25 +21,49 @@ class adminController extends Controller
     }
 
 
+
     public function ingreso_admin(Request $request){
+
 
         
         $request->validate([
             'email' => 'required',
             'password' => 'required'
-        ]);
-
-        
+        ]);      
         
         $credentials = $request->only('email', 'password');
 
+
+
+
         if(Auth::guard('admin')->attempt($credentials)){
+
             $request->session()->regenerate();
+
+            $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+            LogBalanced::create([
+
+                'autor' => $autor,
+                'accion' => "start_session",
+                'descripcion' => "El usuario : ".$request->email . " inicio sesión como administrador",
+                'ip' => request()->ip() 
+            
+            ]);
+
+
+
             return redirect()->route('perfil.admin');
+
         }
+
+
         else{
             return back()->with('error', 'Las credenciales no coinciden con los registros');
         }
+
+
+
 
     }
 
@@ -267,7 +293,7 @@ class adminController extends Controller
     public function logs(){
 
 
-        $logs = LogBalanced::orderBy('created_at', 'desc' )->get();
+        $logs = LogBalanced::orderBy('created_at', 'desc' )->simplePaginate(10);
 
         return view('admin.logs', compact('logs'));
 

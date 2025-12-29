@@ -45,6 +45,17 @@ class userController extends Controller
 
             $request->session()->regenerate();
 
+
+            $autor = 'Id: '.auth()->user()->id.' - '.auth()->user()->name .' - '. $puesto_autor = auth()->user()->puesto;
+
+            LogBalanced::create([
+                'autor' => $autor,
+                'accion' => "start_session",
+                'descripcion' => "El usuario ".$request->email. " inicio sesión como usuario" ,
+                'ip' => request()->ip() 
+            ]);
+
+
             return redirect()->route('perfil.usuario') ;
 
         }

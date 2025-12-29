@@ -63,7 +63,7 @@
                                     <th>Autor</th>
                                     <th>Descripción</th>
                                     <th>Dirección IP</th>
-                                    <th>Accion</th>
+                                    <th>Acción</th>
                                     <th>Fecha</th>
                                     </tr>
                                 </thead>
@@ -100,9 +100,10 @@
                             <p class="my-0 py-0">
                                 <i class="fa 
                                     {{ $log->accion == 'add' ? 'fa-plus-circle text-primary' : 
+                                    ($log->accion == 'start_session' ? 'fa-right-to-bracket' :
                                     ($log->accion == 'excel' ? ' fa-file-excel text-success' : 
                                     ($log->accion == 'deleted' ? 'fa-trash text-danger' : 
-                                    ($log->accion == 'update' ? 'fa-edit text-warning' : ''))) }}">
+                                    ($log->accion == 'update' ? 'fa-edit text-warning' : '')))) }}">
                                 </i>
                             </p>
                         </td>
@@ -132,6 +133,11 @@
                 @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12 text-center  ">
+                {{$logs->links()}}
+            </div>
         </div>
         </div>
     </div>
