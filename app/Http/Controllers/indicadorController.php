@@ -915,7 +915,7 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                 "id_input_vacio" => $request->id_input_vacio[$i],
                 "informacion" => $request->informacion_indicador[$i],
                 "id_input" => $request->id_input[$i],
-                "tipo" => $request->tipo_input[$i],
+                "tipo" => 'number',
                 "mes" => $mes,
                 "year" => $year
 
@@ -945,7 +945,10 @@ $inputs_precargados = CampoPrecargado::where('id_indicador', $indicador->id)->ge
 
 foreach($inputs_precargados as $index_precargados => $precargado){
 
-        $informacion = InformacionInputPrecargado::where('id_input_precargado', $precargado->id)->first();
+
+       
+
+     $informacion = InformacionInputPrecargado::where('id_input_precargado', $precargado->id)->latest()->first();
 
 
         IndicadorLleno::create([
