@@ -44,7 +44,7 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
 
-        <div class="col-11  mx-5 bg-white rounded border p-5 shadow-sm">
+        <div class="col-11  mx-5 bg-white rounded border p-5 shadow-sm mt-3">
             <div class="row justify-content-center">
                 <div class="col-12 text-center">
                     <h2>

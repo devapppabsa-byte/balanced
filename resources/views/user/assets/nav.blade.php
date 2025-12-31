@@ -1,4 +1,13 @@
-<div class="row py-2" style="background-color: #5476ac">
+<div class="row py-2" style="background-color: #5476ac ">
+
+    @if (Auth::user()->tipo_usuario !== 'principal')
+        <div class="col-12 text-center bg-outline-primary">
+            <h6 class="mt-2 text-white">
+                <i class="fa fa-book-open"></i>
+                Perfil de solo lectura
+            </h6>
+        </div>
+    @endif
 
     <div class="col-auto zoom_link {{ request()->routeIs('perfil.usuario') ? 'link_selected' : '' }}">
         <a href="{{route("perfil.usuario")}}" class="btn btn-transparent text-white text-decoration-none fw-bold">
@@ -28,5 +37,7 @@
             Encuestas a Clientes
         </a>
     </div>
+
+
 
 </div>
