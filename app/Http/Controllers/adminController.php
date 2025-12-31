@@ -91,7 +91,7 @@ class adminController extends Controller
             'nombre_usuario' => 'required',
             'correo_usuario' => 'required|email|unique:users,email',
             'puesto_usuario' => 'required',
-            'planta' => 'required',
+           // 'planta' => 'required',
             'departamento' =>'required',
             'password_usuario' => 'required'
         ]);
@@ -138,17 +138,17 @@ class adminController extends Controller
         $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
-
-        
         $request->validate([
 
-            'nombre_departamento' => 'required |unique:departamentos,nombre'
+            'nombre_departamento' => 'required |unique:departamentos,nombre',
+            'planta' =>'required'
 
         ]);
 
 
         $departamento = new Departamento();
         $departamento->nombre = $request->nombre_departamento;
+        $departamento->planta = $request->planta;
         $departamento->save();
 
         //registro del log

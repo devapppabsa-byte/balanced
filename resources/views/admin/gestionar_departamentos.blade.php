@@ -72,8 +72,13 @@
             <div class="col-12 col-sm-12 col-md-6 col-lg-4">
                     <div class="row  text-center border border-3 shadow shadow-sm py-3 bg-white">
                         <div class="col-12">
+                            
+                            <span class="text-primary fw-bold">
+                                {{ ($departamento->planta == "1" ? 'Planta 1' : ( $departamento->planta == "2" ? 'Planta 2' : ($departamento->planta == "3" ? 'Planta 3' : '') )) }}                           
+                            </span>
+
                             <a href="{{route('agregar.indicadores.index', $departamento->id)}}" class="btn btn-outline-secondary fw-bold w-100 h-100 d-block h5 py-4" style="font-size:3vh;">
-                                {{$departamento->nombre}}    
+                                {{$departamento->nombre}}   
                             </a>   
                         </div>
 
@@ -209,6 +214,13 @@
                             <input type="text" class="form-control form-control-lg w-100" id="nombre_departamento" name="nombre_departamento">
                             <label class="form-label" for="nombre_departamento" >Nombre </label>
                         </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <select name="planta" class="form-control" id="">
+                            <option value="1">Planta 1</option>
+                            <option value="2">Planta 2</option>
+                            <option value="3">Planta 3</option>
+                        </select>
                     </div>
                 </div>
             </div>

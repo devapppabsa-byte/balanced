@@ -723,7 +723,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                {{-- <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div class="form-group mt-3">
                         <select name="planta" class="form-control form-control-lg" id="" required>
                             <option value="" disabled selected>Selecciona la planta a la que pertenece</option>
@@ -732,9 +732,9 @@
                             <option value="Planta 3"{{old('planta') == 'Planta 3' ? 'selected' : ''}} >Planta 3</option>
                         </select>
                     </div>
-                </div>
+                </div> --}}
 
-                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div class="form-group mt-3">
                         <select class="form-control form-control-lg" name="tipo_usuario" id="">
                             <option value="" disabled selected>Tipo de usuarios</option>

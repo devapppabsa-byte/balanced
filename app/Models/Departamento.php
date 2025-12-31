@@ -8,11 +8,10 @@ class Departamento extends Model
 {
     
     protected $table = 'departamentos';
-    protected $fillable = ['nombre']; 
+    protected $fillable = ['nombre', 'planta' ]; 
 
 
 
-    
 
     public function user(){
         return $this->hasMany(User::class);

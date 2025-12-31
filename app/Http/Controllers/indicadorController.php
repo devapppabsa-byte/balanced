@@ -914,6 +914,7 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
 
     $nombre_usuario = auth()->user()->name;
+    $planta_usuario = auth()->user()->planta;
     $year = Carbon::now()->year;
     $mes = Carbon::now()->subMonth()->translatedFormat('F');
     $id_movimiento = str_replace(' ','',Carbon::now().'-'.rand(0, 50000000000)); //exagere un poquis, pero poatra que no de error
@@ -951,9 +952,9 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
                 "nombre_campo" => $request->nombre_input_vacio[$i],
                 "informacion_campo" => $request->informacion_indicador[$i],
+                "planta" => $planta_usuario, 
                 "id_indicador" =>$indicador->id,
                 "id_movimiento" => $id_movimiento
-
 
             ]);
         }

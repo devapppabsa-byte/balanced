@@ -151,7 +151,7 @@
                     </div>
                 </div>
 
-                
+
                 <div class="col-12 col-sm-12 col-md-12 col-lg-3">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
@@ -171,7 +171,8 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                
+                {{-- <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div class="form-group mt-3">
                         <select name="planta" class="form-control form-control-lg" id="">
                             <option value="" disabled selected>Selecciona la planta a la que pertenece</option>
@@ -180,7 +181,9 @@
                             <option value="planta_3">Planta 3</option>
                         </select>
                     </div>
-                </div>
+                </div> --}}
+
+
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="form-group mt-3">
                         <select class="form-control form-control-lg" name="tipo_usuario" id="">

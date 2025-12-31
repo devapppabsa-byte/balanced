@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("nombre_campo");
             $table->string("informacion_campo");
             $table->string("id_movimiento");
+            $table->string('planta');
             $table->unsignedBigInteger('id_indicador');
             $table->string('final');
 

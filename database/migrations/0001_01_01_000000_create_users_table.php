@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('puesto');
-            $table->string('planta');
+           // $table->string('planta');
             $table->string('tipo_usuario');
             $table->unsignedBigInteger('id_departamento');
 
