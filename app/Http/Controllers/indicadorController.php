@@ -245,7 +245,6 @@ public function borrar_campo(Request $request, $campo){
 
 
 
-
         $id_indicador = CampoInvolucrado::where('id_input',$request->id_input)->first();
 
         //  return $id_indicador;
@@ -260,12 +259,15 @@ public function borrar_campo(Request $request, $campo){
 
     
         if($request->campo_calculado && $request->campo_vacio){
+            
             $campo_delete = CampoCalculado::findOrFail($campo);
             $campo_delete->delete();
             return back()->with("deleted", "El campo fue eliminado del indicador!.");
         }
+        
 
 
+   
         if($request->campo_vacio){
 
            $campo_delete = CampoVacio::findOrFail($campo);
@@ -364,7 +366,6 @@ public function input_porcentaje_guardar(Request $request, Indicador $indicador)
     
 
 
-
     if($request->resultado_final){
 
         $comprobacion = CampoCalculado::where('id_indicador', $indicador->id)
@@ -380,10 +381,17 @@ public function input_porcentaje_guardar(Request $request, Indicador $indicador)
     }
 
 
+
+
+
+
     if(count($request->input_porcentaje) < 2 ) return back()->with("error", "Debe agregregar un par de campos");
+
 
     $contador = count($request->input_porcentaje);
     $id_input = Date('ydmHis').rand(0,100);
+
+
 
 
 
@@ -400,15 +408,27 @@ public function input_porcentaje_guardar(Request $request, Indicador $indicador)
 
     ]);
 
+
+
+
+
+
+
     for($i=0; $i < $contador; $i++){
         
         CampoInvolucrado::create([
             "id_input" => $request->input_porcentaje[$i],
             "tipo" => "number",
+            "posicion" => $i,
             "id_input_calculado" => $campo_calculado->id
         ]);
 
     }
+
+
+
+
+
 
     return back()->with("success", "El campo de porcentaje ha sido creado");
 
@@ -697,9 +717,9 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
 
 public function input_promedio_guardar(Request $request, Indicador $indicador){
 
-       $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+    
+    $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
-       
     //aqui se hace la verificación si el campo combinado de promedio qued marcado como campo final
     if($request->resultado_final){
 
@@ -755,7 +775,7 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
                 "id_input" => $request->input_promedio[$i],
                 "tipo" => "number",
                 "id_input_calculado" => $campo_calculado->id,
-                
+                "posicion" => $i
             ]);
             
         }
@@ -889,9 +909,10 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 //aui empieza el codigo para el llenado de indicadores
 public function llenado_informacion_indicadores(Indicador $indicador, Request $request){
 
+
     $nombre_usuario = auth()->user()->name;
     $year = Carbon::now()->year;
-    $mes = Carbon::now()->month;
+    $mes = Carbon::now()->subMonth()->translatedFormat('F');
     $id_movimiento = str_replace(' ','',Carbon::now().'-'.rand(0, 50000000000)); //exagere un poquis, pero poatra que no de error
 
 
@@ -952,14 +973,12 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
 
         IndicadorLleno::create([
-
             "nombre_campo" => $precargado->nombre,
             "informacion_campo" => $informacion->informacion,
             "id_indicador" =>$indicador->id,
             "id_movimiento" => $id_movimiento
-
-
         ]);  
+
 }
 
 //SE AGREGAN LOS INPUTS PRECARGADOS AL INDICADOR LLENO
@@ -968,7 +987,15 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
         //Aqui esta la logica nueva 03 de diciembre del 2025
         //Se toman los inputs calculados segun el ID del indicador:
-        $campos_calculados_indicador = CampoCalculado::with('campo_involucrado')->where('id_indicador', $indicador->id)->get();
+
+         // $campos_calculados_indicador = CampoCalculado::with('campo_involucrado')->where('id_indicador', $indicador->id)->get();
+
+       $campos_calculados_indicador = CampoCalculado::with(['campo_involucrado' => function ($q) {
+                                                            $q->orderBy('posicion', 'asc');
+                                                           }])
+                                                             ->where('id_indicador', $indicador->id)
+                                                            ->get();
+
 
 
         //Aqui es donde se desarrollara la logica, vamos a ver como.
@@ -982,68 +1009,49 @@ foreach($inputs_precargados as $index_precargados => $precargado){
             $campos_vacios_encontrados = [];
             $campos_precargados_encontrados = [];
             $campos_calculados_encontrados = [];
-                        
-
+                    
             
+
+
             //arrays que me ayudan a guardar la info de los campos encontrados
-            foreach($campo_calculado->campo_involucrado as $index_involucrado => $campo_involucrado){
- 
-                
-                //bien, aqui tenemos los inputs involucrados de cada input_calculado.
-                $existe_en_vacios = CampoVacio::where('id_input', $campo_involucrado->id_input)->latest()->first();
-                $existe_en_precargados = CampoPrecargado::where('id_input', $campo_involucrado->id_input)->latest()->first();
-                $existe_en_calculados = CampoCalculado::where("id_input", $campo_involucrado->id_input)->latest()->first();
-                
-           
+                $datos = [];
 
+                foreach ($campo_calculado->campo_involucrado as $index_involucrado => $campo_involucrado) {
 
-                    //condicionales para ir guardando los datos segun el input encontrado
-                    if($existe_en_vacios){
+                    $existe_en_vacios = CampoVacio::where('id_input', $campo_involucrado->id_input)->latest()->first();
+                    $existe_en_precargados = CampoPrecargado::where('id_input', $campo_involucrado->id_input)->latest()->first();
+                    $existe_en_calculados = CampoCalculado::where("id_input", $campo_involucrado->id_input)->latest()->first();
 
-                      $info_campo_vacio = InformacionInputVacio::where('id_input', $existe_en_vacios->id)->latest()->first();
-
-                        if(isset($info_campo_vacio)){
-
-                            array_push($informacion_campos_vacios_encontrados, $info_campo_vacio->informacion);
-                            array_push($campos_vacios_encontrados, $existe_en_vacios);
-
+                    // Vacíos
+                    if ($existe_en_vacios) {
+                        $info = InformacionInputVacio::where('id_input', $existe_en_vacios->id)->latest()->first();
+                        if ($info) {
+                            $datos[$index_involucrado] = $info->informacion;
                         }
-                    
-
                     }
 
-                    if($existe_en_precargados){
-
-                        $info_campo_precargado = InformacionInputPrecargado::where('id_input_precargado', $existe_en_precargados->id)->latest()->first();
-
-                        if(isset($info_campo_precargado)){
-
-                            array_push($informacion_campos_precargados_encontrados, $info_campo_precargado->informacion);
-                            array_push($campos_precargados_encontrados, $existe_en_precargados);
+                    // Precargados
+                    if ($existe_en_precargados) {
+                        $info = InformacionInputPrecargado::where('id_input_precargado', $existe_en_precargados->id)->latest()->first();
+                        if ($info) {
+                            $datos[$index_involucrado] = $info->informacion;
                         }
-
                     }
 
-
-                    if($existe_en_calculados){
-
-                        $info_campo_calculado = InformacionInputCalculado::where('id_input_calculado', $existe_en_calculados->id)->latest()->first();
-
-                        if(isset($info_campo_calculado)){
-
-                           array_push($informacion_campos_calculados_encontrados, $info_campo_calculado->informacion);
-                           array_push($campos_calculados_encontrados, $existe_en_calculados); 
-
+                    // Calculados
+                    if ($existe_en_calculados) {
+                        $info = InformacionInputCalculado::where('id_input_calculado', $existe_en_calculados->id)->latest()->first();
+                        if ($info) {
+                            $datos[$index_involucrado] = $info->informacion;
                         }
-
                     }
-
-     
-
-                    
                 }
 
-                    $datos = array_merge($informacion_campos_calculados_encontrados, $informacion_campos_precargados_encontrados, $informacion_campos_vacios_encontrados);
+
+               //return $datos;
+
+
+
 
 
                     //aqui va la insercion de la info en el campo calculado
@@ -1112,44 +1120,42 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
 
 
+                if($campo_calculado->operacion === "division"){
 
-                    if($campo_calculado->operacion === "division"){
-
-                        
-                        InformacionInputCalculado::create([
-
-                            'id_input_calculado' => $campo_calculado->id,
-                            'tipo' => $campo_involucrado->tipo,
-                            'informacion' => round($datos[0] / $datos[1], 4),
-                            'mes' => $mes,
-                            'year' => $year
-
-                        ]);
+             
 
 
+                    InformacionInputCalculado::create([
 
-                        IndicadorLleno::create([
+                        'id_input_calculado' => $campo_calculado->id,
+                        'tipo' => $campo_involucrado->tipo,
+                        'informacion' => round($datos[0] / $datos[1], 4),
+                        'mes' => $mes,
+                        'year' => $year
 
-                            'nombre_campo' => $campo_calculado->nombre,
-                            'informacion_campo' => round($datos[0] / $datos[1], 4),
-                            'id_indicador' => $indicador->id,
-                            'id_movimiento' => $id_movimiento,
-                            'final' => $campo_calculado->resultado_final
-
-                        ]);
+                    ]);
 
 
 
+                    IndicadorLleno::create([
 
-                    }
+                        'nombre_campo' => $campo_calculado->nombre,
+                        'informacion_campo' => round($datos[0] / $datos[1], 4),
+                        'id_indicador' => $indicador->id,
+                        'id_movimiento' => $id_movimiento,
+                        'final' => $campo_calculado->resultado_final
 
+                    ]);
+
+
+
+                }
 
 
 
                     if($campo_calculado->operacion === "porcentaje"){
-
-
-
+                        
+                       // return $datos;
 
                         InformacionInputCalculado::create([
 
@@ -1161,7 +1167,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
                         ]);
 
-                        
+
 
                         IndicadorLleno::create([
 

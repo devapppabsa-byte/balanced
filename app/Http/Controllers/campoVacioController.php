@@ -12,6 +12,10 @@ class campoVacioController extends Controller
 
 public function agregar_campo_vacio(Request $request,Indicador $indicador){
 
+
+
+
+
     $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
     $request->validate([

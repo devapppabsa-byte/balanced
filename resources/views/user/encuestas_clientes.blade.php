@@ -144,15 +144,9 @@
                                     
                                     <div class="col-12">
                                         <i class="fa fa-exclamation-circle text-danger"></i>
-                                        No cuenta con indicadores, pero los puedes agregar aqui
+                                        Aún no se te han asignado encuestas.
                                     </div>
                                     
-                                    <div class="col-12">
-                                        <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
-                                            Agregar Cuestionario
-                                        </a>
-                                    </div>
-
                                 </div>
                                 <h5>
                                 </h5>

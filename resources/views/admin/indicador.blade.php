@@ -248,7 +248,7 @@
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
                         <div class="form-check mt-2">
-                            <input class="form-check-input form-check-input-lg"  type="checkbox" name="resultado_final" id="resultado_final" />
+                            <input class="form-check-input form-check-input-lg"  form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
                             <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
                         </div>
 
@@ -469,12 +469,12 @@
                 <form action="{{route('input.division.guardar', $indicador->id)}}" method="POST" class="row m-3 justify-content-center " id="division_container">
                     @csrf
 
-                    <h6 class="my-0 no-drop">Divisor</h6>
+                    <h6 class="my-0 no-drop">Divisor ( El número de personas o grupos entre los que repartes (ej. tú y 3 amigos, o sea 4). )</h6>
                     
                     <div class="col-12 bg-light border pb-5 mb-3 text-center" ondrop="dropDivision(event)" ondragover="allowDropDivision(event)" id="divisor_container">
                     </div>
                     
-                    <h6 class="my-0 no-drop">Dividendo</h6>
+                    <h6 class="my-0 no-drop">Dividendo (La cantidad total que tienes para repartir (ej. 12 donas))</h6>
                     <div class="col-12 bg-light border pb-5 mb-3 text-center" ondrop="dropDivision(event)" ondragover="allowDropDivision(event)" id="dividendo_container">
                     </div>
                     
@@ -549,11 +549,11 @@
                 <form action="{{route('input.resta.guardar', $indicador->id)}}" method="POST" id="resta_container" class="row m-3 justify-content-around">
                     @csrf
                     
-                    <h6 class="my-0">Minuendo</h6>
+                    <h6 class="my-0">Minuendo (El minuendo es el número inicial del cual se va a restar)</h6>
                     <div class="row mx-2 bg-light pb-5 border" id="minuendo_container" ondrop="dropResta(event)" ondragover="allowDropResta(event)" id="minuendo_container">
                     </div>
                     
-                    <h6 class="my-0">Sustraendo</h6>
+                    <h6 class="my-0">Sustraendo (El sustraendo es el número que se quita de ese minuendo)</h6>
                     <div class="row mx-2 bg-light pb-5 mt-1 border" id="sustraendo_container" ondrop="dropResta(event)" ondragover="allowDropResta(event)" id="sustraendo_container">
                     </div>
                     
@@ -618,13 +618,13 @@
 
         
                     <div class="form-outline no-drop" data-mdb-input-init>
-                        <input type="text" id="nombre_campo_porcentaje" class="form-control form-control-lg no-drop w-100 {{ $errors->first('nombre_campo_porcentaje') ? 'is-invalid' : '' }}" form="porcentaje_container" name="nombre">
+                        <input type="text" id="nombre_campo_porcentaje" class="form-control form-control-lg no-drop w-100 {{ $errors->first('nombre_campo_porcentaje') ? 'is-invalid' : '' }}" form="porcentaje_container" name="nombre" required>
                         <label class="form-label" for="nombre_campo_porcentaje" >Nombre nuevo campo </label>
                     </div>
 
 
                     <div class="form-outline no-drop mt-3" data-mdb-input-init>
-                        <textarea class="w-100 form-control" id="descripcion_porcentaje" name="descripcion" form="porcentaje_container"></textarea>
+                        <textarea class="w-100 form-control" id="descripcion_porcentaje" name="descripcion" form="porcentaje_container" required></textarea>
                         <label class="form-label" for="descripcion_porcentaje">Descripción del campo</label>
                     </div>
                     
@@ -705,7 +705,9 @@
                         </option>
                         @foreach ($informacion_foranea as $informacion)
                         
-                            <option value="{{$informacion->id_input}}|{{$informacion->id}}|{{$informacion->nombre}}|{{$informacion->descripcion}}">                   
+                            <option 
+                            value="
+                                {{$informacion->id_input}}|{{$informacion->id}}|{{$informacion->nombre}}|{{$informacion->descripcion}}">                   
                                 {{$informacion->nombre}}
                             </option>
 

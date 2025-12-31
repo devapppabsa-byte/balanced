@@ -116,7 +116,7 @@ class adminController extends Controller
         //registro del log
         LogBalanced::create([
             'autor' => $autor,
-            'accion' => "deleted",
+            'accion' => "add",
             'descripcion' => "Se agrego el usuario : ".$usuario->name . " con el id: ". $usuario->id,
             'ip' => $request->ip() 
         ]);

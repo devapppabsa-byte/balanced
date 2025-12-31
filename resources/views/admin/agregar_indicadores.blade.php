@@ -163,6 +163,7 @@
                                                         <th scope="col">Nombre</th>
                                                         <th scope="col">Correo</th>
                                                         <th scope="col">Puesto</th>
+                                                        <th scope="col">Tipo</th>
                                                         <th scope="col">Acciones</th>
                                                     </tr>
                                                 </thead>
@@ -174,6 +175,9 @@
                                                 <th>{{$usuario->name}}</th>
                                                 <td>{{$usuario->email}}</td>
                                                 <td>{{$usuario->puesto}}</td>
+                                                <td>
+                                                    {!!($usuario->tipo_usuario == "principal") ? '<i class="fa-solid fa-user-tie"></i> Emisor ' :  '<i class="fa-solid fa-user"></i> Lector' !!}
+                                                </td>
 
                                                 <td class=""> 
                                                     <a class="text-danger" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_user{{$usuario->id}}">

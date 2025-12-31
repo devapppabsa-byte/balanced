@@ -61,7 +61,7 @@ use Carbon\Carbon;
     <div class="row border-bottom mb-2 bg-white">
 
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-outline-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
+            <button class="btn btn-outline-primary btn-sm w-100 {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }}  " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
                 <i class="fa fa-plus"></i>
                 Llenar este Indicador
             </button>
@@ -105,7 +105,7 @@ use Carbon\Carbon;
                     @php
                         $fecha = Carbon::parse(explode('-', $movimiento)[0]);
                         Carbon::setLocale('es');
-                        $mes = $fecha->translatedformat('F');
+                        $mes = $fecha->subMonth()->translatedformat('F');
                         $year = $fecha->format('Y');
                     @endphp
 
@@ -381,6 +381,7 @@ const mesesES = [
 // Labels: sacamos el mes del created_at
 const labels = datos.map(item => {
     const fecha = new Date(item.created_at);
+    fecha.setMonth(fecha.getMonth() -1)
     return mesesES[fecha.getMonth()];
 });
 

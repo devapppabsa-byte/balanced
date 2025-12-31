@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\CampoPrecargado;
 use App\Models\Indicador;
+use App\Models\InformacionInputPrecargado;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\CampoForaneoInformacion;
 
 class campoPrecargadoController extends Controller
 {
@@ -13,6 +16,7 @@ class campoPrecargadoController extends Controller
 
     //este es para el campo de prueba
     public function agregar_campo_precargado(Indicador $indicador, Request $request){
+
 
        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
@@ -26,8 +30,11 @@ class campoPrecargadoController extends Controller
             $descripcion = $datos[3];
         //Se separan los datos
 
+        //tomo la informacion de la base de datos en base al id 
+        $informacion = CampoForaneoInformacion::where('id_campo_foraneo', $id)->latest()->first();
 
-
+          
+             
 
             $request->validate([
 
@@ -46,7 +53,7 @@ class campoPrecargadoController extends Controller
             // al momento de guardar este input seria bueno guardar la informacion, pero algo me falta, como voy a actualizar 
             // la informacion mes con mes, puedo agregar la informacion aqui y despues al momento de cagar os nuevs datos, pero como
             //los identifico.
-          CampoPrecargado::create([
+         $input_precargado =  CampoPrecargado::create([
 
                 'id_input' => $id_input,
                 'id_input_foraneo' => $id_input_informacion,
@@ -58,8 +65,19 @@ class campoPrecargadoController extends Controller
             ]);
 
 
+            $year = Carbon::now()->year;
+            $mes = Carbon::now()->month;
 
+            //Aqui hacemos la insercion de la informacion al campo de informacion input_precargado..
 
+            InformacionInputPrecargado::create([
+
+                'informacion' => $informacion->informacion,
+                'id_input_precargado' => $input_precargado->id,
+                'mes' => $mes,
+                'year' => $year
+
+            ]);
 
 
 
@@ -70,6 +88,10 @@ class campoPrecargadoController extends Controller
 
 
     }//este es para el campo de prueba
+
+
+
+
 
 
 

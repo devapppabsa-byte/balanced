@@ -50,7 +50,7 @@
 <div class="container-fliud">
     <div class="row border-bottom py-2 bg-white">
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-outline-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_servicio">
+            <button class="btn btn-outline-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_servicio" {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }} >
             <i class="fa-solid fa-edit"></i>
                 Evaluar Servicio / Entrega de Porveedor
             </button>

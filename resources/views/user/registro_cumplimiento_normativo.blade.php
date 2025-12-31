@@ -105,9 +105,15 @@
 
                         <td class="text-center">
                             <div class="btn-group">
-                                <a class="btn btn-primary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#reg{{$apartado->id}}">
+
+                                <button 
+                                    class="btn btn-primary btn-sm" 
+                                    data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#reg{{$apartado->id}}" 
+                                    
+                                    {{Auth::user()->tipo_usuario !== 'principal' ? 'disabled' : '' }} >
+                                    
                                     <i class="fa-regular fa-check-square"></i>
-                                </a>
+                                </button>
 
                                 <a href="{{route('ver.evidencia.cumplimiento.normativo', $apartado->id)}}" class="btn btn-secondary btn-sm">
                                     <i class="fa fa-eye"></i>
