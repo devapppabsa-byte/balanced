@@ -247,12 +247,12 @@ use Carbon\Carbon;
                             </h2>
                         </div>
                     @endforelse
-                    @if ($campos_vacios)
-                        <div class="col-11">
+
+                    @if (!$campos_vacios->isEmpty() )
+                        <div class="col-12 bg-light p-3 rounded">
                             <label>Comentario del Indicador: </label>
                             <textarea type="text" name="comentario" placeholder="Comentario" class="form-control"></textarea>
                         </div>
-                    @endif
                 </form>
 
                 <div class="row justify-content-center bg-light  rounded p-4">
@@ -266,7 +266,6 @@ use Carbon\Carbon;
                 </div>
             </div>
             <div class="modal-footer">
-                @if (!$campos_vacios->isEmpty())
                 <button  class="btn btn-primary w-100 py-3" form="formulario_llenado_indicadores" data-mdb-ripple-init>
                     <h6>Guardar</h6>
                 </button>

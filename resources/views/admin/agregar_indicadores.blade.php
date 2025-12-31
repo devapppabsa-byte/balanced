@@ -574,19 +574,19 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input type="checkbox" name="planta_1" id="planta1" class="form-check-input" value="active">
+                                <input type="checkbox" name="planta_1" id="planta1" class="form-check-input" value="planta_1">
                                 <label for="planta1" class="form-check-label">Planta 1</label>
                             </div>
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input type="checkbox" name="planta_2" id="planta2" class="form-check-input" value="active">
+                                <input type="checkbox" name="planta_2" id="planta2" class="form-check-input" value="planta_2">
                                 <label for="planta2" class="form-check-label">Planta 2</label>
                             </div>
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input type="checkbox" name="planta_3" id="planta3" class="form-check-input" value="active">
+                                <input type="checkbox" name="planta_3" id="planta3" class="form-check-input" value="planta_3">
                                 <label for="planta3" class="form-check-label">Planta 3</label>
                             </div>
                         </div>

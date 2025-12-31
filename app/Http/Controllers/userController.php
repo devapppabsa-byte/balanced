@@ -33,9 +33,12 @@ class userController extends Controller
     public function login_user(Request $request){
 
         $request->validate([
+
             'email' => 'required',
             'password' => 'required'
+
         ]);
+
 
         $credentials = $request->only('email', 'password');
         
@@ -71,17 +74,67 @@ class userController extends Controller
 
     public function perfil_user(){   
 
+
         $year = Carbon::now()->year;
 
         $id_dep = Auth::user()->departamento->id;
-        $indicadores = Indicador::where('id_departamento', $id_dep)->get();
+        $planta_user = auth()->user()->planta;
+        $indicadores_departamento = Indicador::where('id_departamento', $id_dep)->get();
 
+        $indicadores = [];
+
+        //vamos a consultar los indicadores de acuerdo a la planta a donde fueron asignados..., ya se tiene los indicadores del departamento.
+        //ahora vamos a sacar los indicadores que perteneces al departamento del usuario
+
+        foreach($indicadores_departamento as $index_indicadores => $indicador ){
+
+
+
+            if($indicador->planta_1 == $planta_user){
+
+                array_push($indicadores, $indicador);
+                
+            }
+
+
+
+
+            if($indicador->planta_2  ==  $planta_user){
+
+                array_push($indicadores, $indicador);
+
+            }
+
+
+
+            if($indicador->planta_3 == $planta_user){
+
+                array_push($indicadores, $indicador);
+
+            }
+
+
+
+
+        }
+
+
+
+        //indicadores del departamento y planta correspondiente
+        //return $indicadores_departamento;
+        // return $planta_user;
+        // return $indicadores;
+        
+
+        
 
 
         //TODO EL DESMADRE DE ABAJO ES PARA PODER OBTENER LA PONDERACION Y QUE NO SE LLENEN INDICADORES SI LA PONDERACION CAMBIA
     
         //Teniendo el departamento tomo los indicadores que se le estan registrando.
         $indicadores_ponderaciones = Indicador::where('id_departamento', $id_dep)->get();
+
+
         $ponderacion_indicadores = [];
         foreach($indicadores_ponderaciones as $indicador_ponderacion){
             array_push($ponderacion_indicadores, $indicador_ponderacion->ponderacion);

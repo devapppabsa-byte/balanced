@@ -79,7 +79,8 @@ class indicadorController extends Controller
 
 
     public function agregar_indicadores_store(Request $request, Departamento $departamento){
-    
+
+     
         $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
          
@@ -102,9 +103,11 @@ class indicadorController extends Controller
         $indicador->meta_esperada = $request->meta_esperada;
         $indicador->meta_minima = $request->meta_minima;
         $indicador->ponderacion = $request->ponderacion_indicador;
-        if ($indicador->planta_1) $request->planta_1;
-        if ($indicador->planta_2) $request->planta_2;
-        if ($indicador->planta_3) $request->planta_3; 
+
+        if ($request->planta_1 == "active") $indicador->planta_1 = $request->planta_1;
+        if ($request->planta_2 == "active") $indicador->planta_2 =  $request->planta_2;
+        if ($request->planta_3 == "active") $indicador->planta_3 = $request->planta_3;
+
         $indicador->creador = $nombre_admin . ' - ' . $puesto;
         $indicador->save();
 
