@@ -547,7 +547,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-12 col-md-12 col-lg-5 mt-4 border-left">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 mt-4 border-left">
                     <div class="row d-flex align-items-center justify-content-center">
                         <div class="col-12">
                             <h6>Meta</h6>
@@ -567,31 +567,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-12 col-md-12 col-lg-7  d-flex align-items-center justify-content-center mt-4 ">
-                    <div class="row">
-                        <div class="col-12">
-                            <h6>Aplica para: </h6>
-                        </div>
-                        <div class="col-auto">
-                            <div class="form-check form-check-inline">
-                                <input type="checkbox" name="planta_1" id="planta1" class="form-check-input" value="planta_1">
-                                <label for="planta1" class="form-check-label">Planta 1</label>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <div class="form-check form-check-inline">
-                                <input type="checkbox" name="planta_2" id="planta2" class="form-check-input" value="planta_2">
-                                <label for="planta2" class="form-check-label">Planta 2</label>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <div class="form-check form-check-inline">
-                                <input type="checkbox" name="planta_3" id="planta3" class="form-check-input" value="planta_3">
-                                <label for="planta3" class="form-check-label">Planta 3</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
 
                 <div class="col-12 mt-3 ">
                     <div class="form-group mt-3">

@@ -104,9 +104,9 @@ class indicadorController extends Controller
         $indicador->meta_minima = $request->meta_minima;
         $indicador->ponderacion = $request->ponderacion_indicador;
 
-        if ($request->planta_1 == "active") $indicador->planta_1 = $request->planta_1;
-        if ($request->planta_2 == "active") $indicador->planta_2 =  $request->planta_2;
-        if ($request->planta_3 == "active") $indicador->planta_3 = $request->planta_3;
+        // if ($request->planta_1 == "active") $indicador->planta_1 = $request->planta_1;
+        // if ($request->planta_2 == "active") $indicador->planta_2 =  $request->planta_2;
+        // if ($request->planta_3 == "active") $indicador->planta_3 = $request->planta_3;
 
         $indicador->creador = $nombre_admin . ' - ' . $puesto;
         $indicador->save();
@@ -951,8 +951,7 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
             IndicadorLleno::create([
 
                 "nombre_campo" => $request->nombre_input_vacio[$i],
-                "informacion_campo" => $request->informacion_indicador[$i],
-                "planta" => $planta_usuario, 
+                "informacion_campo" => $request->informacion_indicador[$i], 
                 "id_indicador" =>$indicador->id,
                 "id_movimiento" => $id_movimiento
 

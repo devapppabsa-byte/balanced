@@ -79,44 +79,17 @@ class userController extends Controller
 
         $id_dep = Auth::user()->departamento->id;
         $planta_user = auth()->user()->planta;
-        $indicadores_departamento = Indicador::where('id_departamento', $id_dep)->get();
+        $indicadores = Indicador::where('id_departamento', $id_dep)->get();
 
-        $indicadores = [];
+    
 
         //vamos a consultar los indicadores de acuerdo a la planta a donde fueron asignados..., ya se tiene los indicadores del departamento.
         //ahora vamos a sacar los indicadores que perteneces al departamento del usuario
 
-        foreach($indicadores_departamento as $index_indicadores => $indicador ){
 
 
 
-            if($indicador->planta_1 == $planta_user){
-
-                array_push($indicadores, $indicador);
-                
-            }
-
-
-
-
-            if($indicador->planta_2  ==  $planta_user){
-
-                array_push($indicadores, $indicador);
-
-            }
-
-
-
-            if($indicador->planta_3 == $planta_user){
-
-                array_push($indicadores, $indicador);
-
-            }
-
-
-
-
-        }
+        
 
 
 

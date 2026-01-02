@@ -401,7 +401,7 @@ new Chart(ctx, {
     datasets: [
       {
         type: "bar",
-        label: "Costo por tonelada",
+        label: "Cumplimiento del Indicador",
         data: valores,
 
         backgroundColor: function(context) {
