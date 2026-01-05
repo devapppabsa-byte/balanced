@@ -340,6 +340,9 @@ class userController extends Controller
 
     public function usuarios_show_admin(){
 
+
+
+
         $usuarios = User::get();
         $departamentos = Departamento::get();
 

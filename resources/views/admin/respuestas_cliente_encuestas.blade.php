@@ -32,7 +32,7 @@
             @endif
         </div>
     </div>
-    @include('user.assets.nav')
+    @include('admin.assets.nav')
 </div>
 
 

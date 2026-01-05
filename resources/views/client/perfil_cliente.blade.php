@@ -80,10 +80,9 @@
     <div class="row justify-content-around">
 
         <div class="col-12 col-sm-12 col-md-8 col-lg-6 mt-2">
-            <div class="table-responsive shadow-sm">
-
-                @if (empty($encuestas))
-                <table class="table  table-responsive mb-0 border shadow-sm table-hover">
+            <div class="table-responsive  ">
+                @if (count($encuestas) != 0)
+                <table class="table  table-responsive  border shadow-sm table-hover">
                         <thead class="bree-serif-regular table-primary">
                             <tr>
                                 <th class="text-gray">Titulo Encuesta</th>

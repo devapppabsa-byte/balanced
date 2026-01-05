@@ -41,7 +41,7 @@
     @include('admin.assets.nav')
 </div>
 
-<div class="container-fluid mb-5">
+<div class="container-fluid">
     <div class="row  border-bottom bg-white shadow-sm ">
         <div class="col-12 col-sm-12 col-md-3 col-lg-auto my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cuestionario">
@@ -64,8 +64,45 @@
 
 
 <div class="container-fluid">
+
+    <form class="row   justify-content-center " action="{{route('encuestas.show.admin')}}" method="GET">
+        <div class="col-9  mx-5  ">
+            <div class="row justify-content-center p-3">
+                @csrf @method("GET")
+                        <div class="col-12 col-sm-12 col-md-8 col-lg-5  shadow shadow-sm p-3 border bg-white px-4">
+                            <div class="row justify-content-center"> 
+                                <div class="col-6 ">
+                                    <div class="form-group">
+                                        <label for="" class="fw-bold">Fecha Inicio: </label>
+                                        <input type="date" name="fecha_inicio" value="{{request('fecha_inicio')}}" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-6 ">
+                                    <div class="form-group">
+                                        <label for="" class="fw-bold">Fecha Final: </label>
+                                        <input type="date" name="fecha_fin" value="{{request('fecha_fin')}}" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 m-2">
+                                    <div class="form-group">
+                                        <button class="btn btn-primary btn-sm ">
+                                            <i class="fa fa-filter"></i>
+                                            Filtrar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+            </div>
+        </div>
+    </form>
+
+
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-8 shadow-sm rounded border  bg-white p-5">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-8 shadow-sm rounded border  bg-white px-4 py-3">
             <div class="row ">
                 <div class="col-12 text-center">
                     <h2>
@@ -86,6 +123,7 @@
                                     <th>Nombre</th>
                                     <th>Departamento</th>
                                     <th>Acciones</th>
+                                    <th>Creada</th>
                                     <th>Cumplimiento</th>
                                     </tr>
                                 </thead>
@@ -117,6 +155,10 @@
                                         <i class="fa fa-eye"></i>
                                     </a>
                                 
+                                </td>
+
+                                <td>
+                                  {{$encuesta->created_at}}
                                 </td>
 
                                 <td class="text-start">
