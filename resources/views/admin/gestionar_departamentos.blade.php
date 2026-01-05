@@ -77,7 +77,7 @@
                                 {{ ($departamento->planta == "1" ? 'Planta 1' : ( $departamento->planta == "2" ? 'Planta 2' : ($departamento->planta == "3" ? 'Planta 3' : '') )) }}                           
                             </span>
 
-                            <a href="{{route('agregar.indicadores.index', $departamento->id)}}" class="btn btn-outline-secondary fw-bold w-100 h-100 d-block h5 py-4" style="font-size:3vh;">
+                            <a href="{{route('agregar.indicadores.index', $departamento->id)}}" class="btn btn-outline-secondary fw-bold w-100 h-100 d-block h6 py-4" style="font-size:2vh;">
                                 {{$departamento->nombre}}   
                             </a>   
                         </div>

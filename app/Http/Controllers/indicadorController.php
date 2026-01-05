@@ -244,10 +244,7 @@ class indicadorController extends Controller
 
 public function borrar_campo(Request $request, $campo){
 
-        //vamos a buscar el id_input en la base de datos de los campos involucrados
-
-
-
+        //vamos a buscar el id_input en la base de datos de los campos involucrados.
         $id_indicador = CampoInvolucrado::where('id_input',$request->id_input)->first();
 
         //  return $id_indicador;
@@ -875,13 +872,42 @@ $encuestas = DB::table('encuestas as e')
 
 public function indicador_lleno_show_admin(Indicador $indicador){
 
+
+
+    //fehcas de filtrado, si request->fecha_inicio trae algo lo pone en la variable inicio si no deja aa inicio como el inicio del año.
+    //se convirtieron las fechas a UTC para que coincidieran con el registro de busqueda.
+    $inicio = request()->filled('fecha_inicio')
+        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+            ->startOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            ->startOfYear()
+            ->utc();
+
+    $fin = request()->filled('fecha_fin')
+        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            ->endOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            ->endOfYear()
+            ->utc();
+
+
     //Para lgraficar los datos del indicador
-    $graficar = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->get();
+     IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->get();
+
+     $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+                ->where('final', 'on')
+                ->whereBetween('created_at', [$inicio, $fin])
+                ->orderBy('created_at')
+                ->get();
+
+
     //para graficar os datos del indicaor
 
 
     //Para mostrar los datos del indicador
-    $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get();
+    $datos = IndicadorLleno::where('id_indicador', $indicador->id)->whereBetween('created_at', [$inicio, $fin])->get();
     $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
 
  
@@ -894,7 +920,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
     
 
-    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos'));
+    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos', 'indicador'));
 
 }
 

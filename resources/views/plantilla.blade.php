@@ -16,12 +16,14 @@
         body{
             margin: 0px;
             padding: 0px;
+            cursor: 
         }
 
         .input.activo {
             border: 2px solid blue;
             background-color: #e0f0ff;
         }
+
 
     </style>
 

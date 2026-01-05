@@ -85,8 +85,8 @@
         <div class="">
             <div class="accordion-header text-start " id="headingTwo">
                 <a data-mdb-collapse-init class="fw-bold  collapsed m-2" type="button" data-mdb-target="#info_precargada" aria-expanded="false" aria-controls="collapseTwo">
-                    <i class="fa-solid fa-circle-arrow-down"></i>
-                    Información precargada por el administrador
+                    <i class="fa-solid fa-file-excel"></i>
+                    Información cargada desde Excel.
                 </a>
             </div>
             <div id="info_precargada" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#accordionExample">
@@ -129,22 +129,58 @@
 
 <div class="container-fluid">
 
-    <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center mt-4">
-        <div  class="col-12 mx-2 bg-white shadow-sm p-5">
-            
-            <div class="row justify-content-center">
-                
+    <form class="row bg-white mt-2 p-3 justify-content-center" action="{{route('indicador.lleno.show.admin', $indicador->id)}}" method="GET">
+        @csrf @method("GET")
                 <div class="col-12">
                     <h3><i class="fa fa-chart-simple"></i>
                         Historico de llenado del Indicador
                     </h3>
                 </div>
+                
 
+                <div class="col-12 col-sm-12 col-md-8 col-lg-4  shadow shadow-sm p-3 border">
+                    <div class="row justify-content-center">
+
+                        <div class="col-6 ">
+                            <div class="form-group">
+                                <label for="" class="fw-bold">Fecha Inicio: </label>
+                                <input type="date" name="fecha_inicio" value="{{request('fecha_inicio')}}" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-6 ">
+                            <div class="form-group">
+                                <label for="" class="fw-bold">Fecha Final: </label>
+                                <input type="date" name="fecha_fin" value="{{request('fecha_fin')}}" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-12 m-2">
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-sm ">
+                                    <i class="fa fa-search"></i>
+                                    Buscar
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+    </form>
+
+
+
+    <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center mt-2">
+        <div  class="col-12  bg-white shadow-sm pb-5 pt-2">
+            
+            <div class="row justify-content-center">
+                
 
                 
                 @forelse($grupos as $movimiento => $items)
 
-                <div class="col-10 col-sm-5 col-md-5 col-lg-3  shadow-sm mx-4 border rounded mt-4">
+                <div class="col-10 col-sm-10 col-md-5 col-lg-3  shadow-sm mx-4 border rounded mt-4">
                     @php
                         $fecha = Carbon::parse(explode('-', $movimiento)[0]);
                         Carbon::setLocale('es');
@@ -250,9 +286,6 @@
 
 
 
-
-
-
 <div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog  modal-xl">
         <div class="modal-content">
@@ -319,6 +352,8 @@
 </div>
 
 
+
+
 @endsection
 
 
@@ -330,8 +365,8 @@
 {{-- Grafico de Pie --}}
 
 <script>
-const datos = @json($graficar);
 
+const datos = @json($graficar);
 // Meses en español
 const mesesES = [
   "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -395,6 +430,10 @@ new Chart(ctxPie, {
   }
 });
 </script>
+
+
+
+
 
 <script>
     const ctxBar = document.getElementById('grafico').getContext('2d');
