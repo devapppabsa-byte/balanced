@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\EvaluacionProveedor;
 use App\Models\Proveedor;
+use Carbon\Carbon;
 use App\Models\Departamento;
 
 use Illuminate\Support\Facades\Auth;
@@ -24,11 +25,32 @@ class evaluacionProveedorController extends Controller
 
     }
 
+
+
     public function detalle_evaluacion_proveedor(Proveedor $proveedor){
+
+
+    $inicio = request()->filled('fecha_inicio')
+        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+            ->startOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            ->startOfYear()
+            ->utc();
+
+    $fin = request()->filled('fecha_fin')
+        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            ->endOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            ->endOfYear()
+            ->utc();
+
+
+
         
-        $evaluaciones = EvaluacionProveedor::where('id_proveedor', $proveedor->id)->get();
-   
-   
+       $evaluaciones = EvaluacionProveedor::where('id_proveedor', $proveedor->id)->whereBetween('created_at', [$inicio, $fin])->get();
+      
    
         return view('admin.detalle_evaluacion_proveedores', compact('proveedor', 'evaluaciones'));
    

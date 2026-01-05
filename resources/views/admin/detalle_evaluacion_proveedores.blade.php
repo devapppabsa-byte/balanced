@@ -48,17 +48,53 @@
 
 
 
-<div class="container-fluid mt-5">
-    <div class="row justify-content-center mt-5">
-        <div class="col-12 col-sm-12 col-md-10 col-lg-9  mx-5 bg-white rounded border p-5 shadow-sm">
-            <div class="row justify-content-center">
-                <div class="col-12 text-center">
-                    <h2>
-                        <i class="fa fa-clipboard-list"></i>
-                        Listado de actividades evaluadas
-                    </h2>
-                </div>
+<div class="container-fluid ">
+
+    <form class="row   justify-content-center " action="#" method="GET">
+        <div class="col-9  mx-5  ">
+            <div class="row justify-content-center p-3">
+                @csrf @method("GET")
+                        <div class="col-12 col-sm-12 col-md-8 col-lg-5  shadow shadow-sm p-3 border bg-white px-4">
+                            <div class="row justify-content-center"> 
+                                <div class="col-6 ">
+                                    <div class="form-group">
+                                        <label for="" class="fw-bold">Fecha Inicio: </label>
+                                        <input type="date" name="fecha_inicio" value="{{request('fecha_inicio')}}" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-6 ">
+                                    <div class="form-group">
+                                        <label for="" class="fw-bold">Fecha Final: </label>
+                                        <input type="date" name="fecha_fin" value="{{request('fecha_fin')}}" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 m-2">
+                                    <div class="form-group">
+                                        <button class="btn btn-primary btn-sm ">
+                                            <i class="fa fa-filter"></i>
+                                            Filtrar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
             </div>
+        </div>
+
+    </form>
+
+
+
+
+    <div class="row justify-content-center ">
+        <div class="col-12 col-sm-12 col-md-10 col-lg-9  mx-5 bg-white rounded border p-5 shadow-sm">
+            <h4>
+                <i class="fa fa-list"></i>
+                Lista de evaluaciones al proveedor
+            </h4>
                 @if (!$evaluaciones->isEmpty())
                 <div class="table-responsive shadow-sm">
                     <table class="table table-responsive mb-0 border shadow-sm table-hover">
@@ -89,6 +125,7 @@
                         <td class=" fw-bold {{ ($evaluacion->calificacion) >= 80 ? 'text-success' : 'text-danger'}}">
                            {{$evaluacion->calificacion}} Puntos
                         </td>
+                                               
                         <td>
                             {{$evaluacion->observaciones}}
                         </td>
@@ -101,7 +138,7 @@
                             
                             <div class="col-12">
                                 <i class="fa fa-exclamation-circle text-danger"></i>
-                                No cuenta con eevaluaciones.
+                                No cuenta con evaluaciones.
                             </div>
                             
                         </div>
@@ -166,7 +203,7 @@
                         <canvas id="lineChart"></canvas>
                     </div>
                     <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                        <canvas id="bubbleChart"></canvas>
+                        <canvas id="pieChart"></canvas>
                     </div>
                 </div>
                 <!-- Tabs content -->
@@ -183,115 +220,168 @@
 
 
 @section('scripts')
-    <script>
-        const ctx1 = document.getElementById('barLineChart');
 
-        new Chart(ctx1, {
-        data: {
-            labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
-            datasets: [
+<script>
+/* =============================
+   DATOS DESDE LARAVEL
+============================= */
+const evaluaciones = @json($evaluaciones);
+
+/* =============================
+   CONSTANTES
+============================= */
+const mesesES = [
+  'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+  'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+];
+
+const META = 80;
+
+/* =============================
+   AGRUPAR POR MES
+============================= */
+const porMes = {};
+
+evaluaciones.forEach(e => {
+    const fecha = new Date(e.created_at);
+    const mes = fecha.getMonth();
+
+    if (!porMes[mes]) porMes[mes] = [];
+    porMes[mes].push(Number(e.calificacion));
+});
+
+/* =============================
+   LABELS Y PROMEDIOS
+============================= */
+const labels = Object.keys(porMes).map(m => mesesES[m]);
+
+const promedios = Object.values(porMes).map(arr =>
+    Number((arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1))
+);
+
+/* =============================
+   COLORES SEGÚN META
+============================= */
+const coloresPorValor = promedios.map(valor =>
+    valor >= META
+        ? 'rgba(75, 192, 75, 0.7)'   // verde
+        : 'rgba(255, 99, 132, 0.7)'  // rojo
+);
+
+const metas = labels.map(() => META);
+
+/* =============================
+   GRÁFICA BAR + LINE
+============================= */
+const ctx1 = document.getElementById('barLineChart');
+
+new Chart(ctx1, {
+    data: {
+        labels: labels,
+        datasets: [
             {
                 type: 'bar',
                 label: 'Puntuación obtenida',
-                data: [75, 85, 65, 90],
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                data: promedios,
+                backgroundColor: coloresPorValor,
                 borderRadius: 5
             },
             {
                 type: 'line',
-                label: 'Meta esperada (100%)',
-                data: [100, 100, 100, 100],
+                label: 'Meta esperada (80%)',
+                data: metas,
                 borderColor: 'red',
                 borderWidth: 2,
                 tension: 0.3,
                 pointRadius: 5
             }
-            ]
-        },
-        options: {
-            plugins: {
+        ]
+    },
+    options: {
+        plugins: {
             title: {
                 display: true,
-                text: 'Cumplimiento del Proveedor',
-                font: { size: 18 }
+                text: 'Cumplimiento del Proveedor'
             }
-            },
-            scales: {
+        },
+        scales: {
             y: { beginAtZero: true, max: 100 }
-            }
         }
-        });
+    }
+});
 
+/* =============================
+   GRÁFICA PIE
+============================= */
+const ctx2 = document.getElementById('pieChart');
 
-
-
-
-        const ctx2 = document.getElementById('bubbleChart');
-
-        new Chart(ctx2, {
-        type: 'bubble',
-        data: {
-            datasets: [{
-            label: 'Cumplimiento del Proveedor',
-            data: [
-                {x: 10, y: 85, r: 10}, // Trato amable
-                {x: 8, y: 90, r: 8},  // Tiempo de atención
-                {x: 12, y: 70, r: 12}, // Resolución del problema
-                {x: 6, y: 95, r: 6}   // Claridad del vendedor
-            ],
-            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            borderColor: 'rgba(255, 99, 132, 1)'
-            }]
-        },
-        options: {
-            plugins: {
+new Chart(ctx2, {
+    type: 'pie',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Distribución del Cumplimiento (%)',
+            data: promedios,
+            backgroundColor: coloresPorValor,
+            borderColor: '#ffffff',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        plugins: {
             title: {
                 display: true,
-                text: 'Cumplimiento del Proveedor',
-                font: { size: 18 }
-            }
+                text: 'Distribución del Cumplimiento por Mes'
             },
-            scales: {
-            x: { title: { display: true, text: 'Cantidad de servicios' }, beginAtZero: true },
-            y: { title: { display: true, text: 'Satisfacción (%)' }, beginAtZero: true, max: 100 }
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        const valor = context.parsed;
+                        const estado = valor >= META ? 'Cumple' : 'No cumple';
+                        return `${context.label}: ${valor}% ${estado}`;
+                    }
+                }
             }
         }
-        });
+    }
+});
 
+/* =============================
+   GRÁFICA LINE
+============================= */
+const ctx3 = document.getElementById('lineChart');
 
-
-
-
-        const ctx3 = document.getElementById('lineChart');
-
-        new Chart(ctx3, {
-        type: 'line',
-        data: {
-            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo'],
-            datasets: [{
+new Chart(ctx3, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
             label: 'Cumplimiento general (%)',
-            data: [70, 78, 82, 90, 88],
+            data: promedios,
             borderColor: 'rgba(75, 192, 192, 1)',
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             tension: 0.4,
             fill: true,
-            pointRadius: 5
-            }]
-        },
-        options: {
-            plugins: {
+            pointRadius: 6,
+            pointBackgroundColor: coloresPorValor,
+            pointBorderColor: coloresPorValor
+        }]
+    },
+    options: {
+        plugins: {
             title: {
                 display: true,
-                text: 'Evolución del Cumplimiento Mensual',
-                font: { size: 18 }
+                text: 'Evolución del Cumplimiento Mensual'
             }
-            },
-            scales: {
+        },
+        scales: {
             y: { beginAtZero: true, max: 100 },
             x: { title: { display: true, text: 'Meses' } }
-            }
         }
-        });
+    }
+});
+
+
 
 
 

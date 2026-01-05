@@ -158,8 +158,8 @@
                         <div class="col-12 m-2">
                             <div class="form-group">
                                 <button class="btn btn-primary btn-sm ">
-                                    <i class="fa fa-search"></i>
-                                    Buscar
+                                    <i class="fa fa-filter"></i>
+                                    Filtrar
                                 </button>
                             </div>
                         </div>
@@ -182,7 +182,7 @@
 
                 <div class="col-10 col-sm-10 col-md-5 col-lg-3  shadow-sm mx-4 border rounded mt-4">
                     @php
-                        $fecha = Carbon::parse(explode('-', $movimiento)[0]);
+                        $fecha = Carbon::parse(explode('-', $movimiento)[0])->subMonth();
                         Carbon::setLocale('es');
                         $mes = $fecha->translatedformat('F');
                         $year = $fecha->format('Y');
@@ -376,7 +376,7 @@ const mesesES = [
 // Labels por mes
 const labels = datos.map(item => {
     const fecha = new Date(item.created_at);
-    return mesesES[fecha.getMonth()];
+    return mesesES[fecha.getMonth()-1];
 });
 
 // Valores
