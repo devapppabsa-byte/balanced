@@ -6,6 +6,7 @@ use App\Models\CampoCalculado;
 use App\Models\CampoInvolucrado;
 use App\Models\CampoPrecargado;
 use App\Models\CampoVacio;
+use App\Models\MetaIndicador;
 use App\Models\InformacionInputVacio;
 use App\Models\InformacionInputPrecargado;
 use App\Models\InformacionInputCalculado;
@@ -106,25 +107,35 @@ use Carbon\Carbon;
                 
                 @forelse($grupos as $movimiento => $items)
 
+
                 <div class="col-10 col-sm-5 col-md-5 col-lg-3  shadow-sm mx-4 border rounded mt-4">
                     @php
+                        //para sacar fecha y año
                         $fecha = Carbon::parse(explode('-', $movimiento)[0]);
                         Carbon::setLocale('es');
                         $mes = $fecha->subMonth()->translatedformat('F');
                         $year = $fecha->format('Y');
-                    @endphp
+                   
+                   @endphp
 
                     <div class="row justify-content-center">
                         
                         <div class="col-12 bg-info text-white pt-3 pb-2 mb-4 rounded">
                             <h3 class="text-center fw-bold">
-                                <i class="fa-solid fa-calendar-days"></i> {{ $mes.' - '.$year }}
+                                <i class="fa-solid fa-calendar-days"></i>{{$movimiento}} {{ $mes.' - '.$year }}
                             </h3>
                         </div>
                         
                         @foreach($items as $item)
+                        @php
+                            //para obtener las metas minimas y maximas desde la otra tabla
+                            $metas = MetaIndicador::where('id_movimiento_indicador_lleno', $item->id_movimiento)->first();
 
-                        
+                           $meta_minima = $metas->meta_minima;
+                           $metra_maxima = $metas->meta_esperada;
+
+                        @endphp
+
                         {{-- Se hace la consulta de la informaion del indiacor lleno, y se hace la condicional  para saber si esta el campo final --}}
                         @if ($item->final === "on")
                             <div class="col-8  fw-bold  rounded-5 border zoom_link {{($meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3">
@@ -414,7 +425,7 @@ const labels = datos.map(item => {
 
 // Valores: costo por tonelada
 const valores = datos.map(item => parseFloat(item.informacion_campo));
-alert({{$meta_minima}})
+
 // Niveles dinámicos (puedes modificar)
 const MINIMO = {{$meta_minima}};
 const MAXIMO = {{$meta_maxima}};

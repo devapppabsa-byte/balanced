@@ -385,13 +385,9 @@ public function show_indicador_user(Indicador $indicador){
 
     $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get();
 
-    //de aqui saco el id del movimiento para consultar la meta que se guardo para este indicador
-    $id_movimiento = $datos[0]->id_movimiento;
 
-    $metas = MetaIndicador::where('id_movimiento_indicador_lleno', $id_movimiento)->first();
 
-    $meta_minima = $metas->meta_minima;
-    $meta_maxima = $metas->meta_maxima;
+
 
     //agrupo los datros, esto es important!!!
     $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
@@ -406,7 +402,7 @@ public function show_indicador_user(Indicador $indicador){
                            ->where('final', 'on')->get();
     
 
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos', 'meta_minima', 'meta_maxima'));
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos'));
 
 
 
