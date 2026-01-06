@@ -131,6 +131,18 @@ class normaController extends Controller
 
 
 
+    // Capturar estado anterior para el log
+    $cambios = [];
+    if($norma->nombre != $request->nombre_norma_edit) {
+        $cambios[] = "Nombre: '{$norma->nombre}' -> '{$request->nombre_norma_edit}'";
+    }
+    if($norma->descripcion != $request->descripcion_norma_edit) {
+        $cambios[] = "Descripción: [Modificada]";
+    }
+    if($norma->ponderacion != $request->ponderacion_norma_edit) {
+        $cambios[] = "Ponderación: '{$norma->ponderacion}' -> '{$request->ponderacion_norma_edit}'";
+    }
+
     $norma->nombre = $request->nombre_norma_edit;
     $norma->descripcion = $request->descripcion_norma_edit;
     $norma->ponderacion = $request->ponderacion_norma_edit;
@@ -140,10 +152,15 @@ class normaController extends Controller
 
 
     //registro del log
+    $descripcion = "Se actualizo la norma: ".$norma->nombre." (ID: ".$norma->id.")";
+    if(!empty($cambios)) {
+        $descripcion .= ". Cambios: ".implode(", ", $cambios);
+    }
+    
     LogBalanced::create([
         'autor' => $autor_log,
         'accion' => "update",
-        'descripcion' => "Se  actualizo la norma : ".$norma->nombre . " con el id: ". $norma->id,
+        'descripcion' => $descripcion,
         'ip' => request()->ip() 
     ]);
     //registro del log

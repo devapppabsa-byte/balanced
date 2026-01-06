@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\Norma;
 use App\Models\CumplimientoNorma;
 use App\Models\ApartadoNorma;
+use App\Models\LogBalanced;
 use Illuminate\Validation\Rule;
 
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class apartadoNormaController extends Controller
 
  public function apartado_norma_store(Request $request, Norma $norma){
 
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
         $request->validate([
 
@@ -27,14 +29,18 @@ class apartadoNormaController extends Controller
         ]);
 
 
-        ApartadoNorma::create([
+        $apartado = ApartadoNorma::create([
             "apartado" => $request->titulo_apartado_norma,
             "descripcion" => $request->descripcion_apartado_norma,
             "id_norma" => $norma->id
         ]);
 
-
-
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "add",
+            'descripcion' => "Se agrego el apartado: '{$request->titulo_apartado_norma}' (ID: {$apartado->id}) a la norma: {$norma->nombre}",
+            'ip' => request()->ip() 
+        ]);
 
         return back()->with('success', 'El apartado fue agregado!');
 
@@ -55,7 +61,21 @@ class apartadoNormaController extends Controller
 
     public function delete_apartado_norma(ApartadoNorma $apartado){
 
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+        $apartado_nombre = $apartado->apartado;
+        $norma_id = $apartado->id_norma;
+        $norma = Norma::find($norma_id);
+        $norma_nombre = $norma ? $norma->nombre : 'N/A';
+
         $apartado->delete();
+
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "deleted",
+            'descripcion' => "Se elimino el apartado: '{$apartado_nombre}' (ID: {$apartado->id}) de la norma: {$norma_nombre}",
+            'ip' => request()->ip() 
+        ]);
 
         return back()->with('eliminado', 'El apartado fue eliminado de la norma!');
 
@@ -65,13 +85,25 @@ class apartadoNormaController extends Controller
 
     public function edit_apartado_norma(ApartadoNorma $apartado, Request $request){
 
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
         $request->validate([
             'nombre_apartado_edit' => Rule::unique('apartado_norma', 'apartado')->ignore($apartado->id),
             'descripcion_apartado_edit' => 'required'
         ]);
 
+        // Capturar estado anterior para el log
+        $cambios = [];
+        if($apartado->apartado != $request->nombre_apartado_edit) {
+            $cambios[] = "Título: '{$apartado->apartado}' -> '{$request->nombre_apartado_edit}'";
+        }
+        if($apartado->descripcion != $request->descripcion_apartado_edit) {
+            $cambios[] = "Descripción: [Modificada]";
+        }
 
+        $norma_id = $apartado->id_norma;
+        $norma = Norma::find($norma_id);
+        $norma_nombre = $norma ? $norma->nombre : 'N/A';
 
         $apartado->update([
 
@@ -80,6 +112,17 @@ class apartadoNormaController extends Controller
 
         ]);
 
+        $descripcion = "Se edito el apartado: '{$request->nombre_apartado_edit}' (ID: {$apartado->id}) de la norma: {$norma_nombre}";
+        if(!empty($cambios)) {
+            $descripcion .= ". Cambios: ".implode(", ", $cambios);
+        }
+
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "update",
+            'descripcion' => $descripcion,
+            'ip' => request()->ip() 
+        ]);
 
         return back()->with('actualizado', 'El apartado fue editado');
 
@@ -88,6 +131,8 @@ class apartadoNormaController extends Controller
 
 
     public function registro_actividad_cumplimiento_norma(Request $request, ApartadoNorma $apartado){
+
+        $autor = 'Id: '.auth()->user()->id.' - '.auth()->user()->name.' - '.auth()->user()->puesto;
 
         Carbon::setLocale('es'); // Establece el idioma a español
         setlocale(LC_TIME, 'es_ES.UTF-8'); // Asegura que PHP use el locale correcto (depende del servidor)
@@ -102,6 +147,8 @@ class apartadoNormaController extends Controller
             
         ]);
 
+        $norma = Norma::find($apartado->id_norma);
+        $norma_nombre = $norma ? $norma->nombre : 'N/A';
 
         //Guardo la actividad que realizo y guardo todo en una variable para poder  usar el ID  de lo que se registro
         $cumplimiento_norma =  CumplimientoNorma::create([
@@ -129,6 +176,13 @@ class apartadoNormaController extends Controller
 
             }
         }
+
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "add",
+            'descripcion' => "Se registro cumplimiento normativo para el apartado: '{$apartado->apartado}' de la norma: {$norma_nombre} (ID cumplimiento: {$cumplimiento_norma->id})",
+            'ip' => request()->ip() 
+        ]);
 
         return back()->with('success', 'La actividad fue registrada');
     }

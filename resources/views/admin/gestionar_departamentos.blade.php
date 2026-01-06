@@ -1,32 +1,32 @@
 @extends('plantilla')
-@section('title', 'Gestión de los Deaprtamentos de la Empresa')
+@section('title', 'Gestión de los Departamentos de la Empresa')
 
 @section("contenido")
 
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center">
+    <div class="row bg-primary d-flex align-items-center">
         <div class="col-10 col-lg-10 col-md-6 pt-2 text-white">
             <h3 class="mt-1 league-spartan">Departamentos de la empresa</h3>
             @if (session('success'))
-                <div class="text-white fw-bold ">
+                <div class="text-white fw-bold">
                     <i class="fa fa-check-circle mx-2"></i>
                     {{session('success')}}
                 </div>
             @endif
             @if (session('actualizado'))
-                <div class="text-white fw-bold ">
+                <div class="text-white fw-bold">
                     <i class="fa fa-check-circle mx-2"></i>
                     {{session('actualizado')}}
                 </div>
             @endif
             @if (session('editado'))
-                <div class="text-white fw-bold ">
+                <div class="text-white fw-bold">
                     <i class="fa fa-check-circle mx-2"></i>
                     {{session('editado')}}
                 </div>
             @endif
             @if (session('eliminado'))
-                <div class="text-white fw-bold ">
+                <div class="text-white fw-bold">
                     <i class="fa fa-check-circle mx-2"></i>
                     {{session('eliminado')}}
                 </div>
@@ -39,199 +39,353 @@
             @endif
         </div>
 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-2 text-center ">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-2 text-center">
             <form action="{{route('cerrar.session')}}" method="POST">
                 @csrf 
-                <button  class="btn btn-primary text-danger text-white fw-bold">
+                <button class="btn btn-primary text-danger text-white fw-bold">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     Cerrar Sesión
                 </button>
             </form>
         </div>
-
     </div>
     @include('admin.assets.nav')
 </div>
 
-
-<div class="container-fluid ">
-    <div class="row bg-white shadow-sm border-bottom   mb-5">
-        <div class="col-12 col-sm-12 col-md-4 col-lg-auto my-1">
-            <button class="btn btn-secondary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_departamento">
-                <i class="fa fa-plus-circle"></i>
-                Agregar Departamento
-            </button>
-        </div>
-    </div>
-</div>
-
-<div class="container mt-0">
-    <div class="row justify-content-around">
-        @forelse ($departamentos as $departamento)
-
-            <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-                    <div class="row  text-center border border-3 shadow shadow-sm py-3 bg-white">
-                        <div class="col-12">
-                            
-                            <span class="text-primary fw-bold">
-                                {{ ($departamento->planta == "1" ? 'Planta 1' : ( $departamento->planta == "2" ? 'Planta 2' : ($departamento->planta == "3" ? 'Planta 3' : '') )) }}                           
-                            </span>
-
-                            <a href="{{route('agregar.indicadores.index', $departamento->id)}}" class="btn btn-outline-secondary fw-bold w-100 h-100 d-block h6 py-4" style="font-size:2vh;">
-                                {{$departamento->nombre}}   
-                            </a>   
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-11">
+            <!-- Header Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                        <div>
+                            <h2 class="mb-1 fw-bold">
+                                <i class="fa-solid fa-building text-primary me-2"></i>
+                                Departamentos
+                            </h2>
+                            <p class="text-muted mb-0">
+                                <small>Gestión de departamentos de la empresa</small>
+                            </p>
                         </div>
+                        <div class="mt-2 mt-md-0">
+                            <button class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_departamento">
+                                <i class="fa-solid fa-plus-circle me-2"></i>
+                                Agregar Departamento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="col-12  text-end px-3">
-                            <a href="#coll{{$departamento->id}}" data-mdb-collapse-init data-mdb-ripple-init role="button" aria-expanded="false" aria-controls="collapseExample">
-                            <i class="fa-solid fa-circle-arrow-right"></i>
-                            </a>
+            @if (!$departamentos->isEmpty())
+                <!-- Departamentos Grid -->
+                <div class="row g-4">
+                    @foreach ($departamentos as $departamento)
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                            <div class="card border-0 shadow-sm h-100 department-card">
+                                <div class="card-body p-4 d-flex flex-column">
+                                    <!-- Planta Badge -->
+                                    <div class="mb-3">
+                                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">
+                                            <i class="fa-solid fa-industry me-1"></i>
+                                            {{ $departamento->planta == "1" ? 'Planta 1' : ($departamento->planta == "2" ? 'Planta 2' : ($departamento->planta == "3" ? 'Planta 3' : 'N/A')) }}
+                                        </span>
+                                    </div>
 
-                            <div class="collapse" id="coll{{$departamento->id}}">
-                                <div class="row">
-                                    <div class="col-auto">
-                                        <a href="#" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_dep{{$departamento->id}}" class="text-danger">
-                                            <i class="fa fa-trash"></i>
-                                            Eliminar
+                                    <!-- Nombre del Departamento -->
+                                    <div class="flex-grow-1 mb-3">
+                                        <a href="{{route('agregar.indicadores.index', $departamento->id)}}" 
+                                           class="text-decoration-none text-dark">
+                                            <h5 class="fw-bold mb-0 department-name">
+                                                <i class="fa-solid fa-building me-2 text-primary"></i>
+                                                {{$departamento->nombre}}
+                                            </h5>
                                         </a>
                                     </div>
-                                    <div class="col-auto">
-                                        <a href="edit_dep{{$departamento->id}}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_dep{{$departamento->id}}"  class="text-primary">
-                                            <i class="fa fa-edit"></i>
-                                            Editar
+
+                                    <!-- Botón Principal -->
+                                    <div class="mb-3 text-center">
+                                        <a href="{{route('agregar.indicadores.index', $departamento->id)}}" 
+                                           class=" w-100 fw-semibold">
+                                            <i class="fa-solid fa-chart-line me-2"></i>
+                                            Ver Indicadores
                                         </a>
+                                    </div>
+
+                                    <!-- Acciones -->
+                                    <div class="d-flex justify-content-end align-items-center pt-2 border-top">
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" 
+                                                    data-mdb-tooltip-init 
+                                                    title="Editar {{$departamento->nombre}}" 
+                                                    data-mdb-ripple-init 
+                                                    data-mdb-modal-init 
+                                                    data-mdb-target="#edit_dep{{$departamento->id}}">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    data-mdb-tooltip-init 
+                                                    title="Eliminar {{$departamento->nombre}}" 
+                                                    data-mdb-ripple-init 
+                                                    data-mdb-modal-init 
+                                                    data-mdb-target="#del_dep{{$departamento->id}}">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    @endforeach
+                </div>
+            @else
+                <!-- Empty State -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-4">
+                            <i class="fa-solid fa-building text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                        </div>
+                        <h5 class="text-muted mb-2">No hay departamentos registrados</h5>
+                        <p class="text-muted mb-4">
+                            <small>Comienza agregando tu primer departamento al sistema.</small>
+                        </p>
+                        <button class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_departamento">
+                            <i class="fa-solid fa-plus-circle me-2"></i>
+                            Agregar Departamento
+                        </button>
                     </div>
-            </div>
-            
-        @empty
-            <div class="col-12 col-sm-11 col-md-9 col-lg-8 shadow bg-white py-5">
-               <div class="row justify-content-center">
-                <div class="col-12 text-center">
-                    <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">
                 </div>
-                <div class="col-12 text-center">
-                    <h2>
-                        <i class="fa fa-exclamation-circle text-danger"></i>
-                        No hay datos disponibles 
-                    </h2>
-                </div>
-               </div>
-            </div>
-        @endforelse
+            @endif
+        </div>
     </div>
 </div>
 
-
-
-
-
-
-
-{{-- bucle que nos va a darlos modales para la edicion y eliminado de los departamentos--}}
-
-@forelse ($departamentos as $departamento)
-
-    <div class="modal fade" id="del_dep{{$departamento->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-            <div class="modal-header bg-danger py-4">
-                <h3 class="text-white" id="exampleModalLabel">¿Eliminar {{$departamento->nombre}} ?</h3>
-                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body py-4">
-                <form action="{{route('eliminar.departamento', $departamento->id)}}" method="POST">
-                    @csrf @method('DELETE')
-                    <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
-                        <h6>Eliminar</h6>
-                    </button>
-                </form>
-            </div>
-            {{-- <div class="modal-footer">
-            </div> --}}
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal fade" id="edit_dep{{$departamento->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-            <div class="modal-header bg-primary py-4">
-                <h5 class="text-white" id="exampleModalLabel">Editando Departamento {{$departamento->nombre}}</h5>
-                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body py-4">
-                <form action="{{route('actualizar.departamento', $departamento->id)}}" method="POST">
-                    @csrf @method('PATCH')
-                    
-                    <div class="form-group mt-3">
-                        <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg w-100{{ $errors->first('nombre_departamento') ? 'is-invalid' : '' }} " id="nombre_dep{{$departamento->id}}" name="nombre_departamento" value="{{old('nombre_departamento', $departamento->nombre)}}" style="font-size: 30px">
-                            <label class="form-label" for="nombre_dep{{$departamento->id}}" >Nombre nuevo </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group mt-4">
-                        <button  class="btn btn-primary w-100 btn-lg" data-mdb-ripple-init>
-                            <i class="fa fa-pencil mx-2"></i>
-                            Editar
-                        </button>
-                    </div>
-
-
-                </form>
-            </div>
-            {{-- <div class="modal-footer">
-            </div> --}}
-            </div>
-        </div>
-    </div>
-@empty
+<style>
+    .department-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
     
-@endforelse
+    .department-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .department-name {
+        transition: color 0.2s ease;
+    }
+    
+    .department-name:hover {
+        color: var(--bs-primary) !important;
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.75rem;
+    }
+    
+    @media (max-width: 768px) {
+        .department-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
 
 
 
 
-<div class="modal fade" id="agregar_departamento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header bg-primary">
-        <h5 class="text-white" id="exampleModalLabel">Agregar Departamento</h5>
-        <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="{{route('agregar.departamento')}}" method="post">
-            @csrf
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group mt-3">
-                        <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg w-100" id="nombre_departamento" name="nombre_departamento">
-                            <label class="form-label" for="nombre_departamento" >Nombre </label>
+
+
+
+{{-- Modales de Eliminación y Edición --}}
+@foreach ($departamentos as $departamento)
+    <!-- Modal Eliminar Departamento -->
+    <div class="modal fade" id="del_dep{{$departamento->id}}" tabindex="-1" aria-labelledby="eliminarDepartamentoLabel{{$departamento->id}}" aria-hidden="true" data-mdb-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-danger text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold" id="eliminarDepartamentoLabel{{$departamento->id}}">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                        Confirmar Eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="fa-solid fa-trash text-danger" style="font-size: 3rem;"></i>
                         </div>
+                        <h6 class="fw-semibold">¿Estás seguro de eliminar este departamento?</h6>
+                        <p class="text-muted mb-0">
+                            <strong>{{$departamento->nombre}}</strong>
+                        </p>
+                        <small class="text-muted d-block mt-2">
+                            {{ $departamento->planta == "1" ? 'Planta 1' : ($departamento->planta == "2" ? 'Planta 2' : ($departamento->planta == "3" ? 'Planta 3' : 'N/A')) }}
+                        </small>
+                        <small class="text-muted d-block">
+                            Esta acción no se puede deshacer.
+                        </small>
                     </div>
-                    <div class="form-group mt-3">
-                        <select name="planta" class="form-control" id="">
-                            <option value="1">Planta 1</option>
-                            <option value="2">Planta 2</option>
-                            <option value="3">Planta 3</option>
-                        </select>
-                    </div>
+                    <form action="{{route('eliminar.departamento', $departamento->id)}}" method="POST">
+                        @csrf 
+                        @method('DELETE')
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary flex-fill" data-mdb-ripple-init data-mdb-dismiss="modal">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-danger flex-fill" data-mdb-ripple-init>
+                                <i class="fa-solid fa-trash me-2"></i>
+                                Eliminar
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button  class="btn btn-primary w-100" data-mdb-ripple-init>Guardar</button>
-        </form>
-
-      </div>
     </div>
-  </div>
+
+    <!-- Modal Editar Departamento -->
+    <div class="modal fade" id="edit_dep{{$departamento->id}}" tabindex="-1" aria-labelledby="editarDepartamentoLabel{{$departamento->id}}" aria-hidden="true" data-mdb-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold" id="editarDepartamentoLabel{{$departamento->id}}">
+                        <i class="fa-solid fa-edit me-2"></i>
+                        Editar Departamento
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <form action="{{route('actualizar.departamento', $departamento->id)}}" method="POST">
+                        @csrf 
+                        @method('PATCH')
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input type="text" 
+                                           class="form-control {{ $errors->first('nombre_departamento') ? 'is-invalid' : '' }}" 
+                                           id="nombre_dep{{$departamento->id}}" 
+                                           name="nombre_departamento" 
+                                           value="{{old('nombre_departamento', $departamento->nombre)}}"
+                                           required>
+                                    <label class="form-label" for="nombre_dep{{$departamento->id}}">
+                                        Nombre del Departamento
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    @if ($errors->first('nombre_departamento'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('nombre_departamento') }}
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="planta_edit{{$departamento->id}}" class="form-label fw-semibold">
+                                    Planta
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select name="planta" 
+                                        class="form-select {{ $errors->first('planta') ? 'is-invalid' : '' }}" 
+                                        id="planta_edit{{$departamento->id}}"
+                                        required>
+                                    <option value="1" {{old('planta', $departamento->planta) == "1" ? 'selected' : ''}}>Planta 1</option>
+                                    <option value="2" {{old('planta', $departamento->planta) == "2" ? 'selected' : ''}}>Planta 2</option>
+                                    <option value="3" {{old('planta', $departamento->planta) == "3" ? 'selected' : ''}}>Planta 3</option>
+                                </select>
+                                @if ($errors->first('planta'))
+                                    <div class="invalid-feedback d-block">
+                                        {{ $errors->first('planta') }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 pt-4">
+                            <button type="button" class="btn btn-outline-secondary" data-mdb-ripple-init data-mdb-dismiss="modal">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary" data-mdb-ripple-init>
+                                <i class="fa-solid fa-save me-2"></i>
+                                Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
+
+
+
+
+<!-- Modal Agregar Departamento -->
+<div class="modal fade" id="agregar_departamento" tabindex="-1" aria-labelledby="agregarDepartamentoLabel" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white border-0 py-3">
+                <h5 class="modal-title fw-bold" id="agregarDepartamentoLabel">
+                    <i class="fa-solid fa-plus-circle me-2"></i>
+                    Agregar Departamento
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <form action="{{route('agregar.departamento')}}" method="post">
+                    @csrf
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="form-outline" data-mdb-input-init>
+                                <input type="text" 
+                                       class="form-control {{ $errors->first('nombre_departamento') ? 'is-invalid' : '' }}" 
+                                       id="nombre_departamento" 
+                                       name="nombre_departamento"
+                                       value="{{old('nombre_departamento')}}"
+                                       required>
+                                <label class="form-label" for="nombre_departamento">
+                                    Nombre del Departamento
+                                    <span class="text-danger">*</span>
+                                </label>
+                                @if ($errors->first('nombre_departamento'))
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('nombre_departamento') }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="planta" class="form-label fw-semibold">
+                                Planta
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select name="planta" 
+                                    class="form-select {{ $errors->first('planta') ? 'is-invalid' : '' }}" 
+                                    id="planta"
+                                    required>
+                                <option value="" disabled selected>Selecciona la planta</option>
+                                <option value="1" {{old('planta') == "1" ? 'selected' : ''}}>Planta 1</option>
+                                <option value="2" {{old('planta') == "2" ? 'selected' : ''}}>Planta 2</option>
+                                <option value="3" {{old('planta') == "3" ? 'selected' : ''}}>Planta 3</option>
+                            </select>
+                            @if ($errors->first('planta'))
+                                <div class="invalid-feedback d-block">
+                                    {{ $errors->first('planta') }}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-4">
+                        <button type="button" class="btn btn-outline-secondary" data-mdb-ripple-init data-mdb-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary" data-mdb-ripple-init>
+                            <i class="fa-solid fa-save me-2"></i>
+                            Guardar Departamento
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @endsection

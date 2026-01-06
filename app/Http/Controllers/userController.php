@@ -306,6 +306,27 @@ class userController extends Controller
 
         
         $usuario_editar = User::findOrFail($usuario->id);
+        
+        // Capturar estado anterior para el log
+        $cambios = [];
+        if($usuario_editar->name != $request->nombre_usuario) {
+            $cambios[] = "Nombre: '{$usuario_editar->name}' -> '{$request->nombre_usuario}'";
+        }
+        if($usuario_editar->email != $request->correo_usuario) {
+            $cambios[] = "Email: '{$usuario_editar->email}' -> '{$request->correo_usuario}'";
+        }
+        if($usuario_editar->puesto != $request->puesto_usuario) {
+            $cambios[] = "Puesto: '{$usuario_editar->puesto}' -> '{$request->puesto_usuario}'";
+        }
+        if($usuario_editar->id_departamento != $request->departamento) {
+            $departamento_anterior = Departamento::find($usuario_editar->id_departamento);
+            $departamento_nuevo = Departamento::find($request->departamento);
+            $cambios[] = "Departamento: '".($departamento_anterior ? $departamento_anterior->nombre : 'N/A')."' -> '".($departamento_nuevo ? $departamento_nuevo->nombre : 'N/A')."'";
+        }
+        if($request->password_usuario) {
+            $cambios[] = "Contraseña: [Actualizada]";
+        }
+        
         $usuario_editar->name = $request->nombre_usuario;
         $usuario_editar->email = $request->correo_usuario;
         $usuario_editar->puesto = $request->puesto_usuario;
@@ -324,10 +345,15 @@ class userController extends Controller
 
 
         //registro del log
+        $descripcion = "Se edito el usuario: ".$usuario_editar->name." (ID: ".$usuario_editar->id.")";
+        if(!empty($cambios)) {
+            $descripcion .= ". Cambios: ".implode(", ", $cambios);
+        }
+        
         LogBalanced::create([
             'autor' => $autor,
             'accion' => "update",
-            'descripcion' => "Se edito el usuario : ".$usuario_editar->name . " con el id: ". $usuario_editar->id,
+            'descripcion' => $descripcion,
             'ip' => request()->ip() 
         ]);
         //registro del log

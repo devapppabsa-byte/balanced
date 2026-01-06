@@ -15,6 +15,7 @@ use App\Models\Encuesta;
 use App\Models\Cliente;
 use App\Models\MensajeQueja;
 use App\Models\EvidenciaQuejas;
+use App\Models\LogBalanced;
 use Illuminate\Support\Facades\DB;
 
 class clienteController extends Controller
@@ -160,13 +161,15 @@ class clienteController extends Controller
 
 public function contestar_encuesta(Request $request, Encuesta $encuesta){
 
+        $cliente = Auth::guard('cliente')->user();
+        $autor = 'Cliente ID: '.$cliente->id.' - '.$cliente->nombre;
    
         $respuestas = $request->input('respuestas');
 
 
         //Guardando los ID en las tabla auxiliar
         ClienteEncuesta::create([
-            "id_cliente" => Auth::guard('cliente')->user()->id,
+            "id_cliente" => $cliente->id,
             "id_encuesta" => $encuesta->id
         ]);
 
@@ -177,13 +180,20 @@ public function contestar_encuesta(Request $request, Encuesta $encuesta){
 
                 "respuesta" => $respuesta,
                 "id_pregunta" => $request->input('id')[$contador],
-                "id_cliente" => Auth::guard('cliente')->user()->id
+                "id_cliente" => $cliente->id
 
             ]);
 
             $contador++;
 
         }
+        
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "add",
+            'descripcion' => "El cliente {$cliente->nombre} contesto la encuesta: {$encuesta->nombre}",
+            'ip' => request()->ip() 
+        ]);
         
         return redirect()->route('perfil.cliente')->with("contestado", 'El cuestionario fue contestado');
 
@@ -217,7 +227,8 @@ public function show_respuestas(Cliente $cliente, Encuesta $encuesta){
 
 public function queja_cliente(Request $request){
     
-
+    $cliente = Auth::guard('cliente')->user();
+    $autor = 'Cliente ID: '.$cliente->id.' - '.$cliente->nombre;
 
     $request->validate([
         
@@ -229,7 +240,7 @@ public function queja_cliente(Request $request){
     $queja = Queja::create([
         "queja" => $request->queja,
         "titulo" => $request->titulo,
-        'id_cliente' => Auth::guard('cliente')->user()->id
+        'id_cliente' => $cliente->id
     ]);
 
 
@@ -253,7 +264,12 @@ public function queja_cliente(Request $request){
 
     }
 
-
+    LogBalanced::create([
+        'autor' => $autor,
+        'accion' => "add",
+        'descripcion' => "El cliente {$cliente->nombre} creo una queja: '{$request->titulo}' (ID: {$queja->id})",
+        'ip' => request()->ip() 
+    ]);
 
     return back()->with('success', 'La información fue enviada con exito!');
     
@@ -288,19 +304,31 @@ public function comentario_user_reclamo(Queja $queja, Request $request){
 
     ]);
 
-    if(isset(Auth::guard('cliente')->user()->nombre))$autor =  Auth::guard('cliente')->user()->nombre;
+    if(isset(Auth::guard('cliente')->user()->nombre)){
+        $autor_nombre = Auth::guard('cliente')->user()->nombre;
+        $autor = 'Cliente ID: '.Auth::guard('cliente')->user()->id.' - '.$autor_nombre;
+    }
     
-    if(isset(Auth::guard('admin')->user()->nombre))$autor = Auth::guard('admin')->user()->nombre;
+    if(isset(Auth::guard('admin')->user()->nombre)){
+        $autor_nombre = Auth::guard('admin')->user()->nombre;
+        $autor = 'Id: '.Auth::guard('admin')->user()->id.' - '.$autor_nombre.' - '.Auth::guard('admin')->user()->puesto;
+    }
 
 
     MensajeQueja::create([
 
         'mensaje' => $request->comentario,
-        'remitente' => $autor,
+        'remitente' => $autor_nombre,
         'id_queja' => $queja->id
 
     ]);
 
+    LogBalanced::create([
+        'autor' => $autor,
+        'accion' => "add",
+        'descripcion' => "Se agrego un comentario a la queja ID: {$queja->id} - Título: '{$queja->titulo}'",
+        'ip' => request()->ip() 
+    ]);
 
     return back()->with('success', 'El comentario fue enviado');
 

@@ -63,18 +63,35 @@ class departamentoController extends Controller
 
 
 
-        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
+        // Capturar estado anterior para el log
+        $nombre_anterior = $departamento->nombre;
+        $cambios = [];
+        if($departamento->nombre != $request->nombre_departamento) {
+            $cambios[] = "Nombre: '{$nombre_anterior}' -> '{$request->nombre_departamento}'";
+        }
+        if($departamento->planta != $request->planta) {
+            $cambios[] = "Planta: '".($departamento->planta ?? 'N/A')."' -> '".($request->planta ?? 'N/A')."'";
+        }
 
         $departamento->nombre = $request->nombre_departamento;
+        if($request->planta) {
+            $departamento->planta = $request->planta;
+        }
         $departamento->update();
 
         
             //registro del log
+            $descripcion = "Se actualizo el departamento: ".$departamento->nombre." (ID: ".$departamento->id.")";
+            if(!empty($cambios)) {
+                $descripcion .= ". Cambios: ".implode(", ", $cambios);
+            }
+            
             LogBalanced::create([
                 'autor' => $autor,
                 'accion' => "update",
-                'descripcion' => "Se actualizo el departamento: ".$departamento->nombre . " con el id: ". $departamento->id,
+                'descripcion' => $descripcion,
                 'ip' => $request->ip()
             ]);
             //registro del log

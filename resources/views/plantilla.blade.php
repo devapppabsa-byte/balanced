@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
     <link rel="stylesheet" href="{{asset('css/toastr.min.css')}}">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <style>
 
         body{
@@ -54,7 +56,29 @@
     <script src="{{asset('js/interact.min.js')}}"></script>
     <script src="{{asset('js/draggable.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+
+
+    <script>
+    flatpickr(".datepicker", {
+        locale: "es",
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d F Y",
+    });
+    </script>
+
     @yield('scripts')
+
+
+<script>
+  (function(){
+    emailjs.init("Qg1Uw0UBaSzCmDi1D");
+  })();
+</script>
+
 
     <script>
 

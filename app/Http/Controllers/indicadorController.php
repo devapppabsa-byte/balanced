@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use Illuminate\Support\Str;
 use App\Models\CampoCalculado;
 use App\Models\CampoForaneo;
 use App\Models\CumplimientoNorma;
@@ -20,6 +23,7 @@ use App\Models\IndicadorLleno;
 use App\Models\Encuesta;
 use App\Models\User;
 use App\Models\LogBalanced;
+use App\Models\MetaIndicador;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -168,8 +172,17 @@ class indicadorController extends Controller
 
         ]);
 
-
-
+        // Capturar estado anterior para el log
+        $cambios = [];
+        if($indicador->meta_esperada != $request->meta_esperada) {
+            $cambios[] = "Meta Esperada: '{$indicador->meta_esperada}' -> '{$request->meta_esperada}'";
+        }
+        if($indicador->meta_minima != $request->meta_minima) {
+            $cambios[] = "Meta Mínima: '{$indicador->meta_minima}' -> '{$request->meta_minima}'";
+        }
+        if($indicador->ponderacion != $request->ponderacion_indicador_edit) {
+            $cambios[] = "Ponderación: '{$indicador->ponderacion}' -> '{$request->ponderacion_indicador_edit}'";
+        }
 
         $indicador->meta_esperada = $request->meta_esperada;
         $indicador->meta_minima = $request->meta_minima;
@@ -179,10 +192,15 @@ class indicadorController extends Controller
 
 
         //registro del log
+        $descripcion = "Se actualizo el indicador: ".$indicador->nombre." (ID: ".$indicador->id.")";
+        if(!empty($cambios)) {
+            $descripcion .= ". Cambios: ".implode(", ", $cambios);
+        }
+        
         LogBalanced::create([
             'autor' => $autor,
             'accion' => "update",
-            'descripcion' => "Se actualizo el indicador : ".$indicador->nombre . " con el id: ". $indicador->id,
+            'descripcion' => $descripcion,
             'ip' => request()->ip() 
         ]);
         //registro del log
@@ -244,6 +262,8 @@ class indicadorController extends Controller
 
 public function borrar_campo(Request $request, $campo){
 
+        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
         //vamos a buscar el id_input en la base de datos de los campos involucrados.
         $id_indicador = CampoInvolucrado::where('id_input',$request->id_input)->first();
 
@@ -261,7 +281,16 @@ public function borrar_campo(Request $request, $campo){
         if($request->campo_calculado && $request->campo_vacio){
             
             $campo_delete = CampoCalculado::findOrFail($campo);
+            $nombre_campo = $campo_delete->nombre;
             $campo_delete->delete();
+            
+            LogBalanced::create([
+                'autor' => $autor,
+                'accion' => "deleted",
+                'descripcion' => "Se elimino el campo calculado: ".$nombre_campo." (ID: ".$campo.") del indicador",
+                'ip' => request()->ip() 
+            ]);
+            
             return back()->with("deleted", "El campo fue eliminado del indicador!.");
         }
         
@@ -271,7 +300,16 @@ public function borrar_campo(Request $request, $campo){
         if($request->campo_vacio){
 
            $campo_delete = CampoVacio::findOrFail($campo);
+           $nombre_campo = $campo_delete->nombre;
            $campo_delete->delete();
+           
+           LogBalanced::create([
+               'autor' => $autor,
+               'accion' => "deleted",
+               'descripcion' => "Se elimino el campo vacio: ".$nombre_campo." (ID: ".$campo.") del indicador",
+               'ip' => request()->ip() 
+           ]);
+           
            return back()->with("deleted", "El campo fue eliminado del indicador!.");
  
         }
@@ -281,7 +319,16 @@ public function borrar_campo(Request $request, $campo){
         if($request->campo_precargado){
 
             $campo_delete = CampoPrecargado::findOrFail($campo);
+            $nombre_campo = $campo_delete->nombre;
             $campo_delete->delete();
+            
+            LogBalanced::create([
+                'autor' => $autor,
+                'accion' => "deleted",
+                'descripcion' => "Se elimino el campo precargado: ".$nombre_campo." (ID: ".$campo.") del indicador",
+                'ip' => request()->ip() 
+            ]);
+            
             return back()->with("deleted", "El campo fue eliminado del indicador");
 
         }
@@ -300,6 +347,10 @@ public function borrar_campo(Request $request, $campo){
     
     
 public function show_indicador_user(Indicador $indicador){
+
+
+    //le mandamos los admins para que les envie el correo de que ya se lleno el indicador
+  $correos = Admin::pluck('email')->toArray();
 
     //CONSULTA DE LOS CAMPOS
     //se consultan en la vista para que el usuario los rellene
@@ -334,6 +385,15 @@ public function show_indicador_user(Indicador $indicador){
 
     $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get();
 
+    //de aqui saco el id del movimiento para consultar la meta que se guardo para este indicador
+    $id_movimiento = $datos[0]->id_movimiento;
+
+    $metas = MetaIndicador::where('id_movimiento_indicador_lleno', $id_movimiento)->first();
+
+    $meta_minima = $metas->meta_minima;
+    $meta_maxima = $metas->meta_maxima;
+
+    //agrupo los datros, esto es important!!!
     $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
 
  
@@ -346,7 +406,7 @@ public function show_indicador_user(Indicador $indicador){
                            ->where('final', 'on')->get();
     
 
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'datos', 'grupos', 'graficar'));
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos', 'meta_minima', 'meta_maxima'));
 
 
 
@@ -362,6 +422,7 @@ public function show_indicador_user(Indicador $indicador){
 
 public function input_porcentaje_guardar(Request $request, Indicador $indicador){
 
+   $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
    $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
     
 
@@ -439,6 +500,7 @@ public function input_porcentaje_guardar(Request $request, Indicador $indicador)
 
 public function input_resta_guardar(Request $request, Indicador $indicador){
 
+    $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
     $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
@@ -495,6 +557,12 @@ public function input_resta_guardar(Request $request, Indicador $indicador){
 
     ]);
 
+    LogBalanced::create([
+        'autor' => $autor_log,
+        'accion' => "add",
+        'descripcion' => "Se creo el campo calculado (resta): '{$request->nombre_campo_resta}' (ID: {$campo_calculado->id}) en el indicador: {$indicador->nombre}",
+        'ip' => request()->ip() 
+    ]);
 
     return back()->with("success", "Se agrego el campo de resta!");
 
@@ -509,6 +577,7 @@ public function input_resta_guardar(Request $request, Indicador $indicador){
 
 public function input_division_guardar(Request $request, Indicador $indicador){
 
+       $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
@@ -571,7 +640,12 @@ public function input_division_guardar(Request $request, Indicador $indicador){
 
     ]);
 
-
+    LogBalanced::create([
+        'autor' => $autor_log,
+        'accion' => "add",
+        'descripcion' => "Se creo el campo calculado (división): '{$request->nombre_campo_division}' (ID: {$campo_calculado->id}) en el indicador: {$indicador->nombre}",
+        'ip' => request()->ip() 
+    ]);
 
     return back()->with("success", "Se a creado el nuevo campo de división");
 
@@ -582,6 +656,7 @@ public function input_division_guardar(Request $request, Indicador $indicador){
 
 public function input_suma_guardar(Request $request, Indicador $indicador){
 
+    $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
     $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
@@ -636,6 +711,12 @@ if( count($request->input_suma) < 2) return back()->with('error', 'Se debe agreg
 
     }
 
+    LogBalanced::create([
+        'autor' => $autor_log,
+        'accion' => "add",
+        'descripcion' => "Se creo el campo calculado (suma): '{$request->nombre_campo_suma}' (ID: {$campo_calculado->id}) en el indicador: {$indicador->nombre}",
+        'ip' => request()->ip() 
+    ]);
 
     return back()->with("success", "Se a creado el nuevo campo de suma");
 
@@ -647,6 +728,7 @@ if( count($request->input_suma) < 2) return back()->with('error', 'Se debe agreg
 
 public function input_multiplicacion_guardar(Request $request, Indicador $indicador){
 
+       $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
@@ -708,6 +790,13 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
 
     }
 
+    LogBalanced::create([
+        'autor' => $autor_log,
+        'accion' => "add",
+        'descripcion' => "Se creo el campo calculado (multiplicación): '{$request->nombre_campo_multiplicacion}' (ID: {$campo_calculado->id}) en el indicador: {$indicador->nombre}",
+        'ip' => request()->ip() 
+    ]);
+
     return back()->with("success", "Se a creado el nuevo campo de multiplicación");
 
 
@@ -717,7 +806,7 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
 
 public function input_promedio_guardar(Request $request, Indicador $indicador){
 
-    
+    $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
     $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
     //aqui se hace la verificación si el campo combinado de promedio qued marcado como campo final
@@ -780,6 +869,12 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
             
         }
 
+        LogBalanced::create([
+            'autor' => $autor_log,
+            'accion' => "add",
+            'descripcion' => "Se creo el campo calculado (promedio): '{$request->nombre}' (ID: {$campo_calculado->id}) en el indicador: {$indicador->nombre}",
+            'ip' => request()->ip() 
+        ]);
 
         return back()->with('success', 'El nuevo campo de promedio a sido creado!');
         
@@ -896,6 +991,9 @@ public function indicador_lleno_show_admin(Indicador $indicador){
     //Para lgraficar los datos del indicador
      IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->get();
 
+        //  $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+        //                    ->where('final', 'on')->get();
+
      $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
                 ->where('final', 'on')
                 ->whereBetween('created_at', [$inicio, $fin])
@@ -943,7 +1041,9 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
     $planta_usuario = auth()->user()->planta;
     $year = Carbon::now()->year;
     $mes = Carbon::now()->subMonth()->translatedFormat('F');
-    $id_movimiento = str_replace(' ','',Carbon::now().'-'.rand(0, 50000000000)); //exagere un poquis, pero poatra que no de error
+    //$id_movimiento = (string) Str::ulid();
+
+     $id_movimiento = str_replace(':', '',str_replace(' ','',Carbon::now().'-'.random_int(0, 5000000))); //exagere un poquis, pero poatra que no de error
 
 
     //validando la insercion de datos
@@ -1312,6 +1412,17 @@ foreach($inputs_precargados as $index_precargados => $precargado){
         //Desde aqui se guarda el campo del comentario
 
 
+
+        //Se agregan las metas del indicador que se tienen al momento de rellenar este mismo
+
+
+        MetaIndicador::create([
+
+            'meta_minima' => $indicador->meta_minima,
+            'meta_maxima' => $indicador->meta_esperada,
+            'id_movimiento_indicador_lleno' => $id_movimiento
+
+        ]);
 
 
         

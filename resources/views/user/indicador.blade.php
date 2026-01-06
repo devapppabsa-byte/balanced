@@ -99,7 +99,10 @@ use Carbon\Carbon;
                     </h3>
                 </div>
 
-
+               <pre>
+                   {{$grupos}}
+                
+            </pre> 
                 
                 @forelse($grupos as $movimiento => $items)
 
@@ -124,11 +127,11 @@ use Carbon\Carbon;
                         
                         {{-- Se hace la consulta de la informaion del indiacor lleno, y se hace la condicional  para saber si esta el campo final --}}
                         @if ($item->final === "on")
-                            <div class="col-8  fw-bold  rounded-5 border zoom_link {{($indicador->meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3">
+                            <div class="col-8  fw-bold  rounded-5 border zoom_link {{($meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3">
                                 
                                 
                                 <h5 class="text-center ">
-                                    <i class="fa {{($indicador->meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
+                                    <i class="fa {{($meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
                                     {{ $item['nombre_campo'] }}: 
                                 </h5> 
                                 <h2 class="text-center">{{ $item['informacion_campo'] }} </h2>
@@ -224,7 +227,7 @@ use Carbon\Carbon;
                                     <label for="" class="fw-bold">{{$campo_vacio->nombre}}</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="{{$campo_vacio->tipo}}" min="0" class="form-control input" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}">
+                                    <input type="number" min="0" class="form-control input" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}" required>
 
                                     {{-- campos ocultos para llevar informacion al controlador --}}
                                         <input type="hidden" name="id_input[]" value="{{$campo_vacio->id}}">
@@ -323,7 +326,25 @@ use Carbon\Carbon;
                             <div class="col-11 col-sm-11 col-md-5 col-lg-3 border border-4 p-4 shadow-sm m-3">
 
                                 <span class="fw-bold">{{$campo->nombre}}</span>
-                                <input type="text" class="form-control"  name="{{$campo->nombre}}" value="" disabled>
+                                @php
+
+                                    //se tiene que validar todo el desmadre por que de los campos que conformacn campos unidos hay vario que no tienen el campo informacion.
+                                    if(CampoPrecargado::where('id_input', $campo->id_input)->latest()->first()){
+
+                                        $precargado = CampoPrecargado::where('id_input', $campo->id_input)->latest()->first();
+
+                                        $info_precargada = InformacionInputPrecargado::where('id_input_precargado', $precargado->id)->latest()->first();
+                                    
+                                    }
+                                    else {
+                                        $precargado = null;
+                                        $info_precargada = null;
+                                    }
+                                    
+                                @endphp
+
+                                <input type="text" class="form-control"  name="{{$campo->nombre}}" value="{{($info_precargada != null  ?  $info_precargada->informacion : '' )}}" disabled>
+
                                 <small>{{$campo->descripcion}}</small>
 
                             </div>                    
@@ -351,8 +372,13 @@ use Carbon\Carbon;
 
 
 
-
-
+{{-- DATOS DEL INDICADOR PARA EL ENVIO DEL CORREO ELECTRONICO. --}}
+<div id="data-indicador"
+    data-user = "{{Auth::user()->name}}"
+    data-correos = '@json($correos)''
+     data-indicador="{{ $indicador->nombre }}"
+     data-departamento="{{ Auth::user()->departamento->nombre }}">
+</div>
 
 @endsection
 
@@ -388,10 +414,10 @@ const labels = datos.map(item => {
 
 // Valores: costo por tonelada
 const valores = datos.map(item => parseFloat(item.informacion_campo));
-
+alert({{$meta_minima}})
 // Niveles dinámicos (puedes modificar)
-const MINIMO = {{$indicador->meta_minima}};
-const MAXIMO = {{$indicador->meta_esperada}};
+const MINIMO = {{$meta_minima}};
+const MAXIMO = {{$meta_maxima}};
 
 const ctx = document.getElementById('grafico').getContext('2d');
 
@@ -449,6 +475,52 @@ new Chart(ctx, {
   }
 });
 </script>
+
+
+
+{{-- AQUI ESTA EL SCRIPT QUE ENVIA LOS CORREOS ELECTRONICOS --}}
+<script>
+
+ const data = document.getElementById('data-indicador');
+
+let filas = `Se llenó el indicador de ${data.dataset.indicador}
+del departamento ${data.dataset.departamento}`;
+const correos = JSON.parse(data.dataset.correos);
+
+document.getElementById('formulario_llenado_indicadores')
+.addEventListener('submit', function (e) {
+
+    e.preventDefault();
+
+
+    const inputs = document.querySelectorAll('.input');
+
+
+
+    // 🔹 Enviar correo con EmailJS
+    emailjs.send('service_ns6885s', 'template_zfgln7k', {
+        name: data.dataset.user,
+        time: new Date().toLocaleString(),
+        message: filas,
+        mails: correos
+
+    }).then(() => {
+
+        // 🔹 Cuando el correo se envía, ahora sí mandamos el form a Laravel
+        e.target.submit();
+
+    }).catch(error => {
+        console.error('Error al enviar correo:', error);
+        alert('Error al enviar notificación por correo');
+    });
+
+});
+
+</script>
+
+
+
+
 
 
 

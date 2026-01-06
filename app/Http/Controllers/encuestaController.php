@@ -10,6 +10,7 @@ use App\Models\Cliente;
 use App\Models\LogBalanced;
 use App\Models\Respuesta;
 use App\Models\ClienteEncuesta;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 
@@ -204,8 +205,23 @@ class encuestaController extends Controller
 
         ]);
 
-
-
+        // Capturar estado anterior para el log
+        $cambios = [];
+        if($encuesta->nombre != $request->nombre_encuesta_edit) {
+            $cambios[] = "Nombre: '{$encuesta->nombre}' -> '{$request->nombre_encuesta_edit}'";
+        }
+        if($encuesta->descripcion != $request->descripcion_encuesta_edit) {
+            $cambios[] = "Descripción: [Modificada]";
+        }
+        if($encuesta->ponderacion != $request->ponderacion_encuesta_edit) {
+            $cambios[] = "Ponderación: '{$encuesta->ponderacion}' -> '{$request->ponderacion_encuesta_edit}'";
+        }
+        if($encuesta->meta_minima != $request->meta_minima_encuesta_edit) {
+            $cambios[] = "Meta Mínima: '{$encuesta->meta_minima}' -> '{$request->meta_minima_encuesta_edit}'";
+        }
+        if($encuesta->meta_esperada != $request->meta_esperada_encuesta_edit) {
+            $cambios[] = "Meta Esperada: '{$encuesta->meta_esperada}' -> '{$request->meta_esperada_encuesta_edit}'";
+        }
 
         $encuesta->update([
 
@@ -219,10 +235,15 @@ class encuestaController extends Controller
 
 
 
+        $descripcion = "Se edito la encuesta: ".$encuesta->nombre." (ID: ".$encuesta->id.")";
+        if(!empty($cambios)) {
+            $descripcion .= ". Cambios: ".implode(", ", $cambios);
+        }
+
         LogBalanced::create([
             'autor' => $autor_log,
             'accion' => "update",
-            'descripcion' => "Se edito la encuesta : ".$encuesta->nombre . " con el id: ". $encuesta->id,
+            'descripcion' => $descripcion,
             'ip' => request()->ip() 
         ]);
 
@@ -235,6 +256,8 @@ class encuestaController extends Controller
 
     public function pregunta_store(Encuesta $encuesta, Request $request){
 
+        $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
         $request->validate([
             'pregunta' => 'required'
         ]);
@@ -243,7 +266,7 @@ class encuestaController extends Controller
         if(!$request->cuantificable) $cuantificable = false;
 
 
-        Pregunta::create([
+        $pregunta = Pregunta::create([
 
             "pregunta" => $request->pregunta,
             "id_encuesta" => $encuesta->id,
@@ -251,6 +274,12 @@ class encuestaController extends Controller
  
         ]);
 
+        LogBalanced::create([
+            'autor' => $autor_log,
+            'accion' => "add",
+            'descripcion' => "Se agrego la pregunta: '{$request->pregunta}' (ID: {$pregunta->id}) a la encuesta: {$encuesta->nombre}",
+            'ip' => request()->ip() 
+        ]);
         
         return back()->with('success', 'La pregunta fue agregada al cuestionario!');
 
@@ -260,8 +289,21 @@ class encuestaController extends Controller
     
     public function pregunta_delete(Pregunta $pregunta){
 
+        $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
+
+        $pregunta_texto = $pregunta->pregunta;
+        $encuesta_id = $pregunta->id_encuesta;
+        $encuesta = Encuesta::find($encuesta_id);
+        $encuesta_nombre = $encuesta ? $encuesta->nombre : 'N/A';
 
         $pregunta->delete();
+
+        LogBalanced::create([
+            'autor' => $autor_log,
+            'accion' => "deleted",
+            'descripcion' => "Se elimino la pregunta: '{$pregunta_texto}' (ID: {$pregunta->id}) de la encuesta: {$encuesta_nombre}",
+            'ip' => request()->ip() 
+        ]);
 
         return back()->with("deleted", "La pregunta fue eliminada");
 
@@ -273,44 +315,93 @@ class encuestaController extends Controller
 
     public function encuestas_show_admin(){
         
-        $encuestas = Encuesta::with(['departamento', 'preguntas', 'respuestas'])->get();
-        $departamentos = Departamento::get();
+    $inicio = request()->filled('fecha_inicio')
+        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+            ->startOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            ->startOfYear()
+            ->utc();
+
+    $fin = request()->filled('fecha_fin')
+        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            ->endOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            ->endOfYear()
+            ->utc();
 
 
-        //ESTO ME DA LAS GRAFICAS POR MES DE LAS ENCUESTAS
-        $resultado_encuestas = DB::table(DB::raw('
-            (
-                SELECT
-                    e.id AS encuesta_id,
-                    e.nombre AS encuesta,
-                    DATE_FORMAT(r.created_at, "%Y-%m") AS mes,
-                    r.id_cliente,
-                    AVG(r.respuesta) AS promedio_cliente
-                FROM respuestas r
-                JOIN preguntas p ON p.id = r.id_pregunta
-                JOIN encuestas e ON e.id = p.id_encuesta
-                WHERE (p.cuantificable = 1 OR p.cuantificable = "on")
-                GROUP BY e.id, r.id_cliente, mes
-            ) AS t
-        '))
-        ->select(
-            'encuesta_id',
-            'encuesta',
-            'mes',
-            DB::raw('ROUND(AVG(promedio_cliente),2) AS total')
-        )
-        ->groupBy('encuesta_id', 'encuesta', 'mes')
-        ->orderBy('mes')
-        ->get()
-        ->groupBy('encuesta')
-        ->map(function ($items, $encuesta) {
-            return [
-                'encuesta' => $encuesta,
-                'labels'   => $items->pluck('mes')->values(),
-                'data'     => $items->pluck('total')->values()
-            ];
-        })
-        ->values();
+
+
+    $encuestas = Encuesta::with(['departamento', 'preguntas', 'respuestas'])->whereBetween('created_at', [$inicio, $fin])->withExists('respuestas as tiene_respuestas')->get();
+
+
+    $departamentos = Departamento::get();
+
+
+    $subquery = DB::table('respuestas as r')
+    ->join('preguntas as p', 'p.id', '=', 'r.id_pregunta')
+    ->join('encuestas as e', 'e.id', '=', 'p.id_encuesta')
+    ->where(function ($q) {
+        $q->where('p.cuantificable', 1)
+          ->orWhere('p.cuantificable', 'on');
+    })
+    ->whereBetween('r.created_at', [$inicio, $fin])
+    ->selectRaw('
+        e.id AS encuesta_id,
+        e.nombre AS encuesta,
+        e.meta_minima,
+        e.meta_esperada,
+        DATE_FORMAT(r.created_at, "%Y-%m") AS mes,
+        r.id_cliente,
+        AVG(r.respuesta) AS promedio_cliente
+    ')
+    ->groupBy(
+        'e.id',
+        'e.nombre',
+        'e.meta_minima',
+        'e.meta_esperada',
+        'r.id_cliente',
+        'mes'
+    );
+
+
+
+    $resultado_encuestas = DB::query()
+    ->fromSub($subquery, 't')
+    ->select(
+        'encuesta_id',
+        'encuesta',
+        'meta_minima',
+        'meta_esperada',
+        'mes',
+        DB::raw('ROUND(AVG(promedio_cliente),2) AS total')
+    )
+    ->groupBy(
+        'encuesta_id',
+        'encuesta',
+        'meta_minima',
+        'meta_esperada',
+        'mes'
+    )
+    ->orderBy('mes')
+    ->get()
+    ->groupBy('encuesta')
+    ->map(function ($items, $encuesta) {
+        return [
+            'encuesta'      => $encuesta,
+            'meta_minima'   => $items->first()->meta_minima,
+            'meta_esperada' => $items->first()->meta_esperada,
+            'labels'        => $items->pluck('mes')->values(),
+            'data'          => $items->pluck('total')->values(),
+        ];
+    })
+    ->values();
+
+
+
+
         //ESTO ME DA LAS GRAFICAS POR MES DE LAS ENCUESTAS
 
 

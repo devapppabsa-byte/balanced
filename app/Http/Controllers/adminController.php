@@ -259,6 +259,26 @@ class adminController extends Controller
             "telefono_cliente_edit" => "required" 
         ]);
 
+        // Capturar estado anterior para el log
+        $cambios = [];
+        if($cliente->id_interno != $request->id_cliente_edit) {
+            $cambios[] = "ID Interno: '{$cliente->id_interno}' -> '{$request->id_cliente_edit}'";
+        }
+        if($cliente->nombre != $request->nombre_cliente_edit) {
+            $cambios[] = "Nombre: '{$cliente->nombre}' -> '{$request->nombre_cliente_edit}'";
+        }
+        if($cliente->email != $request->correo_cliente_edit) {
+            $cambios[] = "Email: '{$cliente->email}' -> '{$request->correo_cliente_edit}'";
+        }
+        if($cliente->linea != $request->linea_edit) {
+            $cambios[] = "Línea: '{$cliente->linea}' -> '{$request->linea_edit}'";
+        }
+        if($cliente->telefono != $request->telefono_cliente_edit) {
+            $cambios[] = "Teléfono: '{$cliente->telefono}' -> '{$request->telefono_cliente_edit}'";
+        }
+        if($request->password_cliente_edit) {
+            $cambios[] = "Contraseña: [Actualizada]";
+        }
 
         $cliente->id_interno = $request->id_cliente_edit;
         $cliente->nombre = $request->nombre_cliente_edit;
@@ -270,11 +290,16 @@ class adminController extends Controller
         $cliente->update();
 
 
+        $descripcion = "Se edito al cliente: ".$cliente->nombre." (ID: ".$cliente->id.")";
+        if(!empty($cambios)) {
+            $descripcion .= ". Cambios: ".implode(", ", $cambios);
+        }
+
         LogBalanced::create([
 
             'autor' => $autor,
             'accion' => "update",
-            'descripcion' => "Se edito al cliente : ".$cliente->nombre . "  con el id: ". $cliente->id,
+            'descripcion' => $descripcion,
             'ip' => request()->ip()
 
         ]);

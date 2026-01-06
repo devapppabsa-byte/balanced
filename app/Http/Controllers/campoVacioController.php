@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\CampoVacio;
 use App\Models\Indicador;
+use App\Models\LogBalanced;
 use Illuminate\Http\Request;
 
 class campoVacioController extends Controller

@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('logs_balanced', function (Blueprint $table) {
+        Schema::create('metas_indicadores_llenos', function (Blueprint $table) {
             $table->id();
-            $table->string('autor');
-            $table->string('accion');
-            $table->text('descripcion');
-            $table->string('ip');
+            $table->string('meta_minima');
+            $table->string("meta_maxima");
+            $table->string('id_movimiento_indicador_lleno');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('logs_balanced');
+        Schema::dropIfExists('metas_indicadores');
     }
 };

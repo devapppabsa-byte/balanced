@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CampoPrecargado;
 use App\Models\Indicador;
 use App\Models\InformacionInputPrecargado;
+use App\Models\LogBalanced;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\CampoForaneoInformacion;
@@ -17,7 +18,7 @@ class campoPrecargadoController extends Controller
     //este es para el campo de prueba
     public function agregar_campo_precargado(Indicador $indicador, Request $request){
 
-
+       $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 

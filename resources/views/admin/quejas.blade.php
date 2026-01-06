@@ -57,11 +57,11 @@
 
 <div class="container-fluid mt-4">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-10 shadow-sm rounded border  bg-white p-5">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-10 shadow-sm rounded-5 border  bg-white p-5">
             <div class="row ">
-                <div class="col-12 text-center">
-                    <h2>
-                        <i class="fa-regular fa-newspaper"></i>
+                <div class="col-12 text-start">
+                    <h2 class="mb-1 fw-bold">
+                        <i class="fa-solid fa-comments text-primary"></i>
                         Quejas o Sugerencias
                     </h2>
                 </div>
