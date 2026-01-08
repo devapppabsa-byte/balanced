@@ -64,7 +64,7 @@
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-12 col-lg-10 col-xl-8 mt-4 mt-md-5">
+        <div class="col-12 col-lg-11 col-xl-10 mt-4 mt-md-5">
             
             <!-- Tabs Navigation - MDBootstrap -->
             <div class="card shadow-sm border-0 mb-4">
@@ -290,6 +290,8 @@
                                         <thead class="table-light">
                                             <tr>
                                                 <th scope="col" class="border-0">Indicador</th>
+                                                <th scope="col" class="border-0">Ponderación</th>
+                                                <th scope="col" class="border-0">Min - Max</th>
                                                 <th scope="col" class="border-0">Autor</th>
                                                 <th scope="col" class="border-0">Fecha Creación</th>
                                                 <th scope="col" class="border-0 text-end">Acciones</th>
@@ -303,6 +305,17 @@
                                                        class="text-decoration-none text-dark fw-semibold">
                                                         {{ $indicador->nombre }}
                                                     </a>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">
+                                                        {{$indicador->ponderacion}} %
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">
+                                                           {{$indicador->meta_minima}} --  {{$indicador->meta_esperada}}
+                                                    
+                                                    </small>
                                                 </td>
                                                 <td>
                                                     <small class="text-muted">{{ $indicador->creador }}</small>
@@ -659,14 +672,14 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Meta Minima  <span class="text-danger">*</span></label>
-                                <input type="number" min="1" max="100"  value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="% Minimo" required>
+                                <input type="number" min="1" max="100"  value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="Meta Minima" required>
                             </div>
                         </div>
                         
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Meta esperada  <span class="text-danger">*</span></label>
-                                <input type="number" min="1" max="100" class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder="% Máximo"  required>
+                                <input type="number" min="1" max="100" class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder=" Meta Maxima"  required>
                             </div>
                         </div>
 

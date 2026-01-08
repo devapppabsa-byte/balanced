@@ -193,8 +193,8 @@ body{
 
 /* BOTÓN PRINCIPAL */
 .fab-main {
-  width: 60px;
-  height: 60px;
+  width: 75px;
+  height: 75px;
   border-radius: 50%;
   background: #0d6efd;
   color: white;
@@ -203,6 +203,8 @@ body{
   box-shadow: 0 8px 25px rgba(0,0,0,.3);
   transition: transform .4s ease;
 }
+
+
 
 /* ROTACIÓN AL ABRIR */
 .fab-container.active .fab-main {

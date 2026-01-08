@@ -4,7 +4,7 @@
 @section('contenido')
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center justify-content-start ">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-10 col-xl-12  py-4">
             <h1 class="text-white">Evidencias</h1>
             <h5 class="text-white">{{$apartado->apartado}}</h5>
 
@@ -58,20 +58,20 @@
 
 <div class="container-fluid mt-5">
     <div class="row justify-content-center">
-        <div class="col-10 bg-white py-5  shadow border border-5">
+        <div class="col-11 bg-white py-5  shadow border border-5">
         <div class="row justify-content-center ">
             <div class="col-12 text-center">
                 <h2>
                     <i class="fa-solid fa-camera-retro"></i>
                     Evidencias
                 </h2>
-                <h3>{{$apartado->apartado}}</h3>
-                <p>{{$apartado->descripcion}}</p>
+                <h5 class="text-muted">{{$apartado->apartado}}</h5>
+                <p class="text-muted">{{$apartado->descripcion}}</p>
             </div>
             <div class="col-12 mt-5">
                 <div class="row justify-content-center">
                     @forelse ($cumplimientos as $cumplimiento)
-                        <div class="col-10 my-1">
+                        <div class="col-9 my-1">
                             <div class="accordion" id="accordionExample">
                                 <div class="accordion-item border-2 shadow-sm">
                                     <h2 class="accordion-header" id="headingTwo">

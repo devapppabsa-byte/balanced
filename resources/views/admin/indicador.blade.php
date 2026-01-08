@@ -117,7 +117,7 @@
 <div class="fab-container">
 
   <!-- BOTÓN PRINCIPAL -->
-  <button class="fab-main" id="fabToggle">
+  <button class="fab-main zoom" id="fabToggle">
     <i class="fa fa-plus"></i>
   </button>
 
@@ -238,10 +238,8 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <button class="btn btn-outline-danger btn-sm"
-                                            data-mdb-ripple-init
-                                            data-mdb-modal-init
-                                            data-mdb-target="#del{{ $campo->id_input }}">
+                                        <button class="btn btn-outline-danger btn-sm"  data-mdb-ripple-init  data-mdb-modal-init
+                                            data-mdb-target="#del{{ $campo->id_input }}"  data-mdb-tooltip-init  title="Eliminar campo" >
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </td>

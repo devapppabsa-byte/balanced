@@ -75,86 +75,104 @@
 </div>
 
 
-<div class="container-fluid ">
-    <div class="row justify-content-center ">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-10 border-bottom mb-5 bg-white p-5 rounded border">
-            <div class="row mb-2">
-                <div class="col-12 text-center ">
-                    <h2 class="fw-bold"> Apartados de la norma {{$norma->nombre}}</h2>
-                    <p style="text-align:justify">{{$norma->descripcion}}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 ">
-                    <div class="row   table-responsive">
-                        @if (!$apartados->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
-                        
-                            <table class="table mb-0 border table-hover">
-                                <thead class="table-primary text-white cascadia-code">
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Descripción</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                            <tbody>
-                        @endif
+<div class="container my-4">
+    <div class="card border-0 shadow-sm rounded-4">
 
-                        @forelse ($apartados as $apartado)
+        <!-- Header -->
+        <div class="card-header bg-white border-0 text-center px-4 pt-4">
+            <h3 class="fw-bold mb-2">
+                Apartados de la norma
+                <span class="text-primary">{{ $norma->nombre }}</span>
+            </h3>
+
+            <p class="text-muted mx-auto" >
+                {{ $norma->descripcion }}
+            </p>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body px-4 pb-4">
+
+            @if (!$apartados->isEmpty())
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover">
+                        <thead class="table-light border-bottom">
                             <tr>
-                                <td>
-                                    <a href="{{route('ver.evidencia.cumplimiento.normativo.admin', $apartado->id)}}" class="text-decoration-none text-dark fw-bold">
-                                        {{$apartado->apartado}}
-                                    </a>
-                                </td>
-                                <td>{{$apartado->descripcion}}</td>
-
-                                <td class="tex-start">
-                                    <a class="text-danger mx-1" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_ap{{$apartado->id}}" style="cursor: pointer">
-                                        <i class="fa fa-trash"></i> 
-                                    </a>
-
-                                    <a class="text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_ap{{$apartado->id}}"  style="cursor: pointer">
-                                        <i class="fa fa-edit"></i> 
-                                    </a>
-                                
-                                </td>
-
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th class="text-center">Acciones</th>
                             </tr>
-                        @empty
-                            <div class="col-12 p-5 text-center p-5 border">
+                        </thead>
+                        <tbody>
+            @endif
 
-                                <div class="row">
+            @forelse ($apartados as $apartado)
+                <tr>
+                    <td class="fw-semibold">
+                        <a href="{{ route('ver.evidencia.cumplimiento.normativo.admin', $apartado->id) }}"
+                           class="text-decoration-none text-dark">
+                            {{ $apartado->apartado }}
+                        </a>
+                    </td>
 
-                                    <div class="col-12">
-                                        <img src="{{asset('/img/iconos/empty.png')}}" alt="">
-                                    </div>
-                                    
-                                    <div class="col-12">
-                                        <i class="fa fa-exclamation-circle text-danger"></i>
-                                        No cuenta con indicadores, pero los puedes agregar aqui
-                                    </div>
-                                    
-                                    <div class="col-12">
-                                        <a class="btn btn-secondary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_apartado_norma">
-                                            <i class="fa fa-plus"></i>
-                                            Agregar apartado a la norma
-                                        </a>
-                                    </div>
+                    <td class="text-muted">
+                        {{ Str::limit($apartado->descripcion, 100) }}
+                    </td>
 
-                                </div>
-                                <h5>
-                                </h5>
-                            </div>
-                        @endforelse
+                    <td class="text-center">
+                        <button class="btn btn-outline-danger btn-sm mx-1"
+                                data-mdb-ripple-init
+                                data-mdb-modal-init
+                                data-mdb-target="#del_ap{{ $apartado->id }}"
+                                title="Eliminar">
+                            <i class="fa fa-trash"></i>
+                        </button>
+
+                        <button class="btn btn-outline-primary btn-sm"
+                                data-mdb-ripple-init
+                                data-mdb-modal-init
+                                data-mdb-target="#edit_ap{{ $apartado->id }}"
+                                title="Editar">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+            @empty
+                <!-- Empty state -->
+                <tr>
+                    <td colspan="3">
+                        <div class="text-center py-5">
+                            <img src="{{ asset('/img/iconos/empty.png') }}" class="img-fluid mb-3" style="max-width: 180px;">
+                            <h5 class="fw-bold">
+                                <i class="fa fa-circle-exclamation text-danger me-1"></i>
+                                No hay apartados registrados
+                            </h5>
+                            <p class="text-muted mb-3">
+                                Aún no existen apartados para esta norma, puedes agregar uno nuevo.
+                            </p>
+
+                            <button class="btn btn-secondary btn-sm"
+                                    data-mdb-ripple-init
+                                    data-mdb-modal-init
+                                    data-mdb-target="#agregar_apartado_norma">
+                                <i class="fa fa-plus me-1"></i>
+                                Agregar apartado
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            @endforelse
+
+            @if (!$apartados->isEmpty())
                         </tbody>
-                        </table>
-                    </div>
+                    </table>
                 </div>
-            </div>
+            @endif
+
         </div>
     </div>
 </div>
+
 
 
 
@@ -287,10 +305,10 @@
 
 
     <div class="modal fade" id="edit_ap{{$apartado->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
             <div class="modal-header bg-primary py-4">
-                <h5 class="text-white" id="exampleModalLabel">Editando  {{$apartado->apartado}}</h5>
+                <h5 class="text-white" id="exampleModalLabel">Editar  {{$apartado->apartado}}</h5>
                 <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body py-4">
@@ -299,7 +317,7 @@
                     
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="text" class="form-control form-control-lg w-100{{ $errors->first('nombre_apartado_edit') ? 'is-invalid' : '' }} " id="nombre_apartado{{$apartado->id}}" name="nombre_apartado_edit" value="{{old('nombre_apartado_edit', $apartado->apartado)}}" style="font-size: 30px">
+                            <input type="text" class="form-control form-control-lg w-100{{ $errors->first('nombre_apartado_edit') ? 'is-invalid' : '' }} " id="nombre_apartado{{$apartado->id}}" name="nombre_apartado_edit" value="{{old('nombre_apartado_edit', $apartado->apartado)}}">
                             <label class="form-label" for="nombre_apartado_edit{{$apartado->id}}" >Editando apartado </label>
                         </div>
                     </div>

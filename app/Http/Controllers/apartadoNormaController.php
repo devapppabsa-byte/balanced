@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 //use App\Models\Apartado;
 use App\Models\EvidenciaCumplimientoNorma;
 use Carbon\Carbon;
+use App\Models\Admin;
 use App\Models\Norma;
 use App\Models\CumplimientoNorma;
 use App\Models\ApartadoNorma;
@@ -50,9 +51,10 @@ class apartadoNormaController extends Controller
 
 
         $apartados = ApartadoNorma::where('id_norma', $norma->id)->get();
+        $correos = Admin::pluck('email');
 
 
-        return view('user.registro_cumplimiento_normativo', compact('norma', 'apartados'));
+        return view('user.registro_cumplimiento_normativo', compact('norma', 'apartados', 'correos'));
 
 
     }

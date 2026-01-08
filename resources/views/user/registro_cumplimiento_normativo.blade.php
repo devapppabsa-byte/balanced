@@ -155,7 +155,7 @@
 
 @forelse ($apartados as $apartado)
     <div class="modal fade" id="reg{{$apartado->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary py-4">
                     <h3 class="text-white mb-0 pb-0" id="exampleModalLabel">
@@ -165,12 +165,12 @@
                     <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body py-4">
-                    <form action="{{route('registro.actividad.cumplimiento.norma', $apartado->id)}}" method="POST" enctype="multipart/form-data">
+                    <form action="{{route('registro.actividad.cumplimiento.norma', $apartado->id)}}" id="form_cumplimiento_normativo"  method="POST" enctype="multipart/form-data">
                         @csrf 
                         <div class="form-group">
                             <div class="form-outline" data-mdb-input-init>
-                                <textarea  class="form-control form-control-lg {{ $errors->first('descripcion_actividad') ? 'is-invalid' : '' }} " value="{{old("descripcion_actividad")}}"  name="descripcion_actividad"></textarea>
-                                <label class="form-label" for="descripcion_actividad" >Descripción Actividad </label>
+                                <textarea  class="form-control form-control-lg {{ $errors->first('descripcion_actividad') ? 'is-invalid' : '' }} " value="{{old("descripcion_actividad")}}"  name="descripcion_actividad" required></textarea>
+                                <label class="form-label" for="descripcion_actividad" >Descripción Actividad <span class="text-danger">*</span> </label>
                             </div>
                         </div>
 
@@ -200,5 +200,61 @@
 @endforelse
 
 
+
+
+
+{{-- DESDE AQUI LIMPIO LOS DATOS QUE VIENEN DEL CONTROLADOR Y LOS PASO A HTML PARA QUE JS LOS PUEDA TOMAR, SEGURO QUE SE PUEDE HACER DE UNA MEJOR MANERA PERO ASI ESTA BIEN DE MOMENTO. --}}
+
+<div id="data-norma"
+    data-user = "{{Auth::user()->name}}"
+    data-correos = '@json($correos)''
+     data-norma="{{ $norma->nombre }}"
+     data-departamento="{{ Auth::user()->departamento->nombre }}">
+</div>
+
+
+@endsection
+
+
+@section('scripts')
+    
+
+<script>
+
+ const data = document.getElementById('data-norma');
+
+let filas = `Se agrego evidencia a: ${data.dataset.norma}
+del departamento ${data.dataset.departamento}`;
+
+const correos = JSON.parse(data.dataset.correos);
+
+document.getElementById('form_cumplimiento_normativo')
+.addEventListener('submit', function (e) {
+
+    e.preventDefault();
+
+
+    const inputs = document.querySelectorAll('.input');
+
+    // 🔹 Enviar correo con EmailJS
+    emailjs.send('service_ns6885s', 'template_zfgln7k', {
+        name: data.dataset.user,
+        time: new Date().toLocaleString(),
+        message: filas,
+        mails: correos
+
+    }).then(() => {
+
+        // 🔹 Cuando el correo se envía, ahora sí mandamos el form a Laravel
+        e.target.submit();
+
+    }).catch(error => {
+        console.error('Error al enviar correo:', error);
+        alert('Error al enviar notificación por correo');
+    });
+
+});
+
+</script>
 
 @endsection
