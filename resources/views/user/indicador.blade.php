@@ -89,8 +89,8 @@ use Carbon\Carbon;
 
 <div class="container-fluid">
 
-    <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center mt-4">
-        <div  class="col-12 mx-2 bg-white shadow-sm p-5">
+    <div class="row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-4">
+        <div  class="col-12 mx-2 bg-white shadow-sm px-5 py-3 pb-5">
             
             <div class="row justify-content-center">
                 
@@ -99,16 +99,19 @@ use Carbon\Carbon;
                         Historico de llenado del Indicador
                     </h3>
                 </div>
-
-               <pre>
-                   {{$grupos}}
-                
-            </pre> 
                 
                 @forelse($grupos as $movimiento => $items)
+                    @php
+                        //para obtener las metas minimas y maximas desde la otra tabla
+                        $metas = MetaIndicador::where('id_movimiento_indicador_lleno',  $items[0]->id_movimiento)->first();
 
+                        $meta_minima = $metas->meta_minima;
+                        $meta_maxima = $metas->meta_maxima;
 
-                <div class="col-10 col-sm-5 col-md-5 col-lg-3  shadow-sm mx-4 border rounded mt-4">
+                    @endphp
+
+                <div class="col-10 col-sm-5 col-md-8 col-lg-3  shadow-sm mx-4 border rounded mt-4">
+
                     @php
                         //para sacar fecha y año
                         $fecha = Carbon::parse(explode('-', $movimiento)[0]);
@@ -120,32 +123,45 @@ use Carbon\Carbon;
 
                     <div class="row justify-content-center">
                         
-                        <div class="col-12 bg-info text-white pt-3 pb-2 mb-4 rounded">
+                        <div class="col-12 bg-info text-white pt-3 pb-2 mb-1 rounded">
                             <h3 class="text-center fw-bold">
-                                <i class="fa-solid fa-calendar-days"></i>{{$movimiento}} {{ $mes.' - '.$year }}
+                                <i class="fa-solid fa-calendar-days"></i> {{ $mes.' - '.$year }}
                             </h3>
                         </div>
+
+                        <div class="col-12 text-center   p-2 my-2 rounded">
+                            <div class="row justify-contente-center">
+                                <div class="col-6 text-center ">
+                                    <div class="badge badge-danger p-2">
+                                        <i class="fa-solid fa-circle-arrow-down text-danger"></i>                                    
+                                        <span>Meta minima:   {{$meta_minima}} </span>
+                                    </div>
+                                
+                                </div>
+                                <div class="col-6 text-center">
+                                    <div class="badge badge-success p-2">
+                                        <i class="fa-solid fa-circle-arrow-up text-success"></i>                                    
+                                        <span>Meta maxima:   {{$meta_maxima}} </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <hr>
+                        
                         
                         @foreach($items as $item)
-                        @php
-                            //para obtener las metas minimas y maximas desde la otra tabla
-                            $metas = MetaIndicador::where('id_movimiento_indicador_lleno', $item->id_movimiento)->first();
-
-                           $meta_minima = $metas->meta_minima;
-                           $metra_maxima = $metas->meta_esperada;
-
-                        @endphp
-
                         {{-- Se hace la consulta de la informaion del indiacor lleno, y se hace la condicional  para saber si esta el campo final --}}
                         @if ($item->final === "on")
-                            <div class="col-8  fw-bold  rounded-5 border zoom_link {{($meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3">
+                            <div class="col-8  fw-bold  rounded-5 border zoom_link {{($meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3 border-2">
                                 
                                 
                                 <h5 class="text-center ">
                                     <i class="fa {{($meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
                                     {{ $item['nombre_campo'] }}: 
                                 </h5> 
-                                <h2 class="text-center">{{ $item['informacion_campo'] }} </h2>
+                                <h4 class="text-center fw-bold">{{ $item['informacion_campo'] }} </h4>
                             
                             </div>
 
@@ -181,33 +197,35 @@ use Carbon\Carbon;
 
                         @else
 
-                        @if ($item->final === 'registro')
-                        
-                            <div class="col-11 p-3 mb-3 bg-light border  rounded ">
-                                <small class="fw-bold">{{ $item['nombre_campo'] }}: </small> <br>
-                                <small class="text-center"> <b>{{ $item['informacion_campo'] }} </b>- {{ $item['created_at'] }} </small> 
-                               
-                                <br>                
-                            </div>
-
-                        @else
-
-                            <div class="col-11">
-                                <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
-                                <span class="h3">{{ $item['informacion_campo'] }}</span> <br>                
-                            </div>
+                            @if ($item->final === 'registro')
                             
-                        @endif
+                                <div class="col-11 p-3 mb-3 bg-light border  rounded ">
+                                    <small class="fw-bold">{{ $item['nombre_campo'] }}: </small> <br>
+                                    <small class="text-center"> <b>{{ $item['informacion_campo'] }} </b>- {{ $item['created_at'] }} </small> 
+                                
+                                    <br>                
+                                </div>
+
+                            @else
+
+                                <div class="col-11">
+                                    <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
+                                    <span class="fw-bold ">{{ $item['informacion_campo'] }}</span> <br>                
+                                </div>
+                                
+                            @endif
                             
 
                         @endif
                         @endif
+
+
                         @endforeach
                         
                     </div>
                 </div>
                 
-                    
+
                 @empty
 
                 @endforelse
@@ -427,8 +445,8 @@ const labels = datos.map(item => {
 const valores = datos.map(item => parseFloat(item.informacion_campo));
 
 // Niveles dinámicos (puedes modificar)
-const MINIMO = {{$meta_minima}};
-const MAXIMO = {{$meta_maxima}};
+const MINIMO = {{$meta_minima_general}};
+const MAXIMO = {{$meta_maxima_general}};
 
 const ctx = document.getElementById('grafico').getContext('2d');
 
@@ -505,8 +523,6 @@ document.getElementById('formulario_llenado_indicadores')
 
 
     const inputs = document.querySelectorAll('.input');
-
-
 
     // 🔹 Enviar correo con EmailJS
     emailjs.send('service_ns6885s', 'template_zfgln7k', {

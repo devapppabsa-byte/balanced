@@ -383,17 +383,18 @@ public function show_indicador_user(Indicador $indicador){
 
 
 
-    $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get();
+   $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get();
 
-
-
-
-
-    //agrupo los datros, esto es important!!!
     $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
 
- 
-
+    
+    //se consultan las metas directo de la tabla del indicador para tenerlas actualizadas
+    $meta_minima_general = $indicador->meta_minima;
+    $meta_maxima_general = $indicador->meta_esperada;
+    
+    
+    
+    
     //Se consulta el campo de resultado final.
     $campo_resultado_final = CampoCalculado::where('id_indicador', $indicador->id)->whereNotNull('resultado_final')->where('resultado_final', '!=', '')->first();
 
@@ -402,7 +403,8 @@ public function show_indicador_user(Indicador $indicador){
                            ->where('final', 'on')->get();
     
 
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos'));
+
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos', 'meta_minima_general', 'meta_maxima_general'));
 
 
 

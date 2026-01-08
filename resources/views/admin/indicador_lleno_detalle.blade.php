@@ -4,6 +4,7 @@
 @php
     use Carbon\Carbon;
     use App\Models\InformacionInputPrecargado;
+    use App\Models\MetaIndicador;
 @endphp
 <style>
     .accordion{
@@ -210,62 +211,77 @@
 
 
 
-    <div class="row justify-content-around pb-5 m border-bottom d-flex align-items-center mt-2">
-        <div  class="col-12  bg-white shadow-sm pb-5 pt-2">
-
+    <div class=" card row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-4">
+        <div  class="col-11 mx-2 px-5 py-3 pb-5">
+            
             <div class="row justify-content-center">
-
-
-
+                                
                 @forelse($grupos as $movimiento => $items)
-
-                <div class="col-10 col-sm-10 col-md-5 col-lg-3  shadow-sm mx-4 border rounded mt-4">
                     @php
-                        $fecha = Carbon::parse(explode('-', $movimiento)[0])->subMonth();
-                        Carbon::setLocale('es');
-                        $mes = $fecha->translatedformat('F');
-                        $year = $fecha->format('Y');
+                        //para obtener las metas minimas y maximas desde la otra tabla
+                        $metas = MetaIndicador::where('id_movimiento_indicador_lleno',  $items[0]->id_movimiento)->first();
+
+                        $meta_minima = $metas->meta_minima;
+                        $meta_maxima = $metas->meta_maxima;
+
                     @endphp
 
-                    <div class="row justify-content-center">
+                <div class="col-10 col-sm-8 col-md-5 col-lg-3 shadow-sm mx-4 border rounded mt-4">
 
-                        <div class="col-12 bg-info text-white pt-3 pb-2 mb-4 rounded">
+                    @php
+                        //para sacar fecha y año
+                        $fecha = Carbon::parse(explode('-', $movimiento)[0]);
+                        Carbon::setLocale('es');
+                        $mes = $fecha->subMonth()->translatedformat('F');
+                        $year = $fecha->format('Y');
+                   
+                   @endphp
+
+                    <div class="row justify-content-center">
+                        
+                        <div class="col-12 bg-info text-white pt-3 pb-2 mb-1 rounded">
                             <h3 class="text-center fw-bold">
                                 <i class="fa-solid fa-calendar-days"></i> {{ $mes.' - '.$year }}
                             </h3>
                         </div>
 
+                        <div class="col-12 text-center   p-2 my-2 rounded">
+                            <div class="row justify-contente-center">
+                                <div class="col-6 text-center ">
+                                    <div class="badge badge-danger p-2">
+                                        <i class="fa-solid fa-circle-arrow-down text-danger"></i>                                    
+                                        <span>Minima:   {{$meta_minima}} </span>
+                                    </div>
+                                
+                                </div>
+                                <div class="col-6 text-center">
+                                    <div class="badge badge-success p-2">
+                                        <i class="fa-solid fa-circle-arrow-up text-success"></i>                                    
+                                        <span>Maxima:   {{$meta_maxima}} </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <hr>
+                        
+                        
                         @foreach($items as $item)
-
-
                         {{-- Se hace la consulta de la informaion del indiacor lleno, y se hace la condicional  para saber si esta el campo final --}}
                         @if ($item->final === "on")
-                            <div class="col-8  fw-bold  rounded-5 border zoom_link {{($indicador->meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3">
-
-
+                            <div class="col-8  fw-bold  rounded-5 border zoom_link {{($meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3 border-2">
+                                
+                                
                                 <h5 class="text-center ">
-                                    <i class="fa {{($indicador->meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
-                                    {{ $item['nombre_campo'] }}:
-                                </h5>
-                                <h2 class="text-center">{{ $item['informacion_campo'] }} </h2>
-
+                                    <i class="fa {{($meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
+                                    {{ $item['nombre_campo'] }}: 
+                                </h5> 
+                                <h4 class="text-center fw-bold">{{ $item['informacion_campo'] }} </h4>
+                            
                             </div>
 
                         @else
-
-
-                        @if ($item->final === 'registro')
-
-                            <div class="col-11 p-3 mb-3 bg-light border  rounded ">
-                                <small class="fw-bold">{{ $item['nombre_campo'] }}: </small> <br>
-                                <small class="text-center"> <b>{{ $item['informacion_campo'] }} </b>- {{ $item['created_at'] }} </small>
-
-                                <br>
-                            </div>
-
-                        @else
-
-
 
                         @if ($item->final === 'comentario')
 
@@ -286,7 +302,7 @@
                                             <div class="col-12  mx-2 bg-white shadow-sm p-3 mt-4" >
                                                 <b class="h3">Comentario: </b>
                                                 <p class="h5 mt-2">
-                                                    {{$item['informacion_campo']}}
+                                                    {{$item['informacion_campo']}} 
                                                 </p>
                                             </div>
                                         </div>
@@ -297,23 +313,48 @@
 
                         @else
 
-                            <div class="col-11">
-                                <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
-                                <span class="h3">{{ $item['informacion_campo'] }}</span> <br>
-                            </div>
+                            @if ($item->final === 'registro')
+                            
+                                <div class="col-11 p-3 mb-3 bg-light border  rounded ">
+                                    <small class="fw-bold">{{ $item['nombre_campo'] }}: </small> <br>
+                                    <small class="text-center"> <b>{{ $item['informacion_campo'] }} </b>- {{ $item['created_at'] }} </small> 
+                                
+                                    <br>                
+                                </div>
 
+                            @else
+
+                                <div class="col-11">
+                                    <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
+                                    <span class="fw-bold ">{{ $item['informacion_campo'] }}</span> <br>                
+                                </div>
+                                
+                            @endif
+                            
+
+                        @endif
                         @endif
 
 
-                        @endif
-                        @endif
                         @endforeach
+                        
+                    </div>
+                </div>
+                
 
+                @empty
+
+
+                <div class="">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-4">
+                            <i class="fa-regular fa-newspaper text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                        </div>
+                        <h5 class="text-muted mb-2">No se encontraron indicadores.</h5>
                     </div>
                 </div>
 
 
-                @empty
 
                 @endforelse
 
