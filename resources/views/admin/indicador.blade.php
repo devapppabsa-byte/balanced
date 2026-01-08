@@ -47,7 +47,8 @@
 
 
 <div class="container-fluid">
-    <div class="row border py-2 justify-content-center bg-white shadow-sm">
+
+    {{-- <div class="row border py-2 justify-content-center bg-white shadow-sm">
 
         
         <div class="col-3 col-sm-4 col-md-3 col-lg-auto m-1">
@@ -111,7 +112,70 @@
         </div>
 
 
-    </div>
+    </div> --}}
+<!-- FAB CONTENEDOR -->
+<div class="fab-container">
+
+  <!-- BOTÓN PRINCIPAL -->
+  <button class="fab-main" id="fabToggle">
+    <i class="fa fa-plus"></i>
+  </button>
+
+  <!-- BOTONES HIJOS -->
+  <div class="fab-actions">
+
+    <button class="fab-btn bg-secondary"
+      data-mdb-modal-init data-mdb-target="#modalCampos">
+      <i class="fa fa-plus-circle"></i>
+      <span>Campos Vacíos</span>
+    </button>
+
+    <button class="fab-btn bg-dark"
+      data-mdb-modal-init data-mdb-target="#modalCamposPrecargados">
+      <i class="fa fa-database"></i>
+      <span>Precargados</span>
+    </button>
+
+    <button class="fab-btn bg-primary"
+      data-mdb-modal-init data-mdb-target="#modalPromediarCampos">
+      <i class="fa fa-scale-balanced"></i>
+      <span>Promedio</span>
+    </button>
+
+    <button class="fab-btn bg-info"
+      data-mdb-modal-init data-mdb-target="#modalDividirCampos">
+      <i class="fa fa-divide"></i>
+      <span>División</span>
+    </button>
+
+    <button class="fab-btn bg-success"
+      data-mdb-modal-init data-mdb-target="#modalSumarCampos">
+      <i class="fa fa-plus"></i>
+      <span>Suma</span>
+    </button>
+
+    <button class="fab-btn bg-warning"
+      data-mdb-modal-init data-mdb-target="#modalRestarCampos">
+      <i class="fa fa-minus"></i>
+      <span>Resta</span>
+    </button>
+
+    <button class="fab-btn bg-danger"
+      data-mdb-modal-init data-mdb-target="#modalMultiplicarCampos">
+      <i class="fa fa-xmark"></i>
+      <span>Multiplicación</span>
+    </button>
+
+    <button class="fab-btn bg-purple"
+      data-mdb-modal-init data-mdb-target="#modalPorcentajeCampos">
+      <i class="fa fa-percent"></i>
+      <span>Porcentaje</span>
+    </button>
+
+  </div>
+</div>
+
+
 </div>
 
 
@@ -188,7 +252,7 @@
 
 {{-- modales de los campos calculados --}}
 <div class="modal fade" id="modalPromediarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-3">
                 <h3 class="text-white" id="exampleModalLabel">
@@ -268,7 +332,7 @@
 
 
 <div class="modal fade" id="modalMultiplicarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-3">
                 <h3 class="text-white" id="exampleModalLabel">
@@ -343,7 +407,7 @@
 
 
 <div class="modal fade" id="modalSumarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-3">
                 <h3 class="text-white" id="exampleModalLabel">
@@ -418,7 +482,7 @@
 
 
 <div class="modal fade" id="modalDividirCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-3">
                 <h3 class="text-white" id="exampleModalLabel">
@@ -501,7 +565,7 @@
 
 
 <div class="modal fade" id="modalRestarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-3">
                 <h3 class="text-white" id="exampleModalLabel">
@@ -583,7 +647,7 @@
 
 
 <div class="modal fade" id="modalPorcentajeCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-3">
                 <h3 class="text-white" id="exampleModalLabel">
@@ -687,7 +751,7 @@
 
 
 <div class="modal fade" id="modalCamposPrecargados" tabindex="-1"  aria-labelledby="exampleModalLaaabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-header bg-primary  py-4">
             <h3 class="text-white" id="exampleModalLabel">Selecciona un campo para agregar </h3>
@@ -733,7 +797,7 @@
 
 
 <div class="modal fade" id="modalCampos" tabindex="-1"  aria-labelledby="exampleModdalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-header bg-primary  py-4">
             <h3 class="text-white" id="exampleModalLabel">Agregar campos vacios </h3>
@@ -791,7 +855,7 @@
 @forelse ($campos_unidos as $campo)
 
 <div class="modal fade" id="del{{$campo->id_input}}" tabindex="-1"  aria-labelledby="exampleMddodalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-header bg-danger py-4">
             <h3 class="text-white" id="exampleModalLabel">¿Eliminar a {{$campo->nombre}} ?</h3>

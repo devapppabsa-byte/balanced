@@ -176,38 +176,7 @@
             </div>
         </div>
 
-
-
-                                    {{-- <div class="col-12 col-sm-12 col-md-12 col-lg-12  ">
-                                        <div class="row justify-content-center">
-
-                                            <div class="col-6 ">
-                                                <div class="form-group">
-                                                    <label for="" class="fw-bold">Fecha Inicio: </label>
-                                                    <input type="date" name="fecha_inicio" value="{{request('fecha_inicio')}}" class="form-control datepicker">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-6 ">
-                                                <div class="form-group">
-                                                    <label for="" class="fw-bold">Fecha Final: </label>
-                                                    <input type="date" name="fecha_fin" value="{{request('fecha_fin')}}" class="form-control datepicker">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 m-2">
-                                                <div class="form-group">
-                                                    <button class="btn btn-primary btn-sm ">
-                                                        <i class="fa fa-filter"></i>
-                                                        Filtrar
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div> --}}
-
-                        </form>
+</form>
 
 
 

@@ -49,107 +49,162 @@
 
 
 <div class="container-fluid ">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-11 mx-5 mt-3">
 
-    <form class="row   justify-content-center " action="#" method="GET">
-        <div class="col-9  mx-5  ">
-            <div class="row justify-content-center p-3">
-                @csrf @method("GET")
-                        <div class="col-12 col-sm-12 col-md-8 col-lg-5  shadow shadow-sm p-3 border bg-white px-4">
-                            <div class="row justify-content-center"> 
-                                <div class="col-6 ">
-                                    <div class="form-group">
-                                        <label for="" class="fw-bold">Fecha Inicio: </label>
-                                        <input type="date" name="fecha_inicio" value="{{request('fecha_inicio')}}" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="col-6 ">
-                                    <div class="form-group">
-                                        <label for="" class="fw-bold">Fecha Final: </label>
-                                        <input type="date" name="fecha_fin" value="{{request('fecha_fin')}}" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="col-12 m-2">
-                                    <div class="form-group">
-                                        <button class="btn btn-primary btn-sm ">
-                                            <i class="fa fa-filter"></i>
-                                            Filtrar
-                                        </button>
-                                    </div>
-                                </div>
-
-                            </div>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                        <div>
+                            <h2 class="mb-1 fw-bold">
+                                <i class="fa-solid fa-clipboard-list"></i>
+                                Detalle evaluaciónes del proveedor
+                            </h2>
+                            <p class="text-muted mb-0">
+                                <small>Gestión y evaluación de proveedores de la empresa</small>
+                            </p>
                         </div>
-            </div>
-        </div>
-    </form>
-
-
-
-
-    <div class="row justify-content-center ">
-        <div class="col-12 col-sm-12 col-md-10 col-lg-9  mx-5 bg-white rounded border p-5 shadow-sm">
-            <h4>
-                <i class="fa fa-list"></i>
-                Lista de evaluaciones al proveedor
-            </h4>
-                @if (!$evaluaciones->isEmpty())
-                <div class="table-responsive shadow-sm">
-                    <table class="table table-responsive mb-0 border shadow-sm table-hover">
-                            <thead class="table-secondary text-white cascadia-code">
-                                <tr>
-                                <th>
-                                    <i class="fa fa-calendar"></i>
-                                    Fecha
-                                </th>
-                                <th>Descripción</th>
-                                <th>Calificación</th>
-                                <th>Observaciones</th>
-                                </tr>
-                            </thead>
-                        <tbody>
-                @endif
-
-                @forelse ($evaluaciones as $evaluacion)
-                    <tr>
-                        <td>
-                            {{$evaluacion->fecha}}
-                        </td>
-
-                        <td>
-                           {{$evaluacion->descripcion}}
-                        </td>
-
-                        <td class=" fw-bold {{ ($evaluacion->calificacion) >= 80 ? 'text-success' : 'text-danger'}}">
-                           {{$evaluacion->calificacion}} Puntos
-                        </td>
-                                               
-                        <td>
-                            {{$evaluacion->observaciones}}
-                        </td>
-
-                    </tr>
-                @empty
-                    <div class="col-12 p-5 text-center p-5 border">
-
-                        <div class="row">
-                            
-                            <div class="col-12">
-                                <i class="fa fa-exclamation-circle text-danger"></i>
-                                No cuenta con evaluaciones.
-                            </div>
-                            
-                        </div>
-                        <h5>
-                        </h5>
                     </div>
-                @endforelse
-                </tbody>
-            </table>
-        </div>
+                </div>
+            </div>
+
+
+
+                <div class="card border-0 shadow-sm mb-2 mt-3">
+                    <div class="card-body">
+                        <form action="#"  method="GET">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-12 col-md-4">
+                                    <label for="fecha_inicio" class="form-label fw-semibold small text-muted text-uppercase">Fecha Inicio</label>
+                                    <input type="date"
+                                            name="fecha_inicio"
+                                            value="{{request('fecha_inicio')}}"
+                                            class="form-control datepicker"
+                                            id="fecha_inicio">
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label for="fecha_fin" class="form-label fw-semibold small text-muted text-uppercase">Fecha Final</label>
+                                    <input type="date"
+                                            name="fecha_fin"
+                                            value="{{request('fecha_fin')}}"
+                                            class="form-control datepicker"
+                                            id="fecha_fin">
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fa-solid fa-filter me-2"></i>
+                                        Filtrar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
         </div>
     </div>
+
+
+<div class="row justify-content-center">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-11 mx-5">
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+
+                    @if (!$evaluaciones->isEmpty())
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light border-bottom">
+                                <tr>
+                                    <th class="ps-4" style="min-width: 150px;">
+                                        <small class="text-muted fw-semibold text-uppercase">
+                                            <i class="fa fa-calendar me-1"></i> Fecha
+                                        </small>
+                                    </th>
+                                    <th style="min-width: 200px;">
+                                        <small class="text-muted fw-semibold text-uppercase">
+                                            Descripción
+                                        </small>
+                                    </th>
+                                    <th class="text-center" style="width: 160px;">
+                                        <small class="text-muted fw-semibold text-uppercase">
+                                            Calificación
+                                        </small>
+                                    </th>
+                                    <th class="pe-4">
+                                        <small class="text-muted fw-semibold text-uppercase">
+                                            Observaciones
+                                        </small>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    @endif
+
+                    @forelse ($evaluaciones as $evaluacion)
+                        @php
+                            $esBaja = $evaluacion->calificacion < 80;
+                        @endphp
+                        <tr class="border-bottom">
+                            <td class="ps-4">
+                                <span class="fw-semibold text-dark">
+                                    {{ $evaluacion->fecha }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <small class="text-muted">
+                                    {{ Str::limit($evaluacion->descripcion, 80) }}
+                                </small>
+                            </td>
+
+                            <td class="text-center">
+                                <span class="badge fs-6 border border-2 fw-semibold
+                                    {{ $esBaja
+                                        ? 'bg-danger bg-opacity-10 text-danger border-danger'
+                                        : 'bg-success bg-opacity-10 text-success border-success' }}">
+                                    <i class="fa-solid {{ $esBaja ? 'fa-triangle-exclamation' : 'fa-check-circle' }} me-1"></i>
+                                    {{ $evaluacion->calificacion }} pts
+                                </span>
+                            </td>
+
+                            <td class="pe-4">
+                                <small class="text-muted">
+                                    {{ $evaluacion->observaciones ?? '—' }}
+                                </small>
+                            </td>
+                        </tr>
+                    @empty
+                        </tbody>
+                        </table>
+
+                        <div class="p-5 text-center">
+                            <div class=" d-flex align-items-center justify-content-center mx-auto mb-3">
+                                <i class="fa fa-exclamation-circle text-danger"></i>
+                            </div>
+                            <h6 class="text-muted mb-0">
+                                No cuenta con evaluaciones.
+                            </h6>
+                        </div>
+                    @endforelse
+
+                    @if (!$evaluaciones->isEmpty())
+                            </tbody>
+                        </table>
+                    @endif
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
 </div>
 
 

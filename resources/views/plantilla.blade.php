@@ -197,5 +197,16 @@
         });
 </script>
 
+
+
+<script>
+  const fab = document.getElementById('fabToggle');
+  const container = document.querySelector('.fab-container');
+
+  fab.addEventListener('click', () => {
+    container.classList.toggle('active');
+  });
+</script>
+
 </body>
 </html>
