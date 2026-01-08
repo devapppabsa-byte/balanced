@@ -172,31 +172,43 @@
 
 
     {{-- Esto hace que el tab-panel se regrese al lugar donde lo dejaste despues de cargar la pagina --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-        const tabLinks = document.querySelectorAll('[data-mdb-tab-init]');
-        const tabContent = document.getElementById('ex1-content');
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tabLinks = document.querySelectorAll('[data-mdb-tab-init]');
+    const tabContent = document.getElementById('ex1-content');
 
-        const savedTab = localStorage.getItem('activeTab');
+    const savedTab = localStorage.getItem('activeTab');
 
-        if (savedTab) {
-            const tabTrigger = document.querySelector(`[href="${savedTab}"]`);
-            if (tabTrigger) {
-            new mdb.Tab(tabTrigger).show();
+    if (savedTab) {
+        const tabTrigger = document.querySelector(`[href="${savedTab}"]`);
+        if (tabTrigger) {
+            // Primero activamos la tab visualmente
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            tabTrigger.classList.add('active');
+            
+            // Activamos el contenido correspondiente
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+            const targetPane = document.querySelector(savedTab);
+            if (targetPane) {
+                targetPane.classList.add('show', 'active');
             }
         }
+    }
 
-        // Mostrar contenido una vez listo
-        tabContent.classList.remove('d-none');
+    // Mostrar contenido una vez listo
+    tabContent.classList.remove('d-none');
 
-        tabLinks.forEach(tab => {
-            tab.addEventListener('shown.mdb.tab', e => {
+    tabLinks.forEach(tab => {
+        tab.addEventListener('shown.mdb.tab', e => {
             localStorage.setItem('activeTab', e.target.getAttribute('href'));
-            });
         });
-        });
+    });
+});
 </script>
-
 
 
 <script>

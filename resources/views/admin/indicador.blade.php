@@ -180,71 +180,95 @@
 
 
 
-<div class="container-fluid shadow">
-    <div class="row justify-content-around mt-4 mx-2 bg-white pb-5 pt-2 rounded px-4">
-        <div class="col-9 text-center my-3">
-            <h3>
-                <i class="fa-solid fa-clipboard-check"></i>
+<div class="container-fluid mt-4">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3 px-4">
+            <h4 class="mb-0 fw-bold">
+                <i class="fa-solid fa-clipboard-check text-primary me-2"></i>
                 Campos del Indicador
-            </h3>    
-        </div>       
-        <div class="col-12 col-sm-12 col-md-11 col-lg-12">
+            </h4>
+
+            <span class="badge bg-primary rounded-pill px-3 py-2">
+                {{ $campos_unidos->count() }} Campos
+            </span>
+        </div>
+
+        <div class="card-body px-4 pb-4">
 
             @if (!$campos_unidos->isEmpty())
                 <div class="table-responsive">
-                    <table class="table border">
-                        <thead class="table-primary border">
-                            <th scope="col">Id</th>
-                            <th scope="col">Nombre del campo</th>
-                            <th scope="col">Descripción</th>
-                            <th scope="col">Autor</th>
-                            <th scope="col">Acciones</th>
+                    <table class="table align-middle table-hover">
+                        <thead class="table-light border-bottom">
+                            <tr>
+                                <th>#</th>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Autor</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
                         </thead>
-                        <tbody class="" id="contenedor">
-                            @forelse ($campos_unidos as $campo)
 
+                        <tbody>
+                            @foreach ($campos_unidos as $campo)
                                 <tr>
-                                    <td>{{$campo->id}}</td>
-                                    <td>{{$campo->nombre}}</td>
-                                    <td>{!!($campo->descripcion) ? $campo->descripcion : ' <i class="fa fa-info-circle text-primary"></i> No hay descripción disponible'!!}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            {{ $campo->id }}
+                                        </span>
+                                    </td>
 
-                                    <td class="fw-bold">
-                                        <i class="fa fa-pencil"></i>
-                                        {{$campo->autor}}
+                                    <td class="fw-semibold">
+                                        {{ $campo->nombre }}
+                                    </td>
+
+                                    <td class="text-muted">
+                                        @if($campo->descripcion)
+                                            {{ Str::limit(strip_tags($campo->descripcion), 80) }}
+                                        @else
+                                            <i class="fa fa-info-circle text-primary"></i>
+                                            Sin descripción
+                                        @endif
                                     </td>
 
                                     <td>
-                                        <buttton class="btn btn-danger btn-control-sm py-2 px-3" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del{{$campo->id_input}}">
+                                        <span class="badge bg-light text-dark border">
+                                            <i class="fa fa-pencil me-1"></i>
+                                            {{ $campo->autor }}
+                                        </span>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <button class="btn btn-outline-danger btn-sm"
+                                            data-mdb-ripple-init
+                                            data-mdb-modal-init
+                                            data-mdb-target="#del{{ $campo->id_input }}">
                                             <i class="fa fa-trash"></i>
-                                        </buttton>
+                                        </button>
                                     </td>
                                 </tr>
-                                
-                            @empty
-                                
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
+
             @else
-                
-            <div class="row justify-content-center mt-5 ">
-                <div class="col-12 text-center ">
-                    <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">
+                <!-- Empty state -->
+                <div class="text-center py-5">
+                    <img src="{{ asset('/img/iconos/empty.png') }}" class="img-fluid mb-3" style="max-width: 180px;">
+                    <h5 class="fw-bold">
+                        <i class="fa fa-circle-exclamation text-danger me-1"></i>
+                        No hay campos disponibles
+                    </h5>
+                    <p class="text-muted mb-0">
+                        Aún no se han agregado campos a este indicador.
+                    </p>
                 </div>
-                <div class="col-12 text-center">
-                    <h3>
-                        <i class="fa fa-exclamation-circle text-danger"></i>
-                        No hay campos disponibles en este indicador.
-                    </h3>
-                </div>
-            </div>
-            
             @endif
 
         </div>
     </div>
 </div>
+
 
 
 

@@ -3,9 +3,6 @@
 @section('title', 'Detalle Evaluacion de Proveedores')
 
 @section('contenido')
-<button class="btn btn-danger flotante" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico">
-    <i class="fa fa-chart-pie fa-4x"></i>
-</button>
 
 <div class="container-fluid">
     <div class="row bg-primary  d-flex align-items-center px-4">
@@ -51,22 +48,25 @@
 <div class="container-fluid ">
     <div class="row justify-content-center">
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-11 mx-5 mt-3">
-
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between flex-wrap">
                         <div>
                             <h2 class="mb-1 fw-bold">
-                                <i class="fa-solid fa-clipboard-list"></i>
-                                Detalle evaluaciónes del proveedor
+                                <i class="fa-solid fa-truck text-primary me-2"></i>
+                                 Detalle evaluaciónes del proveedor
                             </h2>
-                            <p class="text-muted mb-0">
-                                <small>Gestión y evaluación de proveedores de la empresa</small>
-                            </p>
+                        </div>
+                        <div class="mt-2 mt-md-0">
+                            <button class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico">
+                                <i class="fa-solid fa-chart-simple me-2"></i>
+                                Ver Grafico
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
+
 
 
 
@@ -217,7 +217,7 @@
 
 
 <div class="modal fade" id="grafico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-  <div class="modal-dialog modal-xl  modal-fullscreen-md-down">
+  <div class="modal-dialog modal-xl modal-dialog-centered  modal-fullscreen-md-down">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title" id="exampleModalLabel">Gráfica</h5>
@@ -242,7 +242,7 @@
                     <li class="nav-item" role="presentation">
                         <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
                             <i class="fa fa-circle"></i>
-                            Grafico de Burbuja
+                            Grafico de Pie
                         </a>
                     </li>
                 </ul>

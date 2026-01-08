@@ -111,7 +111,7 @@
 
 
                     <div class="modal fade" id="info{{$foranea->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
                             <div class="modal-header bg-primary py-4">
                                 <h3 class="text-white" id="exampleModalLabel">

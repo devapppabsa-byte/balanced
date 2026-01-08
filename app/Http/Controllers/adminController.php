@@ -93,7 +93,8 @@ class adminController extends Controller
             'puesto_usuario' => 'required',
            // 'planta' => 'required',
             'departamento' =>'required',
-            'password_usuario' => 'required'
+            'password_usuario' => 'required',
+            'tipo_usuario' => 'required'
         ]);
         
         
