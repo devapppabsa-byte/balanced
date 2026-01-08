@@ -134,14 +134,14 @@ use Carbon\Carbon;
                                 <div class="col-6 text-center ">
                                     <div class="badge badge-danger p-2">
                                         <i class="fa-solid fa-circle-arrow-down text-danger"></i>                                    
-                                        <span>Meta minima:   {{$meta_minima}} </span>
+                                        <span>Minima:   {{$meta_minima}} </span>
                                     </div>
                                 
                                 </div>
                                 <div class="col-6 text-center">
                                     <div class="badge badge-success p-2">
                                         <i class="fa-solid fa-circle-arrow-up text-success"></i>                                    
-                                        <span>Meta maxima:   {{$meta_maxima}} </span>
+                                        <span>Maxima:   {{$meta_maxima}} </span>
                                     </div>
                                 </div>
                             </div>

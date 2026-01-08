@@ -254,7 +254,7 @@
 <div class="modal fade" id="modalPromediarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-primary py-3">
+            <div class="modal-header bg-primary py-4">
                 <h3 class="text-white" id="exampleModalLabel">
                 <i class="fa-solid fa-gauge-simple"></i>
                    Selecciona los datos que se van a promediar.
@@ -334,7 +334,7 @@
 <div class="modal fade" id="modalMultiplicarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-primary py-3">
+            <div class="modal-header bg-danger py-4">
                 <h3 class="text-white" id="exampleModalLabel">
                     <i class="fa fa-xmark-circle"></i>
                    Selecciona los datos que se van a multiplicar.
@@ -409,7 +409,7 @@
 <div class="modal fade" id="modalSumarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-primary py-3">
+            <div class="modal-header bg-success py-4">
                 <h3 class="text-white" id="exampleModalLabel">
                     <i class="fa fa-plus-circle"></i>
                    Selecciona los datos que se van a sumar.
@@ -484,7 +484,7 @@
 <div class="modal fade" id="modalDividirCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-primary py-3">
+            <div class="modal-header bg-info py-4">
                 <h3 class="text-white" id="exampleModalLabel">
                    Selecciona los datos que se van a Dividir.
                 </h3>
@@ -567,7 +567,7 @@
 <div class="modal fade" id="modalRestarCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-primary py-3">
+            <div class="modal-header bg-warning py-4">
                 <h3 class="text-white" id="exampleModalLabel">
                     <i class="fa fa-minus-circle"></i>
                    Selecciona los datos que se van a restar.
@@ -649,7 +649,7 @@
 <div class="modal fade" id="modalPorcentajeCampos" tabindex="-1"  aria-labelledby="sdsad" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-primary py-3">
+            <div class="modal-header bg-purple py-4">
                 <h3 class="text-white" id="exampleModalLabel">
                 <i class="fa-solid fa-gauge-simple"></i>
                    Selecciona los datos que se van a comparar para sacar el porcentaje.
@@ -753,7 +753,7 @@
 <div class="modal fade" id="modalCamposPrecargados" tabindex="-1"  aria-labelledby="exampleModalLaaabel" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-        <div class="modal-header bg-primary  py-4">
+        <div class="modal-header bg-dark  py-4">
             <h3 class="text-white" id="exampleModalLabel">Selecciona un campo para agregar </h3>
             <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -781,7 +781,7 @@
                 </div>
 
                 <div class="form-group mt-3">
-                    <button class="btn btn-primary">
+                    <button class="btn btn-dark">
                         Agregar campo
                     </button>
                 </div>
@@ -813,7 +813,7 @@
                         <div class="form-group mt-3">
                             <div class="form-outline" data-mdb-input-init>
                                 <input type="text" class="form-control form-control-lg w-100" id="nombre_campo_vacio" name="nombre_campo_vacio" required>
-                                <label class="form-label" for="nombre_campo_vacio" >Nombre </label>
+                                <label class="form-label" for="nombre_campo_vacio" >Nombre <span class="text-danger">*</span> </label>
                             </div>
                         </div>
                     </div>
@@ -841,8 +841,6 @@
             </form>
 
         </div>
-        {{-- <div class="modal-footer">
-        </div> --}}
         </div>
     </div>
 </div>
