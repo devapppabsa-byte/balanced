@@ -56,17 +56,17 @@
 
 
 
-<div class="container-fluid mt-2">
-    <div class="row">
-        <div class="col-12 py-3 text-center">
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="col-10 py-3 text-center bg-white card">
             <h2>
                 <i class="fa-solid fa-photo-film"></i>
                 Evidencias del cumplimiento normativo
-                {{$cumplimientos}}
+                
             </h2>
         </div>
     </div>
-    <div class="row justify-content-center">
+    <div class="row justify-content-center pt-3">
         @forelse ($cumplimientos as $cumplimiento)
             <div class="col-10 my-1">
                 <div class="accordion" id="accordionExample">

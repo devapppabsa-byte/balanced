@@ -62,100 +62,150 @@
 
 
 <div class="container-fluid mt-3">
-    <div class="row justify-content-center">
-        <div class="col-12 col-sm-12 col-md-11 col-lg-8 shadow-sm rounded border  bg-white p-5">
-            <div class="row ">
-                <div class="col-12 text-center">
+    <div class="row justify-content-center ">
+        <div class="col-12 col-sm-12 col-md-11 col-lg-10  p-5">
+            <div class="row card py-4">
+                <div class="col-12  text-center">
                     <h2>
                         <i class="fa-regular fa-newspaper"></i>
                         Encuestas
                     </h2>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12 ">
-                    <div class="row   table-responsive">
-                        @if (!$encuestas->isEmpty()) {{-- Esto es para ocultar la cabecera de la tabla cuando no haya datos --}}
-                        
-                            <table class="table mb-0 border table-hover">
-                                <thead class="table-secondary text-white cascadia-code">
-                                    <tr>
-                                    <th>Nombre</th>
-                                    <th>Cumplimiento</th>
-                                    </tr>
-                                </thead>
+
+
+
+
+
+
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            
+            {{-- Header --}}
+            <div class="card-header bg-white border-bottom py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fa-solid fa-clipboard-list text-primary me-2"></i>
+                    Encuestas asignadas
+                </h5>
+            </div>
+
+            {{-- Body --}}
+            <div class="card-body p-0">
+
+                @if (!$encuestas->isEmpty())
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+
+                            <thead class="table-light border-bottom">
+                                <tr>
+                                    <th class="ps-4" style="min-width: 280px;">
+                                        <small class="text-muted fw-semibold text-uppercase">Encuesta</small>
+                                    </th>
+                                    <th style="min-width: 160px;">
+                                        <small class="text-muted fw-semibold text-uppercase">Cumplimiento</small>
+                                    </th>
+                                    <th class="text-center" style="width: 130px;">
+                                        <small class="text-muted fw-semibold text-uppercase">Ponderación</small>
+                                    </th>
+                                    <th class="text-center pe-4" style="width: 150px;">
+                                        <small class="text-muted fw-semibold text-uppercase">Min - Max</small>
+                                    </th>
+                                </tr>
+                            </thead>
+
                             <tbody>
-                        @endif
+                                @foreach ($encuestas as $encuesta)
+                                    <tr class="border-bottom">
 
-                        @forelse ($encuestas as $encuesta)
-                            <tr>
-                                <td>
-                                    <a href="{{route('encuesta.index.user', $encuesta->id)}}" data-mdb-tooltip-init title="Detalles de {{$encuesta->nombre}}" class="text-decoration-none text-dark fw-bold">
-                                        {{$encuesta->nombre}}
-                                    </a>
-                                    <p>
-                                        {{$encuesta->descripcion}}
-                                    </p>
-                                </td>
+                                        {{-- Nombre + descripción --}}
+                                        <td class="ps-4">
+                                            <a href="{{route('encuesta.index.user', $encuesta->id)}}"
+                                               class="fw-semibold text-dark text-decoration-none"
+                                               data-mdb-tooltip-init
+                                               title="Ver detalles de {{$encuesta->nombre}}">
+                                                {{$encuesta->nombre}}
+                                            </a>
 
-                                <td class="text-start">
+                                            <p class="text-muted mb-0">
+                                                <small>{{$encuesta->descripcion}}</small>
+                                            </p>
+                                        </td>
 
-                                    @php  $suma=0; $contador=0;    @endphp
+                                        {{-- Cumplimiento --}}
+                                        <td>
+                                            @php
+                                                $suma = 0;
+                                                $contador = 0;
+                                            @endphp
 
-                                    @forelse ($encuesta->preguntas as $pregunta)
-
-                                        @if ($pregunta->cuantificable === 1)
-
-                                            @forelse ($pregunta->respuestas as $respuesta)
-                                                @php
-                                                    $suma = $suma + $respuesta->respuesta;
-                                                @endphp
-                                                @php $contador++;  @endphp {{--Este contador me ayuda a saber cuantas preguntas del cuestionario con cuantificables --}}
-                                                
-                                            @empty
-                                                @if ($loop->first)
-                                                    <span>No hay respuestas disponibles.</span>
+                                            @foreach ($encuesta->preguntas as $pregunta)
+                                                @if ($pregunta->cuantificable === 1)
+                                                    @foreach ($pregunta->respuestas as $respuesta)
+                                                        @php
+                                                            $suma += $respuesta->respuesta;
+                                                            $contador++;
+                                                        @endphp
+                                                    @endforeach
                                                 @endif
-                                            @endforelse
+                                            @endforeach
 
-                                        @else
-                                        {{-- si no son cuantificables no las muestra --}}
-                                        @endif
+                                            @if ($suma > 0 && $contador > 0)
+                                                @php
+                                                    $porcentaje = round(($suma / ($contador * 10)) * 100, 2);
+                                                @endphp
 
-                                    @empty
-                                        <span>Aún no se han registrado preguntas.</span>                                        
-                                    @endforelse
+                                                <span class="badge fs-6 px-3 py-2
+                                                    {{$porcentaje >= $encuesta->meta_minima
+                                                        ? 'bg-success bg-opacity-10 text-success border border-success border-opacity-25'
+                                                        : 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25'}}"
+                                                    data-mdb-tooltip-init
+                                                    title="{{$porcentaje}}%">
 
-                                    @if ($suma>0)
-                                        {{-- Aqui esta el porcentaje de cumplimiento --}}
-                                        <h6 class="badge fs-6  p-2 {{($suma/($contador*10)*100 > $encuesta->meta_minima) ? "badge-success border border border-success" : "badge-danger border border-danger" }}" data-mdb-tooltip-init title="{{round($suma/($contador*10)*100, 3)}}%">
-                                            {{round(($suma/($contador*10))*100, 3) }} %
-                                            <i class="fa {{($suma/($contador*10)*100 > 50) ? "fa-check-circle" : "fa-xmark-circle" }} "></i>
-                                        </h6>
-                                        @endif
-                                
-                                </td>
+                                                    {{$porcentaje}}%
+                                                    <i class="fa-solid {{$porcentaje >= 50 ? 'fa-circle-check' : 'fa-circle-xmark'}} ms-1"></i>
+                                                </span>
+                                            @else
+                                                <span class="text-muted">
+                                                    <small>Sin respuestas</small>
+                                                </span>
+                                            @endif
+                                        </td>
 
-                            </tr>
-                        @empty
-                            <div class="col-12 p-5 text-center p-5 border">
+                                        {{-- Ponderación --}}
+                                        <td class="text-center">
+                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">
+                                                {{$encuesta->ponderacion}}
+                                            </span>
+                                        </td>
 
-                                <div class="row">
-                                    
-                                    <div class="col-12">
-                                        <i class="fa fa-exclamation-circle text-danger"></i>
-                                        Aún no se te han asignado encuestas.
-                                    </div>
-                                    
-                                </div>
-                                <h5>
-                                </h5>
-                            </div>
-                        @endforelse
-                        </tbody>
+                                        {{-- Meta --}}
+                                        <td class="text-center pe-4">
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">
+                                                {{$encuesta->meta_minima}} – {{$encuesta->meta_esperada}}
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
-                </div>
+                @else
+                    {{-- Estado vacío --}}
+                    <div class="text-center py-5">
+                        <div class="mb-3">
+                            <i class="fa-solid fa-clipboard-list text-muted"
+                               style="font-size: 4rem; opacity: 0.3;"></i>
+                        </div>
+                        <h6 class="text-muted mb-2">No hay encuestas asignadas</h6>
+                        <p class="text-muted mb-0">
+                            <small>Aún no se te han asignado encuestas.</small>
+                        </p>
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>
@@ -165,15 +215,8 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
+        </div>
+    </div>
+</div>
 
 @endsection

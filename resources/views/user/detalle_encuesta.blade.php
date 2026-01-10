@@ -58,14 +58,14 @@
 </div> 
 
 
-<button class="btn btn-danger flotante btn-lg " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico">
+{{-- <button class="btn btn-danger flotante btn-lg " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico">
     <i class="fa-solid fa-chart-pie fa-4x "></i>
-</button>
+</button> --}}
 
 
 
 
-<div class="container-fluid mt-3">
+{{-- <div class="container-fluid mt-3">
 
     <div class="row justify-content-around">
             <div class="col-12 col-sm-12 col-md-10 col-lg-5 m table-responsive bg-white p-5 rounded shadow-sm">
@@ -244,10 +244,367 @@
         </div>
     </div>
 
+</div> --}}
+
+
+
+
+
+
+
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-11">
+            <!-- Header Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                        <div>
+                            <h2 class="mb-1 fw-bold">
+                                <i class="fa-solid fa-clipboard-question text-primary me-2"></i>
+                                {{$encuesta->nombre}}
+                            </h2>
+                            <p class="text-muted mb-0">
+                                <small>{{$encuesta->descripcion}}</small>
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2 mt-2 mt-md-0">
+                            <button class="btn btn-info text-white" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico">
+                                <i class="fa-solid fa-chart-line me-2"></i>
+                                Ver Gráficas
+                            </button>
+                            @if ($existe->isEmpty())
+                                {{-- <button class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
+                                    <i class="fa-solid fa-plus-circle me-2"></i>
+                                    Agregar Pregunta
+                                </button> --}}
+                            @else
+                                <button class="btn btn-secondary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#encuesta_contestada">
+                                    <i class="fa-solid fa-lock me-2"></i>
+                                    Encuesta Contestada
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Two Column Layout -->
+            <div class="row g-4">
+                <!-- Columna 1: Preguntas -->
+                <div class="col-12 col-lg-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-white border-bottom py-3">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fa-solid fa-clipboard-question text-primary me-2"></i>
+                                Preguntas de la Encuesta
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            @php
+                                $numero_preguntas_cuantificables = 0;
+                                $total_obtenido = 0;
+                            @endphp
+
+                            @if (!$preguntas->isEmpty())
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light border-bottom">
+                                            <tr>
+                                                <th class="ps-4" style="min-width: 200px;">
+                                                    <small class="text-muted fw-semibold text-uppercase">Pregunta</small>
+                                                </th>
+                                                <th class="text-center" style="width: 120px;">
+                                                    <small class="text-muted fw-semibold text-uppercase">Tipo</small>
+                                                </th>
+                                                <th class="text-center pe-4" style="width: 80px;">
+                                                    <small class="text-muted fw-semibold text-uppercase">Acción</small>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($preguntas as $pregunta)
+                                                <tr class="border-bottom">
+                                                    <td class="ps-4">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="flex-shrink-0 me-3">
+                                                                <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center">
+                                                                    <i class="fa-solid fa-question text-primary" style="font-size: 0.75rem;"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="flex-grow-1">
+                                                                <small class="text-dark fw-medium">
+                                                                    {{$pregunta->pregunta}}
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @if ($pregunta->cuantificable === 1 || $pregunta->cuantificable === "on")
+                                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                                                <i class="fa-solid fa-check-circle me-1"></i>
+                                                                Cuantificable
+                                                            </span>
+                                                            @foreach ($pregunta->respuestas as $respuesta)
+                                                                @php
+                                                                    $numero_preguntas_cuantificables = $numero_preguntas_cuantificables + 1;
+                                                                    $total_obtenido = $total_obtenido + $respuesta->respuesta;
+                                                                @endphp
+                                                            @endforeach
+                                                        @else
+                                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border">
+                                                                <i class="fa-solid fa-minus me-1"></i>
+                                                                No cuantificable
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center pe-4">
+                                                        @if ($existe->isEmpty())
+                                                            <button class="btn btn-sm btn-outline-danger" 
+                                                                    data-mdb-tooltip-init 
+                                                                    title="Eliminar pregunta" 
+                                                                    data-mdb-ripple-init 
+                                                                    data-mdb-modal-init 
+                                                                    data-mdb-target="#elim{{$pregunta->id}}">
+                                                                <i class="fa-solid fa-trash"></i>
+                                                            </button>
+                                                        @else
+                                                            <button class="btn btn-sm btn-outline-secondary" 
+                                                                    disabled
+                                                                    data-mdb-tooltip-init 
+                                                                    title="La encuesta ya fue contestada">
+                                                                <i class="fa-solid fa-lock"></i>
+                                                            </button>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="card-body text-center py-5">
+                                    <div class="mb-4">
+                                        <i class="fa-solid fa-clipboard-question text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                                    </div>
+                                    <h6 class="text-muted mb-2">No hay preguntas registradas</h6>
+                                    {{-- <p class="text-muted mb-4">
+                                        <small>Comienza agregando preguntas a esta encuesta.</small>
+                                    </p>
+                                    <button class="btn btn-primary btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_pregunta">
+                                        <i class="fa-solid fa-plus-circle me-2"></i>
+                                        Agregar Pregunta
+                                    </button> --}}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Clientes y Respuestas -->
+                <div class="col-12 col-lg-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-white border-bottom py-3">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fa-solid fa-users text-primary me-2"></i>
+                                Respuestas de Clientes
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            @if (!$clientes->isEmpty())
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light border-bottom">
+                                            <tr>
+                                                <th class="ps-4" style="min-width: 150px;">
+                                                    <small class="text-muted fw-semibold text-uppercase">Cliente</small>
+                                                </th>
+                                                <th style="min-width: 120px;">
+                                                    <small class="text-muted fw-semibold text-uppercase">Línea</small>
+                                                </th>
+                                                <th class="text-center pe-4" style="width: 140px;">
+                                                    <small class="text-muted fw-semibold text-uppercase">Acción</small>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($clientes as $cliente)
+                                                <tr class="border-bottom">
+                                                    <td class="ps-4">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="flex-shrink-0 me-3">
+                                                                <div class="avatar-sm bg-info bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center">
+                                                                    <i class="fa-solid fa-user text-info" style="font-size: 0.75rem;"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="flex-grow-1">
+                                                                <small class="fw-semibold text-dark d-block">
+                                                                    {{$cliente->nombre}}
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25">
+                                                            {{$cliente->linea}}
+                                                        </span>
+                                                    </td>
+                                                    
+                                                    <td class="text-center pe-4">
+                                                        <a class="btn btn-sm btn-outline-primary" 
+                                                           href="{{route('show.respuestas.usuario', ['cliente' => $cliente->id, 'encuesta' => $encuesta->id])}}"
+                                                           data-mdb-tooltip-init 
+                                                           title="Ver respuestas de {{$cliente->nombre}}">
+                                                            <i class="fa-solid fa-eye me-1"></i>
+                                                            Ver
+                                                        </a>
+                                                    </td>
+
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="card-body text-center py-5">
+                                    <div class="mb-4">
+                                        <i class="fa-solid fa-users text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                                    </div>
+                                    <h6 class="text-muted mb-2">Aún no hay respuestas</h6>
+                                    <p class="text-muted mb-0">
+                                        <small>Los clientes aún no han respondido esta encuesta.</small>
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resultados Card -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-bottom py-3">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fa-solid fa-medal text-primary me-2"></i>
+                                Resultados de la Encuesta
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-4 justify-content-center">
+                                <div class="col-12 col-md-4">
+                                    <div class="text-center p-4 bg-light rounded">
+                                        <div class="mb-2">
+                                            <i class="fa-solid fa-trophy text-warning" style="font-size: 2rem;"></i>
+                                        </div>
+                                        <h6 class="text-muted fw-semibold mb-2">Puntuación Máxima</h6>
+                                        @if ($numero_preguntas_cuantificables != 0)
+                                            <h3 class="fw-bold text-primary mb-0">
+                                                {{$numero_preguntas_cuantificables * 10}}
+                                            </h3>
+                                        @else
+                                            <small class="text-muted">
+                                                <i class="fa-solid fa-exclamation-circle me-1"></i>
+                                                Sin respuestas
+                                            </small>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12 col-md-4">
+                                    <div class="text-center p-4 bg-light rounded">
+                                        <div class="mb-2">
+                                            <i class="fa-solid fa-star text-success" style="font-size: 2rem;"></i>
+                                        </div>
+                                        <h6 class="text-muted fw-semibold mb-2">Puntuación Obtenida</h6>
+                                        @if ($total_obtenido !== null && $total_obtenido > 0)
+                                            <h3 class="fw-bold text-success mb-0">
+                                                {{$total_obtenido}}
+                                            </h3>
+                                        @else
+                                            <small class="text-muted">
+                                                <i class="fa-solid fa-exclamation-circle me-1"></i>
+                                                Sin respuestas
+                                            </small>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-4">
+                                    <div class="text-center p-4 bg-light rounded">
+                                        <div class="mb-2">
+                                            <i class="fa-solid fa-percent text-info" style="font-size: 2rem;"></i>
+                                        </div>
+                                        <h6 class="text-muted fw-semibold mb-2">% Cumplimiento</h6>
+                                        @if ($total_obtenido !== null && $total_obtenido > 0 && $numero_preguntas_cuantificables > 0)
+                                            @php
+                                                $porcentaje = round((($total_obtenido) / ($numero_preguntas_cuantificables * 10)) * 100, 2);
+                                                $esCumplido = $porcentaje >= ($encuesta->meta_minima ?? 0);
+                                            @endphp
+                                            <h3 class="fw-bold {{ $esCumplido ? 'text-success' : 'text-danger' }} mb-0">
+                                                {{ $porcentaje }}%
+                                            </h3>
+                                        @else
+                                            <small class="text-muted">
+                                                <i class="fa-solid fa-exclamation-circle me-1"></i>
+                                                Sin respuestas
+                                            </small>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<style>
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8f9fa !important;
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.65rem;
+    }
+    
+    .btn-sm {
+        padding: 0.35rem 0.65rem;
+    }
+    
+    @media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+        
+        .avatar-sm {
+            width: 28px;
+            height: 28px;
+        }
+    }
+</style>
 
 
+
+
+
+{{-- 
 <div class="modal fade" id="encuesta_contestada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
@@ -271,7 +628,7 @@
         </div>
     </div>
   </div>
-</div>
+</div> --}}
 
 
 
@@ -334,7 +691,7 @@
 
 {{--Aqui van a estar los ciclos que me generalk los modales--}}
 
-@forelse ($preguntas as $pregunta)
+{{-- @forelse ($preguntas as $pregunta)
 
     <div class="modal fade" id="elim{{$pregunta->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
         <div class="modal-dialog modal-lg">
@@ -351,22 +708,21 @@
                     </button>
                 </form>
             </div>
-            {{-- <div class="modal-footer">
-            </div> --}}
+
             </div>
         </div>
-    </div>   
-
-@empty
+    </div>   --}}
     
-@endforelse
+    {{-- @empty
+    
+    @endforelse  --}}
 
 
 
 
 
 
-
+{{-- 
 <div class="modal fade" id="agregar_pregunta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -413,7 +769,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> --}}
 
 
 

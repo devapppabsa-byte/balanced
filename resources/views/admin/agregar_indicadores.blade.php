@@ -404,6 +404,7 @@
                                             <tr>
                                                 <th scope="col" class="border-0">Norma</th>
                                                 <th scope="col" class="border-0">Autor</th>
+                                                <th scope="col" class="border-0">Ponderación</th>
                                                 <th scope="col" class="border-0">Fecha Creación</th>
                                                 <th scope="col" class="border-0 text-end">Acciones</th>
                                             </tr>
@@ -420,6 +421,8 @@
                                                 <td>
                                                     <small class="text-muted">{{ $norma->autor }}</small>
                                                 </td>
+                                                <td>
+                                                    <small class="text-dark">{{ $norma->ponderacion }}%</small>
                                                 <td>
                                                     <small class="text-muted">
                                                         {{ \Carbon\Carbon::parse($norma->created_at)->format('d/m/Y') }}

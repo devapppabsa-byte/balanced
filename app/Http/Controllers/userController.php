@@ -528,7 +528,7 @@ class userController extends Controller
 
 
         //se necesitan las respuestas de las encuestas, es decir, consultar las preguntas con su respuesta, todo estom vendra de la tabla auxiliar.
-        return view("admin.respuestas_cliente_encuestas", compact('preguntas', 'cliente'));
+        return view("user.respuestas_cliente_encuestas", compact('preguntas', 'cliente'));
 
 
     }

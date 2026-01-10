@@ -333,10 +333,13 @@
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
-                        <div class="form-check mt-2">
-                            <input class="form-check-input form-check-input-lg"  form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final" />
-                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                        <div class="form-check form-switch mt-3">
+                            <input   class="form-check-input" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final">
+                                Campo Final
+                            </label>
                         </div>
+
 
                         <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
                             Crear Campo Promedio
@@ -408,13 +411,17 @@
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
-                        <div class="form-check mt-2">
-                            <input class="form-check-input form-check-input-lg" type="checkbox" name="resultado_final" id="resultado_final" form="multiplicacion_container" />
-                            <label class="form-check-label text-danger fw-bold" for="resultado_final">Campo Final</label>
+                        <div class="form-check form-switch mt-3">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_multiplicacion">
+                            <input   class="form-check-input" form="multiplicacion_container" type="checkbox" name="resultado_final" id="resultado_final_multiplicacion">
+                                Campo Final
+                            </label>
                         </div>
 
-                        <button  class="btn btn-primary"  form="multiplicacion_container"> {{-- id="crear_campo_promedio" --}}
-                            Crear Campo Promedio
+
+                        <button  class="btn btn-danger"  form="multiplicacion_container"> {{-- id="crear_campo_promedio" --}}
+                            <i class="fa fa-save"></i>
+                            Crear Campo de Multiplicación
                         </button>
                         {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
                             Vista Previa
@@ -483,12 +490,19 @@
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
-                        <div class="form-check mt-2">
+                        {{-- <div class="form-check mt-2">
                             <input class="form-check-input form-check-input-lg" form="suma_container" type="checkbox" name="resultado_final" id="resultado_final" />
                             <label class="form-check-label text-danger fw-bold" for="resultado_final">Campo Final</label>
+                        </div> --}}
+
+                        <div class="form-check form-switch mt-3">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_suma">
+                            <input   class="form-check-input" form="suma_container" type="checkbox" name="resultado_final" id="resultado_final_suma">
+                                Campo Final
+                            </label>
                         </div>
 
-                        <button  class="btn btn-primary" form="suma_container" > {{-- id="crear_campo_promedio" --}}
+                        <button  class="btn btn-success" form="suma_container" > {{-- id="crear_campo_promedio" --}}
                             Crear Campo de Suma
                         </button>
                         {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
@@ -570,12 +584,21 @@
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
-                        <div class="form-check mt-2">
+                        {{-- <div class="form-check mt-2">
                             <input class="form-check-input form-check-input-lg" form="division_container" type="checkbox" name="resultado_final" id="resultado_final" />
                             <label class="form-check-label text-danger fw-bold" for="resultado_final">Campo Final</label>
+                        </div> --}}
+
+
+                        <div class="form-check form-switch mt-3">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_division">
+                            <input   class="form-check-input" form="division_container" type="checkbox" name="resultado_final" id="resultado_final_division">
+                                Campo Final
+                            </label>
                         </div>
 
-                        <button  class="btn btn-primary" form="division_container">
+
+                        <button  class="btn btn-info" form="division_container">
                             Crear Campo Promedio
                         </button>
                     </div>
@@ -649,12 +672,21 @@
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
-                        <div class="form-check mt-2">
+                        {{-- <div class="form-check mt-2">
                             <input form="resta_container" class="form-check-input form-check-input-lg" type="checkbox" name="resultado_final" id="resultado_final" />
                             <label class="form-check-label text-danger fw-bold" for="resultado_final">Campo Final</label>
+                        </div> --}}
+
+
+                        <div class="form-check form-switch mt-3">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_resta">
+                            <input   class="form-check-input" form="resta_container" type="checkbox" name="resultado_final" id="resultado_final_resta">
+                                Campo Final
+                            </label>
                         </div>
 
-                        <button form="resta_container"  class="btn btn-primary" >
+
+                        <button form="resta_container"  class="btn btn-warning" >
                             Crear Campo Promedio
                         </button>
 
@@ -735,12 +767,21 @@
                 <div class="modal-footer">
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
-                        <div class="form-check mt-2">
+                        {{-- <div class="form-check mt-2">
                             <input class="form-check-input form-check-input-lg"  type="checkbox" name="resultado_final" id="resultado_final" form="porcentaje_container"/>
                             <label class="form-check-label text-danger fw-bold" for="resultado_final">Resultado Final</label>
+                        </div> --}}
+
+                        <div class="form-check form-switch mt-3">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_porcentaje">
+                            <input   class="form-check-input" form="porcentaje_container" type="checkbox" name="resultado_final" id="resultado_final_porcentaje">
+                                Campo Final
+                            </label>
                         </div>
 
-                        <button  class="btn btn-primary" form="porcentaje_container" > {{-- id="crear_campo_promedio" --}}
+
+
+                        <button  class=" text-white bg-purple" form="porcentaje_container" > {{-- id="crear_campo_promedio" --}}
                             Crear Campo Porcentaje
                         </button>
                         {{-- <a  href="#" class="btn btn-secondary" id="vista_previa_button">
@@ -934,5 +975,16 @@ asi que puse el aterrizado de la variable arriba del codigo del promedio. --}}
 <script src="{{asset('js/drop_suma.js')}}"></script>
 <script src="{{asset('js/drop_porcentaje.js')}}"></script>
 <script src="{{asset('js/drop_multiplicacion.js')}}" ></script>
+
+
+<script>
+  const fab = document.getElementById('fabToggle');
+  const container = document.querySelector('.fab-container');
+
+  fab.addEventListener('click', () => {
+    container.classList.toggle('active');
+  });
+</script>
+
 
 @endsection

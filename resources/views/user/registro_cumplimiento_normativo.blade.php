@@ -60,93 +60,125 @@
 
 
 <div class="container-fluid">
-    <div class="row justify-content-center mt-4">
 
-        <div class="col-12 col-sm-12 col-md-10 col-lg-10  mx-5 bg-white p-5 border border-4 rounded-7">
-            <div class="row justify-content-center">
-                <div class="col-12 text-center">
-                    <h2 class="text-uppercase">
-                        <i class="fa-regular fa-file-lines"></i>
-                        Apartados de {{$norma->nombre}}
-                    </h2>
-                    <p style="text-align: justify">
-                        {{$norma->descripcion}}
-                    </p>
-                    @if (session('eliminado'))
-                        <h5 class="">
-                            <i class="fa fa-exclamation-circle text-danger"></i>
-                            {{session('eliminado')}}
-                        </h5>
-                    @endif
-                </div>
+
+
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-lg-10">
+
+        <div class="card border-0 shadow-sm">
+
+            {{-- Header --}}
+            <div class="card-header bg-white border-bottom py-4 text-center">
+                <h4 class="fw-bold text-uppercase mb-2">
+                    <i class="fa-regular fa-file-lines text-primary me-2"></i>
+                    Apartados de {{ $norma->nombre }}
+                </h4>
+
+                <p class="text-muted mb-0" style="text-align: justify;">
+                    {{ $norma->descripcion }}
+                </p>
+
+                @if (session('eliminado'))
+                    <div class="alert alert-danger alert-sm mt-3 mb-0 d-inline-block">
+                        <i class="fa-solid fa-circle-exclamation me-1"></i>
+                        {{ session('eliminado') }}
+                    </div>
+                @endif
             </div>
+
+            {{-- Body --}}
+            <div class="card-body p-0">
+
                 @if (!$apartados->isEmpty())
-                    <div class="table-responsive shadow-sm">
-                        <table class="table table-responsive mb-0 border shadow-sm table-hover">
-                                <thead class="table-secondary text-white cascadia-code">
-                                    <tr>
-                                        <th>Apartado</th>
-                                        <th>Entregables</th>
-                                        <th class="text-center">Acciones</th>
-                                    </tr>
-                                </thead>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+
+                            <thead class="table-light border-bottom">
+                                <tr>
+                                    <th class="ps-4" style="min-width: 220px;">
+                                        <small class="text-muted fw-semibold text-uppercase">Apartado</small>
+                                    </th>
+                                    <th style="min-width: 320px;">
+                                        <small class="text-muted fw-semibold text-uppercase">Entregables</small>
+                                    </th>
+                                    <th class="text-center pe-4" style="width: 160px;">
+                                        <small class="text-muted fw-semibold text-uppercase">Acciones</small>
+                                    </th>
+                                </tr>
+                            </thead>
+
                             <tbody>
+                                @foreach ($apartados as $apartado)
+                                    <tr class="border-bottom">
+
+                                        {{-- Apartado --}}
+                                        <td class="ps-4 fw-semibold text-dark">
+                                            {{ $apartado->apartado }}
+                                        </td>
+
+                                        {{-- Descripción --}}
+                                        <td>
+                                            <small class="text-muted">
+                                                {{ $apartado->descripcion }}
+                                            </small>
+                                        </td>
+
+                                        {{-- Acciones --}}
+                                        <td class="text-center pe-4">
+                                            <div class="btn-group btn-group-sm" role="group">
+
+                                                <button
+                                                    class="btn btn-outline-success"
+                                                    data-mdb-ripple-init
+                                                    data-mdb-modal-init
+                                                    data-mdb-target="#reg{{ $apartado->id }}"
+                                                    {{ Auth::user()->tipo_usuario !== 'principal' ? 'disabled' : '' }}
+                                                    title="Registrar cumplimiento">
+                                                    <i class="fa-regular fa-square-check"></i>
+                                                </button>
+
+                                                <a href="{{ route('ver.evidencia.cumplimiento.normativo', $apartado->id) }}"
+                                                   class="btn btn-outline-primary"
+                                                   title="Ver evidencias">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                @else
+                    {{-- Empty state --}}
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <img src="{{ asset('/img/iconos/emtpy.png') }}"
+                                 class="img-fluid"
+                                 style="max-width: 180px; opacity: .6;"
+                                 alt="Sin datos">
+                        </div>
+                        <h6 class="text-muted mb-2">
+                            No hay apartados registrados
+                        </h6>
+                        <p class="text-muted mb-0">
+                            <small>No cuenta con datos para esta norma.</small>
+                        </p>
+                    </div>
                 @endif
 
-                @forelse ($apartados as $apartado)
-                    <tr>
-                        <td>
-                            {{$apartado->apartado}}
-                        </td>
-
-                        <td>
-                           {{$apartado->descripcion}}
-                        </td>
-
-                        <td class="text-center">
-                            <div class="btn-group">
-
-                                <button 
-                                    class="btn btn-primary btn-sm" 
-                                    data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#reg{{$apartado->id}}" 
-                                    
-                                    {{Auth::user()->tipo_usuario !== 'principal' ? 'disabled' : '' }} >
-                                    
-                                    <i class="fa-regular fa-check-square"></i>
-                                </button>
-
-                                <a href="{{route('ver.evidencia.cumplimiento.normativo', $apartado->id)}}" class="btn btn-secondary btn-sm">
-                                    <i class="fa fa-eye"></i>
-                                </a>
-                            </div>
-                        </td>
-
-                    </tr>
-                @empty
-                    <div class="col-12 p-5 text-center p-5 border">
-
-                        <div class="row justify-content-center">
-                            
-                            <div class="col-12 text-center">
-                                <img src="{{asset('/img/iconos/emtpy.png')}}" class="img-fluid" alt="">
-                            </div>
-                            <div class="col-12">
-                                <i class="fa fa-exclamation-circle text-danger"></i>
-                                No cuenta con datos aqui.
-                            </div>
-                            
-
-                        </div>
-                        <h5>
-                        </h5>
-                    </div>
-                @endforelse
-                </tbody>
-            </table>
+            </div>
         </div>
-        </div>
-
     </div>
+</div>
+
+
+
+
+
 </div>
 
 
@@ -208,6 +240,7 @@
 <div id="data-norma"
     data-user = "{{Auth::user()->name}}"
     data-correos = '@json($correos)''
+    data-correo = "{{Auth::user()->email}}"
      data-norma="{{ $norma->nombre }}"
      data-departamento="{{ Auth::user()->departamento->nombre }}">
 </div>
@@ -221,10 +254,13 @@
 
 <script>
 
+
  const data = document.getElementById('data-norma');
 
 let filas = `Se agrego evidencia a: ${data.dataset.norma}
 del departamento ${data.dataset.departamento}`;
+
+
 
 const correos = JSON.parse(data.dataset.correos);
 
@@ -241,6 +277,7 @@ document.getElementById('form_cumplimiento_normativo')
         name: data.dataset.user,
         time: new Date().toLocaleString(),
         message: filas,
+        correo: data.dataset.correo,
         mails: correos
 
     }).then(() => {
