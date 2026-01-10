@@ -99,140 +99,140 @@ use Carbon\Carbon;
                         Historico de llenado del Indicador
                     </h3>
                 </div>
-                
-                @forelse($grupos as $movimiento => $items)
-                    @php
-                        //para obtener las metas minimas y maximas desde la otra tabla
-                        $metas = MetaIndicador::where('id_movimiento_indicador_lleno',  $items[0]->id_movimiento)->first();
-
-                        $meta_minima = $metas->meta_minima;
-                        $meta_maxima = $metas->meta_maxima;
-
-                    @endphp
-
-                <div class="col-10 col-sm-5 col-md-8 col-lg-3  shadow-sm mx-4 border rounded mt-4">
-
-                    @php
-                        //para sacar fecha y año
-                        $fecha = Carbon::parse(explode('-', $movimiento)[0]);
-                        Carbon::setLocale('es');
-                        $mes = $fecha->subMonth()->translatedformat('F');
-                        $year = $fecha->format('Y');
-                   
-                   @endphp
-
-                    <div class="row justify-content-center">
-                        
-                        <div class="col-12 bg-info text-white pt-3 pb-2 mb-1 rounded">
-                            <h3 class="text-center fw-bold">
-                                <i class="fa-solid fa-calendar-days"></i> {{ $mes.' - '.$year }}
-                            </h3>
-                        </div>
-
-                        <div class="col-12 text-center   p-2 my-2 rounded">
-                            <div class="row justify-contente-center">
-                                <div class="col-6 text-center ">
-                                    <div class="badge badge-danger p-2">
-                                        <i class="fa-solid fa-circle-arrow-down text-danger"></i>                                    
-                                        <span>Minima:   {{$meta_minima}} </span>
-                                    </div>
-                                
-                                </div>
-                                <div class="col-6 text-center">
-                                    <div class="badge badge-success p-2">
-                                        <i class="fa-solid fa-circle-arrow-up text-success"></i>                                    
-                                        <span>Maxima:   {{$meta_maxima}} </span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-
-                        <hr>
-                        
-                        
-                        @foreach($items as $item)
-                        {{-- Se hace la consulta de la informaion del indiacor lleno, y se hace la condicional  para saber si esta el campo final --}}
-                        @if ($item->final === "on")
-                            <div class="col-8  fw-bold  rounded-5 border zoom_link {{($meta_minima > $item['informacion_campo']) ? 'border-danger' : 'border-success' }} bg-light mb-3 py-2 mt-3 border-2">
-                                
-                                
-                                <h5 class="text-center ">
-                                    <i class="fa {{($meta_minima > $item['informacion_campo']) ? 'fa-xmark-circle text-danger' : 'fa-check-circle text-success' }}"></i>
-                                    {{ $item['nombre_campo'] }}: 
-                                </h5> 
-                                <h4 class="text-center fw-bold">{{ $item['informacion_campo'] }} </h4>
-                            
-                            </div>
-
-                        @else
-
-                        @if ($item->final === 'comentario')
-
-                            <button class="btn btn-light btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#com{{$item->id}}">
-                                <i class="fa fa-comment"></i>
-                                Comentario
-                            </button>
-                            {{-- jajajaja vete alv, voy a tener que poner el modal aqui jajaja --}}
-
-                            <div class="modal fade" id="com{{$item['id']}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-                                <div class="modal-dialog  modal-xl">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-primary py-4">
-                                            <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
-                                            <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
-                                        </div>
-                                        <div class="modal-body py-4 bg-light">
-                                            <div class="col-12  mx-2 bg-white shadow-sm p-3 mt-4" >
-                                                <b class="h3">Comentario: </b>
-                                                <p class="h5 mt-2">
-                                                    {{$item['informacion_campo']}} 
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
 
-                        @else
+@forelse($grupos as $movimiento => $items)
 
-                            @if ($item->final === 'registro')
-                            
-                                <div class="col-11 p-3 mb-3 bg-light border  rounded ">
-                                    <small class="fw-bold">{{ $item['nombre_campo'] }}: </small> <br>
-                                    <small class="text-center"> <b>{{ $item['informacion_campo'] }} </b>- {{ $item['created_at'] }} </small> 
-                                
-                                    <br>                
-                                </div>
+    @php
+        // Metas
+        $metas = MetaIndicador::where(
+            'id_movimiento_indicador_lleno',
+            $items->first()->id_movimiento
+        )->first();
 
-                            @else
+        $meta_minima = $metas->meta_minima ?? 0;
+        $meta_maxima = $metas->meta_maxima ?? 0;
 
-                                <div class="col-11">
-                                    <span class="fw-bold">{{ $item['nombre_campo'] }}: </span> <br>
-                                    <span class="fw-bold ">{{ $item['informacion_campo'] }}</span> <br>                
-                                </div>
-                                
-                            @endif
-                            
+        // Fecha
+        Carbon::setLocale('es');
+        $fecha = Carbon::parse(explode('-', $movimiento)[0])->subMonth();
+        $mes   = ucfirst($fecha->translatedFormat('F'));
+        $year  = $fecha->format('Y');
+    @endphp
 
-                        @endif
-                        @endif
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-4">
+        <div class="card shadow-sm border-0 h-100">
 
+            {{-- HEADER --}}
+            <div class="card-header bg-info text-white text-center py-3">
+                <h5 class="fw-bold mb-0">
+                    <i class="fa-solid fa-calendar-days me-1"></i>
+                    {{ $mes }} - {{ $year }}
+                </h5>
+            </div>
 
-                        @endforeach
-                        
+            {{-- METAS --}}
+            <div class="card-body text-center">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                            <i class="fa-solid fa-arrow-down"></i>
+                            Mínima: {{ $meta_minima }}
+                        </span>
+                    </div>
+                    <div class="col-6">
+                        <span class="badge bg-success-subtle text-success p-2 w-100">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            Máxima: {{ $meta_maxima }}
+                        </span>
                     </div>
                 </div>
+
+                <hr>
+
+                {{-- ITEMS --}}
+                @foreach($items as $item)
+
+                    {{-- RESULTADO FINAL --}}
+                    @if($item->final === 'on')
+                        @php
+                            $cumple = $item->informacion_campo >= $meta_minima;
+                        @endphp
+
+                        <div class="border border-2 rounded text-center py-3 mb-3
+                            {{ $cumple ? 'border-success' : 'border-danger' }}">
+                            
+                            <h6 class="fw-bold mb-1">
+                                <i class="fa-solid {{ $cumple ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger' }}"></i>
+                                {{ $item->nombre_campo }}
+                            </h6>
+
+                            <h4 class="fw-bold mb-0">
+                                {{ $item->informacion_campo }}
+                            </h4>
+                        </div>
+                    @endif
+
+                    {{-- COMENTARIO --}}
+                    @if($item->final === 'comentario')
+                        <button class="btn btn-outline-secondary btn-sm mb-2"
+                                data-mdb-modal-init
+                                data-mdb-target="#com{{ $item->id }}">
+                            <i class="fa fa-comment"></i> Comentario
+                        </button>
+
+                        <div class="modal fade" id="com{{ $item->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title">{{ $indicador->nombre }}</h5>
+                                        <button class="btn-close" data-mdb-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="fs-5">{{ $item->informacion_campo }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- REGISTRO --}}
+                    @if($item->final === 'registro')
+                        <div class="bg-light border rounded p-2 mb-2 text-start">
+                            <small class="fw-bold">{{ $item->nombre_campo }}</small><br>
+                            <small>
+                                <b>{{ $item->informacion_campo }}</b> —
+                                {{ $item->created_at->translatedFormat('d F Y') }}
+                                {{ $item->created_at->format('H:i') }}
+                            </small>
+                        </div>
+                    @endif
+
+                    {{-- NORMAL --}}
+                    @if(is_null($item->final))
+                        <div class="mb-2 text-start">
+                            <span class="fw-bold">{{ $item->nombre_campo }}</span><br>
+                            <span>{{ $item->informacion_campo }}</span>
+                        </div>
+                    @endif
+
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+@empty
+    <div class="col-12 text-center text-muted py-5">
+        <i class="fa-solid fa-circle-info"></i> Sin información disponible
+    </div>
+@endforelse
+
+
                 
 
-                @empty
-
-                @endforelse
 
             </div>
         </div>
-
     </div>
 </div>
 
