@@ -62,14 +62,12 @@
 <div class="container-fluid border-bottom my-5">
 
     <div class="row justify-content-center">
-        @forelse ($departamentos as $departamento)
 
+        @forelse ($departamentos as $departamento)
         <div class="col-auto mt-2">
             <div class="card shadow-3 rounded-4 p-3 border" style="max-width: 400px;">
-
             <div class="card-body p-1">
                 <h4 class="text-muted text-uppercase fw-bold">{{$departamento->nombre}}</h4>
-
 
 
                 <!-- AQUI ESTA LA GRAFICA DEL CUMPLIMIENTO GENERAL-->

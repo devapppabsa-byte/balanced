@@ -425,7 +425,7 @@
                                                     <small class="text-dark">{{ $norma->ponderacion }}%</small>
                                                 <td>
                                                     <small class="text-muted">
-                                                        {{ \Carbon\Carbon::parse($norma->created_at)->format('d/m/Y') }}
+                                                        {{ $norma->created_at->locale('es')->translatedFormat('l j \\d\\e F Y h:i:s A')}}
                                                     </small>
                                                 </td>
                                                 <td class="text-end">

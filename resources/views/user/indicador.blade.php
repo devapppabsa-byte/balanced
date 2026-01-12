@@ -256,7 +256,7 @@ use Carbon\Carbon;
                                     <label for="" class="fw-bold">{{$campo_vacio->nombre}}</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="number" min="0" class="form-control input" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}" required>
+                                    <input type="number" step="0.0001"  min="0" class="form-control input" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}" required>
 
                                     {{-- campos ocultos para llevar informacion al controlador --}}
                                         <input type="hidden" name="id_input[]" value="{{$campo_vacio->id}}">

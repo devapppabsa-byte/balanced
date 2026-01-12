@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use App\Models\Departamento;
 use App\Models\LogBalanced;
 use App\Http\Controllers\Controller;
@@ -24,12 +25,12 @@ class adminController extends Controller
 
     public function ingreso_admin(Request $request){
 
-
-        
+       
         $request->validate([
             'email' => 'required',
             'password' => 'required'
         ]);      
+        
         
         $credentials = $request->only('email', 'password');
 
@@ -70,16 +71,41 @@ class adminController extends Controller
 
 
 
+
+
+
+
     public function perfil_admin(){
 
+
         $departamentos = Departamento::get();
-        $clientes = Cliente::get();
+      //  $clientes = Cliente::get();
+
+         $resultados = DB::table('indicadores as i')
+                ->leftJoin('indicadores_llenos as il', function ($join) {
+                    $join->on('il.id_indicador', '=', 'i.id')
+                        ->where('il.final', 'on');
+                })
+                ->where('i.id_departamento', 18)
+                ->select(
+                    'i.id',
+                    'i.nombre',
+                    'i.ponderacion',
+                    DB::raw('COUNT(il.id) as total_final_on'),
+                    DB::raw('(COUNT(il.id) * i.ponderacion) as resultado')
+                )
+                ->groupBy('i.id', 'i.nombre', 'i.ponderacion')
+                ->get();
 
 
-        return view('admin.perfil_admin', compact('departamentos', 'clientes'));
 
+        return view('admin.perfil_admin', compact('departamentos'));
 
     }
+
+
+
+
 
 
     public function agregar_usuario(Request $request){

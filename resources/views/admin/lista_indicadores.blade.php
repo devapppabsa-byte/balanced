@@ -216,7 +216,7 @@
     </div>
 
 
-    @if ($encuestas->isEmpty() && $resultado_normas->isEmpty()  &&  $indicadores->isEmpty() )
+    @if ($encuestas->isEmpty() && count($resultado_normas) == 0  &&  $indicadores->isEmpty() )
         <div class="row mt-5 justify-content-center">
             <div class="col-9 p-5 text-center bg-white shadow shadow-sm border">
                 <h4>
