@@ -203,6 +203,8 @@ class normaController extends Controller
             )
             ->groupBy('apartado_norma.id_norma', 'cumplimiento_norma.mes');
 
+
+
         $grafica = DB::table('norma')
             ->where('norma.id', $norma->id)
             ->joinSub($totalesApartados, 'totales', function ($join) {

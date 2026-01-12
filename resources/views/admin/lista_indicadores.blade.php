@@ -59,7 +59,7 @@
                 $cumplimiento = $suma/$contador;
             @endphp
 
-                <div class="col-10 col-sm-10 col-md-6 col-lg-3 my-3">
+                <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
                     <div class="card text-white {{($cumplimiento < $indicador->meta_minima) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
                         <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
                         <div class="card-body">
@@ -90,7 +90,7 @@
                 </div>
             @else
 
-                <div class="col-10 col-sm-10 col-md-6 col-lg-3 my-3">
+                <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
                     <div class="card text-white bg-dark shadow-2-strong">
                         <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
                         <div class="card-body">
@@ -140,13 +140,13 @@
 
     @forelse ($resultado_normas as $norma)
 
-        <div class="col-10 col-sm-10 col-md-6 col-lg-3 my-3">
-            <div class="card text-white {{($norma['meta_minima'] > $norma['cumplimiento']) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
+        <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
+            <div class="card text-white {{($norma['meta_minima'] > $norma['porcentaje']) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
                 <a href="{{route('apartado.norma', $norma['id_norma'])}}" class="text-white w-100">
                 <div class="card-body">
                     <div class="row justify-content-around d-flex align-items-center">
                         <div class="col-12 col-sm-12 col-md-12 col-lg-7 ">
-                            <h2 class="card-title fw-bold display-6 x">{{$norma['cumplimiento']}}%</h2>
+                            <h2 class="card-title fw-bold display-6 x">{{$norma['porcentaje']}}%</h2>
                             <p class="card-text fw-bold">{{$norma['norma']}}</p>
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-lg-4 p-0 m-0">
@@ -180,7 +180,7 @@
 {{-- Foreach del cumplimiento a normas --}}
     @forelse ($encuestas as $encuesta)
 
-        <div class="col-10 col-sm-10 col-md-6 col-lg-3 my-3">
+        <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
             <div class="card text-white {{($encuesta->porcentaje_cumplimiento < $encuesta->meta_minima) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
                 <a href="{{route('encuesta.index', $encuesta->id)}}" class="text-white w-100">
                 <div class="card-body">

@@ -888,10 +888,6 @@ public function lista_indicadores_admin(Departamento $departamento){
 
     $indicadores = Indicador::with('indicadorLleno')->where('id_departamento', $departamento->id)->get();
 
-
-
-
-
     //Este codigo es para sacar el cumplimiento normativo
 
     $inicio = Carbon::now()->startOfMonth();
@@ -899,42 +895,167 @@ public function lista_indicadores_admin(Departamento $departamento){
     $diasMes = $inicio->daysInMonth;
 
 
-    $normas = Norma::withCount('apartados')->get();
+    // $normas = Norma::withCount('apartados')->get();
 
 
 
 
-    $resultado_normas = $normas->map(function ($norma) use ($inicio, $fin, $diasMes) {
+    // $resultado_normas = $normas->map(function ($norma) use ($inicio, $fin, $diasMes) {
 
-        $registros = CumplimientoNorma::whereHas('apartado', function ($q) use ($norma) {
-                $q->where('id_norma', $norma->id);
-            })
-            ->whereBetween('created_at', [$inicio, $fin])
-            ->count();
 
-        $totalEsperado = $norma->apartados_count * $diasMes;
 
-        $cumplimiento = $totalEsperado > 0
-            ? round(($registros / $totalEsperado) * 100, 2)
-            : 0;
+    //     $registros = CumplimientoNorma::whereHas('apartado', function ($q) use ($norma) {
+    //             $q->where('id_norma', $norma->id);
+    //         })
+    //         ->whereBetween('created_at', [$inicio, $fin])
+    //         ->count();
 
-        return [
-            'id_norma'      => $norma->id,
-            'norma'         => $norma->nombre,
-            'cumplimiento'  => $cumplimiento,
-            'meta_minima'   => $norma->meta_minima,
-            'meta_esperada' => $norma->meta_esperada,
-        ];
-    });
+    //     $totalEsperado = $norma->apartados_count * $diasMes;
+
+    //     $cumplimiento = $totalEsperado > 0
+    //         ? round(($registros / $totalEsperado) * 100, 2)
+    //         : 0;
+
+    //     return [
+    //         'id_norma'      => $norma->id,
+    //         'norma'         => $norma->nombre,
+    //         'cumplimiento'  => $cumplimiento,
+    //         'meta_minima'   => $norma->meta_minima,
+    //         'meta_esperada' => $norma->meta_esperada,
+    //     ];
+    // });
 
     //Este codigo es para sacara el cumplimiento normativo
     
 
 
+
+// $mesActual = now()->format('Y-m');
+
+// $normas = DB::table('norma')
+//     ->where('id_departamento', $departamento->id)
+//     ->get();
+
+// $resultado_normas = [];
+
+// foreach ($normas as $norma) {
+
+//     // Total de apartados de la norma
+//     $totalApartados = DB::table('apartado_norma')
+//         ->where('id_norma', $norma->id)
+//         ->count();
+
+//     // Apartados cumplidos con evidencia en el mes
+//     $apartadosCumplidos = DB::table('apartado_norma')
+//         ->join('cumplimiento_norma', 'cumplimiento_norma.id_apartado_norma', '=', 'apartado_norma.id')
+//         ->join(
+//             'evidencia_cumplimiento_norma',
+//             'evidencia_cumplimiento_norma.id_cumplimiento_norma',
+//             '=',
+//             'cumplimiento_norma.id'
+//         )
+//         ->where('apartado_norma.id_norma', $norma->id)
+//         ->whereRaw("DATE_FORMAT(cumplimiento_norma.created_at, '%Y-%m') = ?", [$mesActual])
+//         ->distinct('apartado_norma.id')
+//         ->count('apartado_norma.id');
+
+//     $porcentaje = $totalApartados > 0
+//         ? round(($apartadosCumplidos / $totalApartados) * 100, 2)
+//         : 0;
+
+//     $resultado_normas[] = [
+//         'norma_id'        => $norma->id,
+//         'norma'           => $norma->nombre,
+//         'total_apartados' => $totalApartados,
+//         'cumplidos'       => $apartadosCumplidos,
+//         'porcentaje'      => $porcentaje,
+//     ];
+// }
+
+
+
+
+
+
+
+
+
+
+$mesActual = now()->format('Y-m');
+
+$normas = DB::table('norma')
+    ->where('id_departamento', $departamento->id)
+    ->select('id', 'nombre', 'meta_minima', 'meta_esperada')
+    ->get();
+
+
+
+
+
+$resultado_normas = [];
+
+foreach ($normas as $norma) {
+
+    // Total de apartados de la norma
+    $totalApartados = DB::table('apartado_norma')
+        ->where('id_norma', $norma->id)
+        ->count();
+
+    // Apartados cumplidos con evidencia en el mes
+    $apartadosCumplidos = DB::table('apartado_norma')
+        ->join('cumplimiento_norma', 'cumplimiento_norma.id_apartado_norma', '=', 'apartado_norma.id')
+        ->join(
+            'evidencia_cumplimiento_norma',
+            'evidencia_cumplimiento_norma.id_cumplimiento_norma',
+            '=',
+            'cumplimiento_norma.id'
+        )
+        ->where('apartado_norma.id_norma', $norma->id)
+        ->whereRaw("DATE_FORMAT(cumplimiento_norma.created_at, '%Y-%m') = ?", [$mesActual])
+        ->distinct('apartado_norma.id')
+        ->count('apartado_norma.id');
+
+    // Porcentaje de cumplimiento
+    $porcentaje = $totalApartados > 0
+        ? round(($apartadosCumplidos / $totalApartados) * 100, 2)
+        : 0;
+
+    // Evaluación contra metas
+    if ($porcentaje < $norma->meta_minima) {
+        $estatus = 'bajo';
+    } elseif ($porcentaje < $norma->meta_esperada) {
+        $estatus = 'riesgo';
+    } else {
+        $estatus = 'cumple';
+    }
+
+    $resultado_normas[] = [
+        'id_norma'        => $norma->id,
+        'norma'           => $norma->nombre,
+        'total_apartados' => $totalApartados,
+        'cumplimiento'       => $apartadosCumplidos,
+        'porcentaje'      => $porcentaje,
+        'meta_minima'     => $norma->meta_minima,
+        'meta_esperada'   => $norma->meta_esperada,
+        'estatus'         => $estatus,
+    ];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //CODIGO QUE ME AYUDA A MOSTRAR EL CUMPLIMIENTO DE LAS ENCUESTAS
-
-
-
 
 $encuestas = DB::table('encuestas as e')
     ->leftJoin('preguntas as p', function ($join) {
