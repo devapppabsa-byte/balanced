@@ -927,6 +927,199 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
 public function lista_indicadores_admin(Departamento $departamento){
 
 
+//Filtro de fechas para los indicadores
+$inicio = request()->filled('fecha_inicio')
+    ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+        ->startOfDay()
+        ->utc()
+    : Carbon::now(config('app.timezone'))
+        ->startOfYear()
+        ->utc();
+
+$fin = request()->filled('fecha_fin')
+    ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+        ->endOfDay()
+        ->utc()
+    : Carbon::now(config('app.timezone'))
+        ->endOfYear()
+        ->utc();
+
+
+
+
+
+
+//pruebas 
+
+//Consulta SQL que me tra el cumplimiento  de los indicadores multiplicados por su ponderacion.
+ $subQuery = DB::table('indicadores_llenos as il')
+    ->join('indicadores as i', 'i.id', '=', 'il.id_indicador')
+    ->where('il.final', 'on')
+    ->where('i.id_departamento', $departamento->id)
+    ->whereBetween('il.created_at', [$inicio, $fin])
+    ->selectRaw("
+        il.id_indicador,
+        i.ponderacion,
+        DATE_FORMAT(il.created_at, '%Y-%m') as mes,
+        AVG(CAST(il.informacion_campo AS DECIMAL(10,2))) as promedio_indicador
+    ")
+    ->groupBy('il.id_indicador', 'mes', 'i.ponderacion');
+
+$cumplimientoIndicadoresMensual = DB::query()
+    ->fromSub($subQuery, 't')
+    ->selectRaw("
+        mes,
+        SUM(ROUND((promedio_indicador * ponderacion)/100, 2)) as cumplimiento_total
+    ")
+    ->groupBy('mes')
+    ->orderBy('mes')
+    ->get();
+
+
+
+
+
+
+
+
+
+//CONSULTA SQL DE LAS ENCUESTAS..
+ $resultado_encuestas = DB::table(DB::raw('
+    (
+        SELECT 
+            DATE_FORMAT(r.created_at, "%Y-%m") AS mes,
+            e.id AS encuesta_id,
+            e.ponderacion,
+            AVG(r.respuesta) AS promedio
+        FROM encuestas e
+        JOIN preguntas p ON p.id_encuesta = e.id
+        JOIN respuestas r ON r.id_pregunta = p.id
+        WHERE 
+            e.id_departamento = ?
+            AND p.cuantificable = 1
+            AND r.created_at BETWEEN ? AND ?
+        GROUP BY 
+            e.id,
+            e.ponderacion,
+            mes
+    ) as sub
+'))
+->setBindings([
+    $departamento->id,
+    $inicio,
+    $fin
+])
+->select(
+    'mes',
+    DB::raw('SUM((promedio * (ponderacion / 10))) AS cumplimiento_total')
+)
+->groupBy('mes')
+->orderBy('mes')
+->get();
+
+
+
+
+
+
+/*
+ |------------------------------------------------------------
+ | Subconsulta: meses donde hay cumplimiento
+ |------------------------------------------------------------
+ */
+$meses = DB::table('cumplimiento_norma')
+    ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as mes")
+    ->whereBetween('created_at', [$inicio, $fin])
+    ->distinct();
+
+/*
+ |------------------------------------------------------------
+ | Consulta principal
+ |------------------------------------------------------------
+ */
+ $resultado_norma = DB::table('norma as n')
+    ->joinSub($meses, 'm', function ($join) {
+        // cross join lógico para evaluar cada norma por mes
+        $join->on(DB::raw('1'), '=', DB::raw('1'));
+    })
+    ->where('n.id_departamento', $departamento->id)
+    ->select(
+        'm.mes',
+        DB::raw('
+            ROUND(
+                SUM(
+                    (
+                        (
+                            SELECT COUNT(*)
+                            FROM apartado_norma an2
+                            WHERE an2.id_norma = n.id
+                              AND EXISTS (
+                                  SELECT 1
+                                  FROM cumplimiento_norma cn2
+                                  WHERE cn2.id_apartado_norma = an2.id
+                                    AND DATE_FORMAT(cn2.created_at, "%Y-%m") = m.mes
+                              )
+                        )
+                        /
+                        (
+                            SELECT COUNT(*)
+                            FROM apartado_norma an3
+                            WHERE an3.id_norma = n.id
+                        )
+                    ) * 100 * (n.ponderacion / 100)
+                ),
+            2) AS cumplimiento_total
+        ')
+    )
+    ->groupBy('m.mes')
+    ->orderBy('m.mes')
+    ->get();
+
+
+
+
+
+//CONSULTA SQL DEL CUMPLIMIENTO NORMATIVO..
+
+
+//Uniendo los campos para generar la grafica del cumplimiento general
+ $indicadores = $cumplimientoIndicadoresMensual
+    ->pluck('cumplimiento_total', 'mes');
+
+ $encuestas = $resultado_encuestas
+    ->pluck('cumplimiento_total', 'mes');
+
+ $normas = $resultado_norma
+    ->pluck('cumplimiento_total', 'mes');
+
+
+$meses = collect()
+    ->merge($indicadores->keys())
+    ->merge($encuestas->keys())
+    ->merge($normas->keys())
+    ->unique()
+    ->sort()
+    ->values();
+
+$cumplimiento_general = $meses->map(function ($mes) use ($indicadores, $encuestas, $normas) {
+    return [
+        'mes' => $mes,
+        'total' =>
+            ($indicadores[$mes] ?? 0) +
+            ($encuestas[$mes] ?? 0) +
+            ($normas[$mes] ?? 0),
+    ];
+});
+
+
+
+
+//FINALIZA PRUEBAS  PARA LO DE LAS GRAFICAS
+
+
+
+
+
     $indicadores = Indicador::with('indicadorLleno')->where('id_departamento', $departamento->id)->get();
 
     //Este codigo es para sacar el cumplimiento normativo
@@ -936,99 +1129,13 @@ public function lista_indicadores_admin(Departamento $departamento){
     $diasMes = $inicio->daysInMonth;
 
 
-    // $normas = Norma::withCount('apartados')->get();
 
+    $mesActual = now()->format('Y-m');
 
-
-
-    // $resultado_normas = $normas->map(function ($norma) use ($inicio, $fin, $diasMes) {
-
-
-
-    //     $registros = CumplimientoNorma::whereHas('apartado', function ($q) use ($norma) {
-    //             $q->where('id_norma', $norma->id);
-    //         })
-    //         ->whereBetween('created_at', [$inicio, $fin])
-    //         ->count();
-
-    //     $totalEsperado = $norma->apartados_count * $diasMes;
-
-    //     $cumplimiento = $totalEsperado > 0
-    //         ? round(($registros / $totalEsperado) * 100, 2)
-    //         : 0;
-
-    //     return [
-    //         'id_norma'      => $norma->id,
-    //         'norma'         => $norma->nombre,
-    //         'cumplimiento'  => $cumplimiento,
-    //         'meta_minima'   => $norma->meta_minima,
-    //         'meta_esperada' => $norma->meta_esperada,
-    //     ];
-    // });
-
-    //Este codigo es para sacara el cumplimiento normativo
-    
-
-
-
-// $mesActual = now()->format('Y-m');
-
-// $normas = DB::table('norma')
-//     ->where('id_departamento', $departamento->id)
-//     ->get();
-
-// $resultado_normas = [];
-
-// foreach ($normas as $norma) {
-
-//     // Total de apartados de la norma
-//     $totalApartados = DB::table('apartado_norma')
-//         ->where('id_norma', $norma->id)
-//         ->count();
-
-//     // Apartados cumplidos con evidencia en el mes
-//     $apartadosCumplidos = DB::table('apartado_norma')
-//         ->join('cumplimiento_norma', 'cumplimiento_norma.id_apartado_norma', '=', 'apartado_norma.id')
-//         ->join(
-//             'evidencia_cumplimiento_norma',
-//             'evidencia_cumplimiento_norma.id_cumplimiento_norma',
-//             '=',
-//             'cumplimiento_norma.id'
-//         )
-//         ->where('apartado_norma.id_norma', $norma->id)
-//         ->whereRaw("DATE_FORMAT(cumplimiento_norma.created_at, '%Y-%m') = ?", [$mesActual])
-//         ->distinct('apartado_norma.id')
-//         ->count('apartado_norma.id');
-
-//     $porcentaje = $totalApartados > 0
-//         ? round(($apartadosCumplidos / $totalApartados) * 100, 2)
-//         : 0;
-
-//     $resultado_normas[] = [
-//         'norma_id'        => $norma->id,
-//         'norma'           => $norma->nombre,
-//         'total_apartados' => $totalApartados,
-//         'cumplidos'       => $apartadosCumplidos,
-//         'porcentaje'      => $porcentaje,
-//     ];
-// }
-
-
-
-
-
-
-
-
-
-
-$mesActual = now()->format('Y-m');
-
-$normas = DB::table('norma')
-    ->where('id_departamento', $departamento->id)
-    ->select('id', 'nombre', 'meta_minima', 'meta_esperada')
-    ->get();
-
+    $normas = DB::table('norma')
+        ->where('id_departamento', $departamento->id)
+        ->select('id', 'nombre', 'meta_minima', 'meta_esperada')
+        ->get();
 
 
 
@@ -1114,11 +1221,18 @@ $encuestas = DB::table('encuestas as e')
 //CODIGO QUE ME AYUDA A MOSTRAR EL CUMPLIMIENTO DE LAS ENCUESTAS
 
 
- return view('admin.lista_indicadores', compact('indicadores', 'departamento', 'encuestas', 'resultado_normas'));
+ return view('admin.lista_indicadores', compact('indicadores', 'departamento', 'encuestas', 'resultado_normas', 'cumplimiento_general'));
 
 
 
 }
+
+
+
+
+
+
+
 
 
 public function indicador_lleno_show_admin(Indicador $indicador){
