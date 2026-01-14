@@ -95,6 +95,11 @@ body{
 }
 
 
+.indicador-container{
+  max-height: 500px;
+  overflow-y: auto;
+}
+
 /* .bad_notifications{
   text-shadow: 1px 1px  rgba(255, 255, 255);
   

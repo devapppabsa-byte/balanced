@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class IndicadorLleno extends Model
 {
 
     protected $table = "indicadores_llenos";
-    protected $fillable = ["nombre_campo", "informacion_campo", "id_indicador", "id_movimiento", "final", "planta" ];
+    protected $fillable = ["nombre_campo", "informacion_campo", "id_indicador", "id_movimiento", "final", "planta", 'referencia' ];
 
 
     //creando la relacion 

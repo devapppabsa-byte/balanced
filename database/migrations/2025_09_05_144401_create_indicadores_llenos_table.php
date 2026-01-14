@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('planta');
             $table->unsignedBigInteger('id_indicador');
             $table->string('final');
+            $table->string('referencia');
 
             $table->foreign('id_indicador')
                   ->references('id')

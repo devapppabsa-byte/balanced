@@ -218,6 +218,16 @@ class indicadorController extends Controller
         //esta linea me ayuda a cargar las relaciones que tiene el Inidcador, por que inyecte el indicador directo en el metodo y no lo consulte con su respectiva query
         $indicador->load('departamento');
 
+
+        //verificar si ya hay un campo_final en este indicador.
+         $campo_final = CampoCalculado::where('id_indicador', $indicador->id)->where('resultado_final', 'on')->get();
+
+        //consultar el campo de referencia.
+        $campo_referencia = CampoCalculado::where('id_indicador', $indicador->id)->where('referencia', 'on')->get();
+
+
+
+
         $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
         $campos_precargados = CampoPrecargado::where('id_indicador', $indicador->id)->get();
 
@@ -251,7 +261,7 @@ class indicadorController extends Controller
         //Llamar a la informacion 
         $informacion_foranea = CampoForaneo::get();
 
-        return view('admin.indicador', compact('indicador', 'campos_vacios','campos_precargados', 'informacion_foranea', 'campos_unidos'));
+        return view('admin.indicador', compact('indicador', 'campos_vacios','campos_precargados', 'informacion_foranea', 'campos_unidos', 'campo_final', 'campo_referencia'));
 
     }
 
@@ -349,6 +359,7 @@ public function borrar_campo(Request $request, $campo){
 public function show_indicador_user(Indicador $indicador){
 
 
+
     //le mandamos los admins para que les envie el correo de que ya se lleno el indicador
   $correos = Admin::pluck('email')->toArray();
 
@@ -400,7 +411,13 @@ public function show_indicador_user(Indicador $indicador){
 
     //datos para graficar...
     $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
-                           ->where('final', 'on')->get();
+        ->where(function ($q) {
+            $q->where('final', 'on')
+            ->orWhere('referencia', 'on');
+        })
+        ->orderBy('created_at')
+        ->get();
+
     
 
 
@@ -462,6 +479,7 @@ public function input_porcentaje_guardar(Request $request, Indicador $indicador)
         "tipo" => "number",
         "operacion" => "porcentaje",
         "resultado_final" => $request->resultado_final,
+        "referencia" => $request->referencia,
         "id_indicador" => $indicador->id,
         "descripcion" => $request->descripcion,
 
@@ -498,6 +516,8 @@ public function input_porcentaje_guardar(Request $request, Indicador $indicador)
 
 public function input_resta_guardar(Request $request, Indicador $indicador){
 
+
+
     $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
     $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
@@ -530,6 +550,7 @@ public function input_resta_guardar(Request $request, Indicador $indicador){
             "tipo" => "number",
             "operacion" => "resta",
             "resultado_final" => $request->resultado_final,
+            "referencia" => $request->referencia,
             "id_indicador" => $indicador->id,
             "descripcion" => $request->descripcion
 
@@ -573,7 +594,15 @@ public function input_resta_guardar(Request $request, Indicador $indicador){
 
 
 
+
+
+
+
+
+
 public function input_division_guardar(Request $request, Indicador $indicador){
+
+
 
        $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
@@ -609,6 +638,7 @@ public function input_division_guardar(Request $request, Indicador $indicador){
         "autor" => $autor,
         "tipo" => "number",
         "operacion" => "division",
+        "referencia" => $request->referencia,
         "resultado_final" => $request->resultado_final,
         "id_indicador" => $indicador->id,
         "descripcion" => $request->descripcion
@@ -654,6 +684,8 @@ public function input_division_guardar(Request $request, Indicador $indicador){
 
 public function input_suma_guardar(Request $request, Indicador $indicador){
 
+
+
     $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
     $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
@@ -689,6 +721,7 @@ if( count($request->input_suma) < 2) return back()->with('error', 'Se debe agreg
         "tipo" => "number",
         "autor" => $autor,
         "operacion" => "suma",
+        "referencia" => $request->referencia,
         "resultado_final" => $request->resultado_final,
         "id_indicador" => $indicador->id,
         "descripcion" => $request->descripcion
@@ -716,15 +749,16 @@ if( count($request->input_suma) < 2) return back()->with('error', 'Se debe agreg
         'ip' => request()->ip() 
     ]);
 
+
     return back()->with("success", "Se a creado el nuevo campo de suma");
+
 
 
 }
 
 
-
-
 public function input_multiplicacion_guardar(Request $request, Indicador $indicador){
+
 
        $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
        $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
@@ -767,6 +801,7 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
         "tipo" => "number",
         "autor" => $autor,
         "operacion" => "multiplicacion",
+        "referencia" => $request->referencia,
         "resultado_final" => $request->resultado_final,
         "id_indicador" => $indicador->id,
         "descripcion" => $request->descripcion
@@ -802,7 +837,12 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
 
 
 
+
+
 public function input_promedio_guardar(Request $request, Indicador $indicador){
+
+
+    
 
     $autor_log = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
     $autor = auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
@@ -849,6 +889,7 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
             "autor" => $autor,
             "operacion" => "promedio",
             "resultado_final" => $request->resultado_final, 
+            "referencia" => $request->referencia,
             "id_indicador" => $indicador->id,
             "descripcion" => $request->descripcion,
         ]);
@@ -1040,10 +1081,6 @@ foreach ($normas as $norma) {
         'estatus'         => $estatus,
     ];
 }
-
-
-
-
 
 
 
@@ -1326,7 +1363,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'informacion_campo' => round(array_sum($datos), 4),
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
-                            'final' => $campo_calculado->resultado_final
+                            'final' => $campo_calculado->resultado_final,
+                            'referencia' => $campo_calculado->referencia
 
                         ]);
                         
@@ -1356,8 +1394,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'informacion_campo' => round(array_sum($datos) / count($datos), 4),
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
-                            'final' => $campo_calculado->resultado_final
-
+                            'final' => $campo_calculado->resultado_final,
+                            'referencia' => $campo_calculado->referencia
                         ]);
 
 
@@ -1391,7 +1429,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                         'informacion_campo' => round($datos[0] / $datos[1], 4),
                         'id_indicador' => $indicador->id,
                         'id_movimiento' => $id_movimiento,
-                        'final' => $campo_calculado->resultado_final
+                        'final' => $campo_calculado->resultado_final,
+                        'referencia' => $campo_calculado->referencia
 
                     ]);
 
@@ -1423,8 +1462,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'informacion_campo' => round((($datos[0]/$datos[1])*100), 4),
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
-                            'final' => $campo_calculado->resultado_final
-
+                            'final' => $campo_calculado->resultado_final,
+                            'referencia' => $campo_calculado->referencia                            
                         ]);
 
 
@@ -1454,7 +1493,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'informacion_campo' => round(($datos[0] - $datos[1]), 4),
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
-                            'final' => $campo_calculado->resultado_final
+                            'final' => $campo_calculado->resultado_final,
+                            'referencia' => $campo_calculado->referencia
 
                         ]);
 
@@ -1488,8 +1528,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'informacion_campo' => round(array_product($datos), 4),
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
-                            'final' => $campo_calculado->resultado_final
-
+                            'final' => $campo_calculado->resultado_final,
+                            'referencia' => $campo_calculado->referencia
                         ]);
 
 
@@ -1549,12 +1589,6 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
 
 }
-
-
-
-
-
-
 
 
 

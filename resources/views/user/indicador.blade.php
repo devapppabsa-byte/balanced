@@ -92,15 +92,20 @@ use Carbon\Carbon;
     <div class="row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-4">
         <div  class="col-12 mx-2 bg-white shadow-sm px-5 py-3 pb-5">
             
-            <div class="row justify-content-center">
+        <div class="row justify-content-center">
                 
                 <div class="col-12">
                     <h3><i class="fa fa-chart-simple"></i>
                         Historico de llenado del Indicador
                     </h3>
                 </div>
+        </div>
 
 
+
+
+ <div class="row ">
+                                
 @forelse($grupos as $movimiento => $items)
 
     @php
@@ -120,7 +125,11 @@ use Carbon\Carbon;
         $year  = $fecha->format('Y');
     @endphp
 
-    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-4">
+
+
+
+
+    <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 mt-4 ">
         <div class="card shadow-sm border-0 h-100">
 
             {{-- HEADER --}}
@@ -132,7 +141,7 @@ use Carbon\Carbon;
             </div>
 
             {{-- METAS --}}
-            <div class="card-body text-center">
+            <div class="card-body text-center ">
                 <div class="row mb-3">
                     <div class="col-6">
                         <span class="badge bg-danger-subtle text-danger p-2 w-100">
@@ -151,6 +160,9 @@ use Carbon\Carbon;
                 <hr>
 
                 {{-- ITEMS --}}
+                <div class="row justify-content-center indicador-container">
+
+             
                 @foreach($items as $item)
 
                     {{-- RESULTADO FINAL --}}
@@ -159,7 +171,7 @@ use Carbon\Carbon;
                             $cumple = $item->informacion_campo >= $meta_minima;
                         @endphp
 
-                        <div class="border border-2 rounded text-center py-3 mb-3
+                        <div class=" col-8  border border-2 rounded text-center py-3 my-4
                             {{ $cumple ? 'border-success' : 'border-danger' }}">
                             
                             <h6 class="fw-bold mb-1">
@@ -170,7 +182,10 @@ use Carbon\Carbon;
                             <h4 class="fw-bold mb-0">
                                 {{ $item->informacion_campo }}
                             </h4>
+
                         </div>
+
+
                     @endif
 
                     {{-- COMENTARIO --}}
@@ -182,7 +197,7 @@ use Carbon\Carbon;
                         </button>
 
                         <div class="modal fade" id="com{{ $item->id }}" tabindex="-1">
-                            <div class="modal-dialog modal-lg">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header bg-primary text-white">
                                         <h5 class="modal-title">{{ $indicador->nombre }}</h5>
@@ -210,13 +225,25 @@ use Carbon\Carbon;
 
                     {{-- NORMAL --}}
                     @if(is_null($item->final))
-                        <div class="mb-2 text-start">
-                            <span class="fw-bold">{{ $item->nombre_campo }}</span><br>
-                            <span>{{ $item->informacion_campo }}</span>
+
+                        <div class="col-6 border text-start  p-2 my-2">
+                            
+                            <div class=" ">
+                                <span class="">{{ $item->nombre_campo }}</span>
+                                <br>
+                                <div class="badge badge-secondary  fw-bold border shadow-sm fs-6">                                  
+                                    {{ $item->informacion_campo }}
+                                </div>
+                            </div>
+
                         </div>
+
                     @endif
 
                 @endforeach
+
+
+                </div>
             </div>
         </div>
     </div>
@@ -228,8 +255,7 @@ use Carbon\Carbon;
 @endforelse
 
 
-                
-
+                </div>
 
             </div>
         </div>
@@ -239,7 +265,7 @@ use Carbon\Carbon;
 
 
 <div class="modal fade" id="llenado_indicadores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-xl modal-fullscreen-md-down">
+    <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header bg-primary py-4">
                 <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
@@ -250,7 +276,7 @@ use Carbon\Carbon;
                 <form id="formulario_llenado_indicadores" method="POST" action="{{route('llenado.informacion.indicadores', $indicador->id)}}" class="row gap-4 p-2 justify-content-center">
                     @csrf
                     @forelse ($campos_vacios as $campo_vacio)
-                        <div class="col-11  col-sm-11 col-md-4 col-lg-5 text-start border border-4 mb-4 p-3 shadow-sm campos_vacios">
+                        <div class="col-11  col-sm-11 col-md-4 col-lg-3  text-start border border-4 mb-4 p-3 shadow-sm campos_vacios ">
                             <div class="row justify-content-center">
                                 <div class="col-12">
                                     <label for="" class="fw-bold">{{$campo_vacio->nombre}}</label>
@@ -310,7 +336,7 @@ use Carbon\Carbon;
 </div>
 
 <div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog  modal-xl">
+    <div class="modal-dialog  modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-4">
                 <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
@@ -422,88 +448,227 @@ use Carbon\Carbon;
 
 
 @section('scripts')
+
+{{-- <script>
+    // VEINTIUNICA GRAFICA.
+    // ESTO VIENE DINÁMICO DESDE LARAVEL
+    const datos = @json($graficar);
+
+    // Meses en español
+    const mesesES = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+
+    // Separar FINAL y REFERENCIA
+    const datosFinal = datos.filter(item => item.final === 'on');
+    const datosReferencia = datos.filter(item => item.referencia === 'on');
+
+    // Labels (usamos los finales)
+    const labels = datosFinal.map(item => {
+        const fecha = new Date(item.created_at);
+        fecha.setMonth(fecha.getMonth() - 1);
+        return mesesES[fecha.getMonth()];
+    });
+
+    // Valores
+    const valores = datosFinal.map(item => parseFloat(item.informacion_campo));
+    const valoresReferencia = datosReferencia.map(item => parseFloat(item.informacion_campo));
+
+    // Niveles dinámicos
+    const MINIMO = {{$meta_minima_general}};
+    const MAXIMO = {{$meta_maxima_general}};
+
+    const ctx = document.getElementById('grafico').getContext('2d');
+
+    new Chart(ctx, {
+        data: {
+            labels: labels,
+            datasets: [
+
+                // BARRAS (FINAL)
+                {
+                    type: "bar",
+                    label: "Cumplimiento del Indicador",
+                    data: valores,
+                    backgroundColor: function (context) {
+                        const value = context.raw;
+                        return value < MINIMO
+                            ? "rgba(255, 99, 132, 0.7)"
+                            : "rgba(75, 192, 75, 0.7)";
+                    },
+                    borderColor: function (context) {
+                        const value = context.raw;
+                        return value < MINIMO ? "red" : "green";
+                    },
+                    borderWidth: 1
+                },
+
+                // LINEA DE REFERENCIA
+                {
+                    type: "line",
+                    label: "Referencia",
+                    data: valoresReferencia,
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 5
+                },
+
+                // Línea de nivel mínimo
+                {
+                    type: "line",
+                    label: "Nivel mínimo",
+                    data: valores.map(() => MINIMO),
+                    borderColor: "red",
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                },
+
+                // Línea de nivel máximo
+                {
+                    type: "line",
+                    label: "Nivel máximo",
+                    data: valores.map(() => MAXIMO),
+                    borderColor: "green",
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "top"
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script> --}}
+
+
 <script>
+    const datos = @json($graficar);
 
-// ESTO VIENE DINÁMICO DESDE LARAVEL
-const datos = @json($graficar);
+    const mesesES = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
 
+    // FINAL
+    const datosFinal = datos.filter(d => d.final === 'on');
 
-// Meses en español
-const mesesES = [
-  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-];
+    // REFERENCIA
+    const datosReferencia = datos.filter(d => d.referencia === 'on');
 
-// Labels: sacamos el mes del created_at
-const labels = datos.map(item => {
-    const fecha = new Date(item.created_at);
-    fecha.setMonth(fecha.getMonth() -1)
-    return mesesES[fecha.getMonth()];
-});
+    // Labels desde FINAL
+    const labels = datosFinal.map(item => {
+        const fecha = new Date(item.created_at);
+        fecha.setMonth(fecha.getMonth() - 1);
+        return mesesES[fecha.getMonth()];
+    });
 
-// Valores: costo por tonelada
-const valores = datos.map(item => parseFloat(item.informacion_campo));
+    // Valores FINAL
+    const valores = datosFinal.map(item =>
+        parseFloat(item.informacion_campo)
+    );
 
-// Niveles dinámicos (puedes modificar)
-const MINIMO = {{$meta_minima_general}};
-const MAXIMO = {{$meta_maxima_general}};
+    // REFERENCIA alineada por id_movimiento
+    const valoresReferencia = datosFinal.map(finalItem => {
+        const ref = datosReferencia.find(r =>
+            r.id_movimiento === finalItem.id_movimiento
+        );
 
-const ctx = document.getElementById('grafico').getContext('2d');
+        return ref ? parseFloat(ref.informacion_campo) : null;
+    });
 
-new Chart(ctx, {
-  data: {
-    labels: labels,
-    datasets: [
-      {
-        type: "bar",
-        label: "Cumplimiento del Indicador",
-        data: valores,
+    const MINIMO = {{$meta_minima_general}};
+    const MAXIMO = {{$meta_maxima_general}};
 
-        backgroundColor: function(context) {
-          const value = context.raw;
-          return value < MINIMO
-            ? "rgba(255, 99, 132, 0.7)" // rojo
-            : "rgba(75, 192, 75, 0.7)"; // verde
+    const ctx = document.getElementById('grafico').getContext('2d');
+
+    new Chart(ctx, {
+        data: {
+            labels: labels,
+            datasets: [
+
+                {
+                    type: "bar",
+                    label: "Cumplimiento del Indicador",
+                    data: valores,
+                    backgroundColor: function (context) {
+                        const value = context.raw;
+                        return value < MINIMO
+                            ? "rgba(255, 99, 132, 0.7)"
+                            : "rgba(75, 192, 75, 0.7)";
+                    },
+                    borderColor: function (context) {
+                        const value = context.raw;
+                        return value < MINIMO ? "red" : "green";
+                    },
+                    borderWidth: 1
+                },
+
+                // 🔥 REFERENCIA (AHORA SÍ FUNCIONA)
+                {
+                    type: "line",
+                    label: "Referencia",
+                    data: valoresReferencia,
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.3,
+                    spanGaps: true,
+                    pointRadius: 5
+                },
+
+                {
+                    type: "line",
+                    label: "Nivel mínimo",
+                    data: valores.map(() => MINIMO),
+                    borderColor: "red",
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                },
+
+                {
+                    type: "line",
+                    label: "Nivel máximo",
+                    data: valores.map(() => MAXIMO),
+                    borderColor: "green",
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                }
+            ]
         },
-        borderColor: function(context) {
-          const value = context.raw;
-          return value < MINIMO ? "red" : "green";
-        },
-        borderWidth: 1
-      },
-
-      // Línea de nivel mínimo
-      {
-        type: "line",
-        label: "Nivel mínimo",
-        data: valores.map(() => MINIMO),
-        borderColor: "red",
-        borderWidth: 2,
-        fill: false
-      },
-
-      // Línea de nivel máximo
-      {
-        type: "line",
-        label: "Nivel máximo",
-        data: valores.map(() => MAXIMO),
-        borderColor: "green",
-        borderWidth: 2,
-        fill: false
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: "top" }
-    },
-    scales: {
-      y: { beginAtZero: true }
-    }
-  }
-});
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: "top" }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
 </script>
+
+
+
+
+
+
 
 
 

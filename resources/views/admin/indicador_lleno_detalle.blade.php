@@ -179,11 +179,10 @@
 </form>
 
 
-
-    <div class=" card row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-4">
+<div class=" row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-4">
         <div  class="col-11 mx-2 px-5 py-3 pb-5">
             
-            <div class="row justify-content-center">
+<div class="row justify-content-center">
                                 
 @forelse($grupos as $movimiento => $items)
 
@@ -204,7 +203,11 @@
         $year  = $fecha->format('Y');
     @endphp
 
-    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-4">
+
+
+
+
+    <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 mt-4 ">
         <div class="card shadow-sm border-0 h-100">
 
             {{-- HEADER --}}
@@ -235,6 +238,9 @@
                 <hr>
 
                 {{-- ITEMS --}}
+                <div class="row justify-content-center">
+
+             
                 @foreach($items as $item)
 
                     {{-- RESULTADO FINAL --}}
@@ -243,7 +249,7 @@
                             $cumple = $item->informacion_campo >= $meta_minima;
                         @endphp
 
-                        <div class="border border-2 rounded text-center py-3 mb-3
+                        <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
                             {{ $cumple ? 'border-success' : 'border-danger' }}">
                             
                             <h6 class="fw-bold mb-1">
@@ -254,7 +260,10 @@
                             <h4 class="fw-bold mb-0">
                                 {{ $item->informacion_campo }}
                             </h4>
+
                         </div>
+
+
                     @endif
 
                     {{-- COMENTARIO --}}
@@ -294,13 +303,23 @@
 
                     {{-- NORMAL --}}
                     @if(is_null($item->final))
-                        <div class="mb-2 text-start">
-                            <span class="fw-bold">{{ $item->nombre_campo }}</span><br>
-                            <span>{{ $item->informacion_campo }}</span>
+                        <div class="col-6 border text-start  p-2 my-2">
+                            
+                            <div class=" ">
+                                <span class="">{{ $item->nombre_campo }}</span>
+                                <br>
+                                <div class="badge badge-secondary  fw-bold border shadow-sm fs-6">                                  
+                                    {{ $item->informacion_campo }}
+                                </div>
+                            </div>
+
                         </div>
                     @endif
 
                 @endforeach
+
+
+                </div>
             </div>
         </div>
     </div>

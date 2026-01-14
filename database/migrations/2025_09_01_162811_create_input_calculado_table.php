@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('tipo');
             $table->string('operacion');
             $table->string('resultado_final')->nullable();
+            $table->string('referencia')->nullable();
 
             $table->unsignedBigInteger('id_indicador');
             $table->foreign('id_indicador')

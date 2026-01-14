@@ -117,9 +117,22 @@
 <div class="fab-container">
 
   <!-- BOTÓN PRINCIPAL -->
-  <button class="fab-main zoom" id="fabToggle">
-    <i class="fa fa-plus"></i>
-  </button>
+  @if (count($campo_final))
+
+    <button class="fab-main zoom"   onclick="toastr.error('Ya se cerro este indicador', '¡Atención!')">
+        <i class="fa fa-plus"></i>
+    </button>
+      
+  @else
+     <button class="fab-main zoom" id="fabToggle" >
+        <i class="fa fa-plus"></i>
+    </button>
+  @endif
+
+
+
+
+
 
   <!-- BOTONES HIJOS -->
   <div class="fab-actions">
@@ -188,9 +201,16 @@
                 Campos del Indicador
             </h4>
 
-            <span class="badge bg-primary rounded-pill px-3 py-2">
-                {{ $campos_unidos->count() }} Campos
-            </span>
+            <div>
+
+                <span class="badge bg-primary rounded-pill px-3 py-2">
+                    {{ $campos_unidos->count() }} Campos
+                </span>
+                <span class="badge bg-info rounded-pill px-3 py-2">
+                    {{ $campo_referencia->count() }} Referencias
+                </span>
+            </div>
+        
         </div>
 
         <div class="card-body px-4 pb-4">
@@ -334,12 +354,17 @@
                     <div class="btn-group shadow-0 gap-3 d-flex align-item-center">
 
                         <div class="form-check form-switch mt-3">
-                            <input   class="form-check-input" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final">
-                            <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final">
-                                Campo Final
+                            <input   class="form-check-input" form="promedio_container" type="checkbox" name="referencia" id="referencia_promedio">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="referencia_promedio">
+                                Referencia
                             </label>
                         </div>
-
+                        <div class="form-check form-switch mt-3">
+                            <input   class="form-check-input" form="promedio_container" type="checkbox" name="resultado_final" id="resultado_final_promedio">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_promedio">
+                                Para Graficar
+                            </label>
+                        </div>
 
                         <button  class="btn btn-primary" form="promedio_container" > {{-- id="crear_campo_promedio" --}}
                             Crear Campo Promedio
@@ -353,6 +378,7 @@
         </div>
     </div>
 </div>
+
 
 
 
@@ -415,6 +441,13 @@
                             <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_multiplicacion">
                             <input   class="form-check-input" form="multiplicacion_container" type="checkbox" name="resultado_final" id="resultado_final_multiplicacion">
                                 Campo Final
+                            </label>
+                        </div>
+                
+                        <div class="form-check form-switch mt-3">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_referencia">
+                            <input   class="form-check-input" form="multiplicacion_container" type="checkbox" name="referencia" id="resultado_final_referencia">
+                                Referencia
                             </label>
                         </div>
 
@@ -499,6 +532,13 @@
                             <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_suma">
                             <input   class="form-check-input" form="suma_container" type="checkbox" name="resultado_final" id="resultado_final_suma">
                                 Campo Final
+                            </label>
+                        </div>
+
+                        <div class="form-check form-switch mt-3">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="referencia_suma">
+                            <input   class="form-check-input" form="suma_container" type="checkbox" name="referencia" id="referencia_suma">
+                                Referencia
                             </label>
                         </div>
 
@@ -597,6 +637,13 @@
                             </label>
                         </div>
 
+                        <div class="form-check form-switch mt-3">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="referencia_division">
+                            <input   class="form-check-input" form="division_container" type="checkbox" name="referencia" id="referencia_division">
+                               Referencia
+                            </label>
+                        </div>
+
 
                         <button  class="btn btn-info" form="division_container">
                             Crear Campo Promedio
@@ -682,6 +729,13 @@
                             <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_resta">
                             <input   class="form-check-input" form="resta_container" type="checkbox" name="resultado_final" id="resultado_final_resta">
                                 Campo Final
+                            </label>
+                        </div>
+
+                        <div class="form-check form-switch mt-3">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="referencia_resta">
+                            <input   class="form-check-input" form="resta_container" type="checkbox" name="referencia" id="referencia_resta">
+                                Referencia
                             </label>
                         </div>
 
@@ -776,6 +830,13 @@
                             <label class="form-check-label fw-bold text-primary ms-2" for="resultado_final_porcentaje">
                             <input   class="form-check-input" form="porcentaje_container" type="checkbox" name="resultado_final" id="resultado_final_porcentaje">
                                 Campo Final
+                            </label>
+                        </div>
+
+                        <div class="form-check form-switch mt-3">
+                            <label class="form-check-label fw-bold text-primary ms-2" for="referencia_porcentaje">
+                            <input   class="form-check-input" form="porcentaje_container" type="checkbox" name="referencia" id="referencia_porcentaje">
+                                Referencia
                             </label>
                         </div>
 
