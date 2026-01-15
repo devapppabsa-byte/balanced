@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Models\Departamento;
 use App\Models\LogBalanced;
@@ -166,10 +167,12 @@ class adminController extends Controller
 
 
         $request->validate([
-
-            'nombre_departamento' => 'required |unique:departamentos,nombre',
-            'planta' =>'required'
-
+            'nombre_departamento' => [
+                'required',
+                Rule::unique('departamentos', 'nombre')
+                    ->where('planta', $request->planta),
+            ],
+            'planta' => 'required',
         ]);
 
 

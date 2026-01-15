@@ -238,7 +238,7 @@
                 <hr>
 
                 {{-- ITEMS --}}
-                <div class="row justify-content-center">
+                <div class="row justify-content-center indicador-container">
 
              
                 @foreach($items as $item)

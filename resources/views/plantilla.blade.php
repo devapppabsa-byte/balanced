@@ -212,5 +212,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+<!-- PARA QUE SE MUESTRE PRTIERO LA PARTE DE ABAJO LOS INDICADORES -->
+<script>
+    if(document.querySelector('.indicador-container')){
+
+            document.querySelectorAll('.indicador-container').forEach(contenedor => {
+            contenedor.scrollTop = contenedor.scrollHeight;
+            });
+
+
+    }
+
+</script>
+
 </body>
 </html>
