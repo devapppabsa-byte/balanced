@@ -57,17 +57,17 @@
     </div>
 
     @include('admin.assets.nav')
-
     @if ($ponderacion != 100)
-        <div class="row bg-danger py-2">
-            <div class="col-12 text-white pt-2">
-                <h5>    
-                    <i class="fa fa-exclamation-circle text-white"></i>
-                    La suma de la ponderación de los indicadores es: <b class="bg-white text-danger rounded-pill p-1">%{{$ponderacion}}</b>
-                </h5>
+        <div class="row"  style="background-color: rgb(199, 53, 53)">
+            <div class="col-12 text-white ">
+                <span>    
+                    <i class="fa fa-warning text-white"></i>
+                    La suma de la ponderación de los indicadores es: <b class="badge badge-warning text-danger rounded-pill ">%{{$ponderacion}}</b>
+                </span>
             </div>
         </div>
     @endif
+
 
 </div>
 
