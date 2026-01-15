@@ -4,7 +4,7 @@
 @section('contenido')
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center">
-        <div class="col-auto pt-2 text-white">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-10  pt-2 text-white">
             <h3 class="mt-1 league-spartan">Encuestas para los clientes</h3>
             @if (session('success'))
                 <div class="text-white fw-bold">
@@ -36,6 +36,15 @@
                     {{$errors->first()}}
                 </div>
             @endif
+        </div>
+        <div class="col-12 cl-sm-12 col-md-6 col-lg-2 text-center ">
+            <form action="{{route('cerrar.session')}}" method="POST">
+                @csrf 
+                <button  class="btn btn-primary text-danger text-white fw-bold">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    Cerrar Sesión
+                </button>
+            </form>
         </div>
     </div>
     @include('admin.assets.nav')
