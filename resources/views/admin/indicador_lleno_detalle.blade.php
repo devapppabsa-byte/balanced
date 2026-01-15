@@ -93,6 +93,7 @@
                             <div class="col-5 col-sm-5 col-md-5 col-lg-auto  text-center  bg-white   pt-2 rounded shadow-sm">
                                 <h5 class="fw-bold">{{$campo_lleno->nombre}}</h5>
 
+
                                 <h5  class="">
                                     @php
                                         $last_info = InformacionInputPrecargado::where('id_input_precargado', $campo_lleno->id)->latest()->first();
@@ -199,11 +200,12 @@
         // Fecha
         Carbon::setLocale('es');
         $fecha = Carbon::parse(explode('-', $movimiento)[0])->subMonth();
-        $mes   = ucfirst($fecha->translatedFormat('F'));
-        $year  = $fecha->format('Y');
+        //$mes   = ucfirst($fecha->translatedFormat('F'));
+    
+        $mes = ucfirst($items[0]->created_at->translatedFormat('F'));
+        $year  = ucfirst($items[0]->created_at->translatedFormat('Y'));
+
     @endphp
-
-
 
 
 
@@ -220,7 +222,7 @@
 
             {{-- METAS --}}
             <div class="card-body text-center">
-                <div class="row mb-3">
+                <div class="row p-0">
                     <div class="col-6">
                         <span class="badge bg-danger-subtle text-danger p-2 w-100">
                             <i class="fa-solid fa-arrow-down"></i>
@@ -303,12 +305,14 @@
 
                     {{-- NORMAL --}}
                     @if(is_null($item->final))
-                        <div class="col-6 border text-start  p-2 my-2">
+
+
+                        <div class="col-6  text-start  p-2 my-2 border">
                             
                             <div class=" ">
-                                <span class="">{{ $item->nombre_campo }}</span>
+                                <small class="">{{ $item->nombre_campo }}</small>
                                 <br>
-                                <div class="badge badge-secondary  fw-bold border shadow-sm fs-6">                                  
+                                <div class="badge badge-secondary  fw-bold border shadow-sm fs-5">                                  
                                     {{ $item->informacion_campo }}
                                 </div>
                             </div>
@@ -402,6 +406,11 @@
 </div>
 
 
+
+
+
+
+
 </div>
 
 
@@ -416,7 +425,7 @@
 @section('scripts')
 
 {{-- Grafico de Pie --}}
-<script>
+{{-- <script>
 
 // ESTO VIENE DINÁMICO DESDE LARAVEL
 const datos = @json($graficar);
@@ -431,7 +440,7 @@ const mesesES = [
 // Labels: sacamos el mes del created_at
 const labels = datos.map(item => {
     const fecha = new Date(item.created_at);
-    fecha.setMonth(fecha.getMonth() -1)
+    fecha.setMonth(fecha.getMonth())
     return mesesES[fecha.getMonth()];
 });
 
@@ -497,9 +506,115 @@ new Chart(ctx, {
     }
   }
 });
+</script> --}}
+
+<script>
+    const datos = @json($graficar);
+
+    const mesesES = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+
+    // FINAL
+    const datosFinal = datos.filter(d => d.final === 'on');
+
+    // REFERENCIA
+    const datosReferencia = datos.filter(d => d.referencia === 'on');
+
+    // Labels desde FINAL
+    const labels = datosFinal.map(item => {
+        const fecha = new Date(item.created_at);
+        fecha.setMonth(fecha.getMonth());
+        return mesesES[fecha.getMonth()];
+    });
+
+    // Valores FINAL
+    const valores = datosFinal.map(item =>
+        parseFloat(item.informacion_campo)
+    );
+
+    // REFERENCIA alineada por id_movimiento
+    const valoresReferencia = datosFinal.map(finalItem => {
+        const ref = datosReferencia.find(r =>
+            r.id_movimiento === finalItem.id_movimiento
+        );
+
+        return ref ? parseFloat(ref.informacion_campo) : null;
+    });
+
+    const MINIMO = {{$indicador->meta_minima}};
+    const MAXIMO = {{$indicador->meta_esperada}};
+
+    const ctx = document.getElementById('grafico').getContext('2d');
+
+    new Chart(ctx, {
+        data: {
+            labels: labels,
+            datasets: [
+
+                {
+                    type: "bar",
+                    label: "Cumplimiento del Indicador",
+                    data: valores,
+                    backgroundColor: function (context) {
+                        const value = context.raw;
+                        return value < MINIMO
+                            ? "rgba(255, 99, 132, 0.7)"
+                            : "rgba(75, 192, 75, 0.7)";
+                    },
+                    borderColor: function (context) {
+                        const value = context.raw;
+                        return value < MINIMO ? "red" : "green";
+                    },
+                    borderWidth: 1
+                },
+
+                // 🔥 REFERENCIA (AHORA SÍ FUNCIONA)
+                {
+                    type: "line",
+                    label: "Referencia",
+                    data: valoresReferencia,
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.3,
+                    spanGaps: true,
+                    pointRadius: 5
+                },
+
+                {
+                    type: "line",
+                    label: "Nivel mínimo",
+                    data: valores.map(() => MINIMO),
+                    borderColor: "red",
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                },
+
+                {
+                    type: "line",
+                    label: "Nivel máximo",
+                    data: valores.map(() => MAXIMO),
+                    borderColor: "green",
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: "top" }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
 </script>
-
-
 
 
 

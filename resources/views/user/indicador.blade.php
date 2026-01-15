@@ -121,8 +121,8 @@ use Carbon\Carbon;
         // Fecha
         Carbon::setLocale('es');
         $fecha = Carbon::parse(explode('-', $movimiento)[0])->subMonth();
-        $mes   = ucfirst($fecha->translatedFormat('F'));
-        $year  = $fecha->format('Y');
+        $mes = ucfirst($items[0]->created_at->translatedFormat('F'));
+        $year  = ucfirst($items[0]->created_at->translatedFormat('Y'));
     @endphp
 
 
@@ -573,7 +573,7 @@ use Carbon\Carbon;
     // Labels desde FINAL
     const labels = datosFinal.map(item => {
         const fecha = new Date(item.created_at);
-        fecha.setMonth(fecha.getMonth() - 1);
+        fecha.setMonth(fecha.getMonth());
         return mesesES[fecha.getMonth()];
     });
 

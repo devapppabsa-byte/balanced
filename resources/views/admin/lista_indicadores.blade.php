@@ -277,6 +277,7 @@
           <i class="fa fa-chart-simple"></i>
           Cumplimiento General {{ $departamento->nombre }}
         </h5>
+        <small>Tomando en cuenta las ponderaciones</small>
         <button type="button" class="btn-close" data-mdb-dismiss="modal"></button>
       </div>
 

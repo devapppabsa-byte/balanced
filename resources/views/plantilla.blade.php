@@ -62,12 +62,12 @@
 
 
     <script>
-    flatpickr(".datepicker", {
-        locale: "es",
-        dateFormat: "Y-m-d",
-        altInput: true,
-        altFormat: "d F Y",
-    });
+        flatpickr(".datepicker", {
+            locale: "es",
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d F Y",
+        });
     </script>
 
     @yield('scripts')

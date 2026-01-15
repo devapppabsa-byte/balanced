@@ -1238,7 +1238,6 @@ $encuestas = DB::table('encuestas as e')
 public function indicador_lleno_show_admin(Indicador $indicador){
 
 
-
     //fehcas de filtrado, si request->fecha_inicio trae algo lo pone en la variable inicio si no deja aa inicio como el inicio del año.
     //se convirtieron las fechas a UTC para que coincidieran con el registro de busqueda.
     $inicio = request()->filled('fecha_inicio')
@@ -1264,11 +1263,15 @@ public function indicador_lleno_show_admin(Indicador $indicador){
         //  $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
         //                    ->where('final', 'on')->get();
 
-     $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
-                ->where('final', 'on')
-                ->whereBetween('created_at', [$inicio, $fin])
-                ->orderBy('created_at')
-                ->get();
+
+    $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->where(function ($q) {
+            $q->where('final', 'on')
+            ->orWhere('referencia', 'on');
+        })
+        ->orderBy('created_at')
+        ->get();
+
 
 
     //para graficar os datos del indicaor
@@ -1308,7 +1311,6 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
 
     $nombre_usuario = auth()->user()->name;
-    $planta_usuario = auth()->user()->planta;
     $year = Carbon::now()->year;
     $mes = Carbon::now()->subMonth()->translatedFormat('F');
     //$id_movimiento = (string) Str::ulid();

@@ -134,10 +134,10 @@
             </div>
 
             <!-- Tabs Content (oculto inicialmente para JS) -->
-            <div class="tab-content d-none" id="ex1-content">
+            <div class="tab-content " id="ex1-content">
                 
                 <!-- Usuarios Tab -->
-                <div class="tab-pane fade" 
+                <div class="tab-pane fade show active" 
                      id="ex1-tabs-1" 
                      role="tabpanel" 
                      aria-labelledby="ex1-tab-1">
