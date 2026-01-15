@@ -259,3 +259,19 @@ body{
 .bg-purple {
   background: #6f42c1;
 }
+
+
+
+.nav-tabs .nav-link.active {
+    background-color: var(--mdb-primary) !important;
+    color: #fff !important;
+    border-color: var(--mdb-primary) !important;
+}
+
+.nav-tabs .nav-link {
+    color: var(--mdb-primary);
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--mdb-primary);
+}

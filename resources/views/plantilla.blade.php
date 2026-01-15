@@ -31,13 +31,13 @@
 
 </head>
 <body>
-    <div class="container-fluid bg-white">
+    {{-- <div class="container-fluid bg-white">
         <div class="row">
             <div class="col-12">
                 <span style="font-size: 10px;"><b>MetricHub </b> by: <a href="https://github.com/resendiz1" target="_blank" class="text-dark fw-bold">Arturo Resendiz López</a> with <i class="fa fa-code text-dark fw-bold"></i> </span>
             </div>
         </div>
-    </div>
+    </div> --}}
     @yield('contenido')
 
 
