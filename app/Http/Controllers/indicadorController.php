@@ -1120,7 +1120,7 @@ $cumplimiento_general = $meses->map(function ($mes) use ($indicadores, $encuesta
 
 
 
-    $indicadores = Indicador::with('indicadorLleno')->where('id_departamento', $departamento->id)->get();
+$indicadores = Indicador::with('indicadorLleno')->where('id_departamento', $departamento->id)->get();
 
     //Este codigo es para sacar el cumplimiento normativo
 
@@ -1188,13 +1188,6 @@ foreach ($normas as $norma) {
         'estatus'         => $estatus,
     ];
 }
-
-
-
-
-
-
-
 
 
 
@@ -1542,7 +1535,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                     IndicadorLleno::create([
 
                         'nombre_campo' => $campo_calculado->nombre,
-                        'informacion_campo' => round($datos[0] / $datos[1], 4),
+                        'informacion_campo' => round($datos[1] / $datos[0], 4),
                         'id_indicador' => $indicador->id,
                         'id_movimiento' => $id_movimiento,
                         'final' => $campo_calculado->resultado_final,
@@ -1559,12 +1552,16 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                     if($campo_calculado->operacion === "porcentaje"){
                         
                        // return $datos;
+                        $porcentaje = ($datos[1] == 0)
+                            ? (($datos[0] == 0) ? 100 : 0)
+                            : round(($datos[0] / $datos[1]) * 100, 4);
+
 
                         InformacionInputCalculado::create([
 
                             'id_input_calculado' => $campo_calculado->id,
                             'tipo' => $campo_involucrado->tipo,
-                            'informacion' => round((($datos[0]/$datos[1])*100), 4),  //(Parte/Total)*100
+                            'informacion' => $porcentaje,  
                             'mes' => $mes,
                             'year' => $year
 
@@ -1575,7 +1572,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                         IndicadorLleno::create([
 
                             'nombre_campo' => $campo_calculado->nombre,
-                            'informacion_campo' => round((($datos[0]/$datos[1])*100), 4),
+                            'informacion_campo' => $porcentaje,
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,

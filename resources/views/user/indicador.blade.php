@@ -17,9 +17,9 @@ use Carbon\Carbon;
 <div class="container-fluid sticky-top">
     <div class="row bg-primary d-flex align-items-center">
 
-        <div class="col-8 col-sm-8 col-md-6 col-lg-9  py-4  py-4 ">
-            <h1 class="text-white"> {{$indicador->nombre}} </h1>
-            <h5 class="text-white fw-bold" id="fecha"></h5>
+        <div class="col-8 col-sm-8 col-md-6 col-lg-9 py-2 ">
+            <h5 class="text-white"> {{$indicador->nombre}} </h5>
+            <h6 class="text-white fw-bold" id="fecha"></h6>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -103,159 +103,149 @@ use Carbon\Carbon;
 
 
 
+<div class="row">
 
- <div class="row ">
-                                
 @forelse($grupos as $movimiento => $items)
 
-    @php
-        // Metas
-        $metas = MetaIndicador::where(
-            'id_movimiento_indicador_lleno',
-            $items->first()->id_movimiento
-        )->first();
+@php
+    $metas = MetaIndicador::where(
+        'id_movimiento_indicador_lleno',
+        $items->first()->id_movimiento
+    )->first();
 
-        $meta_minima = $metas->meta_minima ?? 0;
-        $meta_maxima = $metas->meta_maxima ?? 0;
+    $meta_minima = $metas->meta_minima ?? 0;
+    $meta_maxima = $metas->meta_maxima ?? 0;
 
-        // Fecha
-        Carbon::setLocale('es');
-        $fecha = Carbon::parse(explode('-', $movimiento)[0])->subMonth();
-        $mes = ucfirst($items[0]->created_at->translatedFormat('F'));
-        $year  = ucfirst($items[0]->created_at->translatedFormat('Y'));
-    @endphp
+    Carbon::setLocale('es');
+    $mes  = ucfirst($items[0]->created_at->translatedFormat('F'));
+    $year = ucfirst($items[0]->created_at->translatedFormat('Y'));
+@endphp
 
+<div class="col-12 col-lg-4 mt-3">
+    <div class="card shadow-sm border-0 h-100">
 
+        <!-- HEADER -->
+        <div class="card-header bg-info text-white text-center py-2">
+            <h6 class="fw-semibold mb-0">
+                <i class="fa-solid fa-calendar-days me-1"></i>
+                {{ $mes }} {{ $year }}
+            </h6>
+        </div>
 
+        <div class="card-body py-3">
 
-
-    <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 mt-4 ">
-        <div class="card shadow-sm border-0 h-100">
-
-            {{-- HEADER --}}
-            <div class="card-header bg-info text-white text-center py-3">
-                <h5 class="fw-bold mb-0">
-                    <i class="fa-solid fa-calendar-days me-1"></i>
-                    {{ $mes }} - {{ $year }}
-                </h5>
+            <!-- METAS -->
+            <div class="row g-2 mb-2 text-center">
+                <div class="col-6">
+                    <span class="badge bg-danger-subtle text-danger w-100 py-1">
+                        <i class="fa-solid fa-arrow-down"></i>
+                        <small>Mín: {{ $meta_minima }}</small>
+                    </span>
+                </div>
+                <div class="col-6">
+                    <span class="badge bg-success-subtle text-success w-100 py-1">
+                        <i class="fa-solid fa-arrow-up"></i>
+                        <small>Máx: {{ $meta_maxima }}</small>
+                    </span>
+                </div>
             </div>
 
-            {{-- METAS --}}
-            <div class="card-body text-center ">
-                <div class="row mb-3">
-                    <div class="col-6">
-                        <span class="badge bg-danger-subtle text-danger p-2 w-100">
-                            <i class="fa-solid fa-arrow-down"></i>
-                            Mínima: {{ $meta_minima }}
-                        </span>
-                    </div>
-                    <div class="col-6">
-                        <span class="badge bg-success-subtle text-success p-2 w-100">
-                            <i class="fa-solid fa-arrow-up"></i>
-                            Máxima: {{ $meta_maxima }}
-                        </span>
-                    </div>
-                </div>
+            <hr class="my-2">
 
-                <hr>
+            <!-- ITEMS -->
+            <div class="row g-2 justify-content-center">
 
-                {{-- ITEMS --}}
-                <div class="row justify-content-center indicador-container">
+            @foreach($items as $item)
 
-             
-                @foreach($items as $item)
+                <!-- RESULTADO FINAL -->
+                @if($item->final === 'on')
+                    @php $cumple = $item->informacion_campo >= $meta_minima; @endphp
 
-                    {{-- RESULTADO FINAL --}}
-                    @if($item->final === 'on')
-                        @php
-                            $cumple = $item->informacion_campo >= $meta_minima;
-                        @endphp
-
-                        <div class=" col-8  border border-2 rounded text-center py-3 my-4
+                    <div class="col-6 col-md-4">
+                        <div class="border rounded text-center py-2
                             {{ $cumple ? 'border-success' : 'border-danger' }}">
-                            
-                            <h6 class="fw-bold mb-1">
+
+                            <small class="fw-semibold d-block text-truncate">
                                 <i class="fa-solid {{ $cumple ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger' }}"></i>
                                 {{ $item->nombre_campo }}
-                            </h6>
+                            </small>
 
-                            <h4 class="fw-bold mb-0">
+                            <div class="fs-6 fw-bold">
                                 {{ $item->informacion_campo }}
-                            </h4>
-
+                            </div>
                         </div>
+                    </div>
+                @endif
 
-
-                    @endif
-
-                    {{-- COMENTARIO --}}
-                    @if($item->final === 'comentario')
-                        <button class="btn btn-outline-secondary btn-sm mb-2"
+                <!-- COMENTARIO -->
+                @if($item->final === 'comentario')
+                    <div class="col-12">
+                        <button class="btn btn-outline-secondary btn-sm py-1 px-2"
                                 data-mdb-modal-init
                                 data-mdb-target="#com{{ $item->id }}">
                             <i class="fa fa-comment"></i> Comentario
                         </button>
+                    </div>
 
-                        <div class="modal fade" id="com{{ $item->id }}" tabindex="-1">
-                            <div class="modal-dialog modal-lg modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title">{{ $indicador->nombre }}</h5>
-                                        <button class="btn-close" data-mdb-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p class="fs-5">{{ $item->informacion_campo }}</p>
-                                    </div>
+                    <div class="modal fade" id="com{{ $item->id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white py-2">
+                                    <h6 class="modal-title">{{ $indicador->nombre }}</h6>
+                                    <button class="btn-close" data-mdb-dismiss="modal"></button>
                                 </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    {{-- REGISTRO --}}
-                    @if($item->final === 'registro')
-                        <div class="bg-light border rounded p-2 mb-2 text-start">
-                            <small class="fw-bold">{{ $item->nombre_campo }}</small><br>
-                            <small>
-                                <b>{{ $item->informacion_campo }}</b> —
-                                {{ $item->created_at->translatedFormat('d F Y') }}
-                                {{ $item->created_at->format('H:i') }}
-                            </small>
-                        </div>
-                    @endif
-
-                    {{-- NORMAL --}}
-                    @if(is_null($item->final))
-
-                        <div class="col-6 border text-start  p-2 my-2">
-                            
-                            <div class=" ">
-                                <span class="">{{ $item->nombre_campo }}</span>
-                                <br>
-                                <div class="badge badge-secondary  fw-bold border shadow-sm fs-6">                                  
+                                <div class="modal-body small">
                                     {{ $item->informacion_campo }}
                                 </div>
                             </div>
-
                         </div>
+                    </div>
+                @endif
 
-                    @endif
+                <!-- REGISTRO -->
+                @if($item->final === 'registro')
+                    <div class="col-12">
+                        <div class="bg-light border rounded p-2 small">
+                            <div class="fw-semibold">{{ $item->nombre_campo }}</div>
+                            <div class="text-muted">
+                                {{ $item->informacion_campo }} ·
+                                {{ $item->created_at->translatedFormat('d M Y H:i') }}
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
-                @endforeach
+                <!-- NORMAL -->
+                @if(is_null($item->final))
+                    <div class="col-6">
+                        <div class="border rounded p-2 small">
+                            <span class="text-muted">{{ $item->nombre_campo }}</span>
+                            <div class="fw-bold">
+                                {{ $item->informacion_campo }}
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
+            @endforeach
 
-                </div>
             </div>
         </div>
     </div>
+</div>
 
 @empty
-    <div class="col-12 text-center text-muted py-5">
-        <i class="fa-solid fa-circle-info"></i> Sin información disponible
-    </div>
+<div class="col-12 text-center text-muted py-5">
+    <i class="fa-solid fa-circle-info"></i> Sin información disponible
+</div>
 @endforelse
 
+</div>
 
-                </div>
+
+
+
+
 
             </div>
         </div>

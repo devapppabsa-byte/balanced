@@ -274,7 +274,7 @@ Route::get('/perfil_cliente/lista_quejas', [clienteController::class, 'lista_que
 
 Route::get('/perfil_cliente/seguimientos/{queja}', [clienteController::class, 'seguimiento_quejas_cliente'])->name('seguimiento.quejas.cliente')->middleware('auth:cliente');
 
-Route::post('/perfil_cliente/seguimientos/comentando/{queja}', [clienteController::class, 'comentario_user_reclamo'])->name('comentario.user.reclamo')->middleware('auth:cliente');
+Route::post('/perfil_cliente/seguimientos/comentando/{queja}', [clienteController::class, 'comentario_user_reclamo'])->name('comentario.user.reclamo');
 
 
 

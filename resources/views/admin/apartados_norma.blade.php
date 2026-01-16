@@ -181,7 +181,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-primary py-4">
-        <h3 class="text-white" id="exampleModalLabel">Agregar Norma</h3>
+        <h3 class="text-white" id="exampleModalLabel">Agregar Apartado</h3>
         <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body py-4">

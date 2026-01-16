@@ -357,12 +357,12 @@ new Chart(ctxPie, {
         label: 'Satisfacción por mes',
         data: data,
         backgroundColor: [
-          '#ff6384',
-          '#36a2eb',
           '#ffce56',
           '#4bc0c0',
           '#9966ff',
-          '#ff9f40'
+          '#ff9f40',
+          '#fb6384',
+          '#36a2eb',
         ]
       }
     ]

@@ -34,7 +34,7 @@
     <div class="col-auto  zoom_link {{ request()->routeIs('encuesta.clientes.user') ? 'link_selected' : '' }}">
         <a href="{{route("encuesta.clientes.user")}}" class="btn btn-transparent text-white text-decoration-none fw-bold ">
             <i class="fa-solid fa-users mx-1"></i>
-            Encuestas a Clientes
+            Encuestas a Clientes (o evaluacion 360° clima laboral)
         </a>
     </div>
 

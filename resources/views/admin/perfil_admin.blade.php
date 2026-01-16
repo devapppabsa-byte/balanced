@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     label: "Cumplimiento %",
                     data: values,
                     backgroundColor: ctx =>
-                        ctx.raw < 50
+                        ctx.raw < 80
                             ? "rgba(255,99,132,0.7)"
                             : "rgba(75,192,75,0.7)",
                     borderWidth: 1

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('apartado_norma', function (Blueprint $table) {
 
             $table->id();
-            $table->string("apartado");
-            $table->string("descripcion");
+            $table->text("apartado");
+            $table->text("descripcion");
             $table->unsignedBigInteger("id_norma");
             $table->foreign("id_norma")
                   ->references("id")
