@@ -63,7 +63,7 @@
 
     <div class="row justify-content-center">
 
-        @forelse ($departamentos as $departamento)
+        {{-- @forelse ($departamentos as $departamento)
         <div class="col-auto mt-2">
             <div class="card shadow-3 rounded-4 p-3 border" style="max-width: 400px;">
             <div class="card-body p-1">
@@ -71,105 +71,8 @@
 
 
                 <!-- AQUI ESTA LA GRAFICA DEL CUMPLIMIENTO GENERAL-->
-             <canvas id="{{$departamento->id}}" class="" height="200"></canvas> 
+                    <canvas id="{{$departamento->id}}" class="" height="200"></canvas> 
 
-
-
-     {{-- GRAFICOS DE CADA INDICADOR --}}
-
-        {{-- 
-                <div class="mt-3">
-                <p class="fw-bold text-muted mb-2">Indicadores (4)</p>
-
-                <!-- Producto -->
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <div class="d-flex align-items-center">
-
-                        <div class="position-relative me-2">
-
-                            <div class="progress progress-circular " style="--percentage: 72;">
-                                <div class="progress-bar bg-success"></div>
-                                <div class="progress-label"></div>
-                            </div>
-
-                            <span class="position-absolute top-50 start-50 translate-middle small fw-bold text-success">
-                                72%
-                            </span>
-                        </div>
-
-                        <div>
-                            <p class="fw-bold mb-0">Indicador uno</p>
-                            <small class="bg-dark text-white px-2 py-1 rounded-pill">72%</small>
-                        </div>
-                        </div>
-                    </div>
-
-
-
-               <div class="d-flex align-items-center justify-content-between mb-2">
-                        <div class="d-flex align-items-center">
-                        <div class="position-relative me-2">
-
-                            <div class="progress progress-circular " style="--percentage: 23;">
-                                <div class="progress-bar bg-danger"></div>
-                                <div class="progress-label"></div>
-                            </div>
-
-                            <span class="position-absolute top-50 start-50 translate-middle small fw-bold text-danger">23%</span>
-                        </div>
-                        <div>
-                            <p class="fw-bold mb-0">Indicador Dos</p>
-                            <small class="bg-dark text-white px-2 py-1 rounded-pill">23%</small>
-                        </div>
-                        </div>
-                    </div> 
-
-
-
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <div class="d-flex align-items-center">
-                        <div class="position-relative me-2">
-
-                            <div class="progress progress-circular " style="--percentage: 64;">
-                                <div class="progress-bar bg-success"></div>
-                                <div class="progress-label"></div>
-                            </div>
-
-                            <span class="position-absolute top-50 start-50 translate-middle small fw-bold text-succcess">64%</span>
-                        </div>
-                        <div>
-                            <p class="fw-bold mb-0">Inidcador 3</p>
-                            <small class="bg-dark text-white px-2 py-1 rounded-pill">64%</small>
-                        </div>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                        <div class="position-relative me-2">
-
-                            <div class="progress progress-circular " style="--percentage: 64;">
-                                <div class="progress-bar bg-success"></div>
-                                <div class="progress-label"></div>
-                            </div>
-
-                            <span class="position-absolute top-50 start-50 translate-middle small fw-bold text-success">69%</span>
-                        </div>
-                        <div>
-                            <p class="fw-bold mb-0">Indicador 4</p>
-                            <small class="bg-dark text-white px-2 py-1 rounded-pill">69%</small>
-                        </div>
-                        </div>
-                    </div>
-
-
-
-                </div>--}}
-
-            {{-- GRAFICOS DE CADA INDICADOR --}}
                 
                     <div class="text-center mt-4">
                 <a href="{{route('lista.indicadores.admin', $departamento->id)}}" class="btn btn-primary btn-sm rounded-pill">
@@ -193,7 +96,124 @@
                     </h2>
                 </div>
             </div>
-        @endforelse
+        @endforelse --}}
+
+
+
+
+@forelse ($departamentos as $departamento)
+
+<div class="col-auto mt-2">
+    <div class="card shadow-3 rounded-4 p-3 border" style="max-width: 400px;">
+        <div class="card-body p-1">
+
+            <h4 class="text-muted text-uppercase fw-bold">
+                {{$departamento->nombre}}
+            </h4>
+
+            @php
+                $data = $cumplimiento[$departamento->id] ?? collect();
+            @endphp
+
+            @if ($data->isEmpty())
+
+                {{-- EMPTY DEL DEPARTAMENTO --}}
+                <div class="text-center py-4 text-muted">
+                    <img src="{{asset('/img/iconos/empty.png')}}"
+                         class="img-fluid mb-2"
+                         style="max-width: 120px;">
+                    <p class="mb-0 fw-semibold">
+                        Sin datos de cumplimiento
+                    </p>
+                </div>
+
+            @else
+
+                {{-- GRAFICA --}}
+                <canvas id="chart{{$departamento->id}}" height="200"></canvas>
+
+            @endif
+
+            <div class="text-center mt-4">
+                <a href="{{route('lista.indicadores.admin', $departamento->id)}}"
+                   class="btn btn-primary btn-sm rounded-pill">
+                    Ver todo <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@if ($data->isNotEmpty())
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const rawData = @json($cumplimiento[$departamento->id]);
+
+    const labels = rawData.map(i => mesEnEspanol(i.mes));
+    const values = rawData.map(i => i.cumplimiento_total);
+
+    const canvas = document.getElementById("chart{{$departamento->id}}");
+    if (!canvas) return;
+
+    new Chart(canvas.getContext("2d"), {
+        data: {
+            labels,
+            datasets: [
+                {
+                    type: "bar",
+                    label: "Cumplimiento %",
+                    data: values,
+                    backgroundColor: ctx =>
+                        ctx.raw < 50
+                            ? "rgba(255,99,132,0.7)"
+                            : "rgba(75,192,75,0.7)",
+                    borderWidth: 1
+                },
+                {
+                    type: "line",
+                    label: "Mínimo",
+                    data: labels.map(() => 50),
+                    borderColor: "red",
+                    borderWidth: 2
+                },
+                {
+                    type: "line",
+                    label: "Máximo",
+                    data: labels.map(() => 100),
+                    borderColor: "green",
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+});
+</script>
+@endif
+
+@empty
+<div class="col-12 text-center py-5">
+    <h4>No hay departamentos</h4>
+</div>
+@endforelse
+
+
+
+
+
+
+
+
 
 
     </div>
@@ -216,73 +236,25 @@
 
 @section('scripts')
 
-@forelse ($departamentos as $departamento)
+
 
 
 <script>
+function mesEnEspanol(yyyyMM) {
+    const [year, month] = yyyyMM.split("-");
+    const fecha = new Date(year, month - 1);
 
-const ctx{{$departamento->id}} = document.getElementById({{$departamento->id}});
+    return fecha.toLocaleDateString("es-MX", {
+        month: "long",
+        year: "numeric"
+    }).replace(/^\w/, c => c.toUpperCase());
+}
 
-new Chart(ctx{{$departamento->id}}, {
-  data: {
-    labels: ["Enero", "Febrero", "Marzo", "Abril"],
-    datasets: [
-      {
-        type: "bar",  // Barras
-        label: "Ventas",
-        data: [30, 50, 40, 60],
-
-        backgroundColor: function(context) {
-          const value = context.raw;
-          return value < 50
-            ? "rgba(255, 99, 132, 0.7)"  // rojo
-            : "rgba(75, 192, 75, 0.7)";  // verde
-        },
-        borderColor: function(context) {
-          const value = context.raw;
-          return value < 50 ? "red" : "green";
-        },
-
-        borderWidth: 1
-      },
-      {
-        type: "line", // Línea sobrepuesta
-        label: "Mínimo",
-        data: [50, 50, 50, 50],
-        borderColor: "red",
-        borderWidth: 2,
-        fill: false
-      },
-      {
-        type: "line", // Línea sobrepuesta
-        label: "Máximo",
-        data: [100, 100, 100, 100],
-        borderColor: "green",
-        borderWidth: 2,
-        fill: false
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: "top" }
-    },
-    scales: {
-      y: { beginAtZero: true }
-    }
-  }
-});
 </script>
 
 
 
 
-
-
-@empty
-    
-@endforelse
 
 
 <script>

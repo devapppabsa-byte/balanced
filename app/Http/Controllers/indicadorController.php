@@ -1449,7 +1449,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                 }
 
 
-               //return $datos;
+               
 
 
 
@@ -1531,7 +1531,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
                         'id_input_calculado' => $campo_calculado->id,
                         'tipo' => $campo_involucrado->tipo,
-                        'informacion' => round($datos[0] / $datos[1], 4),
+                        'informacion' => round($datos[1] / $datos[0], 4),
                         'mes' => $mes,
                         'year' => $year
 

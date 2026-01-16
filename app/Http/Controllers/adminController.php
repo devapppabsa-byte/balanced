@@ -80,27 +80,51 @@ class adminController extends Controller
 
 
         $departamentos = Departamento::get();
-      //  $clientes = Cliente::get();
-
-         $resultados = DB::table('indicadores as i')
-                ->leftJoin('indicadores_llenos as il', function ($join) {
-                    $join->on('il.id_indicador', '=', 'i.id')
-                        ->where('il.final', 'on');
-                })
-                ->where('i.id_departamento', 18)
-                ->select(
-                    'i.id',
-                    'i.nombre',
-                    'i.ponderacion',
-                    DB::raw('COUNT(il.id) as total_final_on'),
-                    DB::raw('(COUNT(il.id) * i.ponderacion) as resultado')
-                )
-                ->groupBy('i.id', 'i.nombre', 'i.ponderacion')
-                ->get();
 
 
+$sub = DB::table('indicadores_llenos as il')
+    ->join('indicadores as i', 'i.id', '=', 'il.id_indicador')
+    ->selectRaw("
+        i.id_departamento,
+        i.id as indicador_id,
+        DATE_FORMAT(il.created_at, '%Y-%m') as mes,
+        AVG(il.informacion_campo) as promedio,
+        i.ponderacion
+    ")
+    ->where('il.final', 'on')
+    ->groupBy(
+        'i.id_departamento',
+        'i.id',
+        'mes',
+        'i.ponderacion'
+    );
 
-        return view('admin.perfil_admin', compact('departamentos'));
+
+$cumplimiento = DB::query()
+    ->fromSub($sub, 't')
+    ->selectRaw("
+        id_departamento,
+        mes,
+        ROUND(SUM(promedio * ponderacion) / 100, 2) as cumplimiento_total
+    ")
+    ->groupBy('id_departamento', 'mes')
+    ->orderBy('mes')
+    ->get()
+    ->groupBy('id_departamento');
+
+
+
+
+
+
+
+
+   
+        
+
+
+
+        return view('admin.perfil_admin', compact('departamentos', 'cumplimiento'));
 
     }
 

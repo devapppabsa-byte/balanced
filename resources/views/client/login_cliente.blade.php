@@ -1,18 +1,9 @@
 @extends('plantilla')
 @section('title', 'Cuestionario del cliente')
 @section('contenido')
-<style>
-    body{
-        background-image: url("{{asset('img/background_client.png')}}");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover; 
-    }
-</style>
 
 <div class="container-fluid">
-    <div class="row bg-primary  d-flex align-items-center ">
+    <div class="row   d-flex align-items-center py-2 bg-primary" >
         <div class="col-auto pt-2 text-white">
             <p>
                 <span id="titulo" class="h4"></span>
