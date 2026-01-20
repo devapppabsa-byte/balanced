@@ -303,7 +303,7 @@
                                                 <th scope="col" class="border-0">Indicador</th>
                                                 <th scope="col" class="border-0">Ponderación</th>
                                                 <th scope="col" class="border-0">Min - Max</th>
-                                                <th scope="col" class="border-0">Autor</th>
+                                                <th scope="col" class="border-0">Tipo de Indicador</th>
                                                 <th scope="col" class="border-0">Fecha Creación</th>
                                                 <th scope="col" class="border-0 text-end">Acciones</th>
                                             </tr>
@@ -329,7 +329,7 @@
                                                     </small>
                                                 </td>
                                                 <td>
-                                                    <small class="text-muted">{{ $indicador->creador }}</small>
+                                                    <small class="text-muted text-capitalize">{{ $indicador->tipo_indicador }}</small>
                                                 </td>
                                                 <td>
                                                     <small class="text-muted">
@@ -653,6 +653,17 @@
                             <label class="form-label" for="ponderacion_indicador">Ponderación Indicador dentro de la evaluación total  <span class="text-danger">*</span></label>
                         </div>
                     </div>
+                </div>
+
+                <div class="col-12 mt-2">
+
+                    <div class="form-group mt-3">
+                        <select name="tipo_indicador" class="form-control form-select" id="tipo_indicador">
+                            <option value="normal">Indicador Normal</option>
+                            <option value="riesgo">Indicador de Riesgo</option>
+                        </select>
+                    </div>
+
                 </div>
 
             </div>

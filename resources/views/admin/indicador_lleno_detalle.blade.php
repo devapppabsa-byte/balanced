@@ -18,7 +18,7 @@
 </style>
 
 
-<div class="container-fluid sticky-top">
+<div class="container-fluid sticky-top ">
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10 pt-2">
@@ -131,7 +131,7 @@
                         <div>
                             <h2 class="mb-1 fw-bold">
                                 <i class="fa-regular fa-simple-chart text-primary me-2"></i>
-                                Historico del llenado del indicador
+                                Historico del llenado del indicador 
                             </h2>
                         </div>
                         <div class="d-flex gap-2 mt-2 mt-md-0">
@@ -146,7 +146,7 @@
 
 
 
-        <div class="card border-0 shadow-sm mb-2">
+        <div class="card border-0 shadow-sm mb-2 ">
             <div class="card-body">
                 <form action="{{route('indicador.lleno.show.admin', $indicador->id)}}"  method="GET">
                     <div class="row g-3 align-items-end">
@@ -209,7 +209,7 @@
 
 
 
-    <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 mt-4 ">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-4 ">
         <div class="card shadow-sm border-0 h-100">
 
             {{-- HEADER --}}
@@ -221,21 +221,42 @@
             </div>
 
             {{-- METAS --}}
-            <div class="card-body text-center">
-                <div class="row p-0">
-                    <div class="col-6">
-                        <span class="badge bg-danger-subtle text-danger p-2 w-100">
-                            <i class="fa-solid fa-arrow-down"></i>
-                            Mínima: {{ $meta_minima }}
-                        </span>
+            <div class="card-body text-center py-0">
+                @if ($indicador->tipo_indicador == "riesgo")
+                    <div class="row p-0">
+                        <div class="col-6">
+                            <span class="badge bg-success-subtle text-success p-2 w-100">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                Maximo:  {{ $meta_minima }}
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Exceso:  {{ $meta_maxima }}
+                            </span>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <span class="badge bg-success-subtle text-success p-2 w-100">
-                            <i class="fa-solid fa-arrow-up"></i>
-                            Máxima: {{ $meta_maxima }}
-                        </span>
+                    
+                @else
+                    
+                    <div class="row p-0">
+                        <div class="col-6">
+                            <span class="badge bg-green-subtle text-danger p-2 w-100">
+                                <i class="fa-solid fa-arrow-down"></i>
+                                Mínima: {{ $meta_minima }}
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <span class="badge bg-danger-subtle text-success p-2 w-100">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                Máxima: {{ $meta_maxima }}
+                            </span>
+                        </div>
                     </div>
-                </div>
+
+                @endif
+
 
                 <hr>
 
@@ -251,19 +272,41 @@
                             $cumple = $item->informacion_campo >= $meta_minima;
                         @endphp
 
-                        <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
-                            {{ $cumple ? 'border-success' : 'border-danger' }}">
-                            
-                            <h6 class="fw-bold mb-1">
-                                <i class="fa-solid {{ $cumple ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger' }}"></i>
-                                {{ $item->nombre_campo }}
-                            </h6>
+                        @if ($indicador->tipo_indicador == "riesgo")
+                            <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
+                                {{ $cumple ? 'border-danger' : 'border-success' }}">
+                                
+                                <h6 class="fw-bold mb-1">
+                                    <i class="fa-solid {{ $cumple ? 'fa-circle-check text-danger' : 'fa-circle-xmark text-success' }}"></i>
+                                    {{ $item->nombre_campo }}
+                                </h6>
 
-                            <h4 class="fw-bold mb-0">
-                                {{ $item->informacion_campo }}
-                            </h4>
+                                <h4 class="fw-bold mb-0">
+                                    {{ $item->informacion_campo }}
+                                </h4>
 
-                        </div>
+                            </div>    
+
+                        @else
+                        
+                            <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
+                                {{ $cumple ? 'border-success' : 'border-danger' }}">
+                                
+                                <h6 class="fw-bold mb-1">
+                                    <i class="fa-solid {{ $cumple ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger' }}"></i>
+                                    {{ $item->nombre_campo }}
+                                </h6>
+
+                                <h4 class="fw-bold mb-0">
+                                    {{ $item->informacion_campo }}
+                                </h4>
+
+                            </div>
+                        @endif
+
+
+
+
 
 
                     @endif
@@ -303,20 +346,17 @@
                         </div>
                     @endif
 
+
                     {{-- NORMAL --}}
                     @if(is_null($item->final))
-
-
                         <div class="col-6  text-start  p-2 my-2 border">
-                            
                             <div class=" ">
                                 <small class="">{{ $item->nombre_campo }}</small>
                                 <br>
-                                <div class="badge badge-secondary  fw-bold border shadow-sm fs-5">                                  
+                                <div class="badge badge-secondary format-number fw-bold border shadow-sm fs-6">                                  
                                     {{ $item->informacion_campo }}
                                 </div>
                             </div>
-
                         </div>
                     @endif
 
@@ -507,9 +547,10 @@ new Chart(ctx, {
   }
 });
 </script> --}}
-
 <script>
     const datos = @json($graficar);
+
+    const TIPO_INDICADOR = "{{ $tipo_indicador }}"; // "riesgo" o normal
 
     const mesesES = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -522,10 +563,9 @@ new Chart(ctx, {
     // REFERENCIA
     const datosReferencia = datos.filter(d => d.referencia === 'on');
 
-    // Labels desde FINAL
+    // Labels
     const labels = datosFinal.map(item => {
         const fecha = new Date(item.created_at);
-        fecha.setMonth(fecha.getMonth());
         return mesesES[fecha.getMonth()];
     });
 
@@ -534,17 +574,20 @@ new Chart(ctx, {
         parseFloat(item.informacion_campo)
     );
 
-    // REFERENCIA alineada por id_movimiento
+    // Valores REFERENCIA alineados
     const valoresReferencia = datosFinal.map(finalItem => {
         const ref = datosReferencia.find(r =>
             r.id_movimiento === finalItem.id_movimiento
         );
-
         return ref ? parseFloat(ref.informacion_campo) : null;
     });
 
-    const MINIMO = {{$indicador->meta_minima}};
-    const MAXIMO = {{$indicador->meta_esperada}};
+    const MINIMO = {{ $indicador->meta_minima }};
+    const MAXIMO = {{ $indicador->meta_esperada }};
+
+    // Colores dinámicos para líneas
+    const colorMinimo = TIPO_INDICADOR === 'riesgo' ? "green" : "red";
+    const colorMaximo = TIPO_INDICADOR === 'riesgo' ? "red"   : "green";
 
     const ctx = document.getElementById('grafico').getContext('2d');
 
@@ -553,24 +596,37 @@ new Chart(ctx, {
             labels: labels,
             datasets: [
 
+                // BARRAS
                 {
                     type: "bar",
                     label: "Cumplimiento del Indicador",
                     data: valores,
                     backgroundColor: function (context) {
                         const value = context.raw;
+
+                        if (TIPO_INDICADOR === 'riesgo') {
+                            return value < MINIMO
+                                ? "rgba(75, 192, 75, 0.7)"   // verde = bajo riesgo
+                                : "rgba(255, 99, 132, 0.7)"; // rojo = alto riesgo
+                        }
+
                         return value < MINIMO
                             ? "rgba(255, 99, 132, 0.7)"
                             : "rgba(75, 192, 75, 0.7)";
                     },
                     borderColor: function (context) {
                         const value = context.raw;
+
+                        if (TIPO_INDICADOR === 'riesgo') {
+                            return value < MINIMO ? "green" : "red";
+                        }
+
                         return value < MINIMO ? "red" : "green";
                     },
                     borderWidth: 1
                 },
 
-                // 🔥 REFERENCIA (AHORA SÍ FUNCIONA)
+                //  REFERENCIA
                 {
                     type: "line",
                     label: "Referencia",
@@ -583,21 +639,23 @@ new Chart(ctx, {
                     pointRadius: 5
                 },
 
+                // verde / rojo NIVEL MÍNIMO
                 {
                     type: "line",
                     label: "Nivel mínimo",
                     data: valores.map(() => MINIMO),
-                    borderColor: "red",
+                    borderColor: colorMinimo,
                     borderWidth: 2,
                     fill: false,
                     pointRadius: 0
                 },
 
+                // rojo / verde NIVEL MÁXIMO
                 {
                     type: "line",
                     label: "Nivel máximo",
                     data: valores.map(() => MAXIMO),
-                    borderColor: "green",
+                    borderColor: colorMaximo,
                     borderWidth: 2,
                     fill: false,
                     pointRadius: 0
@@ -620,9 +678,11 @@ new Chart(ctx, {
 
 
 
-<script>
 
+
+<script>
 const ctxLine = document.getElementById('graficoLine').getContext('2d');
+
 
 new Chart(ctxLine, {
   type: "line",
@@ -630,6 +690,7 @@ new Chart(ctxLine, {
     labels: labels,
     datasets: [
 
+      //  LÍNEA PRINCIPAL
       {
         label: "Cumplimiento del Indicador",
         data: valores,
@@ -638,28 +699,35 @@ new Chart(ctxLine, {
         tension: 0.3,
         fill: false,
         pointRadius: 6,
-        pointBackgroundColor: valores.map(v =>
-          v < MINIMO ? "red" : "green"
-        ),
+        pointBackgroundColor: valores.map(v => {
+
+          //  INDICADOR DE RIESGO (invertido)
+          if (TIPO_INDICADOR === 'riesgo') {
+            return v < MINIMO ? "green" : "red";
+          }
+
+          //  INDICADOR NORMAL
+          return v < MINIMO ? "red" : "green";
+        }),
         pointBorderColor: "#000"
       },
 
-      // ➖ Línea nivel mínimo
+      //  LÍNEA NIVEL MÍNIMO
       {
         label: "Nivel mínimo",
         data: valores.map(() => MINIMO),
-        borderColor: "red",
+        borderColor: colorMinimo,
         borderWidth: 2,
         borderDash: [5, 5],
         pointRadius: 0,
         fill: false
       },
 
-      // ➕ Línea nivel máximo
+      //  LÍNEA NIVEL MÁXIMO
       {
         label: "Nivel máximo",
         data: valores.map(() => MAXIMO),
-        borderColor: "green",
+        borderColor: colorMaximo,
         borderWidth: 2,
         borderDash: [5, 5],
         pointRadius: 0,
@@ -687,18 +755,35 @@ new Chart(ctxLine, {
 
 
 
+
+
 <script>
+//const TIPO_INDICADOR = "{{ $tipo_indicador }}"; // "riesgo" o normal
 
-// Colores dinámicos por segmento
-const colores = valores.map(v =>
-  v < MINIMO
-    ? "rgba(255, 99, 132, 0.7)" // rojo
-    : "rgba(75, 192, 75, 0.7)" // verde
-);
+//  Colores dinámicos por segmento
+const colores = valores.map(v => {
 
-const bordes = valores.map(v =>
-  v < MINIMO ? "red" : "green"
-);
+  //  INDICADOR DE RIESGO (invertido)
+  if (TIPO_INDICADOR === 'riesgo') {
+    return v < MINIMO
+      ? "rgba(75, 192, 75, 0.7)"   // verde = bajo riesgo
+      : "rgba(255, 99, 132, 0.7)"; // rojo = alto riesgo
+  }
+
+  //  INDICADOR NORMAL
+  return v < MINIMO
+    ? "rgba(255, 99, 132, 0.7)"   // rojo = no cumple
+    : "rgba(75, 192, 75, 0.7)";   // verde = cumple
+});
+
+const bordes = valores.map(v => {
+
+  if (TIPO_INDICADOR === 'riesgo') {
+    return v < MINIMO ? "green" : "red";
+  }
+
+  return v < MINIMO ? "red" : "green";
+});
 
 const ctx3 = document.getElementById('graficoPie').getContext('2d');
 
@@ -724,7 +809,15 @@ new Chart(ctx3, {
         callbacks: {
           label: function(context) {
             const valor = context.raw;
-            const estado = valor < MINIMO ? " No cumple" : " Cumple";
+
+            let estado;
+
+            if (TIPO_INDICADOR === 'riesgo') {
+              estado = valor < MINIMO ? "Bajo riesgo" : "Alto riesgo";
+            } else {
+              estado = valor < MINIMO ? "No cumple" : "Cumple";
+            }
+
             return `${context.label}: ${valor} (${estado})`;
           }
         }
@@ -732,9 +825,11 @@ new Chart(ctx3, {
     }
   }
 });
-
-
 </script>
+
+
+
+
 
 
 

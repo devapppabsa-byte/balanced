@@ -73,11 +73,11 @@
     @yield('scripts')
 
 
-<script>
-  (function(){
-    emailjs.init("Qg1Uw0UBaSzCmDi1D");
-  })();
-</script>
+    <script>
+    (function(){
+        emailjs.init("Qg1Uw0UBaSzCmDi1D");
+    })();
+    </script>
 
 
     <script>
@@ -91,8 +91,7 @@
                 
                 document.getElementById('queja').value = editor.root.innerHTML;
                 
-            })
-        
+            })        
         }
 
     </script>
@@ -172,59 +171,75 @@
 
 
     {{-- Esto hace que el tab-panel se regrese al lugar donde lo dejaste despues de cargar la pagina --}}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const tabLinks = document.querySelectorAll('[data-mdb-tab-init]');
-    const tabContent = document.getElementById('ex1-content');
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabLinks = document.querySelectorAll('[data-mdb-tab-init]');
+        const tabContent = document.getElementById('ex1-content');
 
-    const savedTab = localStorage.getItem('activeTab');
+        const savedTab = localStorage.getItem('activeTab');
 
-    if (savedTab) {
-        const tabTrigger = document.querySelector(`[href="${savedTab}"]`);
-        if (tabTrigger) {
-            // Primero activamos la tab visualmente
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            tabTrigger.classList.add('active');
-            
-            // Activamos el contenido correspondiente
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                pane.classList.remove('show', 'active');
-            });
-            const targetPane = document.querySelector(savedTab);
-            if (targetPane) {
-                targetPane.classList.add('show', 'active');
+        if (savedTab) {
+            const tabTrigger = document.querySelector(`[href="${savedTab}"]`);
+            if (tabTrigger) {
+                // Primero activamos la tab visualmente
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                tabTrigger.classList.add('active');
+                
+                // Activamos el contenido correspondiente
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+                const targetPane = document.querySelector(savedTab);
+                if (targetPane) {
+                    targetPane.classList.add('show', 'active');
+                }
             }
         }
-    }
 
-    // Mostrar contenido una vez listo
-    tabContent.classList.remove('d-none');
+        // Mostrar contenido una vez listo
+        tabContent.classList.remove('d-none');
 
-    tabLinks.forEach(tab => {
-        tab.addEventListener('shown.mdb.tab', e => {
-            localStorage.setItem('activeTab', e.target.getAttribute('href'));
+        tabLinks.forEach(tab => {
+            tab.addEventListener('shown.mdb.tab', e => {
+                localStorage.setItem('activeTab', e.target.getAttribute('href'));
+            });
         });
     });
-});
-</script>
+    </script>
 
 
 
 
 <!-- PARA QUE SE MUESTRE PRTIERO LA PARTE DE ABAJO LOS INDICADORES -->
+    <script>
+        if(document.querySelector('.indicador-container')){
+
+                document.querySelectorAll('.indicador-container').forEach(contenedor => {
+                contenedor.scrollTop = contenedor.scrollHeight;
+                });
+
+
+        }
+
+    </script>
+
+
+
+
+{{-- FORMAEANDO LOS NUMEROS QUE SE MUESTRAN --}}
 <script>
-    if(document.querySelector('.indicador-container')){
-
-            document.querySelectorAll('.indicador-container').forEach(contenedor => {
-            contenedor.scrollTop = contenedor.scrollHeight;
-            });
-
-
-    }
-
+    document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.format-number').forEach(el => {
+        const n = el.textContent.replace(/,/g, '');
+        if (!isNaN(n) && n !== '') {
+        el.textContent = Number(n).toLocaleString('en-US');
+        }
+    });
+});
 </script>
+
 
 </body>
 </html>

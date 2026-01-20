@@ -57,12 +57,7 @@
 <div class="container-fluid">
     <div class="row  border-bottom  bg-white border-bottom shadow-sm">
 
-        {{-- <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
-            <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#precargar_campos">
-                <i class="fa fa-plus"></i>
-                Precargar Campos - para pruebas
-            </button>
-        </div> --}}
+
 
         <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
             <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#cargar_excel">
@@ -79,12 +74,6 @@
             </a>
         </div>
 
-        {{-- <div class="col-12 col-sm-12 col-md-4 col-lg-3 my-1">
-            <button class="btn btn-sm btn-secondary w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#crear_campo_precargado" >
-                <i class="fa fa-field"></i>
-                Crear campo precargado
-            </button>
-        </div> --}}
 
 
     </div>
@@ -137,7 +126,7 @@
                                                         {{ucfirst(Carbon::create()->month(intval($informacion->mes))->locale('es')->monthName)}}
                                                         {{$informacion->year}}
                                                     </h5>
-                                                    <h3 class="fw-bold ">
+                                                    <h3 class="fw-bold format-number">
                                                         {{$informacion->informacion}}
                                                     </h3>
                                                     <small class="fw-bold"> 

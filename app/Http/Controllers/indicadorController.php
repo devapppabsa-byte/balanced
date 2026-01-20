@@ -84,7 +84,7 @@ class indicadorController extends Controller
 
     public function agregar_indicadores_store(Request $request, Departamento $departamento){
 
-     
+
         $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
          
@@ -107,6 +107,7 @@ class indicadorController extends Controller
         $indicador->meta_esperada = $request->meta_esperada;
         $indicador->meta_minima = $request->meta_minima;
         $indicador->ponderacion = $request->ponderacion_indicador;
+        $indicador->tipo_indicador = $request->tipo_indicador;
 
         // if ($request->planta_1 == "active") $indicador->planta_1 = $request->planta_1;
         // if ($request->planta_2 == "active") $indicador->planta_2 =  $request->planta_2;
@@ -1230,6 +1231,8 @@ $encuestas = DB::table('encuestas as e')
 
 public function indicador_lleno_show_admin(Indicador $indicador){
 
+    
+    $tipo_indicador = $indicador->tipo_indicador;
 
     //fehcas de filtrado, si request->fecha_inicio trae algo lo pone en la variable inicio si no deja aa inicio como el inicio del año.
     //se convirtieron las fechas a UTC para que coincidieran con el registro de busqueda.
@@ -1251,10 +1254,9 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
 
     //Para lgraficar los datos del indicador
-     IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->get();
+    IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->get();
 
-        //  $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
-        //                    ->where('final', 'on')->get();
+
 
 
     $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
@@ -1284,7 +1286,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
     
 
-    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos', 'indicador'));
+    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos', 'indicador', 'tipo_indicador'));
 
 }
 
