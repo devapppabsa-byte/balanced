@@ -85,19 +85,7 @@ class userController extends Controller
 
         //vamos a consultar los indicadores de acuerdo a la planta a donde fueron asignados..., ya se tiene los indicadores del departamento.
         //ahora vamos a sacar los indicadores que perteneces al departamento del usuario
-
-
-
-
-        
-
-
-
-        //indicadores del departamento y planta correspondiente
-        //return $indicadores_departamento;
-        // return $planta_user;
-        // return $indicadores;
-        
+      
 
         
 

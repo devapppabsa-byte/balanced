@@ -222,6 +222,7 @@
 
             {{-- METAS --}}
             <div class="card-body text-center py-0">
+            
                 @if ($indicador->tipo_indicador == "riesgo")
                     <div class="row p-0">
                         <div class="col-6">
@@ -242,13 +243,13 @@
                     
                     <div class="row p-0">
                         <div class="col-6">
-                            <span class="badge bg-green-subtle text-danger p-2 w-100">
+                            <span class="badge bg-danger-subtle text-danger p-2 w-100">
                                 <i class="fa-solid fa-arrow-down"></i>
                                 Mínima: {{ $meta_minima }}
                             </span>
                         </div>
                         <div class="col-6">
-                            <span class="badge bg-danger-subtle text-success p-2 w-100">
+                            <span class="badge bg-success-subtle text-success p-2 w-100">
                                 <i class="fa-solid fa-arrow-up"></i>
                                 Máxima: {{ $meta_maxima }}
                             </span>
@@ -273,11 +274,12 @@
                         @endphp
 
                         @if ($indicador->tipo_indicador == "riesgo")
+                        
                             <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
                                 {{ $cumple ? 'border-danger' : 'border-success' }}">
                                 
                                 <h6 class="fw-bold mb-1">
-                                    <i class="fa-solid {{ $cumple ? 'fa-circle-check text-danger' : 'fa-circle-xmark text-success' }}"></i>
+                                    <i class="fa-solid {{ $cumple ? 'fa-circle-xmark text-danger' : 'fa-circle-check text-success' }}"></i>
                                     {{ $item->nombre_campo }}
                                 </h6>
 
@@ -384,7 +386,7 @@
 
 
 <div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog  modal-xl">
+    <div class="modal-dialog  modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-4">
                 <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
