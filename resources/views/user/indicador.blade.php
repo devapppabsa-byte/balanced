@@ -135,20 +135,40 @@ use Carbon\Carbon;
         <div class="card-body py-3">
 
             <!-- METAS -->
-            <div class="row g-2 mb-2 text-center">
-                <div class="col-6">
-                    <span class="badge bg-danger-subtle text-danger w-100 py-1">
-                        <i class="fa-solid fa-arrow-down"></i>
-                        <small>Mín: {{ $meta_minima }}</small>
-                    </span>
+            @if ($indicador->tipo_indicador == "riesgo")
+                <div class="row p-0">
+                    <div class="col-6">
+                        <span class="badge bg-success-subtle text-success p-2 w-100">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            Maximo:  {{ $meta_minima }}
+                        </span>
+                    </div>
+                    <div class="col-6">
+                        <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            Exceso:  {{ $meta_maxima }}
+                        </span>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <span class="badge bg-success-subtle text-success w-100 py-1">
-                        <i class="fa-solid fa-arrow-up"></i>
-                        <small>Máx: {{ $meta_maxima }}</small>
-                    </span>
+                
+            @else
+                
+                <div class="row p-0">
+                    <div class="col-6">
+                        <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                            <i class="fa-solid fa-arrow-down"></i>
+                            Mínima: {{ $meta_minima }}
+                        </span>
+                    </div>
+                    <div class="col-6">
+                        <span class="badge bg-success-subtle text-success p-2 w-100">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            Máxima: {{ $meta_maxima }}
+                        </span>
+                    </div>
                 </div>
-            </div>
+
+            @endif
 
             <hr class="my-2">
 
@@ -161,20 +181,38 @@ use Carbon\Carbon;
                 @if($item->final === 'on')
                     @php $cumple = $item->informacion_campo >= $meta_minima; @endphp
 
-                    <div class="col-6 col-md-4">
-                        <div class="border rounded text-center py-2
-                            {{ $cumple ? 'border-success' : 'border-danger' }}">
+                    @if ($indicador->tipo_indicador == "riesgo")
+                    
+                        <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
+                            {{ $cumple ? 'border-danger' : 'border-success' }}">
+                            
+                            <h6 class="fw-bold mb-1">
+                                <i class="fa-solid {{ $cumple ? 'fa-circle-xmark text-danger' : 'fa-circle-check text-success' }}"></i>
+                                {{ $item->nombre_campo }}
+                            </h6>
 
-                            <small class="fw-semibold d-block text-truncate">
+                            <h4 class="fw-bold mb-0">
+                                {{ $item->informacion_campo }}
+                            </h4>
+
+                        </div>    
+
+                    @else
+                    
+                        <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
+                            {{ $cumple ? 'border-success' : 'border-danger' }}">
+                            
+                            <h6 class="fw-bold mb-1">
                                 <i class="fa-solid {{ $cumple ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger' }}"></i>
                                 {{ $item->nombre_campo }}
-                            </small>
+                            </h6>
 
-                            <div class="fs-6 fw-bold">
+                            <h4 class="fw-bold mb-0">
                                 {{ $item->informacion_campo }}
-                            </div>
+                            </h4>
+
                         </div>
-                    </div>
+                    @endif
                 @endif
 
                 <!-- COMENTARIO -->
@@ -220,7 +258,7 @@ use Carbon\Carbon;
                     <div class="col-6">
                         <div class="border rounded p-2 small">
                             <span class="text-muted">{{ $item->nombre_campo }}</span>
-                            <div class="fw-bold">
+                            <div class="fw-bold format-number">
                                 {{ $item->informacion_campo }}
                             </div>
                         </div>
@@ -263,7 +301,7 @@ use Carbon\Carbon;
             </div>
             <div class="modal-body py-4">
 
-                <form id="formulario_llenado_indicadores" method="POST" action="{{route('llenado.informacion.indicadores', $indicador->id)}}" class="row gap-4 p-2 justify-content-center">
+                <form id="formulario_llenado_indicadores" method="POST" action="{{route('llenado.informacion.indicadores', $indicador->id)}}" class="row gap-4 p-2 justify-content-center form-loader">
                     @csrf
                     @forelse ($campos_vacios as $campo_vacio)
                         <div class="col-11  col-sm-11 col-md-4 col-lg-3  text-start border border-4 mb-4 p-3 shadow-sm campos_vacios ">
@@ -326,7 +364,7 @@ use Carbon\Carbon;
 </div>
 
 <div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog  modal-xl modal-dialog-centered">
+    <div class="modal-dialog  modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header bg-primary py-4">
                 <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
@@ -439,115 +477,10 @@ use Carbon\Carbon;
 
 @section('scripts')
 
-{{-- <script>
-    // VEINTIUNICA GRAFICA.
-    // ESTO VIENE DINÁMICO DESDE LARAVEL
-    const datos = @json($graficar);
-
-    // Meses en español
-    const mesesES = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ];
-
-    // Separar FINAL y REFERENCIA
-    const datosFinal = datos.filter(item => item.final === 'on');
-    const datosReferencia = datos.filter(item => item.referencia === 'on');
-
-    // Labels (usamos los finales)
-    const labels = datosFinal.map(item => {
-        const fecha = new Date(item.created_at);
-        fecha.setMonth(fecha.getMonth() - 1);
-        return mesesES[fecha.getMonth()];
-    });
-
-    // Valores
-    const valores = datosFinal.map(item => parseFloat(item.informacion_campo));
-    const valoresReferencia = datosReferencia.map(item => parseFloat(item.informacion_campo));
-
-    // Niveles dinámicos
-    const MINIMO = {{$meta_minima_general}};
-    const MAXIMO = {{$meta_maxima_general}};
-
-    const ctx = document.getElementById('grafico').getContext('2d');
-
-    new Chart(ctx, {
-        data: {
-            labels: labels,
-            datasets: [
-
-                // BARRAS (FINAL)
-                {
-                    type: "bar",
-                    label: "Cumplimiento del Indicador",
-                    data: valores,
-                    backgroundColor: function (context) {
-                        const value = context.raw;
-                        return value < MINIMO
-                            ? "rgba(255, 99, 132, 0.7)"
-                            : "rgba(75, 192, 75, 0.7)";
-                    },
-                    borderColor: function (context) {
-                        const value = context.raw;
-                        return value < MINIMO ? "red" : "green";
-                    },
-                    borderWidth: 1
-                },
-
-                // LINEA DE REFERENCIA
-                {
-                    type: "line",
-                    label: "Referencia",
-                    data: valoresReferencia,
-                    borderColor: "rgba(54, 162, 235, 1)",
-                    borderWidth: 3,
-                    fill: false,
-                    tension: 0.3,
-                    pointRadius: 5
-                },
-
-                // Línea de nivel mínimo
-                {
-                    type: "line",
-                    label: "Nivel mínimo",
-                    data: valores.map(() => MINIMO),
-                    borderColor: "red",
-                    borderWidth: 2,
-                    fill: false,
-                    pointRadius: 0
-                },
-
-                // Línea de nivel máximo
-                {
-                    type: "line",
-                    label: "Nivel máximo",
-                    data: valores.map(() => MAXIMO),
-                    borderColor: "green",
-                    borderWidth: 2,
-                    fill: false,
-                    pointRadius: 0
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: "top"
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-</script> --}}
-
-
 <script>
     const datos = @json($graficar);
+
+    const TIPO_INDICADOR = "{{ $tipo_indicador }}";
 
     const mesesES = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -560,10 +493,9 @@ use Carbon\Carbon;
     // REFERENCIA
     const datosReferencia = datos.filter(d => d.referencia === 'on');
 
-    // Labels desde FINAL
+    // Labels
     const labels = datosFinal.map(item => {
         const fecha = new Date(item.created_at);
-        fecha.setMonth(fecha.getMonth());
         return mesesES[fecha.getMonth()];
     });
 
@@ -572,17 +504,20 @@ use Carbon\Carbon;
         parseFloat(item.informacion_campo)
     );
 
-    // REFERENCIA alineada por id_movimiento
+    // Valores REFERENCIA alineados por id_movimiento
     const valoresReferencia = datosFinal.map(finalItem => {
         const ref = datosReferencia.find(r =>
             r.id_movimiento === finalItem.id_movimiento
         );
-
         return ref ? parseFloat(ref.informacion_campo) : null;
     });
 
-    const MINIMO = {{$meta_minima_general}};
-    const MAXIMO = {{$meta_maxima_general}};
+    const MINIMO = {{ $indicador->meta_minima }};
+    const MAXIMO = {{ $indicador->meta_esperada }};
+
+    // Colores dinámicos según tipo de indicador
+    const colorMinimo = TIPO_INDICADOR === 'riesgo' ? "green" : "red";
+    const colorMaximo = TIPO_INDICADOR === 'riesgo' ? "red" : "green";
 
     const ctx = document.getElementById('grafico').getContext('2d');
 
@@ -591,24 +526,37 @@ use Carbon\Carbon;
             labels: labels,
             datasets: [
 
+                // BARRAS
                 {
                     type: "bar",
                     label: "Cumplimiento del Indicador",
                     data: valores,
                     backgroundColor: function (context) {
                         const value = context.raw;
+
+                        if (TIPO_INDICADOR === 'riesgo') {
+                            return value < MINIMO
+                                ? "rgba(75, 192, 75, 0.7)"   // verde = bajo riesgo
+                                : "rgba(255, 99, 132, 0.7)"; // rojo = alto riesgo
+                        }
+
                         return value < MINIMO
                             ? "rgba(255, 99, 132, 0.7)"
                             : "rgba(75, 192, 75, 0.7)";
                     },
                     borderColor: function (context) {
                         const value = context.raw;
+
+                        if (TIPO_INDICADOR === 'riesgo') {
+                            return value < MINIMO ? "green" : "red";
+                        }
+
                         return value < MINIMO ? "red" : "green";
                     },
                     borderWidth: 1
                 },
 
-                // 🔥 REFERENCIA (AHORA SÍ FUNCIONA)
+                // REFERENCIA
                 {
                     type: "line",
                     label: "Referencia",
@@ -621,21 +569,23 @@ use Carbon\Carbon;
                     pointRadius: 5
                 },
 
+                // NIVEL MÍNIMO
                 {
                     type: "line",
                     label: "Nivel mínimo",
                     data: valores.map(() => MINIMO),
-                    borderColor: "red",
+                    borderColor: colorMinimo,
                     borderWidth: 2,
                     fill: false,
                     pointRadius: 0
                 },
 
+                // NIVEL MÁXIMO
                 {
                     type: "line",
                     label: "Nivel máximo",
                     data: valores.map(() => MAXIMO),
-                    borderColor: "green",
+                    borderColor: colorMaximo,
                     borderWidth: 2,
                     fill: false,
                     pointRadius: 0
@@ -665,7 +615,7 @@ use Carbon\Carbon;
 {{-- AQUI ESTA EL SCRIPT QUE ENVIA LOS CORREOS ELECTRONICOS --}}
 <script>
 
- const data = document.getElementById('data-indicador');
+const data = document.getElementById('data-indicador');
 
 let filas = `Se llenó el indicador de ${data.dataset.indicador}
 del departamento ${data.dataset.departamento}`;

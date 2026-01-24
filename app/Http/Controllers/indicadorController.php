@@ -419,10 +419,12 @@ public function show_indicador_user(Indicador $indicador){
         ->orderBy('created_at')
         ->get();
 
+    $tipo_indicador = $indicador->tipo_indicador;
+
     
 
 
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos', 'meta_minima_general', 'meta_maxima_general'));
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos', 'meta_minima_general', 'meta_maxima_general', 'tipo_indicador'));
 
 
 
@@ -1274,6 +1276,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
     //Para mostrar los datos del indicador
     $datos = IndicadorLleno::where('id_indicador', $indicador->id)->whereBetween('created_at', [$inicio, $fin])->get();
+    
     $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
 
  

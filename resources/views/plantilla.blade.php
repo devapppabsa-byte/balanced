@@ -27,6 +27,40 @@
             background-color: #e0f0ff;
         }
 
+        /* Loader styles */
+        .form-loader {
+            position: relative;
+        }
+
+        .form-loader.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .form-loader.loading button[type="submit"] {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+        }
+
+        .form-loader.loading button[type="submit"]:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            margin: -8px 0 0 -8px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top: 2px solid transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
     </style>
 
@@ -72,6 +106,25 @@
     </script>
 
     @yield('scripts')
+
+
+    <script>
+    // Global form loader functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add loader class to all forms
+        const forms = document.querySelectorAll('form');
+        forms.forEach(function(form) {
+            form.classList.add('form-loader');
+            
+            form.addEventListener('submit', function(e) {
+                const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+                if (submitButton) {
+                    form.classList.add('loading');
+                }
+            });
+        });
+    });
+    </script>
 
 
     <script>
@@ -217,10 +270,9 @@
     <script>
         if(document.querySelector('.indicador-container')){
 
-                document.querySelectorAll('.indicador-container').forEach(contenedor => {
-                contenedor.scrollTop = contenedor.scrollHeight;
-                });
-
+            document.querySelectorAll('.indicador-container').forEach(contenedor => {
+            contenedor.scrollTop = contenedor.scrollHeight;
+            });
 
         }
 
@@ -238,6 +290,34 @@
         el.textContent = Number(n).toLocaleString('en-US');
         }
     });
+});
+</script>
+
+
+
+{{-- loader para los formularios que estan separados del boton submit --}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    document.querySelectorAll('form.form-loader').forEach(form => {
+
+        form.addEventListener('submit', (e) => {
+
+            // Evita doble ejecución
+            if (form.classList.contains('loading')) return;
+
+            form.classList.add('loading');
+
+            // Botón que disparó el submit (soporta form="")
+            const btn = e.submitter;
+            if (!btn) return;
+
+            btn.disabled = true;
+
+        });
+
+    });
+
 });
 </script>
 
