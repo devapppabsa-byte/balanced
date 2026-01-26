@@ -184,14 +184,14 @@
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group mt-3">
-                            <input type="file" accept=".xlsx,xls" class="form-control form-control-lg" name="archivo" required>
+                            <input type="file" accept=".xlsx,xls" class="form-control form-control-lg" id="excelFile" name="archivo" required>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button  class="btn btn-primary w-100 py-3" form="form_excel" data-mdb-ripple-init>
+            <button  class="btn btn-primary w-100 py-3" id="submitBtnExcel" form="form_excel" data-mdb-ripple-init>
                 <h6>Guardar</h6>
             </button>
 
@@ -310,4 +310,40 @@
 </div>
 
 
+@endsection
+
+
+@section('scripts')
+<script>
+document.getElementById('excelFile').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        const headers = rows[0];
+
+        const requiredColumns = ['id', 'nombre', 'descripcion', 'informacion'];
+
+        const missing = requiredColumns.filter(col => !headers.includes(col));
+
+        if (missing.length > 0) {
+            alert('Faltan columnas: ' + missing.join(', ') + '  usa la plantilla por favor.');
+            document.getElementById('excelFile').value = '';
+            document.getElementById('submitBtn').disabled = true;
+        } else {
+            document.getElementById('submitBtnExcel').disabled = false;
+        }
+    };
+
+    reader.readAsArrayBuffer(file);
+});
+
+</script>
 @endsection

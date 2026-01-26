@@ -117,7 +117,6 @@
 
             @if ($data->isEmpty())
 
-                {{-- EMPTY DEL DEPARTAMENTO --}}
                 <div class="text-center py-4 text-muted">
                     <img src="{{asset('/img/iconos/empty.png')}}"
                          class="img-fluid mb-2"
@@ -128,8 +127,7 @@
                 </div>
 
             @else
-
-                {{-- GRAFICA --}}
+            
                 <canvas id="chart{{$departamento->id}}" height="200"></canvas>
 
             @endif

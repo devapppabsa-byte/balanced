@@ -39,8 +39,8 @@ class InputPrecargadoImport implements ToCollection, WithHeadingRow
 
                     $campoForaneo = CampoForaneo::firstOrCreate(
                         ['id_input' => $row['id']],
-                        ['nombre'   => $row['nombre']],
-                        ['descripcion' => $row['descripcion']]
+                        ['nombre'   => $row['nombre'],
+                        'descripcion' => $row['descripcion']]
                     );
 
 
