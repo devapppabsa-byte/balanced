@@ -129,7 +129,7 @@
             @else
             
                 <canvas id="chart{{$departamento->id}}" height="200"></canvas>
-
+                <small class="text-muted text-center">Solo indicadores numericos</small>
             @endif
 
             <div class="text-center mt-4">

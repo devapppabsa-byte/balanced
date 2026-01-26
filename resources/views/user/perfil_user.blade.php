@@ -167,10 +167,26 @@
 @section('scripts')
 
 <script>
+
     const cumplimientoData = @json($cumplimiento_general);
 
-    const labels = cumplimientoData.map(item => item.mes);
+    const labels = cumplimientoData.map(item => {
+        const [year, month] = item.mes.split('-');
+
+        // month - 1 porque JS empieza en 0
+        const fecha = new Date(Number(year), Number(month) - 1, 1);
+
+        const formatted = new Intl.DateTimeFormat('es-MX', {
+            month: 'long',
+            year: 'numeric'
+        }).format(fecha);
+
+        return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    });
+
     const dataValues = cumplimientoData.map(item => item.total);
+
+
 </script>
 
 
@@ -179,8 +195,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
 
-//   const labels = ['Indicador 1', 'Indicador 2', 'Indicador 3', 'Indicador 4'];
-//   const dataValues = [85, 70, 90, 60];
 
   // BARRAS
   new Chart(document.getElementById('chartBar'), {
@@ -201,29 +215,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+
+
   // LINEA
-  new Chart(document.getElementById('chartLine'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Tendencia',
-        data: dataValues,
-        borderColor: '#198754',
-        fill: false,
-        tension: 0.4
-      }]
-    },
-    options:{
-        responsive:true,
-        maininAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom'
-            }
+new Chart(document.getElementById('chartLine'), {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [{
+      label: 'Tendencia',
+      data: dataValues,
+      borderColor: '#198754',
+      fill: false,
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+        ticks: {
+          stepSize: 10
         }
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'bottom'
+      }
     }
-  });
+  }
+});
+
+
 
 
 
@@ -234,7 +261,14 @@ document.addEventListener('DOMContentLoaded', () => {
       labels,
       datasets: [{
         data: dataValues,
-        backgroundColor: ['#0d6efd', '#dc3545', '#ffc107', '#198754']
+        backgroundColor: [
+        '#0a58ca', // primary dark
+        '#0d6efd', // primary
+        '#3d8bfd', // primary light
+        '#6ea8fe'  // primary softer
+        ]
+
+
       }]
     },
     options:{

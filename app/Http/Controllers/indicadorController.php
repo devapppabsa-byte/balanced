@@ -949,11 +949,6 @@ $fin = request()->filled('fecha_fin')
 
 
 
-
-
-
-//pruebas 
-
 //Consulta SQL que me tra el cumplimiento  de los indicadores multiplicados por su ponderacion.
  $subQuery = DB::table('indicadores_llenos as il')
     ->join('indicadores as i', 'i.id', '=', 'il.id_indicador')
@@ -968,6 +963,8 @@ $fin = request()->filled('fecha_fin')
     ")
     ->groupBy('il.id_indicador', 'mes', 'i.ponderacion');
 
+
+
 $cumplimientoIndicadoresMensual = DB::query()
     ->fromSub($subQuery, 't')
     ->selectRaw("
@@ -977,11 +974,6 @@ $cumplimientoIndicadoresMensual = DB::query()
     ->groupBy('mes')
     ->orderBy('mes')
     ->get();
-
-
-
-
-
 
 
 
@@ -1104,6 +1096,7 @@ $meses = collect()
     ->sort()
     ->values();
 
+    
 $cumplimiento_general = $meses->map(function ($mes) use ($indicadores, $encuestas, $normas) {
     return [
         'mes' => $mes,
@@ -1127,18 +1120,18 @@ $indicadores = Indicador::with('indicadorLleno')->where('id_departamento', $depa
 
     //Este codigo es para sacar el cumplimiento normativo
 
-    $inicio = Carbon::now()->startOfMonth();
-    $fin = Carbon::now()->endOfMonth();
-    $diasMes = $inicio->daysInMonth;
+$inicio = Carbon::now()->startOfMonth();
+$fin = Carbon::now()->endOfMonth();
+$diasMes = $inicio->daysInMonth;
 
 
 
-    $mesActual = now()->format('Y-m');
+$mesActual = now()->format('Y-m');
 
-    $normas = DB::table('norma')
-        ->where('id_departamento', $departamento->id)
-        ->select('id', 'nombre', 'meta_minima', 'meta_esperada')
-        ->get();
+$normas = DB::table('norma')
+    ->where('id_departamento', $departamento->id)
+    ->select('id', 'nombre', 'meta_minima', 'meta_esperada')
+    ->get();
 
 
 
