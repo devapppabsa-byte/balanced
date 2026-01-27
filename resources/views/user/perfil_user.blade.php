@@ -55,9 +55,7 @@
 
     @include('user.assets.nav')
 
-
 </div>
-
 
 
 
@@ -70,9 +68,11 @@
         </div>
      </div>
 
+     {{-- esta es la row de llos indicadores --}}
     <div class="row">
-      
+
       @if ($ponderacion == 100)
+       
           
         @forelse ($indicadores_list as $indicador)
           <div class="col-auto m-2">
@@ -84,6 +84,8 @@
           <li>No hay datos </li>
         @endforelse
 
+
+
       @else
 
           <div class="alert alert-danger border border-2 border-danger">
@@ -93,6 +95,11 @@
 
       @endif
     </div>
+   {{-- esta es la row de llos indicadores --}}
+
+
+
+
 </div>
 
 

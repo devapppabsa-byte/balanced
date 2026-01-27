@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\CampoForaneoInformacion;
 use Illuminate\Support\Str;
 use App\Models\CampoCalculado;
 use App\Models\CampoForaneo;
@@ -358,11 +359,18 @@ public function borrar_campo(Request $request, $campo){
     
     
 public function show_indicador_user(Indicador $indicador){
+    
+    //obtenemos la ultima fecha en la que se cargo el excel
+    $ultima_carga_excel = CampoForaneoInformacion::latest()->first();
+    $ultima_carga_indicador = IndicadorLleno::where('id_indicador', $indicador->id)->latest()->first();
+
+    //
+
 
 
 
     //le mandamos los admins para que les envie el correo de que ya se lleno el indicador
-  $correos = Admin::pluck('email')->toArray();
+    $correos = Admin::pluck('email')->toArray();
 
     //CONSULTA DE LOS CAMPOS
     //se consultan en la vista para que el usuario los rellene
@@ -424,7 +432,7 @@ public function show_indicador_user(Indicador $indicador){
     
 
 
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos', 'meta_minima_general', 'meta_maxima_general', 'tipo_indicador'));
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos', 'meta_minima_general', 'meta_maxima_general', 'tipo_indicador', 'ultima_carga_excel', 'ultima_carga_indicador'));
 
 
 

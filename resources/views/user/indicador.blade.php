@@ -61,12 +61,64 @@ use Carbon\Carbon;
 <div class="container-fluid">
     <div class="row border-bottom mb-2 bg-white">
 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-outline-primary btn-sm w-100 {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }}  " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
-                <i class="fa fa-plus"></i>
-                Llenar este Indicador
-            </button>
-        </div>
+
+    {{-- LOGICA DEL BLOQUEO DEL LLENADO DE INDICADORES- SE BLOQUEA SI YA SE LLENO ESTE MES Y SE BLOQUEA SI NO SE HA CARGADO EL EXCEL. --}}
+    
+        @php
+            $carga_excel = $ultima_carga_excel?->created_at?->format('Y-m') ?? '0000-00';    
+            $carga_indicador = $ultima_carga_indicador?->created_at?->format('Y-m') ?? '0000-00';
+            $ahora = now()->format('Y-m');
+
+
+            
+
+
+        @endphp
+
+
+
+        {{-- si la craga del excel es diferente a este mes y año o si la carga del indicador es menor o igual a ahora --}}
+        @if ($carga_excel !== $ahora  || $carga_indicador === $ahora)
+
+            @if ($carga_excel !== $ahora)
+                <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+                    <button class="btn btn-outline-primary btn-sm w-100" onclick="toastr.error('{{'El indicador aún no se puede llenar. Falta cargar información por parte del admin'}}', 'Error!')">
+                        <i class="fa fa-plus"></i>
+                        Llenar este Indicador (Aún no se carga el excel)
+                    </button>
+                </div>
+            @endif
+
+            @if ($carga_indicador === $ahora)
+                <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+                    <button class="btn btn-outline-primary btn-sm w-100" onclick="toastr.warning('{{'Ya se registro la información de este mes '}}', 'Aviso!')">
+                        <i class="fa fa-plus"></i>
+                        Ya se lleno el indicador este mes
+                    </button>
+                </div>
+            @endif
+
+
+
+
+            @else
+                <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+                    <button class="btn btn-outline-primary btn-sm w-100 {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
+                        <i class="fa fa-plus"></i>
+                        Llenar este Indicador
+                    </button>
+                </div>
+            @endif
+
+
+
+
+
+
+
+{{-- LOGICA DEL BLOQUEO DEL LLENADO DE INDICADORES- SE BLOQUEA SI YA SE LLENO ESTE MES Y SE BLOQUEA SI NO SE HA CARGADO EL EXCEL. --}}
+
+
 
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-outline-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#informacion_indicador">
