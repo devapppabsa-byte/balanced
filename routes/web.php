@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\apartadoNormaController;
+use App\Http\Controllers\perspectivaController;
 use App\Http\Controllers\quejasController;
 use App\Http\Controllers\normaController;
 use App\Http\Controllers\proveedorController;
@@ -244,6 +245,20 @@ Route::get('/perfil_admin/logs', [adminController::class, 'logs'])->name('logs.s
 
 
 
+
+
+//aqui van a ir las rutas para eso de las perspectivas
+Route::get('/perfil_admin/perspectivas', [perspectivaController::class, 'perspectivas_show'])->name('perspectivas.show');
+Route::post('/perfil_admin/perspectiva/store', [perspectivaController::class, 'perspectiva_store'])->name('perspectiva.store');
+Route::delete('/perfil_admin/perspectiva/delete/{perspectiva}', [perspectivaController::class, 'perspectiva_delete'])->name('eliminar.perspectiva');
+Route::patch('/perfil_admin/perspectiva/edit/{perspectiva}', [perspectivaController::class, 'edit_perspectiva'])->name('edit.perspectiva');
+Route::get('/perfil_admin/perspectiva/objetivo/{perspectiva}', [perspectivaController::class, 'detalle_perspectiva'])->name('detalle.perspectiva');
+
+
+Route::post('/perfil_admin/perspectiva/objetivo/post/{perspectiva}', [perspectivaController::class, 'objetivo_store'])->name('objetivo.store');
+Route::delete('/perfil_admin/perspectiva/objetivo/delete_objetivo/{objetivo}', [perspectivaController::class, 'objetivo_delete'])->name('objetivo.delete');
+Route::patch('/perfil_admin/perspectiva/objetivo/update/{objetivo}', [perspectivaController::class, 'objetivo_update'])->name('objetivo.update');
+//aqui van a ir las rutas para eso de las perspectivas
 
 
 

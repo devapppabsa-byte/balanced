@@ -99,8 +99,6 @@ use Carbon\Carbon;
             @endif
 
 
-
-
             @else
                 <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
                     <button class="btn btn-outline-primary btn-sm w-100 {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">

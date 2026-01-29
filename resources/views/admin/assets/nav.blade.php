@@ -199,4 +199,11 @@
         </a>
     </div>
 
+    <div class="col-auto">
+        <a href="{{ route('perspectivas.show') }}"class="admin-link">
+            <i class="fa-solid fa-magnifying-glass"></i>            
+            <span>Perspectivas</span>
+        </a>
+    </div>
+
 </div>
