@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('planta_2')->nullable();
             $table->string('planta_3')->nullable();
             $table->string('creador');
+            $table->string('id_objetivo_perspectiva')->nullable();
 
             
             $table->unsignedBigInteger('id_departamento');

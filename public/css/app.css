@@ -16,6 +16,18 @@ body{
 
 }
 
+.indicador-item:hover {
+    background-color: #f8f9fa;
+}
+
+.indicador-card:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+
+
+
 .border-dashed{
   border: dashed 2px; 
   border-color: gray;

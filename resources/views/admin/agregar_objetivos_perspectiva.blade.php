@@ -121,31 +121,88 @@
                             <div class="card-body p-4 d-flex flex-column">
 
                                 <!-- Nombre del Departamento -->
-                                <div class="flex-grow-1 mb-1">
-                                    <a href="{{ route('detalle.perspectiva', $objetivo->id) }}" 
-                                        class="text-decoration-none text-dark">
-                                        <h5 class="fw-bold mb-0 department-name text-truncate" data-mdb-tooltip-init title="{{ $objetivo->nombre }}" >
+                                <div class="flex-grow-1 mb-1 row">
+                                    <div class="col-12">
+                                        <h6 class="fw-bold mb-0 department-name text-truncate" data-mdb-tooltip-init title="{{ $objetivo->nombre }}" >
                                             <i class="fa-regular fa-eye me-2 text-primary"></i>
                                             {{ $objetivo->nombre }}
-                                        </h5>
-                                        <h4 class="text-center  fw-bold department-name p-2 mt-2 rounded bg-light">
-                                            Ponderación <br> {{ $objetivo->ponderacion }}%
-                                        </h4>
-                                    </a>
+                                        </h6>
+                                    </div> 
+                                    <div class="col-12 text-center mt-3">
+                                        <span class="text-center  fw-bold department-name p-2 mt-2 rounded">
+                                            Ponderación {{ $objetivo->ponderacion }}%
+                                        </span>
+                                    </div>
+                                    <hr>
+                                    <div class="col-12 ">
+                                        <span class="fw-bold">Indicadores:</span>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="row">
+
+                                            @php
+                                                $indicadoresObjetivo = \App\Models\Indicador::where(
+                                                    'id_objetivo_perspectiva',
+                                                    $objetivo->id
+                                                )->get();
+                                            @endphp
+
+                                            @forelse($indicadoresObjetivo as $indicador)
+
+                                                    <div class="col-12 my-2">
+
+                                                        <div class="p-2 rounded shadow-sm border bg-white indicador-card">
+
+                                                            <!-- Nombre -->
+                                                            <div class="fw-bold text-truncate" style="font-size: 14px;">
+                                                                {{ $indicador->nombre }}
+                                                            </div>
+
+                                                            <!-- Info secundaria -->
+                                                            <div class="d-flex gap-3 mt-1 flex-wrap text-muted" style="font-size: 13px;">
+
+                                                                <span>
+                                                                    <i class="fa-solid fa-percent me-1"></i>
+                                                                    {{ $indicador->ponderacion }}%
+                                                                </span>
+
+                                                                <span>
+                                                                    <i class="fa-solid fa-bullseye me-1"></i>
+                                                                    Meta: {{ $indicador->meta_esperada }}
+                                                                </span>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                            @empty
+
+                                                <div class="col-12 text-muted my-2">
+                                                    No tiene indicadores asignados.
+                                                </div>
+
+                                            @endforelse
+
+                                        </div>
+                                    </div>
+
+
+
                                 </div>
 
-                                <!-- Botón Principal -->
-                                <div class="mb-3 text-center">
-                                    <a href="{{ route('detalle.perspectiva', $objetivo->id) }}"
-                                        class=" w-100 fw-semibold">
-                                        <i class="fa-solid fa-magnifying-glass me-2"></i>                                        
-                                        Ver indicadores
-                                    </a>
-                                </div>
 
                                 <!-- Acciones -->
                                 <div class="d-flex justify-content-end align-items-center pt-2 border-top">
                                     <div class="btn-group" role="group">
+
+                                        <button class="btn btn-sm btn-outline-success text-capitalize" data-mdb-tooltip-init title="Agregr Indicador" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#add_in{{$objetivo->id}}">
+                                            <i class="fa-solid fa-plus-circle"></i>
+                                           Agregar Indicadores
+                                        </button>
                                         <button class="btn btn-sm btn-outline-primary" data-mdb-tooltip-init title="Editar " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#edit_ob{{$objetivo->id}}">
                                             <i class="fa-solid fa-edit"></i>
                                         </button>
@@ -153,6 +210,7 @@
                                         <button class="btn btn-sm btn-outline-danger" data-mdb-tooltip-init title="Eliminar" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#del_ob{{$objetivo->id}}">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
+                                    
                                     </div>
                                 </div>
                             </div>
@@ -165,11 +223,11 @@
                         <div class="mb-4">
                             <i class="fa-solid fa-eye text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
                         </div>
-                        <h5 class="text-muted mb-2">No se han registrado perspectivas.</h5>
+                        <h5 class="text-muted mb-2">No se han registrado objetivos.</h5>
                         <p class="text-muted mb-4">
-                            <small>Comienza agregando tu primer perspectiva.</small>
+                            <small>Comienza agregando tu primer objetivo a la perspectiva {{ $perspectiva->nombre }}.</small>
                         </p>
-                        <button class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_perspectiva">
+                        <button class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_objetivo">
                             <i class="fa-solid fa-plus-circle me-2"></i>
                             Agregar Perspectiva
                         </button>
@@ -251,7 +309,108 @@
 
 
 
+
+<div class="modal fade" id="detalle_indicador" tabindex="-1" aria-labelledby="agregarDepartamentoLabel" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white border-0 py-3">
+                <h5 class="modal-title fw-bold" id="agregarDepartamentoLabel">
+                    <i class="fa-solid fa-plus-circle me-2"></i>
+                    Detalles del indicador
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @foreach ($objetivos as $objetivo)
+
+
+    <div class="modal fade" id="add_in{{$objetivo->id}}" tabindex="-1" aria-labelledby="agregarDepartamentoLabel" aria-hidden="true" data-mdb-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold" id="agregarDepartamentoLabel">
+                        <i class="fa-solid fa-plus-circle me-2"></i>
+                        Indicadores Disponibles
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <form action="{{ route('add.indicador.objetivo', $objetivo->id) }}" method="POST">
+                        @csrf
+
+                        <div class="row justify-content-center">
+
+                            @forelse ($indicadores as $indicador)
+                                <div class="col-9 border my-2 mx-1 py-2 rounded indicador-item">
+
+                                    <label for="indicador{{ $indicador->id }}"
+                                        class="form-check w-100 indicador-label"
+                                        style="cursor: pointer;">
+
+                                        <input
+                                            class="form-check-input me-2 indicador-checkbox"
+                                            type="checkbox"
+                                            name="indicadores[]"
+                                            value="{{ $indicador->id }}"
+                                            id="indicador{{ $indicador->id }}"
+                                            {{ $indicador->id_objetivo_perspectiva != null ? 'disabled' : '' }}
+                                        >
+
+                                        <span style="font-size: 14px">
+                                            {{ $indicador->nombre }} (ID: {{ $indicador->id }})
+
+                                            @if($indicador->id_objetivo_perspectiva != null)
+                                                <span class="badge bg-danger ms-2">
+                                                    Ocupado
+                                                </span>
+                                            @else
+                                                <span class="badge bg-success ms-2">
+                                                    Disponible
+                                                </span>
+                                            @endif
+                                        </span>
+
+                                    </label>
+
+                                </div>
+
+
+                            @empty
+
+                                <div class="col-12 text-center">
+                                    No hay indicadores
+                                </div>
+
+                            @endforelse
+
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                Guardar selección
+                            </button>
+                        </div>
+
+                    </form>
+
+
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
 
     <div class="modal fade" id="del_ob{{$objetivo->id}}" tabindex="-1" aria-labelledby="eliminarDepartamentoLabel{{$objetivo->id}}" aria-hidden="true" data-mdb-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
@@ -364,11 +523,37 @@
         </div>
     </div>
 
-
-
-
-
-
-
-
 @endforeach
+
+@endsection
+
+
+@section('scripts')
+    
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Detectar click en cada indicador
+        document.querySelectorAll(".indicador-item").forEach(item => {
+
+            item.addEventListener("click", function (e) {
+
+                let checkbox = item.querySelector(".indicador-checkbox");
+
+                // Si está deshabilitado → mostrar toastr
+                if (checkbox.disabled) {
+
+                    e.preventDefault();
+
+                    toastr.warning("Este indicador ya está ocupado y no se puede seleccionar.");
+
+                }
+
+            });
+
+        });
+
+});
+</script>
+
+@endsection
+

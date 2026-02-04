@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Perspectiva;
+use App\Models\Indicador;
 use App\Models\Objetivo;
 class perspectivaController extends Controller
 {
@@ -11,6 +12,7 @@ class perspectivaController extends Controller
     public function perspectivas_show(){
 
         $perspectivas = Perspectiva::get();
+
 
         return view('admin.agregar_perspectivas', compact('perspectivas'));
     
@@ -70,10 +72,11 @@ class perspectivaController extends Controller
 
     public function detalle_perspectiva(Perspectiva $perspectiva){
 
-        $objetivos = Objetivo::get();
+        $objetivos = Objetivo::where('id_perspectiva', $perspectiva->id)->get();
+        $indicadores = Indicador::get();
 
 
-        return view('admin.agregar_objetivos_perspectiva', compact('perspectiva', 'objetivos'));
+        return view('admin.agregar_objetivos_perspectiva', compact('perspectiva', 'objetivos', 'indicadores'));
 
     }
 
@@ -133,6 +136,31 @@ class perspectivaController extends Controller
         return back()->with('success', 'Se agrego el objetivo!');
 
     }
+
+
+
+
+    public function add_indicador_objetivo(Request $request, Objetivo $objetivo){
+
+
+    $request->validate([
+        'indicadores' => 'required|array|min:1',
+        'indicadores.*' => 'integer|exists:indicadores,id',
+    ]);
+
+
+
+    // IDs seleccionados
+  $idsIndicadores = $request->indicadores;
+
+    Indicador::whereIn('id', $idsIndicadores)
+        ->update([
+            'id_objetivo_perspectiva' => $objetivo->id
+        ]);
+
+    return back()->with('success', 'Indicadores asignados correctamente.');
+}
+
 
 
 

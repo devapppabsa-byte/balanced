@@ -128,7 +128,7 @@
                                         class="text-decoration-none text-dark">
                                         <h5 class="fw-bold mb-0 department-name">
                                             <i class="fa-regular fa-eye me-2 text-primary"></i>
-                                            {{ $perspectiva->nombre }}
+                                            {{ $perspectiva->nombre }}   {{ $perspectiva->id }}
                                         </h5>
                                     </a>
                                 </div>
