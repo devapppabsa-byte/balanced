@@ -259,6 +259,8 @@ Route::post('/perfil_admin/perspectiva/objetivo/post/{perspectiva}', [perspectiv
 Route::delete('/perfil_admin/perspectiva/objetivo/delete_objetivo/{objetivo}', [perspectivaController::class, 'objetivo_delete'])->name('objetivo.delete');
 Route::patch('/perfil_admin/perspectiva/objetivo/update/{objetivo}', [perspectivaController::class, 'objetivo_update'])->name('objetivo.update');
 Route::post('/perfil_admin/perspectiva/objetivo/agregar_indicador_a_objetivo/{objetivo}', [perspectivaController::class, 'add_indicador_objetivo'])->name('add.indicador.objetivo');
+Route::post('/perfil_admin/perspectiva/objetivo/agregar_ponderacion/{indicador}', [perspectivaController::class, 'agregar_ponderacion_indicador_objetivo'])->name('agregar.ponderacion.indicador.objetivo');
+
 
 //aqui van a ir las rutas para eso de las perspectivas
 

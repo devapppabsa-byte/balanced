@@ -81,7 +81,6 @@ class perspectivaController extends Controller
     }
 
 
-
     public function objetivo_delete(Objetivo $objetivo){
 
         $objetivo->delete();
@@ -143,24 +142,46 @@ class perspectivaController extends Controller
     public function add_indicador_objetivo(Request $request, Objetivo $objetivo){
 
 
-    $request->validate([
-        'indicadores' => 'required|array|min:1',
-        'indicadores.*' => 'integer|exists:indicadores,id',
-    ]);
-
-
-
-    // IDs seleccionados
-  $idsIndicadores = $request->indicadores;
-
-    Indicador::whereIn('id', $idsIndicadores)
-        ->update([
-            'id_objetivo_perspectiva' => $objetivo->id
+        $request->validate([
+            'indicadores' => 'required|array|min:1',
+            'indicadores.*' => 'integer|exists:indicadores,id',
         ]);
 
-    return back()->with('success', 'Indicadores asignados correctamente.');
-}
 
+
+        // IDs seleccionados
+    $idsIndicadores = $request->indicadores;
+
+        Indicador::whereIn('id', $idsIndicadores)
+            ->update([
+                'id_objetivo_perspectiva' => $objetivo->id
+            ]);
+
+        return back()->with('success', 'Indicadores asignados correctamente.');
+    }
+
+
+
+    public function agregar_ponderacion_indicador_objetivo(Indicador $indicador, Request $request ){
+
+        
+        $request->validate([
+
+            "ponderacion_indicador" => "required"
+
+        ]);
+
+
+
+        $indicador->ponderacion_indicador = $request->ponderacion_indicador;
+        $indicador->save();
+
+
+
+
+        return back()->with('success', 'La ponderación fue guardada');
+
+    }
 
 
 
