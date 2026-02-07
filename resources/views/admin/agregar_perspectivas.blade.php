@@ -117,6 +117,11 @@
         
                 <!-- Departamentos Grid -->
             <div class="row g-4">
+
+                @php
+                    $total_cumplimiento_perspectiva = 0;
+                @endphp
+
                 @forelse ($perspectivas as $perspectiva)
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                         <div class="card border-0 shadow-sm h-100 department-card">
@@ -128,19 +133,92 @@
                                         class="text-decoration-none text-dark">
                                         <h5 class="fw-bold mb-0 department-name">
                                             <i class="fa-regular fa-eye me-2 text-primary"></i>
-                                            {{ $perspectiva->nombre }}   {{ $perspectiva->id }}
+                                            {{ $perspectiva->nombre }}   -   Ponderación: {{ $perspectiva->ponderacion }}%
                                         </h5>
                                     </a>
                                 </div>
 
                                 <!-- Botón Principal -->
-                                <div class="mb-3 text-center">
+                                <div class="my-4 text-center">
                                     <a href="{{ route('detalle.perspectiva', $perspectiva->id) }}"
                                         class=" w-100 fw-semibold">
                                         <i class="fa-solid fa-magnifying-glass me-2"></i>                                        
                                         Explorar Perspectiva
                                     </a>
                                 </div>
+
+
+                                <div class="row">
+
+
+
+                                    @forelse ($perspectiva->objetivos as $objetivo)
+
+
+                                        @php
+
+                                            $indicadoresObjetivo = \App\Models\Indicador::where(
+                                                'id_objetivo_perspectiva',
+                                                $objetivo->id
+                                            )->get();
+
+                                            $suma_ponderacion = 0;                                            
+                                        
+                                        @endphp
+                                        
+
+
+                                        {{-- de aqui se esta mostrando el nombre del objetivo, el resultadoi esta mas abajo --}}
+
+                                        <h5 class="league-spartan">
+                                        {{ $objetivo->nombre }} :
+                                        </h5>
+                                        @forelse ($indicadoresObjetivo  as $indicador)
+                                            {{-- //Aqui tengo que consultar la informacion del indicador lleno y sumarla
+                                            //despues de sumarla la multiplico por la ponderacion que se le dio al
+                                            //indicador dentro del objetivo y sumo todo para obtener el porcentaje general --}}
+
+
+                                            {{-- Operaciones para realizar la suma de los resultados de cada indicador en el objetivo. --}}
+                                            @php
+
+                                              $suma_ponderacion = $suma_ponderacion +  ($objetivo->ponderacion * $indicador->ponderacion_indicador)/ 100
+                                                
+                                            @endphp
+                                            
+                                            
+                                            @empty
+                                            
+                                            
+                                            
+                                            @endforelse
+                                            
+                                            <h4 class="fw-bold">{{ $suma_ponderacion }}%</h4>
+                                            @php
+                                                 $total_cumplimiento_perspectiva = $total_cumplimiento_perspectiva + $suma_ponderacion;
+                                            @endphp
+
+                                            <br>
+                                    
+                                    @empty
+
+                                        <span class="text-muted text-center">No hay datos.</span>
+                                        
+                                    @endforelse
+
+                                </div>
+
+
+
+                                <h5 class="mt-5 fw-bold">
+                                    Total cumplimiento del indicador:
+                                </h5>
+                                <h3 class="fw-bold">
+                                    {{ $total_cumplimiento_perspectiva }}%
+                                </h3>
+
+
+
 
                                 <!-- Acciones -->
                                 <div class="d-flex justify-content-end align-items-center pt-2 border-top">

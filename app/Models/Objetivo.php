@@ -11,7 +11,9 @@ class Objetivo extends Model
 
 
 
-    public function perpectiva(){
+    public function perspectiva(){
+        
         return $this->belongsTo(Perspectiva::class, 'id_perspectiva');
+
     }
 }

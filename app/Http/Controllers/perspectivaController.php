@@ -11,12 +11,12 @@ class perspectivaController extends Controller
 
     public function perspectivas_show(){
 
-        $perspectivas = Perspectiva::get();
-
+        $perspectivas = Perspectiva::with('objetivos')->get();
 
         return view('admin.agregar_perspectivas', compact('perspectivas'));
     
     }
+
 
 
     public function perspectiva_store(Request $request){

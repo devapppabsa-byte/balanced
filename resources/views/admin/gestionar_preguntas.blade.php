@@ -615,7 +615,7 @@
                                 <i class="fa-solid fa-info-circle me-2"></i>
                                 <small>
                                     <strong>Nota:</strong> Las preguntas de las encuestas para los clientes se evaluarán con: 
-                                    <strong>De acuerdo, parcialmente de acuerdo, en desacuerdo.</strong>
+                                    <strong>una puntuación del 1 al 10.</strong>
                                     Por lo que se deben poner preguntas que se puedan contestar.
                                 </small>
                             </div>

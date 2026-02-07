@@ -191,6 +191,14 @@
         </a>
     </div>
 
+
+    <div class="col-auto">
+        <a href="{{ route('perspectivas.show') }}" class="admin-link {{ request()->routeIs('perspectivas.show') ? 'active' : '' }}">
+            <i class="fa-solid fa-magnifying-glass"></i>            
+            <span>Perspectivas</span>
+        </a>
+    </div>
+
     <div class="col-auto">
         <a href="{{ route('logs.show.admin') }}"
            class="admin-link {{ request()->routeIs('logs.show.admin') ? 'active' : '' }}">
@@ -199,11 +207,6 @@
         </a>
     </div>
 
-    <div class="col-auto">
-        <a href="{{ route('perspectivas.show') }}"class="admin-link">
-            <i class="fa-solid fa-magnifying-glass"></i>            
-            <span>Perspectivas</span>
-        </a>
-    </div>
+
 
 </div>

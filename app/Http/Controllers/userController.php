@@ -490,7 +490,7 @@ $cumplimiento_general = $meses->map(function ($mes) use ($indicadores, $encuesta
 
 
 
-        $usuarios = User::get();
+        $usuarios = User::orderBy('created_at', 'desc' )->get();
         $departamentos = Departamento::get();
 
         return view('admin.gestionar_usuarios', compact('usuarios', 'departamentos'));

@@ -159,13 +159,13 @@
                                 </button>
                             </div>
                             
-                            @if(session('eliminado_user'))
+                            {{-- @if(session('eliminado_user'))
                             <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
                                 <i class="fas fa-exclamation-circle me-2"></i>
                                 {{ session('eliminado_user') }}
                                 <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            @endif
+                            @endif --}}
                         </div>
                         
                         <div class="card-body p-4">
