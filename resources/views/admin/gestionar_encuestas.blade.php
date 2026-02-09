@@ -315,12 +315,7 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <div class="form-outline" data-mdb-input-init>
-                                <input type="text" 
-                                       class="form-control {{ $errors->first('nombre_encuesta') ? 'is-invalid' : '' }}" 
-                                       id="nombre_encuesta" 
-                                       value="{{old('nombre_encuesta')}}" 
-                                       name="nombre_encuesta" 
-                                       required>
+                                <input type="text" class="form-control {{ $errors->first('nombre_encuesta') ? 'is-invalid' : '' }}" id="nombre_encuesta" value="{{old('nombre_encuesta')}}" name="nombre_encuesta" required>
                                 <label class="form-label" for="nombre_encuesta">
                                     Nombre de la Encuesta
                                     <span class="text-danger">*</span>
@@ -371,6 +366,7 @@
                                 </div>
                             @endif
                         </div>
+                        
 
                         <div class="col-12 col-md-6">
                             <div class="form-outline" data-mdb-input-init>

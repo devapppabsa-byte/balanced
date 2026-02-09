@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('campos_foraneos_informacion', function (Blueprint $table) {
             $table->id();
             $table->string('informacion');
+            $table->string('mes');
+            $table->string('year');
             $table->unsignedBigInteger('id_campo_foraneo');
             $table->foreign('id_campo_foraneo')
                   ->references('id')

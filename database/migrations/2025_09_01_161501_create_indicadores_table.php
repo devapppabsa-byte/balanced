@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('meta_esperada')->nullable()->default('Esperando meta');
             $table->string('meta_minima')->nullable()->default('Esperando meta minima');
-            $table->string('descripcion')->nullable()->default('Sin descripción disponible.');
+            $table->text('descripcion')->nullable()->default('Sin descripción disponible.');
             $table->string('ponderacion');
             $table->string('tipo_indicador');
             $table->string('planta_1')->nullable();

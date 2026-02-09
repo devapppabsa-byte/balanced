@@ -649,7 +649,7 @@
                 <div class="col-12 mt-3 ">
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="number" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador1" name="ponderacion_indicador" required ></textarea>
+                            <input type="number" step="any" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador1" name="ponderacion_indicador" required ></textarea>
                             <label class="form-label" for="ponderacion_indicador">Ponderación Indicador dentro de la evaluación total  <span class="text-danger">*</span></label>
                         </div>
                     </div>

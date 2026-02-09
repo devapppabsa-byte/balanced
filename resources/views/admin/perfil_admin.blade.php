@@ -200,8 +200,11 @@ document.addEventListener("DOMContentLoaded", function () {
 @endif
 
 @empty
-<div class="col-12 text-center py-5">
-    <h4>No hay departamentos</h4>
+<div class="col-8 text-center py-5 bg-white">
+    <h4>
+        <i class="fa-solid fa-building"></i>
+        No hay departamentos
+    </h4>
 </div>
 @endforelse
 

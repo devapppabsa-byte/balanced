@@ -167,8 +167,9 @@ use Carbon\Carbon;
     $meta_maxima = $metas->meta_maxima ?? 0;
 
     Carbon::setLocale('es');
-    $mes  = ucfirst($items[0]->created_at->translatedFormat('F'));
-    $year = ucfirst($items[0]->created_at->translatedFormat('Y'));
+    $fecha = $items[0]->created_at->copy()->subMonth();
+    $mes  = ucfirst($fecha->translatedFormat('F'));
+    $year = ucfirst($fecha->translatedFormat('Y'));
 @endphp
 
 <div class="col-12 col-lg-4 mt-3">
@@ -241,9 +242,9 @@ use Carbon\Carbon;
                                 {{ $item->nombre_campo }}
                             </h6>
 
-                            <h4 class="fw-bold mb-0">
-                                {{ $item->informacion_campo }}
-                            </h4>
+                            <h3 class="fw-bold mb-0">
+                                {{ $item->informacion_campo }} %
+                            </h3>
 
                         </div>    
 
@@ -279,7 +280,7 @@ use Carbon\Carbon;
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header bg-primary text-white py-2">
-                                    <h6 class="modal-title">{{ $indicador->nombre }}</h6>
+                                    <h6 class="modal-title">{!! $indicador->nombre !!}</h6>
                                     <button class="btn-close" data-mdb-dismiss="modal"></button>
                                 </div>
                                 <div class="modal-body small">
@@ -388,8 +389,8 @@ use Carbon\Carbon;
 
                     @if (!$campos_vacios->isEmpty() )
                         <div class="col-12 bg-light p-3 rounded">
-                            <label>Comentario del Indicador: </label>
-                            <textarea type="text" name="comentario" placeholder="Comentario" class="form-control"></textarea>
+                            <label>Información extra para el Indicador: </label>
+                            <textarea type="text" id="editor" name="comentario" placeholder="Agregar información extra o comentario" class="form-control"></textarea>
                         </div>
                 </form>
 
@@ -546,7 +547,7 @@ use Carbon\Carbon;
     // Labels
     const labels = datosFinal.map(item => {
         const fecha = new Date(item.created_at);
-        return mesesES[fecha.getMonth()];
+        return mesesES[fecha.getMonth()-1];
     });
 
     // Valores FINAL
@@ -644,9 +645,35 @@ use Carbon\Carbon;
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: { position: "top" }
-            },
+        plugins: {
+            legend: { position: "top" },
+
+            tooltip: {
+                enabled: true,
+
+                titleFont: {
+                    size: 18
+                },
+                bodyFont: {
+                    size: 16
+                },
+                padding: 12,
+
+                callbacks: {
+                    label: function(context) {
+                        let label = context.dataset.label || '';
+                        let value = context.raw;
+
+                        if (value !== null) {
+                            return `${label}: ${value}%`;
+                        }
+
+                        return label;
+                    }
+                }
+            }
+        },
+
             scales: {
                 y: { beginAtZero: true }
             }

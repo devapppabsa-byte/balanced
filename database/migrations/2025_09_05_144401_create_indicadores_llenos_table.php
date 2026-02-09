@@ -15,12 +15,12 @@ return new class extends Migration
 
             $table->id();
             $table->string("nombre_campo");
-            $table->string("informacion_campo");
+            $table->text("informacion_campo");
             $table->string("id_movimiento");
-            $table->string('planta');
+
             $table->unsignedBigInteger('id_indicador');
-            $table->string('final');
-            $table->string('referencia');
+            $table->string('final')->nullable();
+            $table->string('referencia')->nullable();
 
             $table->foreign('id_indicador')
                   ->references('id')

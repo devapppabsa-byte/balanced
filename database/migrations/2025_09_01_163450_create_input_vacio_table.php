@@ -15,9 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string("id_input");
             $table->string('nombre');
-            $table->string('tipo');
             $table->string('autor')->nullable();
-            $table->string('descripcion')->nullable()->default('Sin descripción disponible');
+            $table->string('descripcion');
 
             $table->unsignedBigInteger('id_indicador');
             $table->foreign('id_indicador')

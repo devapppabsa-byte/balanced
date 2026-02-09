@@ -534,32 +534,25 @@ new Chart(ctx, {
 </script> --}}
 <script>
     const datos = @json($graficar);
-
-    const TIPO_INDICADOR = "{{ $tipo_indicador }}"; // "riesgo" o normal
+    const TIPO_INDICADOR = "{{ $tipo_indicador }}";
 
     const mesesES = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
 
-    // FINAL
     const datosFinal = datos.filter(d => d.final === 'on');
-
-    // REFERENCIA
     const datosReferencia = datos.filter(d => d.referencia === 'on');
 
-    // Labels
     const labels = datosFinal.map(item => {
         const fecha = new Date(item.created_at);
-        return mesesES[fecha.getMonth()];
+        return mesesES[fecha.getMonth() - 1];
     });
 
-    // Valores FINAL
     const valores = datosFinal.map(item =>
         parseFloat(item.informacion_campo)
     );
 
-    // Valores REFERENCIA alineados
     const valoresReferencia = datosFinal.map(finalItem => {
         const ref = datosReferencia.find(r =>
             r.id_movimiento === finalItem.id_movimiento
@@ -570,94 +563,97 @@ new Chart(ctx, {
     const MINIMO = {{ $indicador->meta_minima }};
     const MAXIMO = {{ $indicador->meta_esperada }};
 
-    // Colores dinámicos para líneas
     const colorMinimo = TIPO_INDICADOR === 'riesgo' ? "green" : "red";
-    const colorMaximo = TIPO_INDICADOR === 'riesgo' ? "red"   : "green";
+    const colorMaximo = TIPO_INDICADOR === 'riesgo' ? "red" : "green";
 
-    const ctx = document.getElementById('grafico').getContext('2d');
+    const ctx = document.getElementById("grafico");
 
-    new Chart(ctx, {
+    // ✅ DESTRUIR CHART ANTES DE CREAR OTRO
+    if (window.miGrafica) {
+        window.miGrafica.destroy();
+    }
+
+    // ✅ CREAR UNA SOLA VEZ
+    window.miGrafica = new Chart(ctx, {
+        type: "bar",
         data: {
             labels: labels,
             datasets: [
 
-                // BARRAS
                 {
-                    type: "bar",
                     label: "Cumplimiento del Indicador",
                     data: valores,
-                    backgroundColor: function (context) {
+                    backgroundColor: (context) => {
                         const value = context.raw;
 
-                        if (TIPO_INDICADOR === 'riesgo') {
+                        if (TIPO_INDICADOR === "riesgo") {
                             return value < MINIMO
-                                ? "rgba(75, 192, 75, 0.7)"   // verde = bajo riesgo
-                                : "rgba(255, 99, 132, 0.7)"; // rojo = alto riesgo
+                                ? "rgba(75,192,75,0.7)"
+                                : "rgba(255,99,132,0.7)";
                         }
 
                         return value < MINIMO
-                            ? "rgba(255, 99, 132, 0.7)"
-                            : "rgba(75, 192, 75, 0.7)";
-                    },
-                    borderColor: function (context) {
-                        const value = context.raw;
-
-                        if (TIPO_INDICADOR === 'riesgo') {
-                            return value < MINIMO ? "green" : "red";
-                        }
-
-                        return value < MINIMO ? "red" : "green";
+                            ? "rgba(255,99,132,0.7)"
+                            : "rgba(75,192,75,0.7)";
                     },
                     borderWidth: 1
                 },
 
-                //  REFERENCIA
                 {
                     type: "line",
                     label: "Referencia",
                     data: valoresReferencia,
-                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderColor: "rgba(54,162,235,1)",
                     borderWidth: 3,
-                    fill: false,
                     tension: 0.3,
                     spanGaps: true,
                     pointRadius: 5
                 },
 
-                // verde / rojo NIVEL MÍNIMO
                 {
                     type: "line",
                     label: "Nivel mínimo",
                     data: valores.map(() => MINIMO),
                     borderColor: colorMinimo,
                     borderWidth: 2,
-                    fill: false,
                     pointRadius: 0
                 },
 
-                // rojo / verde NIVEL MÁXIMO
                 {
                     type: "line",
                     label: "Nivel máximo",
                     data: valores.map(() => MAXIMO),
                     borderColor: colorMaximo,
                     borderWidth: 2,
-                    fill: false,
                     pointRadius: 0
                 }
             ]
         },
+
         options: {
             responsive: true,
+
+            // ✅ ESTO ELIMINA EL TEMBLOR
+            maintainAspectRatio: false,
+
+            // ✅ QUITA ANIMACIONES MOLESTAS
+            animation: false,
+
             plugins: {
-                legend: { position: "top" }
+                legend: {
+                    position: "top"
+                }
             },
+
             scales: {
-                y: { beginAtZero: true }
+                y: {
+                    beginAtZero: true
+                }
             }
         }
     });
 </script>
+
 
 
 
