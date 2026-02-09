@@ -26,6 +26,57 @@ body{
 }
 
 
+/* estoliza las tablas agregadas */
+.ck-content table {
+  border: none !important;
+}
+/* 
+.ck-content table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.ck-content {
+  overflow-x: auto;
+}
+
+.ck-content {
+  overflow-x: auto;
+}
+
+.ck-content table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.ck-content td,
+.ck-content th {
+  min-width: 150px;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.ck.ck-balloon-panel {
+  z-index: 200000 !important;
+}
+
+.ck .ck-widget__type-around,
+.ck .ck-widget__selection-handle,
+.ck .ck-table-column-resizer {
+  z-index: 200000 !important;
+}
+
+.modal {
+  overflow: visible !important;
+} */
+
+
+
+
+
+
+/* estiliza las tablas agregadas */
 
 
 .border-dashed{

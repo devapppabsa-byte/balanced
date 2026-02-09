@@ -226,7 +226,9 @@ public function show_respuestas(Cliente $cliente, Encuesta $encuesta){
 }
 
 public function queja_cliente(Request $request){
-    
+
+
+
     $cliente = Auth::guard('cliente')->user();
     $autor = 'Cliente ID: '.$cliente->id.' - '.$cliente->nombre;
 

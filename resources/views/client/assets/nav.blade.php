@@ -50,11 +50,11 @@
                         </div>
 
                         <div class="form-group">
-                            <div id="editor" style="height: 100px">
-
-                            </div>
+                            <div id="editor_queja"></div>
                             <input type="hidden" name="queja" id="queja">
                         </div>
+
+                        
                     </div>
                     <div class="col-12 mt-4">
                         <input type="file" accept=".jpeg, .jpg, .pdf, .mp4" name="evidencia[]" class="form-control" multiple>

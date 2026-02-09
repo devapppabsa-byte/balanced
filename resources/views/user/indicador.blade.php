@@ -272,7 +272,7 @@ use Carbon\Carbon;
                         <button class="btn btn-outline-secondary btn-sm py-1 px-2"
                                 data-mdb-modal-init
                                 data-mdb-target="#com{{ $item->id }}">
-                            <i class="fa fa-comment"></i> Comentario
+                            <i class="fa fa-table"></i> Iniformación Extra
                         </button>
                     </div>
 
@@ -280,11 +280,11 @@ use Carbon\Carbon;
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header bg-primary text-white py-2">
-                                    <h6 class="modal-title">{!! $indicador->nombre !!}</h6>
+                                    <h6 class="modal-title">Inidcador: {!! $indicador->nombre !!}</h6>
                                     <button class="btn-close" data-mdb-dismiss="modal"></button>
                                 </div>
-                                <div class="modal-body small">
-                                    {{ $item->informacion_campo }}
+                                <div class="modal-body small ck-content">
+                                    {!! $item->informacion_campo !!}
                                 </div>
                             </div>
                         </div>
@@ -355,29 +355,36 @@ use Carbon\Carbon;
                 <form id="formulario_llenado_indicadores" method="POST" action="{{route('llenado.informacion.indicadores', $indicador->id)}}" class="row gap-4 p-2 justify-content-center form-loader">
                     @csrf
                     @forelse ($campos_vacios as $campo_vacio)
-                        <div class="col-11  col-sm-11 col-md-4 col-lg-3  text-start border border-4 mb-4 p-3 shadow-sm campos_vacios ">
-                            <div class="row justify-content-center">
-                                <div class="col-12">
-                                    <label for="" class="fw-bold">{{$campo_vacio->nombre}}</label>
-                                </div>
-                                <div class="col-12">
-                                    <input type="number" step="0.0001"  min="0" class="form-control input" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="{{$campo_vacio->nombre}}" required>
 
-                                    {{-- campos ocultos para llevar informacion al controlador --}}
-                                        <input type="hidden" name="id_input[]" value="{{$campo_vacio->id}}">
-                                        <input type="hidden" name="tipo_input[]" value="{{$campo_vacio->tipo}}">
-                                        <input type="hidden" name="id_input_vacio[]" value="{{$campo_vacio->id_input}}">
-                                        <input type="hidden" name="nombre_input_vacio[]" value="{{$campo_vacio->nombre}}"">
+                    <div class="col-11 col-sm-11 col-md-4 col-lg-3 mb-4">
 
-                                    {{-- campos ocultos para llevar informacion al controlador --}}
+                        <div class="p-3 rounded-4 shadow-sm border bg-white campos_vacios h-100">
 
-                                </div>
-                                <div class="col-11 bg-light m-4">
-                                    <small>{{$campo_vacio->descripcion}}</small>
-                                </div>
+                            {{-- Nombre del campo --}}
+                            <label class="fw-semibold mb-2 text-dark">
+                                {{$campo_vacio->nombre}}
+                            </label>
+
+                            {{-- Input --}}
+                            <input  type="number" step="0.0001" min="0" class="form-control form-control-sm" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="Ingrese {{$campo_vacio->nombre}}" require >
+
+                            {{-- Campos ocultos (NO se tocan) --}}
+                            <input type="hidden" name="id_input[]" value="{{$campo_vacio->id}}">
+                            <input type="hidden" name="tipo_input[]" value="{{$campo_vacio->tipo}}">
+                            <input type="hidden" name="id_input_vacio[]" value="{{$campo_vacio->id_input}}">
+                            <input type="hidden" name="nombre_input_vacio[]" value="{{$campo_vacio->nombre}}">
+
+                            {{-- Descripción --}}
+                            <div class="mt-2 p-2 bg-light rounded-3">
+                                <small class="text-muted">
+                                    {{$campo_vacio->descripcion}}
+                                </small>
                             </div>
-                            
-                        </div>  
+
+                        </div>
+
+                    </div>
+
                     @empty
                         <div class="col-11 border border-4 p-5 text-center">
                             <h2>
@@ -388,9 +395,14 @@ use Carbon\Carbon;
                     @endforelse
 
                     @if (!$campos_vacios->isEmpty() )
-                        <div class="col-12 bg-light p-3 rounded">
-                            <label>Información extra para el Indicador: </label>
-                            <textarea type="text" id="editor" name="comentario" placeholder="Agregar información extra o comentario" class="form-control"></textarea>
+                        <div class="col-12 bg-light p-3 rounded ql-toolbar">
+                            <label> <i class="fa fa-table"></i> Información extra para el Indicador: </label>
+
+                        <div class="form-group">
+                            <div id="editor_info_extra"></div>
+                            <input type="hidden" name="info_extra" id="info_extra">
+                        </div>
+
                         </div>
                 </form>
 

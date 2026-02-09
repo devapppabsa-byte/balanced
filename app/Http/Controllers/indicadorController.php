@@ -1309,6 +1309,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 public function llenado_informacion_indicadores(Indicador $indicador, Request $request){
 
 
+
     $nombre_usuario = auth()->user()->name;
     $year = Carbon::now()->year;
     $mes = Carbon::now()->subMonth()->translatedFormat('F');
@@ -1675,12 +1676,12 @@ foreach($inputs_precargados as $index_precargados => $precargado){
         //AQUI ESTA EL CODIGO De la persona que gusrada el indicador        
 
         //DEsde aqui se guarda el campo del comenatario
-        if($request->comentario != null){
+        if($request->info_extra != null){
 
             IndicadorLleno::create([
 
                 'nombre_campo' => "comentario",
-                'informacion_campo' => $request->comentario,
+                'informacion_campo' => $request->info_extra,
                 'id_indicador' => $indicador->id,
                 'id_movimiento' => $id_movimiento,
                 'final' => 'comentario'

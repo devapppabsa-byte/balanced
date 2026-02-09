@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{{asset('css/toastr.min.css')}}">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill-better-table@1.2.10/dist/quill-better-table.css"/>
     <style>
 
         body{
@@ -91,10 +91,16 @@
     <script src="{{asset('js/interact.min.js')}}"></script>
     <script src="{{asset('js/draggable.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill-better-table@1.2.10/dist/quill-better-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+
+
+
 
     <script>
             toastr.options = {
@@ -144,22 +150,96 @@
     </script>
 
 
-    <script>
 
-        if(document.getElementById('editor')){
-    
-            const editor = new Quill("#editor", {theme:'snow',})
-            
-            const formulario = document.getElementById('formularioQueja')
-            formulario.addEventListener('submit', function(e){
-                
-                document.getElementById('queja').value = editor.root.innerHTML;
-                
-            })        
-        }
 
-    </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    let editorInstance;
+
+ClassicEditor
+  .create(document.querySelector("#editor_queja"), {
+    toolbar: [
+      "bold",
+      "italic",
+      "insertTable",
+      "undo",
+      "redo"
+    ],
+    table: {
+      contentToolbar: [
+        "tableColumn",
+        "tableRow",
+        "mergeTableCells"
+      ]
+    }
+    // No incluyas "link" en la toolbar
+  })
+  .then(editor => {
+    editor.model.document.on("change:data", () => {
+      document.querySelector("#queja").value = editor.getData();
+    });
+  })
+  .catch(error => console.error(error));
+
+
+});
+
+
+
+</script>
+
+
+
+
+
+
+<script>
+
+if(document.getElementById('info_extra')){
+document.addEventListener("DOMContentLoaded", function () {
+
+    let editorInstance;
+
+ClassicEditor
+  .create(document.querySelector("#editor_info_extra"), {
+    toolbar: [
+      "bold",
+      "italic",
+      "insertTable",
+      "undo",
+      "redo"
+    ],
+    table: {
+      contentToolbar: [
+        "tableColumn",
+        "tableRow",
+        "mergeTableCells"
+      ]
+    }
+    // No incluyas "link" en la toolbar
+  })
+  .then(editor => {
+    editor.model.document.on("change:data", () => {
+      document.querySelector("#info_extra").value = editor.getData();
+    });
+  })
+  .catch(error => console.error(error));
+
+
+});
+
+}
+</script>
+    {{-- Libreria de texto enriquecido --}}
+
     
+
+    
+
+
+
+
     <script>
         if(document.getElementById("fecha")){
             let mostrar_fecha = document.getElementById("fecha");

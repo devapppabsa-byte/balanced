@@ -75,9 +75,9 @@
             @forelse ($quejas as $queja)
                 <div class="col-10 col-sm-10 col-md-5 col-lg-3 bg-white m-2 p-3 border border-3 rounded-3 shadow">
                         <h4>{{$queja->titulo}}</h4>
-                        <p class="text-justify p-2">
+                        <div class="text-justify p-2 ck-content">
                             {!!$queja->queja!!}
-                        </p>
+                        </div>
                         <a href="{{route('seguimiento.quejas.cliente', $queja->id)}}" class="btn btn-success btn btn-sm">
                             <i class="fa fa-paper-plane mx-1"></i>
                             Seguimiento
