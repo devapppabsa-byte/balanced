@@ -233,7 +233,7 @@ $cumplimiento = DB::query()
              "id_cliente" => "required|unique:clientes,id_interno",
              "nombre_cliente" => "required",
              "correo_cliente" => "required",
-             "telefono_cliente" => "required",
+            //  "telefono_cliente" => "required",
              "password_cliente" => "required",
              "linea" => "required"
 
@@ -310,7 +310,7 @@ $cumplimiento = DB::query()
             "nombre_cliente_edit" => "required",
             "linea_edit" => "required",
             "correo_cliente_edit" => "required",
-            "telefono_cliente_edit" => "required" 
+            // "telefono_cliente_edit" => "required" 
         ]);
 
         // Capturar estado anterior para el log

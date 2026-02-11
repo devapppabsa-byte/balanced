@@ -125,7 +125,7 @@
 
 </style>
 
- <div class="row py-2 admin-nav">
+ <div class="row py-2 admin-nav sticky-top">
     
     <div class="col-auto">
         <a href="{{ route('perfil.admin') }}"

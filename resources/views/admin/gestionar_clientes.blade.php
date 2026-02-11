@@ -56,7 +56,7 @@
             <!-- Header Card -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap mb-3">
                         <div>
                             <h2 class="mb-1 fw-bold">
                                 <i class="fa-solid fa-users text-primary me-2"></i>
@@ -71,6 +71,27 @@
                                 <i class="fa-solid fa-plus-circle me-2"></i>
                                 Agregar Cliente
                             </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Campo de búsqueda -->
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-outline" data-mdb-input-init>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="busquedaCliente" 
+                                       placeholder="Buscar por nombre, email, teléfono, línea o ID...">
+                                <label class="form-label" for="busquedaCliente">
+                                    <i class="fa-solid fa-search me-2"></i>
+                                    Buscar Cliente
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 d-flex align-items-end">
+                            <small class="text-muted">
+                                <span id="resultadosCount">0</span> resultados encontrados
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -101,9 +122,14 @@
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="tablaClientes">
                                     @foreach ($clientes as $cliente)
-                                        <tr class="border-bottom">
+                                        <tr class="border-bottom cliente-row" 
+                                            data-nombre="{{$cliente->nombre}}" 
+                                            data-email="{{$cliente->email}}" 
+                                            data-telefono="{{$cliente->telefono}}" 
+                                            data-linea="{{$cliente->linea}}" 
+                                            data-id="{{$cliente->id_interno}}">
                                             <td class="ps-4">
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-shrink-0 me-3">
@@ -136,14 +162,19 @@
                                                 </a>
                                             </td>
                                             <td>
-                                                <a href="tel:+52{{$cliente->telefono}}" 
-                                                   class="text-decoration-none text-dark d-flex align-items-center" 
-                                                   data-mdb-tooltip-init 
-                                                   title="Llamar a {{$cliente->telefono}}">
-                                                    <i class="fa-solid fa-phone me-2 text-success"></i>
-                                                    <small>{{$cliente->telefono}}</small>
-                                                </a>
+                                                @if(!empty($cliente->telefono))
+                                                    <a href="tel:+52{{$cliente->telefono}}" 
+                                                    class="text-decoration-none text-dark d-flex align-items-center" 
+                                                    data-mdb-tooltip-init 
+                                                    title="Llamar a {{$cliente->telefono}}">
+                                                        <i class="fa-solid fa-phone me-2 text-success"></i>
+                                                        <small>{{$cliente->telefono}}</small>
+                                                    </a>
+                                                @else
+                                                    <span class="text-muted">No hay teléfono</span>
+                                                @endif
                                             </td>
+
                                             <td class="text-center pe-4">
                                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                                     <button class="btn btn-sm btn-outline-primary" 
@@ -173,7 +204,7 @@
                 </div>
             @else
                 <!-- Empty State -->
-                <div class="card border-0 shadow-sm">
+                <div class="card border-0 shadow-sm" id="emptyState">
                     <div class="card-body text-center py-5">
                         <div class="mb-4">
                             <i class="fa-solid fa-users text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
@@ -185,6 +216,23 @@
                         <button class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#agregar_cliente">
                             <i class="fa-solid fa-plus-circle me-2"></i>
                             Agregar Cliente
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- No Results State -->
+                <div class="card border-0 shadow-sm d-none" id="noResultsState">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-4">
+                            <i class="fa-solid fa-search text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                        </div>
+                        <h5 class="text-muted mb-2">No se encontraron resultados</h5>
+                        <p class="text-muted mb-4">
+                            <small>No hay clientes que coincidan con tu búsqueda.</small>
+                        </p>
+                        <button class="btn btn-outline-secondary" onclick="limpiarBusqueda()">
+                            <i class="fa-solid fa-times me-2"></i>
+                            Limpiar Búsqueda
                         </button>
                     </div>
                 </div>
@@ -216,6 +264,10 @@
         padding: 0.35rem 0.65rem;
     }
     
+    .cliente-row.hidden {
+        display: none;
+    }
+    
     @media (max-width: 768px) {
         .table-responsive {
             font-size: 0.875rem;
@@ -227,6 +279,101 @@
         }
     }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const busquedaInput = document.getElementById('busquedaCliente');
+    const resultadosCount = document.getElementById('resultadosCount');
+    const clientesTable = document.getElementById('tablaClientes');
+    const emptyState = document.getElementById('emptyState');
+    const noResultsState = document.getElementById('noResultsState');
+    const clientesRows = document.querySelectorAll('.cliente-row');
+    
+    // Inicializar contador
+    actualizarContador();
+    
+    // Evento de búsqueda
+    busquedaInput.addEventListener('input', function() {
+        const terminoBusqueda = this.value.toLowerCase().trim();
+        let resultadosEncontrados = 0;
+        
+        clientesRows.forEach(function(row) {
+            const nombre = row.dataset.nombre.toLowerCase();
+            const email = row.dataset.email.toLowerCase();
+            const telefono = row.dataset.telefono.toLowerCase();
+            const linea = row.dataset.linea.toLowerCase();
+            const id = row.dataset.id.toLowerCase();
+            
+            if (nombre.includes(terminoBusqueda) || 
+                email.includes(terminoBusqueda) || 
+                telefono.includes(terminoBusqueda) || 
+                linea.includes(terminoBusqueda) || 
+                id.includes(terminoBusqueda)) {
+                
+                row.classList.remove('hidden');
+                resultadosEncontrados++;
+            } else {
+                row.classList.add('hidden');
+            }
+        });
+        
+        actualizarContador(resultadosEncontrados);
+        gestionarEstadosVacios(resultadosEncontrados);
+    });
+    
+    function actualizarContador(count = null) {
+        if (count === null) {
+            count = document.querySelectorAll('.cliente-row:not(.hidden)').length;
+        }
+        resultadosCount.textContent = count;
+    }
+    
+    function gestionarEstadosVacios(resultados) {
+        const clientesTableCard = clientesTable.closest('.card');
+        
+        if (resultados === 0 && busquedaInput.value.trim() !== '') {
+            // Mostrar estado de "no resultados" cuando hay búsqueda pero no hay resultados
+            if (clientesTableCard) {
+                clientesTableCard.style.display = 'none';
+            }
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+            if (noResultsState) {
+                noResultsState.classList.remove('d-none');
+            }
+        } else if (resultados === 0 && busquedaInput.value.trim() === '') {
+            // Mostrar estado vacío original cuando no hay clientes y no hay búsqueda
+            if (clientesTableCard) {
+                clientesTableCard.style.display = 'none';
+            }
+            if (emptyState) {
+                emptyState.style.display = 'block';
+            }
+            if (noResultsState) {
+                noResultsState.classList.add('d-none');
+            }
+        } else {
+            // Mostrar tabla cuando hay resultados
+            if (clientesTableCard) {
+                clientesTableCard.style.display = 'block';
+            }
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+            if (noResultsState) {
+                noResultsState.classList.add('d-none');
+            }
+        }
+    }
+    
+    // Función global para limpiar búsqueda
+    window.limpiarBusqueda = function() {
+        busquedaInput.value = '';
+        busquedaInput.dispatchEvent(new Event('input'));
+    };
+});
+</script>
 
 
 
@@ -519,7 +666,7 @@
                                        class="form-control {{ $errors->first('telefono_cliente') ? 'is-invalid' : '' }}" 
                                        name="telefono_cliente" 
                                        value="{{old('telefono_cliente')}}"
-                                       required>
+                                       >
                                 <label class="form-label" for="telefono_cliente">
                                     Teléfono
                                     <span class="text-danger">*</span>

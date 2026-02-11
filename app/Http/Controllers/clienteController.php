@@ -147,7 +147,7 @@ class clienteController extends Controller
 
     public function clientes_show_admin(){
 
-        $clientes = Cliente::get();
+        $clientes = Cliente::orderBy('created_at', 'desc')->get();
 
         return view('admin.gestionar_clientes', compact('clientes'));
 

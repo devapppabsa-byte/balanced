@@ -6,7 +6,7 @@
         <div class="row bg-primary  d-flex align-items-center ">
             <div class="col-9 col-sm-9 col-md-8 col-lg-10 pt-2 text-white">
                 <h3 class="mt-1 mb-0">
-                    Hola {{strtok(Auth::guard("cliente")->user()->nombre, " ")}}, 
+                    {{strtok(Auth::guard("cliente")->user()->nombre, " ")}}, 
                 </h3>
                 <span>Bienvenido a tus encuestas</span>
                 @if (session('success'))

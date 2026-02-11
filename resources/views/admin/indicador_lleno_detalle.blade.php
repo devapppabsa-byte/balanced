@@ -301,7 +301,7 @@
                         <button class="btn btn-outline-secondary btn-sm py-1 px-2"
                                 data-mdb-modal-init
                                 data-mdb-target="#com{{ $item->id }}">
-                            <i class="fa fa-comment"></i> Comentario
+                            <i class="fa fa-table"></i> Información Extra
                         </button>
                     </div>
 
@@ -312,8 +312,8 @@
                                     <h6 class="modal-title">{{ $indicador->nombre }}</h6>
                                     <button class="btn-close" data-mdb-dismiss="modal"></button>
                                 </div>
-                                <div class="modal-body small">
-                                    {{ $item->informacion_campo }}
+                                <div class="modal-body small ck-content">
+                                    {!!  $item->informacion_campo !!}
                                 </div>
                             </div>
                         </div>
@@ -353,7 +353,7 @@
 </div>
 
 @empty
-<div class="col-12 text-center text-muted py-5">
+<div class="col-12 text-center text-muted py-5 bg-white h2">
     <i class="fa-solid fa-circle-info"></i> Sin información disponible
 </div>
 @endforelse
