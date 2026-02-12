@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("id_input");
             $table->string("id_input_foraneo");
             $table->string('nombre');
+            $table->text('descripcion');
             $table->string('autor');
             $table->unsignedBigInteger('id_indicador');
             $table->foreign('id_indicador')
