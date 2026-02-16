@@ -243,7 +243,7 @@ use Carbon\Carbon;
                             </h6>
 
                             <h3 class="fw-bold mb-0">
-                                {{ $item->informacion_campo }} %
+                                {{ $item->informacion_campo }} 
                             </h3>
 
                         </div>    

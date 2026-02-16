@@ -274,6 +274,8 @@ class indicadorController extends Controller
 
 public function borrar_campo(Request $request, $campo){
 
+
+
         $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
         //vamos a buscar el id_input en la base de datos de los campos involucrados.

@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     data: {
       labels,
       datasets: [{
-        label: 'Cumplimiento %',
+        label: 'Cumplimiento',
         data: dataValues,
         backgroundColor: '#0d6efd'
       }]

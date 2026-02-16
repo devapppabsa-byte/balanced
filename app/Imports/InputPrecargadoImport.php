@@ -32,7 +32,7 @@ class InputPrecargadoImport implements ToCollection, WithHeadingRow
 
                 foreach ($rows as $row) {
 
-                    if (!$row['id'] || !$row['informacion']) {
+                    if (!$row['id'] || !$row['nombre']) {
                         continue;
                     }
 

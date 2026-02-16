@@ -631,13 +631,13 @@
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <input type="number" min="1" class="form-control" name="meta_minima" placeholder="Minimo" required>
+                                <input type="number"  class="form-control" name="meta_minima" placeholder="Minimo" required>
                             </div>
                         </div>
                         
                         <div class="col-6">
                             <div class="form-group">
-                                <input type="number" min="1" class="form-control" name="meta_esperada" placeholder="Máximo"  required>
+                                <input type="number"  class="form-control" name="meta_esperada" placeholder="Máximo"  required>
                             </div>
                         </div>
 
@@ -697,14 +697,14 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Meta Minima  <span class="text-danger">*</span></label>
-                                <input type="number" min="1" max="100"  value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="Meta Minima" required>
+                                <input type="number"   value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="Meta Minima" required>
                             </div>
                         </div>
                         
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Meta esperada  <span class="text-danger">*</span></label>
-                                <input type="number" min="1" max="100" class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder=" Meta Maxima"  required>
+                                <input type="number"  class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder=" Meta Maxima"  required>
                             </div>
                         </div>
 
