@@ -631,13 +631,13 @@
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <input type="number"  class="form-control" name="meta_minima" placeholder="Minimo" required>
+                                <input type="number" step="any"  class="form-control" name="meta_minima" placeholder="Minimo" required>
                             </div>
                         </div>
                         
                         <div class="col-6">
                             <div class="form-group">
-                                <input type="number"  class="form-control" name="meta_esperada" placeholder="Máximo"  required>
+                                <input type="number" step="any" class="form-control" name="meta_esperada" placeholder="Máximo"  required>
                             </div>
                         </div>
 

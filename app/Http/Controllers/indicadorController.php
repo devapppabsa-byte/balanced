@@ -361,18 +361,17 @@ public function borrar_campo(Request $request, $campo){
     
     
 public function show_indicador_user(Indicador $indicador){
+
     
     //obtenemos la ultima fecha en la que se cargo el excel
     $ultima_carga_excel = CampoForaneoInformacion::latest()->first();
     $ultima_carga_indicador = IndicadorLleno::where('id_indicador', $indicador->id)->latest()->first();
 
-    //
-
-
-
 
     //le mandamos los admins para que les envie el correo de que ya se lleno el indicador
     $correos = Admin::pluck('email')->toArray();
+    array_push($correos, Auth::user()->email);
+
 
     //CONSULTA DE LOS CAMPOS
     //se consultan en la vista para que el usuario los rellene

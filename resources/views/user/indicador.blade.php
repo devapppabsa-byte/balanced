@@ -91,7 +91,7 @@ use Carbon\Carbon;
 
             @if ($carga_indicador === $ahora)
                 <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-                    <button class="btn btn-outline-primary btn-sm w-100" onclick="toastr.warning('{{'Ya se registro la información de este mes '}}', 'Aviso!')">
+                    <button class="btn btn-outline-danger btn-sm w-100" onclick="toastr.warning('{{'Ya se registro la información de este mes '}}', 'Aviso!')">
                         <i class="fa fa-plus"></i>
                         Ya se lleno el indicador este mes
                     </button>
@@ -366,7 +366,7 @@ use Carbon\Carbon;
                             </label>
 
                             {{-- Input --}}
-                            <input  type="number" step="0.0001" min="0" class="form-control form-control-sm" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="Ingrese {{$campo_vacio->nombre}}" require >
+                            <input  type="number" step="0.0001"  class="form-control form-control-sm" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="Ingrese {{$campo_vacio->nombre}}" require >
 
                             {{-- Campos ocultos (NO se tocan) --}}
                             <input type="hidden" name="id_input[]" value="{{$campo_vacio->id}}">

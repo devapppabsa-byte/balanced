@@ -1,4 +1,4 @@
-<div class="row py-2" style="background-color: #5476ac ">
+<div class="row py-2" style="background-color: #6782AE ">
 
     @if (Auth::user()->tipo_usuario !== 'principal')
         <div class="col-12 text-center bg-outline-primary">
@@ -26,17 +26,24 @@
     <div class="col-auto  zoom_link {{ request()->routeIs('cumplimiento.normativo.user') ? 'link_selected' : '' }}">
         <a href="{{route("cumplimiento.normativo.user")}}" class="btn btn-transparent text-white text-decoration-none fw-bold ">
             <i class="fa-solid fa-list-check mx-1"></i>
-            Cumplimiento Normativo
+            Cumplimiento Normativo 
         </a>
     </div>
 
-    {{-- ponerla solo visible para atencio al clientes --}}
-    <div class="col-auto  zoom_link {{ request()->routeIs('encuesta.clientes.user') ? 'link_selected' : '' }}">
-        <a href="{{route("encuesta.clientes.user")}}" class="btn btn-transparent text-white text-decoration-none fw-bold ">
-            <i class="fa-solid fa-users mx-1"></i>
-            Encuestas a Clientes (o evaluacion 360° clima laboral)
-        </a>
-    </div>
+
+
+
+    {{-- Esto e mostrara solo para ventas... --}}
+    @if (Auth::user()->departamento->nombre == "Ventas")
+        {{-- ponerla solo visible para atencio al clientes --}}
+        <div class="col-auto  zoom_link {{ request()->routeIs('encuesta.clientes.user') ? 'link_selected' : '' }}">
+            <a href="{{route("encuesta.clientes.user")}}" class="btn btn-transparent text-white text-decoration-none fw-bold ">
+                <i class="fa-solid fa-users mx-1"></i>
+                Encuestas a Clientes 
+            </a>
+        </div>
+    @endif
+    {{-- Esto e mostrara solo para ventas... --}}
 
 
 
