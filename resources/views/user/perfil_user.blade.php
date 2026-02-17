@@ -9,7 +9,8 @@
     <div class="row bg-primary d-flex align-items-center justify-content-start ">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-3">
             <h5 class="text-white">Balance General de {{Auth::user()->departamento->nombre}}</h5>
-            <h6 class="text-white fw-bold" id="fecha"></h6>
+            {{-- <h6 class="text-white fw-bold" id="fecha"></h6> --}}
+            <span class="cascadia-code text-white">Bienvenido(a):  {{ Auth::user()->name }} - {{ Auth::user()->puesto }}</span>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>

@@ -344,7 +344,7 @@ use Carbon\Carbon;
 
 
 <div class="modal fade" id="llenado_indicadores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-fullscreen">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-primary py-4">
                 <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
