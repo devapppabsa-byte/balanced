@@ -61,7 +61,6 @@
 
 
 
-
 <div class="container-fluid border-bottom pt-2 bg-white shadow shadow-sm ">
      <div class="row">
         <div class="col-12 ">
@@ -84,8 +83,6 @@
         @empty
           <li>No hay datos </li>
         @endforelse
-
-
 
       @else
 
@@ -182,7 +179,7 @@
         const [year, month] = item.mes.split('-');
 
         // month - 1 porque JS empieza en 0
-        const fecha = new Date(Number(year), Number(month) - 1, 1);
+        const fecha = new Date(Number(year), Number(month) - 2, 1);
 
         const formatted = new Intl.DateTimeFormat('es-MX', {
             month: 'long',
@@ -202,17 +199,15 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-
-
   // BARRAS
   new Chart(document.getElementById('chartBar'), {
     type: 'bar',
     data: {
       labels,
       datasets: [{
-        label: 'Cumplimiento',
+        label: 'Promedio de Resultados',
         data: dataValues,
-        backgroundColor: '#0d6efd'
+        backgroundColor: '#e8e8e8'
       }]
     },
     options: {
@@ -233,7 +228,7 @@ new Chart(document.getElementById('chartLine'), {
     datasets: [{
       label: 'Tendencia',
       data: dataValues,
-      borderColor: '#198754',
+      borderColor: '#e8e8e8',
       fill: false,
       tension: 0.3
     }]
@@ -270,10 +265,10 @@ new Chart(document.getElementById('chartLine'), {
       datasets: [{
         data: dataValues,
         backgroundColor: [
-        '#0a58ca', // primary dark
-        '#0d6efd', // primary
-        '#3d8bfd', // primary light
-        '#6ea8fe'  // primary softer
+        '#c9c9c9', // primary dark
+        '#e8e8e8', // primary
+        '#f2eded', // primary light
+        '#a8a5a5'  // primary softer
         ]
 
 
@@ -299,7 +294,12 @@ new Chart(document.getElementById('chartLine'), {
       labels,
       datasets: [{
         data: dataValues,
-        backgroundColor: ['#6610f2', '#20c997', '#fd7e14', '#0dcaf0']
+      backgroundColor: [
+              '#c9c9c9', // primary dark
+              '#e8e8e8', // primary
+              '#f2eded', // primary light
+              '#a8a5a5'  // primary softer
+              ]
       }]
     },
     options:{

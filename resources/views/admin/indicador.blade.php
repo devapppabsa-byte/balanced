@@ -252,7 +252,10 @@
 
                                     <td class="text-muted">
                                         @if($campo->descripcion)
+                                        <span data-mdb-tooltip-init  title="{{$campo->descripcion}}">
                                             {{ Str::limit(strip_tags($campo->descripcion), 80) }}
+
+                                        </span>
                                         @else
                                             <i class="fa fa-info-circle text-primary"></i>
                                             Sin descripción

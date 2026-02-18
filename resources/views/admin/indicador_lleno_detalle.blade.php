@@ -406,7 +406,9 @@
                         <!-- Tabs content -->
                         <div class="tab-content" id="ex2-content">
                             <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
-                                <canvas class="w-100 h-100" id="grafico"></canvas>
+                                <div class="col-12  mx-2 bg-white shadow-sm p-5 mt-4" >
+                                    <canvas class="w-100 h-100" id="grafico"></canvas>
+                                </div>
                             </div>
                             <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
                             <div class="row justify-content-center">
@@ -449,364 +451,271 @@
 
 @section('scripts')
 
-{{-- Grafico de Pie --}}
-{{-- <script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-// ESTO VIENE DINÁMICO DESDE LARAVEL
-const datos = @json($graficar);
+  const datos = @json($graficar);
+  const TIPO_INDICADOR = "{{ $tipo_indicador }}";
 
+  const mesesES = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
 
-// Meses en español
-const mesesES = [
-  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-];
+  // ============================
+  // FILTRAR DATOS
+  // ============================
 
-// Labels: sacamos el mes del created_at
-const labels = datos.map(item => {
+  const datosFinal = datos.filter(d => d.final === "on");
+  const datosReferencia = datos.filter(d => d.referencia === "on");
+
+  // ============================
+  // LABELS
+  // ============================
+
+  const labels = [...new Set(
+    [...datosFinal, ...datosReferencia].map(item => {
+      const fecha = new Date(item.created_at);
+      return mesesES[fecha.getMonth()];
+    })
+  )];
+
+  // ============================
+  // METAS
+  // ============================
+
+  const MINIMO = {{ $indicador->meta_minima }};
+  const MAXIMO = {{ $indicador->meta_esperada }};
+
+  const colorMinimo = TIPO_INDICADOR === "riesgo" ? "green" : "red";
+  const colorMaximo = TIPO_INDICADOR === "riesgo" ? "red" : "green";
+
+  // ============================
+  // VALORES FINALES
+  // ============================
+
+  const valores = labels.map(mes => {
+    const item = datosFinal.find(d => {
+      const fecha = new Date(d.created_at);
+      return mesesES[fecha.getMonth()] === mes;
+    });
+    return item ? parseFloat(item.informacion_campo) : null;
+  });
+
+  // ============================
+  // REFERENCIAS AGRUPADAS
+  // ============================
+
+  const referenciasAgrupadas = {};
+
+  datosReferencia.forEach(item => {
     const fecha = new Date(item.created_at);
-    fecha.setMonth(fecha.getMonth())
-    return mesesES[fecha.getMonth()];
-});
+    const mes = mesesES[fecha.getMonth()-1];
 
-// Valores: costo por tonelada
-const valores = datos.map(item => parseFloat(item.informacion_campo));
-
-// Niveles dinámicos (puedes modificar)
-const MINIMO = {{$indicador->meta_minima}};
-const MAXIMO = {{$indicador->meta_esperada}};
-
-const ctx = document.getElementById('grafico').getContext('2d');
-
-new Chart(ctx, {
-  data: {
-    labels: labels,
-    datasets: [
-      {
-        type: "bar",
-        label: "Cumplimiento del Indicador",
-        data: valores,
-
-        backgroundColor: function(context) {
-          const value = context.raw;
-          return value < MINIMO
-            ? "rgba(255, 99, 132, 0.7)" // rojo
-            : "rgba(75, 192, 75, 0.7)"; // verde
-        },
-        borderColor: function(context) {
-          const value = context.raw;
-          return value < MINIMO ? "red" : "green";
-        },
-        borderWidth: 1
-      },
-
-      // Línea de nivel mínimo
-      {
-        type: "line",
-        label: "Nivel mínimo",
-        data: valores.map(() => MINIMO),
-        borderColor: "red",
-        borderWidth: 2,
-        fill: false
-      },
-
-      // Línea de nivel máximo
-      {
-        type: "line",
-        label: "Nivel máximo",
-        data: valores.map(() => MAXIMO),
-        borderColor: "green",
-        borderWidth: 2,
-        fill: false
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: "top" }
-    },
-    scales: {
-      y: { beginAtZero: true }
-    }
-  }
-});
-</script> --}}
-<script>
-    const datos = @json($graficar);
-    const TIPO_INDICADOR = "{{ $tipo_indicador }}";
-
-    const mesesES = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ];
-
-    const datosFinal = datos.filter(d => d.final === 'on');
-    const datosReferencia = datos.filter(d => d.referencia === 'on');
-
-    const labels = datosFinal.map(item => {
-        const fecha = new Date(item.created_at);
-        return mesesES[fecha.getMonth() - 1];
-    });
-
-    const valores = datosFinal.map(item =>
-        parseFloat(item.informacion_campo)
-    );
-
-    const valoresReferencia = datosFinal.map(finalItem => {
-        const ref = datosReferencia.find(r =>
-            r.id_movimiento === finalItem.id_movimiento
-        );
-        return ref ? parseFloat(ref.informacion_campo) : null;
-    });
-
-    const MINIMO = {{ $indicador->meta_minima }};
-    const MAXIMO = {{ $indicador->meta_esperada }};
-
-    const colorMinimo = TIPO_INDICADOR === 'riesgo' ? "green" : "red";
-    const colorMaximo = TIPO_INDICADOR === 'riesgo' ? "red" : "green";
-
-    const ctx = document.getElementById("grafico");
-
-    // ✅ DESTRUIR CHART ANTES DE CREAR OTRO
-    if (window.miGrafica) {
-        window.miGrafica.destroy();
+    if (!referenciasAgrupadas[item.nombre_campo]) {
+      referenciasAgrupadas[item.nombre_campo] = {};
     }
 
-    // ✅ CREAR UNA SOLA VEZ
-    window.miGrafica = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: labels,
-            datasets: [
+    referenciasAgrupadas[item.nombre_campo][mes] =
+      parseFloat(item.informacion_campo);
+  });
 
-                {
-                    label: "Cumplimiento del Indicador",
-                    data: valores,
-                    backgroundColor: (context) => {
-                        const value = context.raw;
+  // ============================
+  // DATASETS REFERENCIAS
+  // ============================
 
-                        if (TIPO_INDICADOR === "riesgo") {
-                            return value < MINIMO
-                                ? "rgba(75,192,75,0.7)"
-                                : "rgba(255,99,132,0.7)";
-                        }
+  const datasetsReferencias = Object.keys(referenciasAgrupadas).map((nombre, index) => ({
+    label: nombre,
+    data: labels.map(mes =>
+      referenciasAgrupadas[nombre][mes] ?? null
+    ),
+    borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
+    backgroundColor: `rgba(${50 + index * 60}, 120, 255, 0.2)`,
+    borderWidth: 2,
+    tension: 0.3,
+    fill: false,
+    pointRadius: 0,
+    spanGaps: true
+  }));
 
-                        return value < MINIMO
-                            ? "rgba(255,99,132,0.7)"
-                            : "rgba(75,192,75,0.7)";
-                    },
-                    borderWidth: 1
-                },
+  // ============================
+  // COLORES DINÁMICOS (SEMÁFORO)
+  // ============================
 
-                {
-                    type: "line",
-                    label: "Referencia",
-                    data: valoresReferencia,
-                    borderColor: "rgba(54,162,235,1)",
-                    borderWidth: 3,
-                    tension: 0.3,
-                    spanGaps: true,
-                    pointRadius: 5
-                },
+  const coloresPuntos = valores.map(v => {
 
-                {
-                    type: "line",
-                    label: "Nivel mínimo",
-                    data: valores.map(() => MINIMO),
-                    borderColor: colorMinimo,
-                    borderWidth: 2,
-                    pointRadius: 0
-                },
+    if (v === null) return "gray";
 
-                {
-                    type: "line",
-                    label: "Nivel máximo",
-                    data: valores.map(() => MAXIMO),
-                    borderColor: colorMaximo,
-                    borderWidth: 2,
-                    pointRadius: 0
-                }
-            ]
-        },
+    if (TIPO_INDICADOR === "riesgo") {
+      return v < MINIMO ? "green" : "red";
+    }
 
-        options: {
-            responsive: true,
+    return v < MINIMO ? "red" : "green";
+  });
 
-            // ✅ ESTO ELIMINA EL TEMBLOR
-            maintainAspectRatio: false,
+  // ==========================================================
+  // ✅ 1. GRÁFICA COMBINADA (BARRA + LINEAS)
+  // ==========================================================
 
-            // ✅ QUITA ANIMACIONES MOLESTAS
-            animation: false,
+  const canvasBar = document.getElementById("grafico");
 
-            plugins: {
-                legend: {
-                    position: "top"
-                }
-            },
+  if (canvasBar) {
+    new Chart(canvasBar.getContext("2d"), {
 
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-</script>
+      data: {
+        labels,
 
+        datasets: [
 
+          // BARRAS FINAL
+          {
+            type: "bar",
+            label: "Cumplimiento",
+            data: valores,
+            backgroundColor: coloresPuntos.map(c =>
+              c === "red"
+                ? "rgba(255,99,132,0.7)"
+                : "rgba(75,192,75,0.7)"
+            )
+          },
 
+          // REFERENCIAS
+          ...datasetsReferencias,
 
+          // META MINIMA
+          {
+            type: "line",
+            label: "Meta mínima",
+            data: labels.map(() => MINIMO),
+            borderColor: colorMinimo,
+            borderWidth: 2
+          },
 
-
-
-
-<script>
-const ctxLine = document.getElementById('graficoLine').getContext('2d');
-
-
-new Chart(ctxLine, {
-  type: "line",
-  data: {
-    labels: labels,
-    datasets: [
-
-      //  LÍNEA PRINCIPAL
-      {
-        label: "Cumplimiento del Indicador",
-        data: valores,
-        borderColor: "#3b82f6",
-        borderWidth: 3,
-        tension: 0.3,
-        fill: false,
-        pointRadius: 6,
-        pointBackgroundColor: valores.map(v => {
-
-          //  INDICADOR DE RIESGO (invertido)
-          if (TIPO_INDICADOR === 'riesgo') {
-            return v < MINIMO ? "green" : "red";
+          // META MAXIMA
+          {
+            type: "line",
+            label: "Meta máxima",
+            data: labels.map(() => MAXIMO),
+            borderColor: colorMaximo,
+            borderWidth: 2
           }
-
-          //  INDICADOR NORMAL
-          return v < MINIMO ? "red" : "green";
-        }),
-        pointBorderColor: "#000"
+        ]
       },
 
-      //  LÍNEA NIVEL MÍNIMO
-      {
-        label: "Nivel mínimo",
-        data: valores.map(() => MINIMO),
-        borderColor: colorMinimo,
-        borderWidth: 2,
-        borderDash: [5, 5],
-        pointRadius: 0,
-        fill: false
-      },
-
-      //  LÍNEA NIVEL MÁXIMO
-      {
-        label: "Nivel máximo",
-        data: valores.map(() => MAXIMO),
-        borderColor: colorMaximo,
-        borderWidth: 2,
-        borderDash: [5, 5],
-        pointRadius: 0,
-        fill: false
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top"
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
-  }
-});
-</script>
-
-
-
-
-
-
-
-<script>
-//const TIPO_INDICADOR = "{{ $tipo_indicador }}"; // "riesgo" o normal
-
-//  Colores dinámicos por segmento
-const colores = valores.map(v => {
-
-  //  INDICADOR DE RIESGO (invertido)
-  if (TIPO_INDICADOR === 'riesgo') {
-    return v < MINIMO
-      ? "rgba(75, 192, 75, 0.7)"   // verde = bajo riesgo
-      : "rgba(255, 99, 132, 0.7)"; // rojo = alto riesgo
-  }
-
-  //  INDICADOR NORMAL
-  return v < MINIMO
-    ? "rgba(255, 99, 132, 0.7)"   // rojo = no cumple
-    : "rgba(75, 192, 75, 0.7)";   // verde = cumple
-});
-
-const bordes = valores.map(v => {
-
-  if (TIPO_INDICADOR === 'riesgo') {
-    return v < MINIMO ? "green" : "red";
-  }
-
-  return v < MINIMO ? "red" : "green";
-});
-
-const ctx3 = document.getElementById('graficoPie').getContext('2d');
-
-new Chart(ctx3, {
-  type: "pie",
-  data: {
-    labels: labels,
-    datasets: [{
-      label: "Cumplimiento del Indicador",
-      data: valores,
-      backgroundColor: colores,
-      borderColor: bordes,
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "right"
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context) {
-            const valor = context.raw;
-
-            let estado;
-
-            if (TIPO_INDICADOR === 'riesgo') {
-              estado = valor < MINIMO ? "Bajo riesgo" : "Alto riesgo";
-            } else {
-              estado = valor < MINIMO ? "No cumple" : "Cumple";
-            }
-
-            return `${context.label}: ${valor} (${estado})`;
-          }
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "top" }
+        },
+        scales: {
+          y: { beginAtZero: true }
         }
       }
-    }
+    });
   }
+
+  // ==========================================================
+  // ✅ 2. GRÁFICA LINE (igual que combinada)
+  // ==========================================================
+
+  const canvasLine = document.getElementById("graficoLine");
+
+  if (canvasLine) {
+    new Chart(canvasLine.getContext("2d"), {
+      type: "line",
+
+      data: {
+        labels,
+
+        datasets: [
+
+          // LINEA PRINCIPAL
+          {
+            label: "Cumplimiento",
+            data: valores,
+            borderColor: "#3b82f6",
+            borderWidth: 3,
+            tension: 0.3,
+            fill: false,
+
+            pointRadius: 6,
+            pointBackgroundColor: coloresPuntos,
+            pointBorderColor: "#000"
+          },
+
+          // REFERENCIAS
+          ...datasetsReferencias,
+
+          // META MINIMA
+          {
+            label: "Meta mínima",
+            data: labels.map(() => MINIMO),
+            borderColor: colorMinimo,
+            borderWidth: 2,
+            borderDash: [5, 5],
+            pointRadius: 0
+          },
+
+          // META MAXIMA
+          {
+            label: "Meta máxima",
+            data: labels.map(() => MAXIMO),
+            borderColor: colorMaximo,
+            borderWidth: 2,
+            borderDash: [5, 5],
+            pointRadius: 0
+          }
+        ]
+      },
+
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "top" }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  // ==========================================================
+  // ✅ 3. GRÁFICA PIE (solo cumplimiento)
+  // ==========================================================
+
+  const canvasPie = document.getElementById("graficoPie");
+
+  if (canvasPie) {
+    new Chart(canvasPie.getContext("2d"), {
+      type: "pie",
+
+      data: {
+        labels,
+        datasets: [{
+          label: "Cumplimiento",
+          data: valores,
+          backgroundColor: coloresPuntos.map(c =>
+            c === "red"
+              ? "rgba(255,99,132,0.7)"
+              : "rgba(75,192,75,0.7)"
+          ),
+          borderWidth: 1
+        }]
+      },
+
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "right" }
+        }
+      }
+    });
+  }
+
 });
 </script>
+
 
 
 

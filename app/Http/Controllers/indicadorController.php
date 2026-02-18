@@ -370,7 +370,7 @@ public function show_indicador_user(Indicador $indicador){
 
     //le mandamos los admins para que les envie el correo de que ya se lleno el indicador
     $correos = Admin::pluck('email')->toArray();
-    array_push($correos, Auth::user()->email);
+    //array_push($correos, Auth::user()->email);
 
 
     //CONSULTA DE LOS CAMPOS

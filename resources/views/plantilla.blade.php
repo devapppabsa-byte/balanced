@@ -154,7 +154,7 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
+if(document.getElementById('editor_queja')){
     let editorInstance;
 
 ClassicEditor
@@ -182,6 +182,7 @@ ClassicEditor
   })
   .catch(error => console.error(error));
 
+}
 
 });
 

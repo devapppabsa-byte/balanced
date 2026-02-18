@@ -541,8 +541,9 @@ use Carbon\Carbon;
 @section('scripts')
 
 <script>
-    const datos = @json($graficar);
+document.addEventListener("DOMContentLoaded", function () {
 
+    const datos = @json($graficar);
     const TIPO_INDICADOR = "{{ $tipo_indicador }}";
 
     const mesesES = [
@@ -550,147 +551,193 @@ use Carbon\Carbon;
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
 
-    // FINAL
-    const datosFinal = datos.filter(d => d.final === 'on');
+    // ============================
+    // FILTRAR DATOS
+    // ============================
 
-    // REFERENCIA
-    const datosReferencia = datos.filter(d => d.referencia === 'on');
+    const datosFinal = datos.filter(d => d.final === "on");
+    const datosReferencia = datos.filter(d => d.referencia === "on");
 
-    // Labels
-    const labels = datosFinal.map(item => {
-        const fecha = new Date(item.created_at);
-        return mesesES[fecha.getMonth()-1];
-    });
+    // ============================
+    // LABELS (MESES)
+    // ============================
 
-    // Valores FINAL
-    const valores = datosFinal.map(item =>
-        parseFloat(item.informacion_campo)
-    );
+    const labels = [...new Set(
+        [...datosFinal, ...datosReferencia].map(item => {
+            const fecha = new Date(item.created_at);
+            return mesesES[fecha.getMonth()-1];
+        })
+    )];
 
-    // Valores REFERENCIA alineados por id_movimiento
-    const valoresReferencia = datosFinal.map(finalItem => {
-        const ref = datosReferencia.find(r =>
-            r.id_movimiento === finalItem.id_movimiento
-        );
-        return ref ? parseFloat(ref.informacion_campo) : null;
-    });
+    // ============================
+    // METAS
+    // ============================
 
     const MINIMO = {{ $indicador->meta_minima }};
     const MAXIMO = {{ $indicador->meta_esperada }};
 
-    // Colores dinámicos según tipo de indicador
-    const colorMinimo = TIPO_INDICADOR === 'riesgo' ? "green" : "red";
-    const colorMaximo = TIPO_INDICADOR === 'riesgo' ? "red" : "green";
+    const colorMinimo = TIPO_INDICADOR === "riesgo" ? "green" : "red";
+    const colorMaximo = TIPO_INDICADOR === "riesgo" ? "red" : "green";
 
-    const ctx = document.getElementById('grafico').getContext('2d');
+    // ============================
+    // DATASET FINAL (BARRAS CON COLORES)
+    // ============================
 
-    new Chart(ctx, {
+    const datasetFinal = {
+        type: "bar",
+        label: datosFinal.length > 0
+            ? datosFinal[0].nombre_campo
+            : "Cumplimiento",
+
+        data: labels.map(mes => {
+            const item = datosFinal.find(d => {
+                const fecha = new Date(d.created_at);
+                return mesesES[fecha.getMonth()-1] === mes;
+            });
+            return item ? parseFloat(item.informacion_campo) : null;
+        }),
+
+        backgroundColor: ctx => {
+
+            const value = ctx.raw;
+
+            if (value === null) return "rgba(200,200,200,0.3)";
+
+            // Respeta lógica de indicador
+            if (TIPO_INDICADOR === "riesgo") {
+                return value < MINIMO
+                    ? "rgba(75,192,75,0.7)"
+                    : "rgba(255,99,132,0.7)";
+            }
+
+            return value < MINIMO
+                ? "rgba(255,99,132,0.7)"
+                : "rgba(75,192,75,0.7)";
+        },
+
+        borderWidth: 1,
+        order: 1
+    };
+
+    // ============================
+    // REFERENCIAS (LINEAS RELLENAS)
+    // ============================
+
+    const referenciasAgrupadas = {};
+
+    datosReferencia.forEach(item => {
+
+        const fecha = new Date(item.created_at);
+        const mes = mesesES[fecha.getMonth()-1];
+
+        if (!referenciasAgrupadas[item.nombre_campo]) {
+            referenciasAgrupadas[item.nombre_campo] = {};
+        }
+
+        referenciasAgrupadas[item.nombre_campo][mes] =
+            parseFloat(item.informacion_campo);
+    });
+
+    // Crear una línea rellena por cada referencia
+    const datasetsReferencias = Object.keys(referenciasAgrupadas).map((nombre, index) => {
+
+        return {
+            type: "line",
+            label: nombre,
+
+            data: labels.map(mes =>
+                referenciasAgrupadas[nombre][mes] ?? null
+            ),
+
+            borderWidth: 3,
+            tension: 0.3,
+
+            // ✅ Línea rellena
+            fill: true,
+
+            // Color automático diferente por referencia
+            borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
+            backgroundColor: `rgba(${50 + index * 60}, 120, 255, 0.2)`,
+
+            spanGaps: true,
+            order: 5
+        };
+    });
+
+    // ============================
+    // CANVAS
+    // ============================
+
+    const canvas = document.getElementById("grafico");
+    if (!canvas) return;
+
+    // ============================
+    // CHART
+    // ============================
+
+    new Chart(canvas.getContext("2d"), {
+
         data: {
-            labels: labels,
+            labels,
+
             datasets: [
 
-                // BARRAS
-                {
-                    type: "bar",
-                    label: "Cumplimiento del Indicador",
-                    data: valores,
-                    backgroundColor: function (context) {
-                        const value = context.raw;
+                // Barras Final
+                datasetFinal,
 
-                        if (TIPO_INDICADOR === 'riesgo') {
-                            return value < MINIMO
-                                ? "rgba(75, 192, 75, 0.7)"   // verde = bajo riesgo
-                                : "rgba(255, 99, 132, 0.7)"; // rojo = alto riesgo
-                        }
+                // Referencias como líneas rellenas
+                ...datasetsReferencias,
 
-                        return value < MINIMO
-                            ? "rgba(255, 99, 132, 0.7)"
-                            : "rgba(75, 192, 75, 0.7)";
-                    },
-                    borderColor: function (context) {
-                        const value = context.raw;
-
-                        if (TIPO_INDICADOR === 'riesgo') {
-                            return value < MINIMO ? "green" : "red";
-                        }
-
-                        return value < MINIMO ? "red" : "green";
-                    },
-                    borderWidth: 1
-                },
-
-                // REFERENCIA
+                // ============================
+                // META MINIMA
+                // ============================
                 {
                     type: "line",
-                    label: "Referencia",
-                    data: valoresReferencia,
-                    borderColor: "rgba(54, 162, 235, 1)",
-                    borderWidth: 3,
-                    fill: false,
-                    tension: 0.3,
-                    spanGaps: true,
-                    pointRadius: 5
-                },
-
-                // NIVEL MÍNIMO
-                {
-                    type: "line",
-                    label: "Nivel mínimo",
-                    data: valores.map(() => MINIMO),
+                    label: "Meta mínima",
+                    data: labels.map(() => MINIMO),
                     borderColor: colorMinimo,
                     borderWidth: 2,
-                    fill: false,
-                    pointRadius: 0
+                    order: 10
                 },
 
-                // NIVEL MÁXIMO
+                // ============================
+                // META MAXIMA
+                // ============================
                 {
                     type: "line",
-                    label: "Nivel máximo",
-                    data: valores.map(() => MAXIMO),
+                    label: "Meta máxima",
+                    data: labels.map(() => MAXIMO),
                     borderColor: colorMaximo,
                     borderWidth: 2,
-                    fill: false,
-                    pointRadius: 0
+                    order: 10
                 }
             ]
         },
+
         options: {
             responsive: true,
-        plugins: {
-            legend: { position: "top" },
 
-            tooltip: {
-                enabled: true,
-
-                titleFont: {
-                    size: 18
-                },
-                bodyFont: {
-                    size: 16
-                },
-                padding: 12,
-
-                callbacks: {
-                    label: function(context) {
-                        let label = context.dataset.label || '';
-                        let value = context.raw;
-
-                        if (value !== null) {
-                            return `${label}: ${value}%`;
-                        }
-
-                        return label;
-                    }
+            plugins: {
+                legend: {
+                    position: "top"
                 }
-            }
-        },
+            },
 
             scales: {
-                y: { beginAtZero: true }
+                y: {
+                    beginAtZero: true
+                }
             }
         }
+
     });
+
+});
+
+
+
+
+
 </script>
 
 
