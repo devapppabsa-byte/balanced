@@ -149,7 +149,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const rawData = @json($cumplimiento[$departamento->id]);
 
-    const labels = rawData.map(i => mesEnEspanol(i.mes));
+    const labels = rawData.map(i => mesEnEspanol(i.mes) );
+
+    
     const values = rawData.map(i => i.cumplimiento_total);
 
     const MINIMO = 50;
@@ -166,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
             labels,
             datasets: [
                 {
-                    label: "Cumplimiento %",
+                    label: "Promedio de Indicadores",
                     data: values,
                     backgroundColor: (ctx) => {
                         const value = ctx.raw;
@@ -186,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     pointRadius: 0,
                     fill: false,
                     tension: 0,
-                    order: 1 // 👈 líneas arriba
+                    order: 9 // 👈 líneas arriba
                 },
                 {
                     type: "line",
@@ -197,7 +199,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     pointRadius: 0,
                     fill: false,
                     tension: 0,
-                    order: 1
+                    order: 9
                 }
             ]
         },

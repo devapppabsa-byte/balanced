@@ -129,7 +129,9 @@
                                                     title="Eliminar {{$departamento->nombre}}" 
                                                     data-mdb-ripple-init 
                                                     data-mdb-modal-init 
-                                                    data-mdb-target="#del_dep{{$departamento->id}}">
+                                                    data-mdb-target="#del_dep{{$departamento->id}}"
+                                                    disabled
+                                                    >
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>

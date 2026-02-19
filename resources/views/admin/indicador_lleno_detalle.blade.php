@@ -311,12 +311,21 @@
                     @php 
 
                         if($indicador->variacion === "on"){
-                    
-                            $min = $meta_maxima - $meta_minima;
-                            $max = $meta_maxima + $meta_minima;
 
-                            $cumple = $item->informacion_campo >= $min 
-                                    && $item->informacion_campo <= $max;   
+
+                    
+                            if ($meta_minima == 0 && $meta_maxima == 0) {
+                                $cumple = true; //aqui se cambia el sentido de este pequeño algoritmo.
+                            } else {
+                                $min = $meta_maxima - $meta_minima;
+                                $max = $meta_maxima + $meta_minima;
+
+                                $cumple = $item->informacion_campo >= $min 
+                                    && $item->informacion_campo <= $max;
+                            }
+
+
+
 
                         }
                         else{
@@ -766,6 +775,160 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+
+{{-- los otros graficos  --}}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const datos = @json($graficar);
+    const TIPO_INDICADOR = "{{ $tipo_indicador }}";
+
+    const mesesES = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+
+    if (!datos || datos.length === 0) return;
+
+    // ============================
+    // FILTRAR DATOS
+    // ============================
+
+    const datosFinal = datos.filter(d => d.final === "on");
+    const datosReferencia = datos.filter(d => d.referencia === "on");
+
+    // ============================
+    // LABELS (MESES)
+    // ============================
+
+    const labels = [...new Set(
+        [...datosFinal, ...datosReferencia].map(item => {
+            const fecha = new Date(item.created_at);
+            return mesesES[fecha.getMonth()-1]; // 🔥 
+        })
+    )];
+
+    // ============================
+    // METAS + VARIACIÓN
+    // ============================
+
+    const VARIACION_ON = "{{ $indicador->variacion }}" === "on";
+
+    const META_MINIMA = {{ $indicador->meta_minima ?? 0 }};
+    const META_ESPERADA = {{ $indicador->meta_esperada ?? 0 }};
+
+    const VARIACION = VARIACION_ON ? META_MINIMA : null;
+
+    const LIMITE_INFERIOR = VARIACION_ON ? META_ESPERADA - VARIACION : null;
+    const LIMITE_SUPERIOR = VARIACION_ON ? META_ESPERADA + VARIACION : null;
+
+    // ============================
+    // DATA FINAL (BARRAS BASE)
+    // ============================
+
+    const dataValores = labels.map(mes => {
+        const item = datosFinal.find(d => {
+            const fecha = new Date(d.created_at);
+            return mesesES[fecha.getMonth()-1] === mes;
+        });
+        return item ? parseFloat(item.informacion_campo) : null;
+    });
+
+    const nombreCampo = datosFinal.length > 0
+        ? datosFinal[0].nombre_campo
+        : "Indicador";
+
+    // ============================
+    // FUNCIÓN GLOBAL DE COLOR
+    // ============================
+
+    function obtenerColor(valor) {
+
+        if (valor === null) return "rgba(200,200,200,0.3)";
+
+        // 🔴🟢 CON VARIACIÓN
+        if (VARIACION_ON) {
+            if (valor < LIMITE_INFERIOR || valor > LIMITE_SUPERIOR) {
+                return "rgba(255,99,132,0.8)";
+            }
+            return "rgba(75,192,75,0.8)";
+        }
+
+        // 🔄 INDICADOR DE RIESGO (invertido)
+        if (TIPO_INDICADOR === "riesgo") {
+            return valor < META_MINIMA
+                ? "rgba(75,192,75,0.8)"
+                : "rgba(255,99,132,0.8)";
+        }
+
+        // 📊 NORMAL
+        return valor < META_MINIMA
+            ? "rgba(255,99,132,0.8)"
+            : "rgba(75,192,75,0.8)";
+    }
+
+    // ============================
+    // 📈 GRÁFICA DE LÍNEA
+    // ============================
+
+    const ctxLine = document.getElementById("graficoLine");
+    if (ctxLine) {
+        new Chart(ctxLine.getContext("2d"), {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: nombreCampo,
+                    data: dataValores,
+                    borderColor: "rgba(54,162,235,1)",
+                    backgroundColor: "rgba(54,162,235,0.1)",
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: ctx => obtenerColor(ctx.raw),
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    // ============================
+    // 🥧 GRÁFICA DOUGHNUT
+    // ============================
+
+    const ctxPie = document.getElementById("graficoPie");
+    if (ctxPie) {
+        new Chart(ctxPie.getContext("2d"), {
+            type: "doughnut",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: nombreCampo,
+                    data: dataValores,
+                    backgroundColor: dataValores.map(v => obtenerColor(v)),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+        });
+    }
+
+});
+</script>
 
 
 

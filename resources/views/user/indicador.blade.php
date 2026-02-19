@@ -186,40 +186,88 @@ use Carbon\Carbon;
         <div class="card-body py-3">
 
             <!-- METAS -->
-            @if ($indicador->tipo_indicador == "riesgo")
-                <div class="row p-0">
-                    <div class="col-6">
-                        <span class="badge bg-success-subtle text-success p-2 w-100">
-                            <i class="fa-solid fa-arrow-up"></i>
-                            Maximo:  {{ $meta_minima }}
-                        </span>
-                    </div>
-                    <div class="col-6">
-                        <span class="badge bg-danger-subtle text-danger p-2 w-100">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                            Exceso:  {{ $meta_maxima }}
-                        </span>
-                    </div>
-                </div>
-                
-            @else
-                
-                <div class="row p-0">
-                    <div class="col-6">
-                        <span class="badge bg-danger-subtle text-danger p-2 w-100">
-                            <i class="fa-solid fa-arrow-down"></i>
-                            Mínima: {{ $meta_minima }}
-                        </span>
-                    </div>
-                    <div class="col-6">
-                        <span class="badge bg-success-subtle text-success p-2 w-100">
-                            <i class="fa-solid fa-arrow-up"></i>
-                            Máxima: {{ $meta_maxima }}
-                        </span>
-                    </div>
-                </div>
+                @if ($indicador->tipo_indicador == "riesgo")
 
-            @endif
+                    @if ($indicador->variacion == "on")
+
+                        <div class="row p-0">
+                            <div class="col-6">
+                                <span class="badge bg-success-subtle text-success p-2 w-100">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    Variación:  {{ $meta_minima }}
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Meta:  {{ $meta_maxima }}
+                                </span>
+                            </div>
+                        </div>   
+
+                    @else
+                        
+                        <div class="row p-0">
+                            <div class="col-6">
+                                <span class="badge bg-success-subtle text-success p-2 w-100">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    Maximo:  {{ $meta_minima }}
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Exceso:  {{ $meta_maxima }}
+                                </span>
+                            </div>
+                        </div>
+                    @endif
+
+                    
+                @else
+
+
+                    @if ($indicador->variacion == "on")
+
+                        <div class="row p-0">
+                            <div class="col-6">
+                                <span class="badge bg-success-subtle text-success p-2 w-100">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    Variación:  {{ $meta_minima }}
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Meta:  {{ $meta_maxima }}
+                                </span>
+                            </div>
+                        </div>   
+
+                    @else
+
+                    
+
+                    <div class="row p-0">
+                        <div class="col-6">
+                            <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                                <i class="fa-solid fa-arrow-down"></i>
+                                Mínima: {{ $meta_minima }}
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <span class="badge bg-success-subtle text-success p-2 w-100">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                Máxima: {{ $meta_maxima }}
+                            </span>
+                        </div>
+                    </div>
+
+                    @endif
+
+
+
+                @endif
 
             <hr class="my-2">
 
@@ -825,6 +873,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
 
 
 </script>
