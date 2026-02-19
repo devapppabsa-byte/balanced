@@ -1713,5 +1713,14 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
 
 
+public function borrar_info_indicador($id){
+
+    IndicadorLleno::where('id_movimiento', $id)->delete();
+
+    return back()->with('deleted', 'La información fue removida.');
+
+}
+
+
 
 }

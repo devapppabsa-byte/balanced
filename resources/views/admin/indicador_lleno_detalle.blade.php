@@ -454,266 +454,242 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  const datos = @json($graficar);
-  const TIPO_INDICADOR = "{{ $tipo_indicador }}";
+    const datos = @json($graficar);
+    const TIPO_INDICADOR = "{{ $tipo_indicador }}";
 
-  const mesesES = [
-    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-  ];
+    const mesesES = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
 
-  // ============================
-  // FILTRAR DATOS
-  // ============================
+    // ============================
+    // FILTRAR DATOS
+    // ============================
 
-  const datosFinal = datos.filter(d => d.final === "on");
-  const datosReferencia = datos.filter(d => d.referencia === "on");
+    const datosFinal = datos.filter(d => d.final === "on");
+    const datosReferencia = datos.filter(d => d.referencia === "on");
 
-  // ============================
-  // LABELS
-  // ============================
+    // ============================
+    // LABELS (MESES)
+    // ============================
 
-  const labels = [...new Set(
-    [...datosFinal, ...datosReferencia].map(item => {
-      const fecha = new Date(item.created_at);
-      return mesesES[fecha.getMonth()];
-    })
-  )];
+    const labels = [...new Set(
+        [...datosFinal, ...datosReferencia].map(item => {
+            const fecha = new Date(item.created_at);
+            return mesesES[fecha.getMonth() - 1];
+        })
+    )];
 
-  // ============================
-  // METAS
-  // ============================
+    // ============================
+    // METAS + VARIACIÓN
+    // ============================
 
-  const MINIMO = {{ $indicador->meta_minima }};
-  const MAXIMO = {{ $indicador->meta_esperada }};
+    const VARIACION_ON = "{{ $indicador->variacion }}" === "on";
 
-  const colorMinimo = TIPO_INDICADOR === "riesgo" ? "green" : "red";
-  const colorMaximo = TIPO_INDICADOR === "riesgo" ? "red" : "green";
+    const META_MINIMA = {{ $indicador->meta_minima }};
+    const META_ESPERADA = {{ $indicador->meta_esperada }};
 
-  // ============================
-  // VALORES FINALES
-  // ============================
+    // Si variación está activa, meta_minima se usa como variación
+    const VARIACION = VARIACION_ON ? META_MINIMA : null;
 
-  const valores = labels.map(mes => {
-    const item = datosFinal.find(d => {
-      const fecha = new Date(d.created_at);
-      return mesesES[fecha.getMonth()] === mes;
-    });
-    return item ? parseFloat(item.informacion_campo) : null;
-  });
+    // Límites calculados solo si variación está activa
+    const LIMITE_INFERIOR = VARIACION_ON ? META_ESPERADA - VARIACION : null;
+    const LIMITE_SUPERIOR = VARIACION_ON ? META_ESPERADA + VARIACION : null;
 
-  // ============================
-  // REFERENCIAS AGRUPADAS
-  // ============================
+    // Colores
+    const colorMetaMinima = "red";
+    const colorMetaMaxima = "green";
+    const colorVariacion = "red";
 
-  const referenciasAgrupadas = {};
+    // ============================
+    // DATASET FINAL (BARRAS)
+    // ============================
 
-  datosReferencia.forEach(item => {
-    const fecha = new Date(item.created_at);
-    const mes = mesesES[fecha.getMonth()-1];
+    const datasetFinal = {
+        type: "bar",
+        label: datosFinal.length > 0
+            ? datosFinal[0].nombre_campo
+            : "Cumplimiento",
 
-    if (!referenciasAgrupadas[item.nombre_campo]) {
-      referenciasAgrupadas[item.nombre_campo] = {};
-    }
+        data: labels.map(mes => {
+            const item = datosFinal.find(d => {
+                const fecha = new Date(d.created_at);
+                return mesesES[fecha.getMonth() - 1] === mes;
+            });
+            return item ? parseFloat(item.informacion_campo) : null;
+        }),
 
-    referenciasAgrupadas[item.nombre_campo][mes] =
-      parseFloat(item.informacion_campo);
-  });
+        backgroundColor: ctx => {
+            const value = ctx.raw;
+            if (value === null) return "rgba(200,200,200,0.3)";
 
-  // ============================
-  // DATASETS REFERENCIAS
-  // ============================
+            // ============================
+            // SI VARIACIÓN ESTÁ ACTIVA
+            // ============================
+            if (VARIACION_ON) {
+                // ❌ Fuera del rango → ROJO
+                if (value < LIMITE_INFERIOR || value > LIMITE_SUPERIOR) {
+                    return "rgba(255,99,132,0.8)";
+                }
+                // ✅ Dentro del rango → VERDE
+                return "rgba(75,192,75,0.8)";
+            }
 
-  const datasetsReferencias = Object.keys(referenciasAgrupadas).map((nombre, index) => ({
-    label: nombre,
-    data: labels.map(mes =>
-      referenciasAgrupadas[nombre][mes] ?? null
-    ),
-    borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
-    backgroundColor: `rgba(${50 + index * 60}, 120, 255, 0.2)`,
-    borderWidth: 2,
-    tension: 0.3,
-    fill: false,
-    pointRadius: 0,
-    spanGaps: true
-  }));
+            // ============================
+            // SI NO HAY VARIACIÓN (NORMAL)
+            // ============================
+            if (TIPO_INDICADOR === "riesgo") {
+                return value < META_MINIMA
+                    ? "rgba(75,192,75,0.8)"
+                    : "rgba(255,99,132,0.8)";
+            }
 
-  // ============================
-  // COLORES DINÁMICOS (SEMÁFORO)
-  // ============================
-
-  const coloresPuntos = valores.map(v => {
-
-    if (v === null) return "gray";
-
-    if (TIPO_INDICADOR === "riesgo") {
-      return v < MINIMO ? "green" : "red";
-    }
-
-    return v < MINIMO ? "red" : "green";
-  });
-
-  // ==========================================================
-  // ✅ 1. GRÁFICA COMBINADA (BARRA + LINEAS)
-  // ==========================================================
-
-  const canvasBar = document.getElementById("grafico");
-
-  if (canvasBar) {
-    new Chart(canvasBar.getContext("2d"), {
-
-      data: {
-        labels,
-
-        datasets: [
-
-          // BARRAS FINAL
-          {
-            type: "bar",
-            label: "Cumplimiento",
-            data: valores,
-            backgroundColor: coloresPuntos.map(c =>
-              c === "red"
-                ? "rgba(255,99,132,0.7)"
-                : "rgba(75,192,75,0.7)"
-            )
-          },
-
-          // REFERENCIAS
-          ...datasetsReferencias,
-
-          // META MINIMA
-          {
-            type: "line",
-            label: "Meta mínima",
-            data: labels.map(() => MINIMO),
-            borderColor: colorMinimo,
-            borderWidth: 2
-          },
-
-          // META MAXIMA
-          {
-            type: "line",
-            label: "Meta máxima",
-            data: labels.map(() => MAXIMO),
-            borderColor: colorMaximo,
-            borderWidth: 2
-          }
-        ]
-      },
-
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: "top" }
+            return value < META_MINIMA
+                ? "rgba(255,99,132,0.8)"
+                : "rgba(75,192,75,0.8)";
         },
-        scales: {
-          y: { beginAtZero: true }
+
+        borderWidth: 1,
+        order: 1
+    };
+
+    // ============================
+    // REFERENCIAS (LINEAS RELLENAS)
+    // ============================
+
+    const referenciasAgrupadas = {};
+
+    datosReferencia.forEach(item => {
+        const fecha = new Date(item.created_at);
+        const mes = mesesES[fecha.getMonth() - 1];
+
+        if (!referenciasAgrupadas[item.nombre_campo]) {
+            referenciasAgrupadas[item.nombre_campo] = {};
         }
-      }
+
+        referenciasAgrupadas[item.nombre_campo][mes] =
+            parseFloat(item.informacion_campo);
     });
-  }
 
-  // ==========================================================
-  // ✅ 2. GRÁFICA LINE (igual que combinada)
-  // ==========================================================
-
-  const canvasLine = document.getElementById("graficoLine");
-
-  if (canvasLine) {
-    new Chart(canvasLine.getContext("2d"), {
-      type: "line",
-
-      data: {
-        labels,
-
-        datasets: [
-
-          // LINEA PRINCIPAL
-          {
-            label: "Cumplimiento",
-            data: valores,
-            borderColor: "#3b82f6",
+    const datasetsReferencias = Object.keys(referenciasAgrupadas).map((nombre, index) => {
+        return {
+            type: "line",
+            label: nombre,
+            data: labels.map(mes =>
+                referenciasAgrupadas[nombre][mes] ?? null
+            ),
             borderWidth: 3,
             tension: 0.3,
-            fill: false,
+            fill: true,
+            borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
+            backgroundColor: `rgba(${50 + index * 60}, 120, 255, 0.2)`,
+            spanGaps: true,
+            order: 5
+        };
+    });
 
-            pointRadius: 6,
-            pointBackgroundColor: coloresPuntos,
-            pointBorderColor: "#000"
-          },
+    // ============================
+    // CANVAS
+    // ============================
 
-          // REFERENCIAS
-          ...datasetsReferencias,
+    const canvas = document.getElementById("grafico");
+    if (!canvas) return;
 
-          // META MINIMA
-          {
-            label: "Meta mínima",
-            data: labels.map(() => MINIMO),
-            borderColor: colorMinimo,
-            borderWidth: 2,
-            borderDash: [5, 5],
-            pointRadius: 0
-          },
+    // ============================
+    // CHART
+    // ============================
 
-          // META MAXIMA
-          {
-            label: "Meta máxima",
-            data: labels.map(() => MAXIMO),
-            borderColor: colorMaximo,
-            borderWidth: 2,
-            borderDash: [5, 5],
-            pointRadius: 0
-          }
-        ]
-      },
+    new Chart(canvas.getContext("2d"), {
 
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: "top" }
+        data: {
+            labels,
+            datasets: [
+                datasetFinal,
+                ...datasetsReferencias,
+
+                // ============================
+                // METAS DINÁMICAS
+                // ============================
+                ...(VARIACION_ON ? [
+
+                    // Meta esperada
+                    {
+                        type: "line",
+                        label: "Meta esperada",
+                        data: labels.map(() => META_ESPERADA),
+                        borderColor: colorMetaMaxima,
+                        borderWidth: 3,
+                        order: 10
+                    },
+
+                    // Variación inferior
+                    {
+                        type: "line",
+                        label: "Variación inferior",
+                        data: labels.map(() => LIMITE_INFERIOR),
+                        borderColor: colorVariacion,
+                        borderWidth: 2,
+                        borderDash: [6, 6],
+                        order: 9
+                    },
+
+                    // Variación superior
+                    {
+                        type: "line",
+                        label: "Variación superior",
+                        data: labels.map(() => LIMITE_SUPERIOR),
+                        borderColor: colorVariacion,
+                        borderWidth: 2,
+                        borderDash: [6, 6],
+                        order: 9
+                    }
+
+                ] : [
+
+                    // Meta mínima
+                    {
+                        type: "line",
+                        label: "Meta mínima",
+                        data: labels.map(() => META_MINIMA),
+                        borderColor: colorMetaMinima,
+                        borderWidth: 2,
+                        borderDash: [6, 6],
+                        order: 9
+                    },
+
+                    // Meta máxima
+                    {
+                        type: "line",
+                        label: "Meta máxima",
+                        data: labels.map(() => META_ESPERADA),
+                        borderColor: colorMetaMaxima,
+                        borderWidth: 3,
+                        order: 10
+                    }
+
+                ])
+            ]
         },
-        scales: {
-          y: { beginAtZero: true }
+
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "top"
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
-      }
+
     });
-  }
-
-  // ==========================================================
-  // ✅ 3. GRÁFICA PIE (solo cumplimiento)
-  // ==========================================================
-
-  const canvasPie = document.getElementById("graficoPie");
-
-  if (canvasPie) {
-    new Chart(canvasPie.getContext("2d"), {
-      type: "pie",
-
-      data: {
-        labels,
-        datasets: [{
-          label: "Cumplimiento",
-          data: valores,
-          backgroundColor: coloresPuntos.map(c =>
-            c === "red"
-              ? "rgba(255,99,132,0.7)"
-              : "rgba(75,192,75,0.7)"
-          ),
-          borderWidth: 1
-        }]
-      },
-
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: "right" }
-        }
-      }
-    });
-  }
 
 });
+
+
 </script>
 
 

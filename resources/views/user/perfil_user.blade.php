@@ -1,10 +1,10 @@
 @extends('plantilla')
 @section('title', 'Perfil del usuario')
-
-
-
 @section('contenido')
-
+@php
+    use App\Models\IndicadorLleno;
+    use App\Models\CampoForaneoInformacion;
+@endphp
 <div class="container-fluid sticky-top ">
     <div class="row bg-primary d-flex align-items-center justify-content-start ">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-3">
@@ -75,11 +75,38 @@
        
           
         @forelse ($indicadores_list as $indicador)
+        @php
+
+                $ultima_carga_indicador = IndicadorLleno::where('id_indicador', $indicador->id)->latest()->first();  
+                $carga_indicador = $ultima_carga_indicador?->created_at?->format('Y-m') ?? '0000-00';
+                $ahora = now()->format('Y-m');
+        @endphp     
+
+        @if ($carga_indicador === $ahora)
+
+
+
+            @if ($carga_indicador === $ahora)
+              <div class="col-auto m-2">
+                
+                <a href="{{route('show.indicador.user', $indicador->id)}}" class="btn btn-primary btn-sm">
+                  <i class="fa fa-check"></i>  {{$indicador->nombre}}
+                </a>
+              </div>
+            @endif
+
+
+        @else
           <div class="col-auto m-2">
             <a href="{{route('show.indicador.user', $indicador->id)}}" class="btn btn-outline-primary btn-sm">
               {{$indicador->nombre}}
             </a>
           </div>
+        @endif
+
+
+
+
         @empty
           <li>No hay datos </li>
         @endforelse

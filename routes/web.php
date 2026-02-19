@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Http\Controllers\apartadoNormaController;
 use App\Http\Controllers\perspectivaController;
 use App\Http\Controllers\quejasController;
@@ -298,3 +297,10 @@ Route::post('/perfil_cliente/seguimientos/comentando/{queja}', [clienteControlle
 
 
 Route::post('/perfil_cliente', [userController::class, 'cerrar_session_cliente'])->name('cerrar.session.cliente');
+
+
+
+
+
+//Ruta para el eliminado de la info del indicador
+Route::delete('perfil_usuario/indicador/eliminar_info/{id}', [indicadorController::class, 'borrar_info_indicador'])->name('borrar.info.indicador');

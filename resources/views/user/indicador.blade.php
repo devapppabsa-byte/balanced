@@ -99,14 +99,14 @@ use Carbon\Carbon;
             @endif
 
 
-            @else
-                <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-                    <button class="btn btn-outline-primary btn-sm w-100 {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
-                        <i class="fa fa-plus"></i>
-                        Llenar este Indicador
-                    </button>
-                </div>
-            @endif
+        @else
+            <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+                <button class="btn btn-outline-primary btn-sm w-100 {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
+                    <i class="fa fa-plus"></i>
+                    Llenar este Indicador
+                </button>
+            </div>
+        @endif
 
 
 
@@ -316,7 +316,40 @@ use Carbon\Carbon;
                     </div>
                 @endif
 
+
+
             @endforeach
+
+                    
+                <div class="col-12">
+                    <button class="btn btn-danger w-20"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+
+                <div class="modal fade" id="e{{$items->first()->id_movimiento}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h2>¿Eliminar Registro?</h2>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{route('borrar.info.indicador', $items->first()->id_movimiento)}}" method="POST">
+                                    @csrf @method('DELETE')
+                                    <h2>
+                                        <button class="btn btn-danger w-100 py-3">
+                                            Eliminar
+                                        </button>
+                                    </h2>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
 
             </div>
         </div>
@@ -366,7 +399,7 @@ use Carbon\Carbon;
                             </label>
 
                             {{-- Input --}}
-                            <input  type="number" step="0.0001"  class="form-control form-control-sm" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="Ingrese {{$campo_vacio->nombre}}" require >
+                            <input  type="number" step="0.0001"  class="form-control form-control-sm" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="Ingrese {{$campo_vacio->nombre}}" required min="-999999" >
 
                             {{-- Campos ocultos (NO se tocan) --}}
                             <input type="hidden" name="id_input[]" value="{{$campo_vacio->id}}">
@@ -565,22 +598,33 @@ document.addEventListener("DOMContentLoaded", function () {
     const labels = [...new Set(
         [...datosFinal, ...datosReferencia].map(item => {
             const fecha = new Date(item.created_at);
-            return mesesES[fecha.getMonth()-1];
+            return mesesES[fecha.getMonth() - 1];
         })
     )];
 
     // ============================
-    // METAS
+    // METAS + VARIACIÓN
     // ============================
 
-    const MINIMO = {{ $indicador->meta_minima }};
-    const MAXIMO = {{ $indicador->meta_esperada }};
+    const VARIACION_ON = "{{ $indicador->variacion }}" === "on";
 
-    const colorMinimo = TIPO_INDICADOR === "riesgo" ? "green" : "red";
-    const colorMaximo = TIPO_INDICADOR === "riesgo" ? "red" : "green";
+    const META_MINIMA = {{ $indicador->meta_minima }};
+    const META_ESPERADA = {{ $indicador->meta_esperada }};
+
+    // Si variación está activa, meta_minima se usa como variación
+    const VARIACION = VARIACION_ON ? META_MINIMA : null;
+
+    // Límites calculados solo si variación está activa
+    const LIMITE_INFERIOR = VARIACION_ON ? META_ESPERADA - VARIACION : null;
+    const LIMITE_SUPERIOR = VARIACION_ON ? META_ESPERADA + VARIACION : null;
+
+    // Colores
+    const colorMetaMinima = "red";
+    const colorMetaMaxima = "green";
+    const colorVariacion = "red";
 
     // ============================
-    // DATASET FINAL (BARRAS CON COLORES)
+    // DATASET FINAL (BARRAS)
     // ============================
 
     const datasetFinal = {
@@ -592,27 +636,39 @@ document.addEventListener("DOMContentLoaded", function () {
         data: labels.map(mes => {
             const item = datosFinal.find(d => {
                 const fecha = new Date(d.created_at);
-                return mesesES[fecha.getMonth()-1] === mes;
+                return mesesES[fecha.getMonth() - 1] === mes;
             });
             return item ? parseFloat(item.informacion_campo) : null;
         }),
 
         backgroundColor: ctx => {
-
             const value = ctx.raw;
-
             if (value === null) return "rgba(200,200,200,0.3)";
 
-            // Respeta lógica de indicador
-            if (TIPO_INDICADOR === "riesgo") {
-                return value < MINIMO
-                    ? "rgba(75,192,75,0.7)"
-                    : "rgba(255,99,132,0.7)";
+            // ============================
+            // SI VARIACIÓN ESTÁ ACTIVA
+            // ============================
+            if (VARIACION_ON) {
+                // ❌ Fuera del rango → ROJO
+                if (value < LIMITE_INFERIOR || value > LIMITE_SUPERIOR) {
+                    return "rgba(255,99,132,0.8)";
+                }
+                // ✅ Dentro del rango → VERDE
+                return "rgba(75,192,75,0.8)";
             }
 
-            return value < MINIMO
-                ? "rgba(255,99,132,0.7)"
-                : "rgba(75,192,75,0.7)";
+            // ============================
+            // SI NO HAY VARIACIÓN (NORMAL)
+            // ============================
+            if (TIPO_INDICADOR === "riesgo") {
+                return value < META_MINIMA
+                    ? "rgba(75,192,75,0.8)"
+                    : "rgba(255,99,132,0.8)";
+            }
+
+            return value < META_MINIMA
+                ? "rgba(255,99,132,0.8)"
+                : "rgba(75,192,75,0.8)";
         },
 
         borderWidth: 1,
@@ -626,9 +682,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const referenciasAgrupadas = {};
 
     datosReferencia.forEach(item => {
-
         const fecha = new Date(item.created_at);
-        const mes = mesesES[fecha.getMonth()-1];
+        const mes = mesesES[fecha.getMonth() - 1];
 
         if (!referenciasAgrupadas[item.nombre_campo]) {
             referenciasAgrupadas[item.nombre_campo] = {};
@@ -638,27 +693,18 @@ document.addEventListener("DOMContentLoaded", function () {
             parseFloat(item.informacion_campo);
     });
 
-    // Crear una línea rellena por cada referencia
     const datasetsReferencias = Object.keys(referenciasAgrupadas).map((nombre, index) => {
-
         return {
             type: "line",
             label: nombre,
-
             data: labels.map(mes =>
                 referenciasAgrupadas[nombre][mes] ?? null
             ),
-
             borderWidth: 3,
             tension: 0.3,
-
-            // ✅ Línea rellena
             fill: true,
-
-            // Color automático diferente por referencia
             borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
             backgroundColor: `rgba(${50 + index * 60}, 120, 255, 0.2)`,
-
             spanGaps: true,
             order: 5
         };
@@ -679,50 +725,81 @@ document.addEventListener("DOMContentLoaded", function () {
 
         data: {
             labels,
-
             datasets: [
-
-                // Barras Final
                 datasetFinal,
-
-                // Referencias como líneas rellenas
                 ...datasetsReferencias,
 
                 // ============================
-                // META MINIMA
+                // METAS DINÁMICAS
                 // ============================
-                {
-                    type: "line",
-                    label: "Meta mínima",
-                    data: labels.map(() => MINIMO),
-                    borderColor: colorMinimo,
-                    borderWidth: 2,
-                    order: 10
-                },
+                ...(VARIACION_ON ? [
 
-                // ============================
-                // META MAXIMA
-                // ============================
-                {
-                    type: "line",
-                    label: "Meta máxima",
-                    data: labels.map(() => MAXIMO),
-                    borderColor: colorMaximo,
-                    borderWidth: 2,
-                    order: 10
-                }
+                    // Meta esperada
+                    {
+                        type: "line",
+                        label: "Meta esperada",
+                        data: labels.map(() => META_ESPERADA),
+                        borderColor: colorMetaMaxima,
+                        borderWidth: 3,
+                        order: 10
+                    },
+
+                    // Variación inferior
+                    {
+                        type: "line",
+                        label: "Variación inferior",
+                        data: labels.map(() => LIMITE_INFERIOR),
+                        borderColor: colorVariacion,
+                        borderWidth: 2,
+                        borderDash: [6, 6],
+                        order: 9
+                    },
+
+                    // Variación superior
+                    {
+                        type: "line",
+                        label: "Variación superior",
+                        data: labels.map(() => LIMITE_SUPERIOR),
+                        borderColor: colorVariacion,
+                        borderWidth: 2,
+                        borderDash: [6, 6],
+                        order: 9
+                    }
+
+                ] : [
+
+                    // Meta mínima
+                    {
+                        type: "line",
+                        label: "Meta mínima",
+                        data: labels.map(() => META_MINIMA),
+                        borderColor: colorMetaMinima,
+                        borderWidth: 2,
+                        borderDash: [6, 6],
+                        order: 9
+                    },
+
+                    // Meta máxima
+                    {
+                        type: "line",
+                        label: "Meta máxima",
+                        data: labels.map(() => META_ESPERADA),
+                        borderColor: colorMetaMaxima,
+                        borderWidth: 3,
+                        order: 10
+                    }
+
+                ])
             ]
         },
 
         options: {
             responsive: true,
-
             plugins: {
                 legend: {
                     position: "top"
                 }
             },
-
             scales: {
                 y: {
                     beginAtZero: true
@@ -733,9 +810,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
-
-
-
 
 
 </script>
