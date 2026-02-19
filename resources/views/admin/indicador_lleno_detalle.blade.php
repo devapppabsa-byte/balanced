@@ -216,23 +216,67 @@
 
             <!-- METAS -->
                 @if ($indicador->tipo_indicador == "riesgo")
-                    <div class="row p-0">
-                        <div class="col-6">
-                            <span class="badge bg-success-subtle text-success p-2 w-100">
-                                <i class="fa-solid fa-arrow-up"></i>
-                                Maximo:  {{ $meta_minima }}
-                            </span>
+
+                    @if ($indicador->variacion == "on")
+
+                        <div class="row p-0">
+                            <div class="col-6">
+                                <span class="badge bg-success-subtle text-success p-2 w-100">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    Variación:  {{ $meta_minima }}
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Meta:  {{ $meta_maxima }}
+                                </span>
+                            </div>
+                        </div>   
+
+                    @else
+                        
+                        <div class="row p-0">
+                            <div class="col-6">
+                                <span class="badge bg-success-subtle text-success p-2 w-100">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    Maximo:  {{ $meta_minima }}
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Exceso:  {{ $meta_maxima }}
+                                </span>
+                            </div>
                         </div>
-                        <div class="col-6">
-                            <span class="badge bg-danger-subtle text-danger p-2 w-100">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-                                Exceso:  {{ $meta_maxima }}
-                            </span>
-                        </div>
-                    </div>
+                    @endif
+
                     
                 @else
+
+
+                    @if ($indicador->variacion == "on")
+
+                        <div class="row p-0">
+                            <div class="col-6">
+                                <span class="badge bg-success-subtle text-success p-2 w-100">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    Variación:  {{ $meta_minima }}
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Meta:  {{ $meta_maxima }}
+                                </span>
+                            </div>
+                        </div>   
+
+                    @else
+
                     
+
                     <div class="row p-0">
                         <div class="col-6">
                             <span class="badge bg-danger-subtle text-danger p-2 w-100">
@@ -248,6 +292,10 @@
                         </div>
                     </div>
 
+                    @endif
+
+
+
                 @endif
 
             <hr class="my-2">
@@ -259,10 +307,30 @@
 
                 <!-- RESULTADO FINAL -->
                 @if($item->final === 'on')
-                    @php $cumple = $item->informacion_campo >= $meta_minima; @endphp
+
+                    @php 
+
+                        if($indicador->variacion === "on"){
+                    
+                            $min = $meta_maxima - $meta_minima;
+                            $max = $meta_maxima + $meta_minima;
+
+                            $cumple = $item->informacion_campo >= $min 
+                                    && $item->informacion_campo <= $max;   
+
+                        }
+                        else{
+
+                            $cumple = $item->informacion_campo >= $meta_minima; 
+                        
+                        }
+                    @endphp
+
+
+
 
                     @if ($indicador->tipo_indicador == "riesgo")
-                    
+
                         <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
                             {{ $cumple ? 'border-danger' : 'border-success' }}">
                             
@@ -290,9 +358,13 @@
                             <h4 class="fw-bold mb-0">
                                 {{ $item->informacion_campo }}
                             </h4>
-
                         </div>
+
                     @endif
+
+
+
+
                 @endif
 
                 <!-- COMENTARIO -->

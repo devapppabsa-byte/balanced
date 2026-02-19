@@ -100,6 +100,22 @@
 
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.querySelector("form");
+
+    form.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+        }
+    });
+
+});
+
+</script>
+    
+
 
 
     <script>

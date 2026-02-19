@@ -85,8 +85,16 @@
                 $cumplimiento = $suma/$contador;
             @endphp
 
+                @if ($indicador->variacion === 'on')
+                    
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
-                    <div class="card text-white {{($cumplimiento < $indicador->meta_minima) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
+
+                    <div class="card text-white {{($cumplimiento >= ($indicador->meta_objetivo - $indicador->meta_minima)&& $cumplimiento <= ($indicador->meta_objetivo + $indicador->meta_minima)
+                    )
+                    ? 'bg-success'
+                    : 'bg-danger'
+                    }} shadow-2-strong">
+                    
                         <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
@@ -94,7 +102,9 @@
                                     <h3 class="card-title fw-bold display-6 x">
                                         {{round($cumplimiento, 3)}}   
                                     </h3>
-                                    <p class="card-text fw-bold">{{$indicador->nombre}}</p>
+                                    <p class="card-text fw-bold">{{$indicador->nombre}}
+                                        
+                                    </p>
                                 </div>
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-4 p-0 m-0">
                                     <i class="fas fa-chart-line fa-3x"></i>
@@ -114,6 +124,48 @@
                         </a>
                     </div>
                 </div>
+                
+                @else
+
+                <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
+                    <div class="card text-white {{($cumplimiento < $indicador->meta_minima) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
+                        <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
+                        <div class="card-body">
+                            <div class="row justify-content-around d-flex align-items-center">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-7 ">
+                                    <h3 class="card-title fw-bold display-6 x">
+                                        {{round($cumplimiento, 3)}}   
+                                    </h3>
+                                    <p class="card-text fw-bold">{{$indicador->nombre}}
+                                        
+                                    </p>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-4 p-0 m-0">
+                                    <i class="fas fa-chart-line fa-3x"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer p-2">
+                                <div class="row  d-flex justify-content-between align-items-center">
+                                    <div class="col-auto">
+                                            Ver Detalles
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-arrow-circle-right"></i>
+                                    </div>
+                                </div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+                    
+                @endif
+
+
+
+
+
+
             @else
 
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">

@@ -230,7 +230,22 @@ use Carbon\Carbon;
 
                 <!-- RESULTADO FINAL -->
                 @if($item->final === 'on')
-                    @php $cumple = $item->informacion_campo >= $meta_minima; @endphp
+                    @php 
+                        if($indicador->variacion === "on"){
+                    
+                            $min = $meta_maxima - $meta_minima;
+                            $max = $meta_maxima + $meta_minima;
+
+                            $cumple = $item->informacion_campo >= $min 
+                                    && $item->informacion_campo <= $max;   
+
+                        }
+                        else{
+
+                            $cumple = $item->informacion_campo >= $meta_minima; 
+                        
+                        }
+                    @endphp
 
                     @if ($indicador->tipo_indicador == "riesgo")
                     

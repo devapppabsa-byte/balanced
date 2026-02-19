@@ -152,40 +152,58 @@ document.addEventListener("DOMContentLoaded", function () {
     const labels = rawData.map(i => mesEnEspanol(i.mes));
     const values = rawData.map(i => i.cumplimiento_total);
 
+    const MINIMO = 50;
+    const MAXIMO = 100;
+
     const canvas = document.getElementById("chart{{$departamento->id}}");
     if (!canvas) return;
 
     new Chart(canvas.getContext("2d"), {
+
+        type: "bar", // 👈 importante cuando mezclas tipos
+
         data: {
             labels,
             datasets: [
                 {
-                    type: "bar",
                     label: "Cumplimiento %",
                     data: values,
-                    backgroundColor: ctx =>
-                        ctx.raw < 80
+                    backgroundColor: (ctx) => {
+                        const value = ctx.raw;
+                        return value < MINIMO
                             ? "rgba(255,99,132,0.7)"
-                            : "rgba(75,192,75,0.7)",
-                    borderWidth: 1
+                            : "rgba(75,192,75,0.7)";
+                    },
+                    borderWidth: 1,
+                    order: 2 // 👈 barras abajo
                 },
                 {
                     type: "line",
                     label: "Mínimo",
-                    data: labels.map(() => 50),
+                    data: labels.map(() => MINIMO),
                     borderColor: "red",
-                    borderWidth: 2
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0,
+                    order: 1 // 👈 líneas arriba
                 },
                 {
                     type: "line",
                     label: "Máximo",
-                    data: labels.map(() => 100),
+                    data: labels.map(() => MAXIMO),
                     borderColor: "green",
-                    borderWidth: 2
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0,
+                    order: 1
                 }
             ]
         },
+
         options: {
+            responsive: true,
             scales: {
                 y: {
                     beginAtZero: true,
@@ -196,6 +214,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+
 </script>
 @endif
 
