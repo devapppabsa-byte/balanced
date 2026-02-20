@@ -202,7 +202,7 @@
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
                             <div class="form-outline" data-mdb-input-init>
-                                <textarea class="form-control w-100 {{ $errors->first('descripcion_norma') ? 'is-invalid' : '' }}" id="descripcion_apartado_norma" name="descripcion_apartado_norma" required >{{old('descripcion_norma')}}</textarea>
+                                <textarea class="form-control w-100 {{ $errors->first('descripcion_norma') ? 'is-invalid' : '' }}" id="descripcion_apartado_norma" name="descripcion_apartado_norma" >{{old('descripcion_norma')}}</textarea>
                                 <label class="form-label" for="descripcion_apartado_norma">Descripción del apartado</label>
                             </div>
                         </div>

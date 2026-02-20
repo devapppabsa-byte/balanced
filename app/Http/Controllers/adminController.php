@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Models\Departamento;
@@ -78,8 +79,25 @@ class adminController extends Controller
 
     public function perfil_admin(){
 
+    $inicio = request()->filled('fecha_inicio')
+        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+            ->startOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            ->startOfYear()
+            ->utc();
 
-        $departamentos = Departamento::get();
+    $fin = request()->filled('fecha_fin')
+        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            ->endOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            ->endOfYear()
+            ->utc();
+
+
+
+$departamentos = Departamento::get();
 
 
 $sub = DB::table('indicadores_llenos as il')
@@ -92,13 +110,13 @@ $sub = DB::table('indicadores_llenos as il')
         i.ponderacion
     ")
     ->where('il.final', 'on')
+    ->whereBetween('il.created_at', [$inicio, $fin]) // 
     ->groupBy(
         'i.id_departamento',
         'i.id',
         'mes',
         'i.ponderacion'
     );
-
 
 $cumplimiento = DB::query()
     ->fromSub($sub, 't')
@@ -111,7 +129,6 @@ $cumplimiento = DB::query()
     ->orderBy('mes')
     ->get()
     ->groupBy('id_departamento');
-
 
 
 

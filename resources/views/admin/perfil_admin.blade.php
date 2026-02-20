@@ -129,7 +129,7 @@
             @else
             
                 <canvas id="chart{{$departamento->id}}" height="200"></canvas>
-                <small class="text-muted text-center">Solo indicadores numericos</small>
+                {{-- <small class="text-muted text-center">Solo indicadores numericos</small> --}}
             @endif
 
             <div class="text-center mt-4">
@@ -149,7 +149,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const rawData = @json($cumplimiento[$departamento->id]);
 
-    const labels = rawData.map(i => mesEnEspanol(i.mes) );
+const labels = rawData.map(i => {
+
+    let [year, month] = i.mes.split("-"); // separa YYYY-MM
+
+    month = parseInt(month) - 1;
+
+    if (month < 1) {
+        month = 12;
+        year = parseInt(year) - 1;
+    }
+
+    // volver a formato YYYY-MM
+    const nuevoMes = year + "-" + String(month).padStart(2, "0");
+
+    return mesEnEspanol(nuevoMes);
+});
 
     
     const values = rawData.map(i => i.cumplimiento_total);

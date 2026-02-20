@@ -61,14 +61,14 @@
 <div class="container-fluid">
     <div class="row justify-content-around p-3">
         @forelse ($normas as $norma)
-        <div class="col-11 col-sm-11 col-md-5   col-lg-3 ">
+        <div class="col-11 col-sm-11 col-md-5   col-lg-5 ">
 
             <div class="card shadow">
                 <div class="card-header text-center">
-                    <h3 class="card-title">
+                    <h6 class="card-title">
                         <i class="fa-solid fa-landmark text-muted"></i>
                         {{$norma->nombre}}
-                    </h3>
+                    </h6>
                 </div>
                 <div class="card-body">
                     {{$norma->descripcion}}

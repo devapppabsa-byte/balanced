@@ -16,6 +16,16 @@ body{
 
 }
 
+
+
+.chart-container {
+    position: relative;
+    width: min(90vw, 500px);
+    aspect-ratio: 1 / 1;   /* 👈 lo hace cuadrado automáticamente */
+    margin: auto;
+}
+
+
 .indicador-item:hover {
     background-color: #f8f9fa;
 }

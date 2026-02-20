@@ -89,11 +89,15 @@
                     
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
 
-                    <div class="card text-white {{($cumplimiento >= ($indicador->meta_objetivo - $indicador->meta_minima)&& $cumplimiento <= ($indicador->meta_objetivo + $indicador->meta_minima)
+
+
+                    <div class="card text-white {{($cumplimiento >= ($indicador->meta_esperada - $indicador->meta_minima)&& $cumplimiento <= ($indicador->meta_esperada + $indicador->meta_minima)
                     )
                     ? 'bg-success'
                     : 'bg-danger'
                     }} shadow-2-strong">
+
+                    
                     
                         <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
                         <div class="card-body">
@@ -102,9 +106,39 @@
                                     <h3 class="card-title fw-bold display-6 x">
                                         {{round($cumplimiento, 3)}}   
                                     </h3>
-                                    <p class="card-text fw-bold">{{$indicador->nombre}}
-                                        
-                                    </p>
+                                    <p class="card-text fw-bold">{{$indicador->nombre}}</p>
+
+                                    @if ($indicador->variacion === "on")
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <span>
+                                                    <i class="fa fa-arrow-up"></i>
+                                                    Meta: {{ $indicador->meta_esperada }}
+                                                </span>
+                                            </div>
+                                            <div class="col-6">
+                                                <i class="fa-solid fa-up-down"></i>
+                                                <span>Variacion: {{ $indicador->meta_minima }}</span>
+                                            </div>
+                                        </div>
+                                    
+                                    @else
+                                        <div class="row justify-content-center">
+                                            <div class="col-5">
+                                                <span>
+                                                    <i class="fa fa-arrow-up"></i>
+                                                    Meta: {{ $indicador->meta_esperada }}
+                                                </span>
+                                            </div>
+                                            <div class="col-5">
+                                                <span class="mx-5">
+                                                    <i class="fa-solid fa-circle-down"></i>
+                                                    Meta Minima: {{ $indicador->meta_minima }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                 </div>
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-4 p-0 m-0">
                                     <i class="fas fa-chart-line fa-3x"></i>
@@ -134,7 +168,7 @@
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-7 ">
                                     <h3 class="card-title fw-bold display-6 x">
-                                        {{round($cumplimiento, 3)}}   
+                                        {{round($cumplimiento, 3)}}  
                                     </h3>
                                     <p class="card-text fw-bold">{{$indicador->nombre}}
                                         
@@ -419,7 +453,7 @@
         const [year, month] = item.mes.split('-');
 
         // month - 1 porque JS empieza en 0
-        const fecha = new Date(Number(year), Number(month) - 1, 1);
+        const fecha = new Date(Number(year), Number(month) - 2, 1);
 
         const formatted = new Intl.DateTimeFormat('es-MX', {
             month: 'long',

@@ -370,6 +370,7 @@ public function show_indicador_user(Indicador $indicador){
 
     //le mandamos los admins para que les envie el correo de que ya se lleno el indicador
     $correos = Admin::pluck('email')->toArray();
+
     //array_push($correos, Auth::user()->email);
 
 
@@ -1264,6 +1265,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
 
     $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->whereBetween('created_at', [$inicio, $fin])
         ->where(function ($q) {
             $q->where('final', 'on')
             ->orWhere('referencia', 'on');

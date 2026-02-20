@@ -208,7 +208,7 @@
         <div class="card-header bg-info text-white text-center py-2">
             <h6 class="fw-semibold mb-0">
                 <i class="fa-solid fa-calendar-days me-1"></i>
-                {{ $mes }} {{ $year }}
+                Enero {{ $year }}
             </h6>
         </div>
 
@@ -456,7 +456,34 @@
                 <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
                 <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
             </div>
-            <div class="modal-body  row juatify-content-center" >
+            <div class="modal-body  row justify-content-center" >
+
+                <div class="col-12 py-2">
+                    <div class="row justify-content-center">
+                        <div class="col-auto text-white bg-success rounded-3 my-3 mx-2">
+                            <h4 class="mt-2">
+                                <i class="fa fa-check-circle"></i>
+                                Meta: {{ $indicador->meta_esperada }}
+                            </h4>
+                        </div>
+
+                        @if ($indicador->variacion === "on")
+                            <div class="col-auto text-white bg-danger rounded-3 my-3 mx-2">
+                                <h4 class="mt-2">
+                                    <i class="fa-solid fa-arrow-trend-down"></i>
+                                    Variación:{{ $indicador->meta_minima }} </h4>
+                            </div>
+                            
+                        @else
+                            <div class="col-auto text-white bg-danger rounded-3 my-3 mx-2">
+                                <h4 class="mt-2">
+                                    <i class="fa-solid fa-arrow-trend-down"></i>
+                                    Minimo:{{ $indicador->meta_minima }} </h4>
+                            </div>
+                        @endif
+
+                    </div>
+                </div>
 
 
 
@@ -487,19 +514,24 @@
                         <!-- Tabs content -->
                         <div class="tab-content" id="ex2-content">
                             <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
-                                <div class="col-12  mx-2 bg-white shadow-sm p-5 mt-4" >
-                                    <canvas class="w-100 h-100" id="grafico"></canvas>
+                                <div class="col-12  chart-container w-100" >
+                                    <canvas class="" id="grafico"></canvas>
                                 </div>
                             </div>
                             <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+
                             <div class="row justify-content-center">
-                                    <div class="col-8 text-center">
+                                    <div class="col-12 text-center chart-container w-100" >
                                         <canvas id="graficoPie"></canvas>
                                     </div>
                             </div>
+
                             </div>
                             <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                                <canvas id="graficoLine"></canvas>
+                                <div class="col-12 text-center chart-container w-100" >
+                                    <canvas id="graficoLine"></canvas>
+
+                                </div>
                             </div>
                         </div>
                         <!-- Tabs content -->
@@ -665,7 +697,7 @@ document.addEventListener("DOMContentLoaded", function () {
             borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
             backgroundColor: `rgba(${50 + index * 60}, 120, 255, 0.2)`,
             spanGaps: true,
-            order: 5
+            order: 9
         };
     });
 
@@ -700,7 +732,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         data: labels.map(() => META_ESPERADA),
                         borderColor: colorMetaMaxima,
                         borderWidth: 3,
-                        order: 10
+                        order: 9
                     },
 
                     // Variación inferior
@@ -745,7 +777,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         data: labels.map(() => META_ESPERADA),
                         borderColor: colorMetaMaxima,
                         borderWidth: 3,
-                        order: 10
+                        order: 0
                     }
 
                 ])
