@@ -25,7 +25,8 @@ return new class extends Migration
             $table->string('creador');
             $table->string('id_objetivo_perspectiva')->nullable();
             $table->string('ponderacion_indicador')->nullable();
-
+            $table->string('unidad_de_medida');
+            $table->string('simbolo_unidad_medida');
             
             $table->unsignedBigInteger('id_departamento');
             $table->foreign('id_departamento')

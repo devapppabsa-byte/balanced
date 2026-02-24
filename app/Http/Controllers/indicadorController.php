@@ -163,14 +163,16 @@ class indicadorController extends Controller
 
     public function indicador_edit(Request $request, Indicador $indicador){
 
+        
         $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
         $request->validate([
-
+            "nombre_indicador_edit" => "required",
             "meta_minima" => "required",
             "meta_esperada" => "required",
-            "ponderacion_indicador_edit" => "required"
+            "ponderacion_indicador_edit" => "required",
+            "unidad_medida" => "required"
 
         ]);
 
@@ -182,13 +184,23 @@ class indicadorController extends Controller
         if($indicador->meta_minima != $request->meta_minima) {
             $cambios[] = "Meta Mínima: '{$indicador->meta_minima}' -> '{$request->meta_minima}'";
         }
+        
         if($indicador->ponderacion != $request->ponderacion_indicador_edit) {
             $cambios[] = "Ponderación: '{$indicador->ponderacion}' -> '{$request->ponderacion_indicador_edit}'";
         }
 
+        if($indicador->tipo_indicador != $request->tipo_indicador) {
+            $cambios[] = "Tipo Indicador: '{$indicador->tipo_indicador}' -> '{$request->tipo_indicador}'";
+        }
+
+
+
+        $indicador->nombre = $request->nombre_indicador_edit;
         $indicador->meta_esperada = $request->meta_esperada;
         $indicador->meta_minima = $request->meta_minima;
         $indicador->ponderacion = $request->ponderacion_indicador_edit;
+        $indicador->tipo_indicador = $request->tipo_indicador;
+        $indicador->unidad_medida = $request->unidad_medida;
 
         $indicador->update();
 

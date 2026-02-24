@@ -159,13 +159,6 @@
                                 </button>
                             </div>
                             
-                            {{-- @if(session('eliminado_user'))
-                            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-                                <i class="fas fa-exclamation-circle me-2"></i>
-                                {{ session('eliminado_user') }}
-                                <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            @endif --}}
                         </div>
                         
                         <div class="card-body p-4">
@@ -324,7 +317,7 @@
                                                 </td>
                                                 <td>
                                                     <small class="text-muted">
-                                                           {{$indicador->meta_minima}} --  {{$indicador->meta_esperada}}
+                                                           {{$indicador->meta_minima}}  --  {{$indicador->meta_esperada}}
                                                     
                                                     </small>
                                                 </td>
@@ -694,32 +687,102 @@
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 border-left">
                     <div class="row d-flex align-items-center justify-content-center">
-                        <div class="col-6">
+                        
+                        <div class="col-12 mb-3">
                             <div class="form-group">
-                                <label for="">Meta Minima  <span class="text-danger">*</span></label>
-                                <input type="number"   value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="Meta Minima" required>
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input type="text" id="nombre_indicador_edit" value="{{$indicador->nombre}}" class="form-control" name="nombre_indicador_edit" placeholder="Nombre" required>
+                                    <label class="form-label" for="nombre_indicador_edit">Nombre  <span class="text-danger">*</span></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="form-group">
+
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input type="number" id="meta_minima_edit" value="{{$indicador->meta_minima}}" class="form-control" name="meta_minima" placeholder="Meta Minima" required>
+                                    <label class="form-label" for="meta_minima_edit">Meta Minima  <span class="text-danger">*</span></label>
+                                </div>
+                                
                             </div>
                         </div>
                         
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="form-group">
-                                <label for="">Meta esperada  <span class="text-danger">*</span></label>
-                                <input type="number"  class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder=" Meta Maxima"  required>
+
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input type="number" id="meta_maxima_edit"  class="form-control" value="{{$indicador->meta_esperada}}" name="meta_esperada" placeholder=" Meta Maxima"  required>
+                                    <label class="form-label" for="meta_maxima_edit">Meta esperada  <span class="text-danger">*</span></label>
+                                </div>
+                                
                             </div>
                         </div>
 
-                    </div>
-                </div>
-
-                <div class="col-12 mt-3 ">
-                    <div class="form-group mt-3 ">
-                        <div class="form-outline" data-mdb-input-init>
-                            <input type="number" min="1" max="100" value="{{$indicador->ponderacion}}" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador_edit" name="ponderacion_indicador_edit" required />
-                            <label class="form-label" for="ponderacion_indicador_edit">Ponderación % Indicador dentro de la evaluación total  <span class="text-danger">*</span></label>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <div class="form-outline" data-mdb-input-init>
+                                    <input type="number" min="1" max="100" value="{{$indicador->ponderacion}}" class="form-control {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador_edit" name="ponderacion_indicador_edit" required />
+                                    <label class="form-label" for="ponderacion_indicador_edit">Ponderación % Indicador dentro de la evaluación total  <span class="text-danger">*</span></label>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
+
+                        <div class="col-12 my-2">
+                                <label for="tipo_ind{{$indicador->id}}" class="form-label fw-semibold">
+                                    Tipo de Indicador
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select name="tipo_indicador"  class="form-select w-100 {{ $errors->first('tipo_indicador') ? 'is-invalid' : '' }}"  id="tipo_ind{{$indicador->id}}" required>
+                                    <option value="" disabled>Selecciona el tipo de Indicador</option>
+                                    <option value="normal" {{old('tipo_indicador', $indicador->tipo_indicador) == 'normal' ? 'selected' : ''}}>Normal</option>
+                                    <option value="riesgo" {{old('tipo_indicador', $indicador->tipo_indicador) == 'riesgo' ? 'selected' : ''}}>Riesgo</option>
+                                </select>
+                        </div>
+
+                        <div class="col-5">
+                            <label for="unidad_medida{{$indicador->id}}" class="form-label fw-semibold">
+                                Unidad de Medida
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <select name="unidad_medida" 
+                                    class="form-select w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
+                                    id="unidad_medida{{$indicador->id}}" 
+                                    required>
+
+                                <option value="" disabled {{ old('unidad_medida', $indicador->unidad_medida) ? '' : 'selected' }}>
+                                    Selecciona la Unidad de Medida
+                                </option>
+
+                                <option value="dias" 
+                                    {{ old('unidad_medida', $indicador->unidad_medida) == 'dias' ? 'selected' : '' }}>
+                                    Días
+                                </option>
+
+                                <option value="toneladas" 
+                                    {{ old('unidad_medida', $indicador->unidad_medida) == 'toneladas' ? 'selected' : '' }}>
+                                    Toneladas
+                                </option>
+
+                                <option value="porcentaje" 
+                                    {{ old('unidad_medida', $indicador->unidad_medida) == 'porcentaje' ? 'selected' : '' }}>
+                                    Porcentaje
+                                </option>
+
+                                <option value="pesos" 
+                                    {{ old('unidad_medida', $indicador->unidad_medida) == 'pesos' ? 'selected' : '' }}>
+                                    Pesos
+                                </option>
+
+                            </select>
+                        </div>
+
+                    </div>
+                    
+                </div>
+                    
             </div>
         </div>
         <div class="modal-footer">

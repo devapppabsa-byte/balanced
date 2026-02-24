@@ -197,8 +197,10 @@
     $meta_maxima = $metas->meta_maxima ?? 0;
 
     Carbon::setLocale('es');
-    $mes  = ucfirst($items[0]->created_at->translatedFormat('F'));
-    $year = ucfirst($items[0]->created_at->translatedFormat('Y'));
+    $fecha = $items[0]->created_at->copy()->subMonth();
+
+    $mes  = ucfirst($fecha->translatedFormat('F'));
+    $year = $fecha->translatedFormat('Y');
 @endphp
 
 <div class="col-12 col-lg-4 mt-3">
@@ -208,7 +210,7 @@
         <div class="card-header bg-info text-white text-center py-2">
             <h6 class="fw-semibold mb-0">
                 <i class="fa-solid fa-calendar-days me-1"></i>
-                Enero {{ $year }}
+                {{ $mes }} {{ $year }}
             </h6>
         </div>
 
@@ -387,14 +389,14 @@
                     </div>
 
                     <div class="modal fade" id="com{{ $item->id }}" tabindex="-1">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-dialog modal-xl">
                             <div class="modal-content">
-                                <div class="modal-header bg-primary text-white py-2">
-                                    <h6 class="modal-title">{{ $indicador->nombre }}</h6>
+                                <div class="modal-header bg-primary text-white ">
+                                    <h4 class="modal-title">{{ $indicador->nombre }}</h4>
                                     <button class="btn-close" data-mdb-dismiss="modal"></button>
                                 </div>
-                                <div class="modal-body small ck-content">
-                                    {!!  $item->informacion_campo !!}
+                                <div class="modal-body small ck-content table-responsive">
+                                   <h4> {!!  $item->informacion_campo !!} </h4>
                                 </div>
                             </div>
                         </div>
