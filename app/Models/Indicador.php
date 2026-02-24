@@ -20,7 +20,8 @@ class Indicador extends Model
         'ponderacion',
         'creador',
         'unidad_medida',
-        'variacion'
+        'variacion',
+        'planta'
     ];
 
 

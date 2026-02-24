@@ -5,13 +5,13 @@
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  pt-2 text-white">
-            <h3 class="mt-1 mb-0">
+            <h1 class="mt-1 mb-0">
                 {{$departamento->nombre}}
-            </h3>
+            </h1>
 
-            <small>
+            <h3>
                 Lista de indicadores de {{$departamento->nombre}}
-            </small>
+            </h3>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -40,6 +40,8 @@
     @include('admin.assets.nav')
  
 </div>
+{{-- 
+Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todos los indicadores terminen en porcentaje)
 <div class="container-fluid">
     <div class="row  border-bottom  bg-white border-bottom shadow-sm">
 
@@ -53,7 +55,7 @@
 
 
     </div>
-</div>
+</div> --}}
 
 
 
@@ -89,59 +91,87 @@
                     
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
 
-
-
-                    <div class="card text-white {{($cumplimiento >= ($indicador->meta_esperada - $indicador->meta_minima)&& $cumplimiento <= ($indicador->meta_esperada + $indicador->meta_minima)
-                    )
-                    ? 'bg-success'
-                    : 'bg-danger'
-                    }} shadow-2-strong">
-
+                    <div class="card text-white {{($cumplimiento >= ($indicador->meta_esperada - $indicador->meta_minima)&& $cumplimiento <= ($indicador->meta_esperada + $indicador->meta_minima)) ? 'bg-success' : 'bg-danger'}} shadow-2-strong">
                     
                     
                         <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
-                                <div class="col-12">
-                                    <p class="card-text fw-bold">{{$indicador->nombre}}</p>
-                                    <h3 class="card-title fw-bold display-6 x">
-                                        {{round($cumplimiento, 3)}}   
-                                    </h3>
+                                <div class="col-12 ">
+                                    <h4 class="card-text fw-bold">{{$indicador->nombre}}</h4>
+                                    
+                                        <span class="card-title fw-bold display-6 mt-3 h3">
 
+                                            @if($indicador->unidad_medida === 'pesos')
+                                                ${{ number_format($cumplimiento, 2) }}
 
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <span>
-                                                    <i class="fa fa-arrow-up"></i>
-                                                    Meta: {{ $indicador->meta_esperada }}
-                                                </span>
-                                            </div>
-                                            <div class="col-6">
-                                                <i class="fa-solid fa-up-down"></i>
-                                                <span>Variacion: {{ $indicador->meta_minima }}</span>
-                                            </div>
-                                        </div>
+                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                {{ round($cumplimiento, 2) }}%
+
+                                            @elseif($indicador->unidad_medida === 'dias')
+                                                {{ round($cumplimiento, 2) }} Días
+
+                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                {{ round($cumplimiento, 2) }} Ton.
+
+                                            @else
+                                                {{ round($cumplimiento, 2) }}
+                                            @endif
+
+                                        </span>
+                                    
                                 </div>
-                                <div class="col-12 col-sm-12 col-md-12 col-lg-4 p-0 m-0">
-                                    <i class="fas fa-chart-line fa-3x"></i>
+
+                                <div class="col-12 my-2">
+                                    <div class="row justify-content-around">
+                                        <div class="col-auto">
+                                            <span>
+                                                <i class="fa fa-arrow-up"></i>
+                                                Meta: {{ $indicador->meta_esperada }}
+                                            </span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-solid fa-up-down"></i>
+                                            <span>Variacion: {{ $indicador->meta_minima }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </a>
+                        <div class="card-footer p-2">
+                            <div class="row  d-flex justify-content-between align-items-center">
+                                <div class="col-auto h3">
+                                    @php
+                                    $tipos = [
+                                        "g" => "<i class='fa-solid fa-city'></i> Indicador General",
+                                        "p" => "<i class='fa-solid fa-cow'></i> Pecuarios",
+                                        "m" => "<i class='fa-solid fa-dog'></i> Mascotas",
+                                    ];
+                                    @endphp
+
+                                    {!!  
+                                        empty($indicador->planta)
+                                            ? "<i class='fa-solid fa-circle-exclamation'></i> Sin asignación"
+                                            : ($tipos[strtolower($indicador->planta)] 
+                                                ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
+                                    !!}
+                                </div>
+                                <div class="col-auto mx-2">
+                                    <a href="#" class="text-white" data-mdb-ripple-init data-mdb-tooltip-init data-mdb-placement="top" title="Ver historial" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#detall{{ $indicador->id }}">
+                                        <i class="fa-solid fa-list"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer p-2">
-                                <div class="row  d-flex justify-content-between align-items-center">
-                                    <div class="col-auto">
-                                            Ver Detalles
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-arrow-circle-right"></i>
-                                    </div>
-                                </div>
-                        </div>
-                        </a>
                     </div>
                 </div>
                 
+
                 @else
+
+
 
 
                 @if ($indicador->tipo_indicador === "riesgo")
@@ -154,18 +184,34 @@
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 ">
                                     <h4 class="card-text fw-bold">{{$indicador->nombre}}</h4>
-                                    <h3 class="card-title fw-bold display-6 x mt-3">
-                                        {{round($cumplimiento, 3)}}  
-                                    </h3>
+                                        <span class="card-title fw-bold display-6 mt-3 h3">
+
+                                            @if($indicador->unidad_medida === 'pesos')
+                                                ${{ number_format($cumplimiento, 2) }}
+
+                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                {{ round($cumplimiento, 2) }}%
+
+                                            @elseif($indicador->unidad_medida === 'dias')
+                                                {{ round($cumplimiento, 2) }} Días
+
+                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                {{ round($cumplimiento, 2) }} Ton.
+
+                                            @else
+                                                {{ round($cumplimiento, 2) }}
+                                            @endif
+
+                                        </span>
                                 </div>
 
                             </div>
 
-                            <div class="row justify-content-center">
+                            <div class="row justify-content-around my-2">
                                 <div class="col-auto text-center">
                                     <span>
                                         <i class="fa fa-arrow-up"></i>
-                                        Meta: {{ $indicador->meta_esperada }}
+                                        Metas: {{ $indicador->meta_esperada }}
                                     </span>
                                 </div>
                                 <div class="col-auto text-center">
@@ -179,11 +225,21 @@
                         
                         <div class="card-footer p-2">
                                 <div class="row  d-flex justify-content-between align-items-center">
-                                    <div class="col-auto">
-                                            Ver Detalles
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-arrow-circle-right"></i>
+                                    <div class="col-auto h3">
+                                        @php
+                                        $tipos = [
+                                            "g" => "<i class='fa-solid fa-city'></i> Indicador General",
+                                            "p" => "<i class='fa-solid fa-cow'></i> Pecuarios",
+                                            "m" => "<i class='fa-solid fa-dog'></i> Mascotas",
+                                        ];
+                                        @endphp
+
+                                        {!!  
+                                            empty($indicador->planta)
+                                                ? "<i class='fa-solid fa-circle-exclamation'></i> Sin asignación"
+                                                : ($tipos[strtolower($indicador->planta)] 
+                                                    ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
+                                        !!}
                                     </div>
                                 </div>
                         </div>
@@ -203,14 +259,30 @@
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 ">
                                     <h4 class="card-text fw-bold">{{$indicador->nombre}}</h4>
-                                    <h3 class="card-title fw-bold display-6 x mt-3">
-                                        {{round($cumplimiento, 3)}}  
-                                    </h3>
+                                        <span class="card-title fw-bold display-6 mt-3 h3">
+
+                                            @if($indicador->unidad_medida === 'pesos')
+                                                ${{ number_format($cumplimiento, 2) }}
+
+                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                {{ round($cumplimiento, 2) }}%
+
+                                            @elseif($indicador->unidad_medida === 'dias')
+                                                {{ round($cumplimiento, 2) }} Días
+
+                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                {{ round($cumplimiento, 2) }} Ton.
+
+                                            @else
+                                                {{ round($cumplimiento, 2) }}
+                                            @endif
+
+                                        </span>
                                 </div>
 
                             </div>
 
-                            <div class="row justify-content-center">
+                            <div class="row justify-content-around my-2">
                                 <div class="col-auto text-center">
                                     <span>
                                         <i class="fa fa-arrow-up"></i>
@@ -220,7 +292,7 @@
                                 <div class="col-auto text-center">
                                     <span class="mx-5">
                                         <i class="fa-solid fa-circle-down"></i>
-                                        Meta Minima: {{ $indicador->meta_minima }}
+                                        Minimo: {{ $indicador->meta_minima }}
                                     </span>
                                 </div>
                             </div>
@@ -228,12 +300,24 @@
                         
                         <div class="card-footer p-2">
                                 <div class="row  d-flex justify-content-between align-items-center">
-                                    <div class="col-auto">
-                                            Ver Detalles
+                                    <i class='fa fa-factory'></i>
+                                    <div class="col-auto h4">                                        
+                                        @php
+                                        $tipos = [
+                                            "g" => "<i class='fa-solid fa-city'></i> Indicador General",
+                                            "p" => "<i class='fa-solid fa-cow'></i> Pecuarios",
+                                            "m" => "<i class='fa-solid fa-dog'></i> Mascotas",
+                                        ];
+                                        @endphp
+
+                                        {!!  
+                                            empty($indicador->planta)
+                                                ? "<i class='fa-solid fa-circle-exclamation'></i> Sin asignación"
+                                                : ($tipos[strtolower($indicador->planta)] 
+                                                    ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
+                                        !!}
                                     </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-arrow-circle-right"></i>
-                                    </div>
+
                                 </div>
                         </div>
 
@@ -269,16 +353,6 @@
                                     <i class="fas fa-chart-line fa-3x"></i>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-footer p-2">
-                                <div class="row  d-flex justify-content-between align-items-center">
-                                    <div class="col-auto">
-                                            Ver Detalles
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-arrow-circle-right"></i>
-                                    </div>
-                                </div>
                         </div>
                         </a>
                     </div>
@@ -484,7 +558,39 @@
 
 
 
+{{-- Modales del detalle historico de los indocadores --}}
+@foreach ($indicadores as $indicador)
 
+<div class="modal fade" id="detall{{ $indicador->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header bg-primary py-4">
+            <h3 class="text-white" id="exampleModalLabel">
+                <i class="fa fa-calendar mx-1"></i>
+            Historial
+            </h3>
+            <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+        </div>
+            <div class="modal-body py-4">
+                <div class="row justify-content-center px-4">
+                    Aqui se va a consultar el indicadore lleno que tiene como id el id del indicador y solo se va a consultar el campo que tenfa en la columna 
+                    fina un 'on'
+                    @forelse ($indicador->indicadorLleno as $indicador_lleno)
+                        {{ $indicador_lleno->final === 'on' ? $indicador_lleno->nombre_campo : '' }}
+                    @empty
+                        
+                    @endforelse
+
+                </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@endforeach
 
 
 

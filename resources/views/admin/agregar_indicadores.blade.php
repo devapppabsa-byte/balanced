@@ -647,7 +647,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 mt-2">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6 mt-2">
 
                     <div class="form-group mt-3">
                         <select name="tipo_indicador" class="form-control form-select" id="tipo_indicador">
@@ -658,56 +658,46 @@
 
                 </div>
 
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6 mt-2">
+                    <div class="form-group mt-3">
+
+                        <select name="unidad_medida" class="form-select w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}" id="unidad_medida{{$indicador->id}}" required>
+                        
+                            <option value="" disabled  selected>Selecciona la Unidad de Medida</option>
+                            <option value="dias">Días</option>
+                            <option value="toneladas">Toneladas</option>
+                            <option value="porcentaje">Porcentaje</option>
+                            <option value="pesos">Pesos</option>
+                        
+                        </select>
+                    </div>
+                    
+                </div>
 
                 <div class="col-12">
                     <div class="row  mt-4 justify-content-around">
 
-                        <div class="col-12 col-sm-12 col-md-6 col-lg-6">
-
-                            <select name="unidad_medida" 
-                                    class="form-select w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
-                                    id="unidad_medida{{$indicador->id}}" 
-                                    required>
-
-                                <option value="" disabled>
-                                    Selecciona la Unidad de Medida
-                                </option>
-
-                                <option value="dias">
-                                    Días
-                                </option>
-
-                                <option value="toneladas">
-                                    Toneladas
-                                </option>
-
-                                <option value="porcentaje">
-                                    Porcentaje
-                                </option>
-
-                                <option value="pesos">
-                                    Pesos
-                                </option>
-
-                            </select>
+                        <div class="col-12 col-sm-8 col-md-8 col-lg-8">
+                            <div class="form-group">
+                                <select class="form-select" name="planta" id="">
+                                    <option value="" disabled selected>Planta a la que pertenece</option>
+                                    <option value="1">Planta 1</option>
+                                    <option value="2">Planta 2</option>
+                                    <option value="3">Planta 3</option>
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="col-12 col-sm-12 col-md-6 col-lg-6 d-flex justify-content-center align-items-center ">
-                            <div class="form-check form-switch">
-                            <input class="form-check-input" name="indicador_variacion" type="checkbox" role="switch" id="flexSwitchCheckDefault" {{ $indicador->variacion === "on" ? 'checked' : '' }} />
-                            <label class="form-check-label" for="flexSwitchCheckDefault">Tiene variación más - menos.</label>
+                        <div class="col-12 col-sm-4 col-md-4 col-lg-4 ">
+                            <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" name="indicador_variacion" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Variación.</label>
                             </div>                                
                         </div>
+
                     </div>
 
                 </div>
-
-
-
-
-
-
-
 
             </div>
         </div>
@@ -723,6 +713,7 @@
 </div>
 
 @foreach ($indicadores as $indicador)
+
 <div class="modal fade" id="upd_indi{{$indicador->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
@@ -790,7 +781,24 @@
                                         <option value="riesgo" {{old('tipo_indicador', $indicador->tipo_indicador) == 'riesgo' ? 'selected' : ''}}>Riesgo</option>
                                     </select>
                             </div>
-                            <div class="col-12 col-sm-12 col-md-4 col-lg-4">
+
+                            <div class="col-12 col-sm-12 col-md-4 col-lg-4 mt-2">
+                                    <label for="tipo_ind{{$indicador->id}}" class="form-label fw-semibold">
+                                        Planta
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select name="planta_indicador"  class="form-select w-100 {{ $errors->first('planta_indicador') ? 'is-invalid' : '' }}"  id="" required>
+                                        <option value="" disabled>Selecciona una Planta</option>
+                                        <option value="1" {{old('planta_indicador', $indicador->planta) == '1' ? 'selected' : ''}}>Planta 1</option>
+                                        <option value="2" {{old('planta_indicador', $indicador->planta) == '2' ? 'selected' : ''}}>Planta 2</option>
+                                        <option value="3" {{old('planta_indicador', $indicador->planta) == '3' ? 'selected' : ''}}>Planta 3</option>
+                                        <option value="m" {{old('planta_indicador', $indicador->planta) == 'm' ? 'selected' : ''}}>Mascotas</option>
+                                        <option value="p" {{old('planta_indicador', $indicador->planta) == 'p' ? 'selected' : ''}}>Pecuarios</option>
+                                        <option value="g" {{old('planta_indicador', $indicador->planta) == 'g' ? 'selected' : ''}}>Indicador General</option>
+                                    </select>
+                            </div>
+
+                            <div class="col-12 col-sm-12 col-md-4 col-lg-4 mt-2">
                                 <label for="unidad_medida{{$indicador->id}}" class="form-label fw-semibold">
                                     Unidad de Medida
                                     <span class="text-danger">*</span>
@@ -817,12 +825,12 @@
     
                                     <option value="porcentaje" 
                                         {{ old('unidad_medida', $indicador->unidad_medida) == 'porcentaje' ? 'selected' : '' }}>
-                                        Porcentaje
+                                        % Porcentaje
                                     </option>
     
                                     <option value="pesos" 
                                         {{ old('unidad_medida', $indicador->unidad_medida) == 'pesos' ? 'selected' : '' }}>
-                                        Pesos
+                                        $ Pesos
                                     </option>
     
                                 </select>

@@ -19,14 +19,12 @@ return new class extends Migration
             $table->text('descripcion')->nullable()->default('Sin descripción disponible.');
             $table->string('ponderacion');
             $table->string('tipo_indicador');
-            $table->string('planta_1')->nullable();
-            $table->string('planta_2')->nullable();
-            $table->string('planta_3')->nullable();
             $table->string('creador');
             $table->string('id_objetivo_perspectiva')->nullable();
             $table->string('ponderacion_indicador')->nullable();
-            $table->string('unidad_de_medida');
-            $table->string('simbolo_unidad_medida');
+            $table->string('unidad_medida');
+            $table->string('variacion');
+            $table->string('planta')->nullable();
             
             $table->unsignedBigInteger('id_departamento');
             $table->foreign('id_departamento')

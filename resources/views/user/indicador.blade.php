@@ -305,10 +305,28 @@ use Carbon\Carbon;
                                 {{ $item->nombre_campo }}
                             </h6>
 
-                            <h3 class="fw-bold mb-0">
-                                {{ $item->informacion_campo }} 
-                            </h3>
+                            <h4 class="fw-bold mb-0">
 
+                                <span class="card-title fw-bold display-6 mt-3 h3">
+
+                                    @if($indicador->unidad_medida === 'pesos')
+                                        ${{ $item->informacion_campo }}
+
+                                    @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ $item->informacion_campo }}%
+
+                                    @elseif($indicador->unidad_medida === 'dias')
+                                            {{ $item->informacion_campo }} Días
+
+                                    @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ $item->informacion_campo }} Ton.
+
+                                    @else
+                                            {{ $item->informacion_campo }}
+                                    @endif
+
+                                </span>
+                            </h4>
                         </div>    
 
                     @else
@@ -322,7 +340,26 @@ use Carbon\Carbon;
                             </h6>
 
                             <h4 class="fw-bold mb-0">
-                                {{ $item->informacion_campo }}
+
+                                <span class="card-title fw-bold display-6 mt-3 h3">
+
+                                    @if($indicador->unidad_medida === 'pesos')
+                                        ${{ $item->informacion_campo }}
+
+                                    @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ $item->informacion_campo }}%
+
+                                    @elseif($indicador->unidad_medida === 'dias')
+                                            {{ $item->informacion_campo }} Días
+
+                                    @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ $item->informacion_campo }} Ton.
+
+                                    @else
+                                            {{ $item->informacion_campo }}
+                                    @endif
+
+                                </span>
                             </h4>
 
                         </div>

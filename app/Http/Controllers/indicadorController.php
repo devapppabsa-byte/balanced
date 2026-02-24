@@ -85,6 +85,7 @@ class indicadorController extends Controller
 
     public function agregar_indicadores_store(Request $request, Departamento $departamento){
 
+    
 
         $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
@@ -111,6 +112,7 @@ class indicadorController extends Controller
         $indicador->ponderacion = $request->ponderacion_indicador;
         $indicador->tipo_indicador = $request->tipo_indicador;
         $indicador->variacion = $request->indicador_variacion;
+        $indicador->planta = $request->planta;
 
         // if ($request->planta_1 == "active") $indicador->planta_1 = $request->planta_1;
         // if ($request->planta_2 == "active") $indicador->planta_2 =  $request->planta_2;
@@ -128,8 +130,6 @@ class indicadorController extends Controller
             'ip' => $request->ip() 
         ]);
         //registro del log
-
-
 
         
         return back()->with('success', 'El indicador fue creado!');
@@ -166,16 +166,17 @@ class indicadorController extends Controller
     public function indicador_edit(Request $request, Indicador $indicador){
 
         
-        
         $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
         $request->validate([
+
             "nombre_indicador_edit" => "required",
             "meta_minima" => "required",
             "meta_esperada" => "required",
             "ponderacion_indicador_edit" => "required",
-            "unidad_medida" => "required"
+            "unidad_medida" => "required",
+            "planta_indicador" => "required"
 
         ]);
 
@@ -205,6 +206,7 @@ class indicadorController extends Controller
         $indicador->tipo_indicador = $request->tipo_indicador;
         $indicador->unidad_medida = $request->unidad_medida;
         $indicador->variacion = $request->indicador_variacion_edit;
+        $indicador->planta = $request->planta_indicador;
         $indicador->update();
 
 
@@ -955,22 +957,22 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
 public function lista_indicadores_admin(Departamento $departamento){
 
 
-//Filtro de fechas para los indicadores
-$inicio = request()->filled('fecha_inicio')
-    ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
-        ->startOfDay()
-        ->utc()
-    : Carbon::now(config('app.timezone'))
-        ->startOfYear()
-        ->utc();
+    //Filtro de fechas para los indicadores
+    $inicio = request()->filled('fecha_inicio')
+        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+            ->startOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            ->startOfYear()
+            ->utc();
 
-$fin = request()->filled('fecha_fin')
-    ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
-        ->endOfDay()
-        ->utc()
-    : Carbon::now(config('app.timezone'))
-        ->endOfYear()
-        ->utc();
+    $fin = request()->filled('fecha_fin')
+        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            ->endOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            ->endOfYear()
+            ->utc();
 
 
 

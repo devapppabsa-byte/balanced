@@ -125,32 +125,25 @@
 
 <div class="container-fluid">
 
-            <div class="card border-0 shadow-sm mb-2 mt-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div>
-                            <h2 class="mb-1 fw-bold">
-                                <i class="fa-regular fa-simple-chart text-primary me-2"></i>
-                                Historico del llenado del indicador 
-                            </h2>
-                        </div>
-                        <div class="d-flex gap-2 mt-2 mt-md-0">
-                            <button class="btn btn-info text-white" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
-                                <i class="fa-solid fa-chart-line me-2"></i>
-                                Ver Gráficas
-                            </button>
-                        </div>
+        {{-- <div class="card border-0 shadow-sm mb-2 mt-3">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between flex-wrap">
+                    <div>
+                        <h2 class="mb-1 fw-bold">
+                            <i class="fa-regular fa-simple-chart text-primary me-2"></i>
+                            Historico del llenado del indicador 
+                        </h2>
                     </div>
+
                 </div>
             </div>
+        </div> --}}
 
-
-
-        <div class="card border-0 shadow-sm mb-2 ">
+        <div class="card border-0 shadow-sm mb-2 mt-3">
             <div class="card-body">
                 <form action="{{route('indicador.lleno.show.admin', $indicador->id)}}"  method="GET">
                     <div class="row g-3 align-items-end">
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-3">
                             <label for="fecha_inicio" class="form-label fw-semibold small text-muted text-uppercase">Fecha Inicio</label>
                             <input type="date"
                                     name="fecha_inicio"
@@ -158,7 +151,7 @@
                                     class="form-control datepicker"
                                     id="fecha_inicio">
                         </div>
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-3">
                             <label for="fecha_fin" class="form-label fw-semibold small text-muted text-uppercase">Fecha Final</label>
                             <input type="date"
                                     name="fecha_fin"
@@ -166,10 +159,16 @@
                                     class="form-control datepicker"
                                     id="fecha_fin">
                         </div>
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-3">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="fa-solid fa-filter me-2"></i>
                                 Filtrar
+                            </button>
+                        </div>
+                        <div class="col-12 col-md-3 ">
+                            <button class="btn btn-info text-white w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
+                                <i class="fa-solid fa-chart-line me-2"></i>
+                                Gráficas
                             </button>
                         </div>
                     </div>
@@ -326,9 +325,6 @@
                                     && $item->informacion_campo <= $max;
                             }
 
-
-
-
                         }
                         else{
 
@@ -350,8 +346,27 @@
                                 {{ $item->nombre_campo }}
                             </h6>
 
-                            <h4 class="fw-bold mb-0 ">
-                                {{ $item->informacion_campo }}
+                            <h4 class="fw-bold mb-0">
+
+                                <span class="card-title fw-bold display-6 mt-3 h3">
+
+                                    @if($indicador->unidad_medida === 'pesos')
+                                        ${{ $item->informacion_campo }}
+
+                                    @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ $item->informacion_campo }}%
+
+                                    @elseif($indicador->unidad_medida === 'dias')
+                                            {{ $item->informacion_campo }} Días
+
+                                    @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ $item->informacion_campo }} Ton.
+
+                                    @else
+                                            {{ $item->informacion_campo }}
+                                    @endif
+
+                                </span>
                             </h4>
 
                         </div>    
@@ -360,14 +375,32 @@
                     
                         <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
                             {{ $cumple ? 'border-success' : 'border-danger' }}">
-                            
                             <h6 class="fw-bold mb-1">
                                 <i class="fa-solid {{ $cumple ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger' }}"></i>
                                 {{ $item->nombre_campo }}
                             </h6>
 
                             <h4 class="fw-bold mb-0">
-                                {{ $item->informacion_campo }}
+
+                                <span class="card-title fw-bold display-6 mt-3 h3">
+
+                                    @if($indicador->unidad_medida === 'pesos')
+                                        ${{ $item->informacion_campo }}
+
+                                    @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ $item->informacion_campo }}%
+
+                                    @elseif($indicador->unidad_medida === 'dias')
+                                            {{ $item->informacion_campo }} Días
+
+                                    @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ $item->informacion_campo }} Ton.
+
+                                    @else
+                                            {{ $item->informacion_campo }}
+                                    @endif
+
+                                </span>
                             </h4>
                         </div>
 
