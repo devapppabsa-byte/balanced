@@ -107,8 +107,10 @@ class indicadorController extends Controller
         $indicador->descripcion = $request->descripcion;
         $indicador->meta_esperada = $request->meta_esperada;
         $indicador->meta_minima = $request->meta_minima;
+        $indicador->unidad_medida = $request->unidad_medida;
         $indicador->ponderacion = $request->ponderacion_indicador;
         $indicador->tipo_indicador = $request->tipo_indicador;
+        $indicador->variacion = $request->indicador_variacion;
 
         // if ($request->planta_1 == "active") $indicador->planta_1 = $request->planta_1;
         // if ($request->planta_2 == "active") $indicador->planta_2 =  $request->planta_2;
@@ -164,6 +166,7 @@ class indicadorController extends Controller
     public function indicador_edit(Request $request, Indicador $indicador){
 
         
+        
         $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
 
@@ -201,7 +204,7 @@ class indicadorController extends Controller
         $indicador->ponderacion = $request->ponderacion_indicador_edit;
         $indicador->tipo_indicador = $request->tipo_indicador;
         $indicador->unidad_medida = $request->unidad_medida;
-
+        $indicador->variacion = $request->indicador_variacion_edit;
         $indicador->update();
 
 

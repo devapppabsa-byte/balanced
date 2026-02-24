@@ -68,7 +68,6 @@
         </div>
     @endif
 
-
 </div>
 
 
@@ -297,7 +296,7 @@
                                                 <th scope="col" class="border-0">Ponderación</th>
                                                 <th scope="col" class="border-0">Min - Max</th>
                                                 <th scope="col" class="border-0">Tipo de Indicador</th>
-                                                <th scope="col" class="border-0">Fecha Creación</th>
+                                                <th scope="col" class="border-0">Unidad</th>
                                                 <th scope="col" class="border-0 text-end">Acciones</th>
                                             </tr>
                                         </thead>
@@ -325,8 +324,8 @@
                                                     <small class="text-muted text-capitalize">{{ $indicador->tipo_indicador }}</small>
                                                 </td>
                                                 <td>
-                                                    <small class="text-muted">
-                                                        {{ \Carbon\Carbon::parse($indicador->created_at)->format('d/m/Y') }}
+                                                    <small class="text-muted text-capitalize">
+                                                        {{ $indicador->unidad_medida }}
                                                     </small>
                                                 </td>
                                                 <td class="text-end">
@@ -659,6 +658,57 @@
 
                 </div>
 
+
+                <div class="col-12">
+                    <div class="row  mt-4 justify-content-around">
+
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+
+                            <select name="unidad_medida" 
+                                    class="form-select w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
+                                    id="unidad_medida{{$indicador->id}}" 
+                                    required>
+
+                                <option value="" disabled>
+                                    Selecciona la Unidad de Medida
+                                </option>
+
+                                <option value="dias">
+                                    Días
+                                </option>
+
+                                <option value="toneladas">
+                                    Toneladas
+                                </option>
+
+                                <option value="porcentaje">
+                                    Porcentaje
+                                </option>
+
+                                <option value="pesos">
+                                    Pesos
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-6 d-flex justify-content-center align-items-center ">
+                            <div class="form-check form-switch">
+                            <input class="form-check-input" name="indicador_variacion" type="checkbox" role="switch" id="flexSwitchCheckDefault" {{ $indicador->variacion === "on" ? 'checked' : '' }} />
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Tiene variación más - menos.</label>
+                            </div>                                
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+
+
             </div>
         </div>
         <div class="modal-footer">
@@ -677,7 +727,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-primary ">
-        <h3 class="text-white" id="exampleModalLabel">Actualizando Meta del Inidicador</h3>
+        <h3 class="text-white" id="exampleModalLabel">Actualizando Inidicador - {{ $indicador->nombre }}</h3>
         <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body py-4">
@@ -688,7 +738,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 border-left">
                     <div class="row d-flex align-items-center justify-content-center">
                         
-                        <div class="col-12 mb-3">
+                        <div class="col-12 mb-4">
                             <div class="form-group">
                                 <div class="form-outline" data-mdb-input-init>
                                     <input type="text" id="nombre_indicador_edit" value="{{$indicador->nombre}}" class="form-control" name="nombre_indicador_edit" placeholder="Nombre" required>
@@ -728,56 +778,63 @@
                             </div>
                         </div>
 
-
-                        <div class="col-12 my-2">
-                                <label for="tipo_ind{{$indicador->id}}" class="form-label fw-semibold">
-                                    Tipo de Indicador
+                        <div class="row  mt-4 justify-content-around">
+                            <div class="col-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label for="tipo_ind{{$indicador->id}}" class="form-label fw-semibold">
+                                        Tipo de Indicador
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select name="tipo_indicador"  class="form-select w-100 {{ $errors->first('tipo_indicador') ? 'is-invalid' : '' }}"  id="tipo_ind{{$indicador->id}}" required>
+                                        <option value="" disabled>Selecciona el tipo de Indicador</option>
+                                        <option value="normal" {{old('tipo_indicador', $indicador->tipo_indicador) == 'normal' ? 'selected' : ''}}>Normal</option>
+                                        <option value="riesgo" {{old('tipo_indicador', $indicador->tipo_indicador) == 'riesgo' ? 'selected' : ''}}>Riesgo</option>
+                                    </select>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-4 col-lg-4">
+                                <label for="unidad_medida{{$indicador->id}}" class="form-label fw-semibold">
+                                    Unidad de Medida
                                     <span class="text-danger">*</span>
                                 </label>
-                                <select name="tipo_indicador"  class="form-select w-100 {{ $errors->first('tipo_indicador') ? 'is-invalid' : '' }}"  id="tipo_ind{{$indicador->id}}" required>
-                                    <option value="" disabled>Selecciona el tipo de Indicador</option>
-                                    <option value="normal" {{old('tipo_indicador', $indicador->tipo_indicador) == 'normal' ? 'selected' : ''}}>Normal</option>
-                                    <option value="riesgo" {{old('tipo_indicador', $indicador->tipo_indicador) == 'riesgo' ? 'selected' : ''}}>Riesgo</option>
+    
+                                <select name="unidad_medida" 
+                                        class="form-select w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
+                                        id="unidad_medida{{$indicador->id}}" 
+                                        required>
+    
+                                    <option value="" disabled {{ old('unidad_medida', $indicador->unidad_medida) ? '' : 'selected' }}>
+                                        Selecciona la Unidad de Medida
+                                    </option>
+    
+                                    <option value="dias" 
+                                        {{ old('unidad_medida', $indicador->unidad_medida) == 'dias' ? 'selected' : '' }}>
+                                        Días
+                                    </option>
+    
+                                    <option value="toneladas" 
+                                        {{ old('unidad_medida', $indicador->unidad_medida) == 'toneladas' ? 'selected' : '' }}>
+                                        Toneladas
+                                    </option>
+    
+                                    <option value="porcentaje" 
+                                        {{ old('unidad_medida', $indicador->unidad_medida) == 'porcentaje' ? 'selected' : '' }}>
+                                        Porcentaje
+                                    </option>
+    
+                                    <option value="pesos" 
+                                        {{ old('unidad_medida', $indicador->unidad_medida) == 'pesos' ? 'selected' : '' }}>
+                                        Pesos
+                                    </option>
+    
                                 </select>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-4 col-lg-4 d-flex align-items-center">
+                                <div class="form-check form-switch mt-4 pt-4">
+                                <input class="form-check-input" name="indicador_variacion_edit" type="checkbox" role="switch" id="flexSwitchCheckDefault" {{ $indicador->variacion === "on" ? 'checked' : '' }} />
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Variación</label>
+                                </div>                                
+                            </div>
                         </div>
 
-                        <div class="col-5">
-                            <label for="unidad_medida{{$indicador->id}}" class="form-label fw-semibold">
-                                Unidad de Medida
-                                <span class="text-danger">*</span>
-                            </label>
-
-                            <select name="unidad_medida" 
-                                    class="form-select w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
-                                    id="unidad_medida{{$indicador->id}}" 
-                                    required>
-
-                                <option value="" disabled {{ old('unidad_medida', $indicador->unidad_medida) ? '' : 'selected' }}>
-                                    Selecciona la Unidad de Medida
-                                </option>
-
-                                <option value="dias" 
-                                    {{ old('unidad_medida', $indicador->unidad_medida) == 'dias' ? 'selected' : '' }}>
-                                    Días
-                                </option>
-
-                                <option value="toneladas" 
-                                    {{ old('unidad_medida', $indicador->unidad_medida) == 'toneladas' ? 'selected' : '' }}>
-                                    Toneladas
-                                </option>
-
-                                <option value="porcentaje" 
-                                    {{ old('unidad_medida', $indicador->unidad_medida) == 'porcentaje' ? 'selected' : '' }}>
-                                    Porcentaje
-                                </option>
-
-                                <option value="pesos" 
-                                    {{ old('unidad_medida', $indicador->unidad_medida) == 'pesos' ? 'selected' : '' }}>
-                                    Pesos
-                                </option>
-
-                            </select>
-                        </div>
 
                     </div>
                     
