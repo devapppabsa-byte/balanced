@@ -143,7 +143,7 @@
             <div class="card-body">
                 <form action="{{route('indicador.lleno.show.admin', $indicador->id)}}"  method="GET">
                     <div class="row g-3 align-items-end">
-                        <div class="col-12 col-md-3">
+                        <div class="col-12 col-sm-3 col-md-2 col-lg-2">
                             <label for="fecha_inicio" class="form-label fw-semibold small text-muted text-uppercase">Fecha Inicio</label>
                             <input type="date"
                                     name="fecha_inicio"
@@ -151,7 +151,7 @@
                                     class="form-control datepicker"
                                     id="fecha_inicio">
                         </div>
-                        <div class="col-12 col-md-3">
+                        <div class="col-12 col-sm-3 col-md-2 col-lg-2">
                             <label for="fecha_fin" class="form-label fw-semibold small text-muted text-uppercase">Fecha Final</label>
                             <input type="date"
                                     name="fecha_fin"
@@ -159,20 +159,20 @@
                                     class="form-control datepicker"
                                     id="fecha_fin">
                         </div>
-                        <div class="col-12 col-md-3">
+                        <div class="col-12 col-sm-3 col-md-2 col-lg-2">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="fa-solid fa-filter me-2"></i>
                                 Filtrar
                             </button>
                         </div>
-                        <div class="col-12 col-md-3 ">
-                            <button class="btn btn-info text-white w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
+                    </form>
+                        <div class="col-12 col-sm-3 col-md-2 col-lg-2 ">
+                            <button type="button" class="btn btn-info text-white w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
                                 <i class="fa-solid fa-chart-line me-2"></i>
-                                Gráficas
+                                Gráfica
                             </button>
                         </div>
                     </div>
-                </form>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
     $meta_maxima = $metas->meta_maxima ?? 0;
 
     Carbon::setLocale('es');
-    $fecha = $items[0]->created_at->copy()->subMonth();
+    $fecha = Carbon::parse($items[0]->fecha_periodo);
 
     $mes  = ucfirst($fecha->translatedFormat('F'));
     $year = $fecha->translatedFormat('Y');
@@ -204,7 +204,6 @@
 
 <div class="col-12 col-lg-4 mt-3">
     <div class="card shadow-sm border-0 h-100">
-
         <!-- HEADER -->
         <div class="card-header bg-info text-white text-center py-2">
             <h6 class="fw-semibold mb-0">
@@ -373,7 +372,7 @@
 
                     @else
                     
-                        <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
+                        <div class=" col-8   dark border border-2 rounded text-center py-3 my-4
                             {{ $cumple ? 'border-success' : 'border-danger' }}">
                             <h6 class="fw-bold mb-1">
                                 <i class="fa-solid {{ $cumple ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger' }}"></i>
@@ -405,9 +404,6 @@
                         </div>
 
                     @endif
-
-
-
 
                 @endif
 
@@ -451,7 +447,7 @@
 
                 <!-- NORMAL -->
                 @if(is_null($item->final))
-                    <div class="col-6">
+                    <div class="col-6 card-click">
                         <div class="border rounded p-2 small">
                             <span class="text-muted">{{ $item->nombre_campo }}</span>
                             <div class="fw-bold format-number">
@@ -654,6 +650,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ============================
 
     const datasetFinal = {
+
         type: "bar",
         label: datosFinal.length > 0
             ? datosFinal[0].nombre_campo

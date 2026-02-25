@@ -9,7 +9,7 @@ class IndicadorLleno extends Model
 {
 
     protected $table = "indicadores_llenos";
-    protected $fillable = ["nombre_campo", "informacion_campo", "id_indicador", "id_movimiento", "final", "planta", 'referencia' ];
+    protected $fillable = ["nombre_campo", "informacion_campo", "id_indicador", "id_movimiento", "final", "planta", 'referencia', 'fecha_periodo' ];
 
 
     //creando la relacion 

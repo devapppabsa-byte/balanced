@@ -565,22 +565,33 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-header bg-primary py-4">
-            <h3 class="text-white" id="exampleModalLabel">
+            <h4 class="text-white" id="exampleModalLabel">
                 <i class="fa fa-calendar mx-1"></i>
             Historial
-            </h3>
+            </h4>
             <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
         </div>
             <div class="modal-body py-4">
                 <div class="row justify-content-center px-4">
-                    Aqui se va a consultar el indicadore lleno que tiene como id el id del indicador y solo se va a consultar el campo que tenfa en la columna 
-                    fina un 'on'
-                    @forelse ($indicador->indicadorLleno as $indicador_lleno)
-                        {{ $indicador_lleno->final === 'on' ? $indicador_lleno->nombre_campo : '' }}
-                    @empty
-                        
-                    @endforelse
-
+                    <div class="list-group shadow-sm rounded-4">
+                        @forelse ($indicador->indicadorLleno as $indicador_lleno)
+                            @if ($indicador_lleno->final === 'on')
+                                <a href="#" class="list-group-item list-group-item-action p-3 ">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1 fw-bold">{{ $indicador_lleno->nombre_campo }}</h6>
+                                        <span class="text-dark fw-bold">{{ $indicador_lleno->informacion_campo }}</span>
+                                    </div>
+                                    <p class="mb-1 text-muted">
+                                        <i class="fa fa-calendar"></i>
+                                        {{$indicador_lleno->created_at->copy()->subMonth()->translatedFormat('F Y')}}.
+                                    </p>
+                                </a>
+                            @endif
+                        @empty
+                            
+                        @endforelse
+    
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

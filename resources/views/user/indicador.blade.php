@@ -157,25 +157,26 @@ use Carbon\Carbon;
 
 @forelse($grupos as $movimiento => $items)
 
-@php
-    $metas = MetaIndicador::where(
-        'id_movimiento_indicador_lleno',
-        $items->first()->id_movimiento
-    )->first();
+    @php
+        $metas = MetaIndicador::where(
+            'id_movimiento_indicador_lleno',
+            $items->first()->id_movimiento
+        )->first();
 
-    $meta_minima = $metas->meta_minima ?? 0;
-    $meta_maxima = $metas->meta_maxima ?? 0;
+        $meta_minima = $metas->meta_minima ?? 0;
+        $meta_maxima = $metas->meta_maxima ?? 0;
 
-    Carbon::setLocale('es');
-    $fecha = $items[0]->created_at->copy()->subMonth();
-    $mes  = ucfirst($fecha->translatedFormat('F'));
-    $year = ucfirst($fecha->translatedFormat('Y'));
-@endphp
+        Carbon::setLocale('es');
+        $fecha = Carbon::parse($items[0]->fecha_periodo);
+
+        $mes  = ucfirst($fecha->translatedFormat('F'));
+        $year = $fecha->translatedFormat('Y');
+    @endphp
+
 
 <div class="col-12 col-lg-4 mt-3">
     <div class="card shadow-sm border-0 h-100">
-
-        <!-- HEADER -->
+       <!-- HEADER -->
         <div class="card-header bg-info text-white text-center py-2">
             <h6 class="fw-semibold mb-0">
                 <i class="fa-solid fa-calendar-days me-1"></i>
@@ -422,9 +423,23 @@ use Carbon\Carbon;
 
                     
                 <div class="col-12">
-                    <button class="btn btn-danger w-20"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}">
-                        <i class="fa fa-trash"></i>
+
+                    @php
+                        $fechaRegistro = Carbon::parse($items->first()->fecha_periodo);
+                        //$fechaRegistro = $items->first()->created_at;
+                        $mismoMes = $fechaRegistro->isSameMonth(now());
+                    @endphp
+
+                    <button class="btn btn-danger w-20 btn-sm"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}"
+                        @if(!$mismoMes) disabled onclick="alert('No se pueden eliminar registros de meses anteriores')" @endif>
+                        <i class="fa fa-trash"></i> 
                     </button>
+
+                    {{-- <button class="btn btn-danger w-20"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}">
+                        <i class="fa fa-trash"></i> {{ $items->first()->fecha_periodo }}
+                    </button> --}}
+
+                    
                 </div>
 
                 <div class="modal fade" id="e{{$items->first()->id_movimiento}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">

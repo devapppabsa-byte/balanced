@@ -379,14 +379,36 @@ public function borrar_campo(Request $request, $campo){
     
 public function show_indicador_user(Indicador $indicador){
 
+    $inicio = request()->filled('fecha_inicio')
+        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+            ->startOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            //->subMonth()
+            ->startOfYear()
+            ->utc();
+
+    $fin = request()->filled('fecha_fin')
+        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            //->subMonth()    
+            ->endOfDay()
+            ->utc()
+
+        : Carbon::now(config('app.timezone'))
+            ->endOfYear()
+            ->utc();
+
+
     
     //obtenemos la ultima fecha en la que se cargo el excel
     $ultima_carga_excel = CampoForaneoInformacion::latest()->first();
     $ultima_carga_indicador = IndicadorLleno::where('id_indicador', $indicador->id)->latest()->first();
 
 
+
     //le mandamos los admins para que les envie el correo de que ya se lleno el indicador
-    $correos = Admin::pluck('email')->toArray();
+    //$correos = Admin::pluck('email')->toArray();
+    $correos = ["arturo.resendiz@grupopabsa.com"];
 
     //array_push($correos, Auth::user()->email);
 
@@ -422,7 +444,7 @@ public function show_indicador_user(Indicador $indicador){
 
 
 
-   $datos = IndicadorLleno::where('id_indicador', $indicador->id)->get();
+   $datos = IndicadorLleno::where('id_indicador', $indicador->id)->whereBetween('fecha_periodo', [$inicio, $fin])->get();
 
     $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
 
@@ -439,6 +461,7 @@ public function show_indicador_user(Indicador $indicador){
 
     //datos para graficar...
     $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->whereBetween('fecha_periodo', [$inicio, $fin])
         ->where(function ($q) {
             $q->where('final', 'on')
             ->orWhere('referencia', 'on');
@@ -1253,7 +1276,7 @@ $encuestas = DB::table('encuestas as e')
 
 public function indicador_lleno_show_admin(Indicador $indicador){
 
-    
+        
     $tipo_indicador = $indicador->tipo_indicador;
 
     //fehcas de filtrado, si request->fecha_inicio trae algo lo pone en la variable inicio si no deja aa inicio como el inicio del año.
@@ -1263,13 +1286,16 @@ public function indicador_lleno_show_admin(Indicador $indicador){
             ->startOfDay()
             ->utc()
         : Carbon::now(config('app.timezone'))
+            //->subMonth()
             ->startOfYear()
             ->utc();
 
     $fin = request()->filled('fecha_fin')
         ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            //->subMonth()    
             ->endOfDay()
             ->utc()
+
         : Carbon::now(config('app.timezone'))
             ->endOfYear()
             ->utc();
@@ -1282,7 +1308,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
 
     $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
-        ->whereBetween('created_at', [$inicio, $fin])
+        ->whereBetween('fecha_periodo', [$inicio, $fin])
         ->where(function ($q) {
             $q->where('final', 'on')
             ->orWhere('referencia', 'on');
@@ -1296,7 +1322,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
 
     //Para mostrar los datos del indicador
-    $datos = IndicadorLleno::where('id_indicador', $indicador->id)->whereBetween('created_at', [$inicio, $fin])->get();
+     $datos = IndicadorLleno::where('id_indicador', $indicador->id)->whereBetween('fecha_periodo', [$inicio, $fin])->get();
     
     $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
 
@@ -1333,6 +1359,8 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
     $nombre_usuario = auth()->user()->name;
     $year = Carbon::now()->year;
     $mes = Carbon::now()->subMonth()->translatedFormat('F');
+    $fecha_periodo = now()->timezone('America/Mexico_City')->subMonth();
+
     //$id_movimiento = (string) Str::ulid();
 
      $id_movimiento = str_replace(':', '',str_replace(' ','',Carbon::now().'-'.random_int(0, 5000000))); //exagere un poquis, pero poatra que no de error
@@ -1371,8 +1399,8 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                 "nombre_campo" => $request->nombre_input_vacio[$i],
                 "informacion_campo" => $request->informacion_indicador[$i], 
                 "id_indicador" =>$indicador->id,
-                "id_movimiento" => $id_movimiento
-
+                "id_movimiento" => $id_movimiento,
+                "fecha_periodo" => $fecha_periodo
             ]);
         }
 
@@ -1397,7 +1425,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
             "nombre_campo" => $precargado->nombre,
             "informacion_campo" => $informacion->informacion,
             "id_indicador" =>$indicador->id,
-            "id_movimiento" => $id_movimiento
+            "id_movimiento" => $id_movimiento,
+            $fecha_periodo
         ]);  
 
 }
@@ -1500,7 +1529,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,
-                            'referencia' => $campo_calculado->referencia
+                            'referencia' => $campo_calculado->referencia,
+                            'fecha_periodo' => $fecha_periodo 
 
                         ]);
                         
@@ -1531,7 +1561,9 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,
-                            'referencia' => $campo_calculado->referencia
+                            'referencia' => $campo_calculado->referencia,
+                            'fecha_periodo' => $fecha_periodo
+
                         ]);
 
 
@@ -1566,7 +1598,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                         'id_indicador' => $indicador->id,
                         'id_movimiento' => $id_movimiento,
                         'final' => $campo_calculado->resultado_final,
-                        'referencia' => $campo_calculado->referencia
+                        'referencia' => $campo_calculado->referencia,
+                        'fecha_periodo' => $fecha_periodo
 
                     ]);
 
@@ -1597,22 +1630,18 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
 
                         IndicadorLleno::create([
-
                             'nombre_campo' => $campo_calculado->nombre,
                             'informacion_campo' => $porcentaje,
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,
-                            'referencia' => $campo_calculado->referencia                            
+                            'referencia' => $campo_calculado->referencia,                            
+                            'fecha_periodo' => $fecha_periodo
                         ]);
 
 
 
                     }
-
-
-
-
 
 
 
@@ -1634,7 +1663,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,
-                            'referencia' => $campo_calculado->referencia
+                            'referencia' => $campo_calculado->referencia,
+                            'fecha_periodo' => $fecha_periodo
 
                         ]);
 
@@ -1669,7 +1699,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,
-                            'referencia' => $campo_calculado->referencia
+                            'referencia' => $campo_calculado->referencia,
+                            'fecha_periodo' => $fecha_periodo
                         ]);
 
 
@@ -1681,19 +1712,20 @@ foreach($inputs_precargados as $index_precargados => $precargado){
         }
 
 
-        //AQUI ESTA EL CODIGO De la persona que gusrada el indicador
+                //AQUI ESTA EL CODIGO De la persona que gusrada el indicador
 
-        IndicadorLleno::create([
+                IndicadorLleno::create([
 
-                "nombre_campo" => 'Registro',
-                "informacion_campo" => $nombre_usuario,
-                "id_indicador" =>$indicador->id,
-                "id_movimiento" => $id_movimiento,
-                "final" => 'registro'
+                        "nombre_campo" => 'Registro',
+                        "informacion_campo" => $nombre_usuario,
+                        "id_indicador" =>$indicador->id,
+                        "id_movimiento" => $id_movimiento,
+                        "final" => 'registro',
+                        'fecha_periodo' => $fecha_periodo
 
 
-        ]);
-        //AQUI ESTA EL CODIGO De la persona que gusrada el indicador        
+                ]);
+                //AQUI ESTA EL CODIGO De la persona que gusrada el indicador        
 
         //DEsde aqui se guarda el campo del comenatario
         if($request->info_extra != null){

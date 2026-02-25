@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_indicador');
             $table->string('final')->nullable();
             $table->string('referencia')->nullable();
+            $table->string('fecha_periodo');
 
             $table->foreign('id_indicador')
                   ->references('id')

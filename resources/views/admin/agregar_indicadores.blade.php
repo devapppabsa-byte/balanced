@@ -661,7 +661,7 @@
                 <div class="col-12 col-sm-12 col-md-6 col-lg-6 mt-2">
                     <div class="form-group mt-3">
 
-                        <select name="unidad_medida" class="form-select w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}" id="unidad_medida{{$indicador->id}}" required>
+                        <select name="unidad_medida" class="form-select w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}" id="unidad_medida{{$departamento->id}}" required>
                         
                             <option value="" disabled  selected>Selecciona la Unidad de Medida</option>
                             <option value="dias">Días</option>
