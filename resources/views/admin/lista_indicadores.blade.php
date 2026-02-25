@@ -1,7 +1,9 @@
 @extends('plantilla')
 @section('title', 'Lista de Indicadores del departamento')
 @section('contenido')
-
+@php
+    use Carbon\Carbon;
+@endphp
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  pt-2 text-white">
@@ -66,6 +68,8 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                 @php
                     $contador = 0;
                     $suma = 0;
+
+                    $resultado = [];
                 @endphp
             @foreach($indicador->indicadorLleno as $indicador_lleno)
 
@@ -74,17 +78,20 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                     @php
                         $contador++;
                         $suma = $suma + $indicador_lleno->informacion_campo;
+                        array_push($resultado,$indicador_lleno->informacion_campo ) 
                     @endphp
+
 
                 @endif
 
-
-            @endforeach
+                
+                @endforeach
+                
 
 
             @if ($contador > 0)
             @php
-                $cumplimiento = $suma/$contador;
+                $cumplimiento = end($resultado);
             @endphp
 
                 @if ($indicador->variacion === 'on')
@@ -142,7 +149,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                     </a>
                         <div class="card-footer p-2">
                             <div class="row  d-flex justify-content-between align-items-center">
-                                <div class="col-auto h3">
+                                <div class="col-auto h4">
                                     @php
                                     $tipos = [
                                         "g" => "<i class='fa-solid fa-city'></i> Indicador General",
@@ -225,7 +232,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                         
                         <div class="card-footer p-2">
                                 <div class="row  d-flex justify-content-between align-items-center">
-                                    <div class="col-auto h3">
+                                    <div class="col-auto h4">
                                         @php
                                         $tipos = [
                                             "g" => "<i class='fa-solid fa-city'></i> Indicador General",
@@ -241,6 +248,11 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                                                     ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
                                         !!}
                                     </div>
+                                <div class="col-auto mx-2">
+                                    <a href="#" class="text-white" data-mdb-ripple-init data-mdb-tooltip-init data-mdb-placement="top" title="Ver historial" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#detall{{ $indicador->id }}">
+                                        <i class="fa-solid fa-list"></i>
+                                    </a>
+                                </div>
                                 </div>
                         </div>
 
@@ -292,16 +304,15 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                                 <div class="col-auto text-center">
                                     <span class="mx-5">
                                         <i class="fa-solid fa-circle-down"></i>
-                                        Minimo: {{ $indicador->meta_minima }}
+                                        Min.: {{ $indicador->meta_minima }}
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="card-footer p-2">
-                                <div class="row  d-flex justify-content-between align-items-center">
-                                    <i class='fa fa-factory'></i>
-                                    <div class="col-auto h4">                                        
+                        </a>
+                        <div class="card-footer ">
+                                <div class="row justify-content-between ">
+                                    <div class="col-auto h4">
                                         @php
                                         $tipos = [
                                             "g" => "<i class='fa-solid fa-city'></i> Indicador General",
@@ -317,11 +328,13 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                                                     ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
                                         !!}
                                     </div>
-
+                                <div class="col-auto mx-2">
+                                    <a href="#" class="text-white" data-mdb-ripple-init data-mdb-tooltip-init data-mdb-placement="top" title="Ver historial" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#detall{{ $indicador->id }}">
+                                        <i class="fa-solid fa-list"></i>
+                                    </a>
                                 </div>
-                        </div>
-
-                        </a>
+                                </div>
+                        </div>                        
                     </div>
                 </div>
                     
@@ -357,8 +370,6 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                         </a>
                     </div>
                 </div>
-
-
             @endif
 
 
@@ -583,7 +594,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                                     </div>
                                     <p class="mb-1 text-muted">
                                         <i class="fa fa-calendar"></i>
-                                        {{$indicador_lleno->created_at->copy()->subMonth()->translatedFormat('F Y')}}.
+                                        {{Carbon::parse($indicador_lleno->fecha_periodo)->translatedFormat('F Y')}}.
                                     </p>
                                 </a>
                             @endif
