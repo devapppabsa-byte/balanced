@@ -201,6 +201,47 @@ public function contestar_encuesta(Request $request, Encuesta $encuesta){
     }
 
 
+public function contestando_encuesta_user(Request $request, Encuesta $encuesta ){
+
+        $cliente = Cliente::find($request->cliente);
+        $autor = 'Cliente ID: '.$cliente->id.' - '.$cliente->nombre;
+   
+        $respuestas = $request->input('respuestas');
+
+
+        //Guardando los ID en las tabla auxiliar
+        ClienteEncuesta::create([
+            "id_cliente" => $cliente->id,
+            "id_encuesta" => $encuesta->id
+        ]);
+
+        $contador=0;
+        foreach($respuestas as $respuesta){
+
+            Respuesta::create([
+
+                "respuesta" => $respuesta,
+                "id_pregunta" => $request->input('id')[$contador],
+                "id_cliente" => $cliente->id
+
+            ]);
+
+            $contador++;
+
+        }
+        
+        LogBalanced::create([
+            'autor' => $autor,
+            'accion' => "add",
+            'descripcion' => "El cliente {$cliente->nombre} contesto la encuesta: {$encuesta->nombre}",
+            'ip' => request()->ip() 
+        ]);
+
+
+        return back()->with('success', 'La encuesta fue contestada por '. $cliente->nombre.' ');
+
+}
+
 
 
 

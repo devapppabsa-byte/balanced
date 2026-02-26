@@ -63,11 +63,6 @@ class encuestaController extends Controller
 
 
 
-
-
-
-
-
     public function encuesta_store(Request $request, Departamento $departamento){
 
 
@@ -420,6 +415,57 @@ class encuestaController extends Controller
         return view('admin.seguimiento_encuesta_detalle', compact('encuesta'));
 
     }
+
+
+
+
+
+
+
+    //aqui va el codigo de la contestació que va a hacer el usuario en vez del cliente
+
+    public function ver_encuestas_user(){
+
+        $encuestas = Encuesta::get();
+
+        return view('user.lista_encuestas_contestar', compact('encuestas'));
+    
+    }
+
+
+
+    public function encuesta_contestar_user(Encuesta $encuesta){
+
+        $encuesta->load('preguntas');
+        $idEncuesta = $encuesta->id;
+
+
+        //me trae a los clientes que no han contestado el mes en curso 
+        $inicioMes = Carbon::now()->startOfMonth();
+        $finMes = Carbon::now()->endOfMonth();
+
+        $clientes = DB::table('clientes as c')
+            ->leftJoin('aux_cliente_encuesta as ace', function ($join) use ($idEncuesta, $inicioMes, $finMes) {
+                $join->on('ace.id_cliente', '=', 'c.id')
+                    ->where('ace.id_encuesta', $idEncuesta)
+                    ->whereBetween('ace.created_at', [$inicioMes, $finMes]);
+            })
+            ->whereNull('ace.id')
+            ->select('c.*')
+            ->get();
+        //me trae a los clientes que no han contestado el mes en curso 
+
+        
+
+        return view('user.encuesta_contestar', compact('encuesta', 'clientes'));
+
+    }
+
+
+
+
+
+
 
 
 

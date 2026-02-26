@@ -304,3 +304,9 @@ Route::post('/perfil_cliente', [userController::class, 'cerrar_session_cliente']
 
 //Ruta para el eliminado de la info del indicador
 Route::delete('perfil_usuario/indicador/eliminar_info/{id}', [indicadorController::class, 'borrar_info_indicador'])->name('borrar.info.indicador');
+
+
+//Ruta para mostrar la visualizacion de las encuestas
+Route::get('perfil_usuario/encuestas_clientes_user', [encuestaController::class, 'ver_encuestas_user'])->name('ver.encuestas.user');
+Route::get('perfil_usuario/encuestas_clientes_user/contestar_encuesta/{encuesta}', [encuestaController::class, 'encuesta_contestar_user'])->name('encuesta.contestar.user');
+Route::post('perfil_usuario/encuestas_clientes_user/contestando/{encuesta}', [clienteController::class, 'contestando_encuesta_user'] )->name('contestando.encuesta.user');

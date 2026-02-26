@@ -39,9 +39,17 @@
         <div class="col-auto  zoom_link {{ request()->routeIs('encuesta.clientes.user') ? 'link_selected' : '' }}">
             <a href="{{route("encuesta.clientes.user")}}" class="btn btn-transparent text-white text-decoration-none fw-bold ">
                 <i class="fa-solid fa-users mx-1"></i>
-                Encuestas a Clientes 
+                Resultados Encuestas a Clientes 
             </a>
         </div>
+
+        <div class="col-auto  zoom_link {{ request()->routeIs('ver.encuestas.user') ? 'link_selected' : '' }}">
+            <a href="{{route("ver.encuestas.user")}}" class="btn btn-transparent text-white text-decoration-none fw-bold ">
+                <i class="fa-solid fa-list-check"></i>
+                Rellenar Encuestas de los Clientes 
+            </a>
+        </div>
+
     @endif
     {{-- Esto e mostrara solo para ventas... --}}
 
