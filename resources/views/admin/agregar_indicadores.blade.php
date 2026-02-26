@@ -770,7 +770,7 @@
                         </div>
 
                         <div class="row  mt-4 justify-content-around">
-                            <div class="col-12 col-sm-12 col-md-4 col-lg-4">
+                            <div class="col-12 col-sm-12 col-md-4 col-lg-4 mt-2">
                                     <label for="tipo_ind{{$indicador->id}}" class="form-label fw-semibold">
                                         Tipo de Indicador
                                         <span class="text-danger">*</span>

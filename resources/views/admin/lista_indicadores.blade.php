@@ -3,6 +3,7 @@
 @section('contenido')
 @php
     use Carbon\Carbon;
+    use App\Models\MetaIndicador;
 @endphp
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center">
@@ -184,7 +185,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                 @if ($indicador->tipo_indicador === "riesgo")
 
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
-                    <div class="card text-white {{($cumplimiento < $indicador->meta_minima) ? 'bg-success' : 'bg-danger'}} shadow-2-strong">
+                    <div class="card text-white {{($cumplimiento <= $indicador->meta_minima) ? 'bg-success' : 'bg-danger'}} shadow-2-strong">
                         <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
 
                         <div class="card-body">
@@ -229,7 +230,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                                 </div>
                             </div>
                         </div>
-                        
+                    </a>
                         <div class="card-footer p-2">
                                 <div class="row  d-flex justify-content-between align-items-center">
                                     <div class="col-auto h4">
@@ -255,8 +256,6 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                                 </div>
                                 </div>
                         </div>
-
-                        </a>
                     </div>
                 </div>
                 
@@ -578,34 +577,163 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
         <div class="modal-header bg-primary py-4">
             <h4 class="text-white" id="exampleModalLabel">
                 <i class="fa fa-calendar mx-1"></i>
-            Historial
+                Historial de {{ $indicador->nombre }}
             </h4>
             <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
         </div>
             <div class="modal-body py-4">
                 <div class="row justify-content-center px-4">
                     <div class="list-group shadow-sm rounded-4">
+                        {{-- aqui dentro estan las tarjetitas que muestran el istorial de los meses llenados. --}}
+
                         @forelse ($indicador->indicadorLleno as $indicador_lleno)
                             @if ($indicador_lleno->final === 'on')
-                                <a href="#" class="list-group-item list-group-item-action p-3 ">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1 fw-bold">{{ $indicador_lleno->nombre_campo }}</h6>
-                                        <span class="text-dark fw-bold">{{ $indicador_lleno->informacion_campo }}</span>
-                                    </div>
-                                    <p class="mb-1 text-muted">
-                                        <i class="fa fa-calendar"></i>
-                                        {{Carbon::parse($indicador_lleno->fecha_periodo)->translatedFormat('F Y')}}.
-                                    </p>
-                                </a>
+
+               
+                                    @php
+                                    
+                                        $resultado = $indicador_lleno->informacion_campo;
+                                        $metas_indicador = MetaIndicador::where('id_movimiento_indicador_lleno', $indicador_lleno->id_movimiento)->first();
+                                        
+                                        $semaforizacion = "";
+                                        $icono = "";
+                                        $texto_meta_minimo = "";
+                                        $texto_meta_maxima = "";
+                                        $meta_maxima = $metas_indicador->meta_maxima;
+                                        $meta_minima = $metas_indicador->meta_minima;
+                                        $id_movimiento = $indicador_lleno->id_movimiento;
+                                        
+                                        
+                                        if($indicador->tipo_indicador === "riesgo"){
+                                            $texto_meta_minimo = "Aceptable";
+
+
+                                            if($resultado>=$meta_maxima){
+                                           
+                                                $semaforizacion = 'text-success';
+                                                $icono = '<i class="fa-solid fa-circle-check text-success"></i>';
+                                           
+                                            }
+                                            else{ 
+
+                                                $semaforizacion = 'text-danger';
+                                                $icono = '<i class="fa-solid text-danger fa-triangle-exclamation"></i>';
+                                            
+                                             }
+                                        
+                                        }
+
+                                        
+                                        if($indicador->tipo_indicador === "normal"){
+                                            $texto_meta_minimo = "Meta Minima";
+
+                                            if($resultado>=$meta_maxima){
+                                                $semaforizacion = 'text-danger';
+                                                $icono = '<i class="fa-solid text-danger fa-triangle-exclamation"></i>';
+
+                                            }
+                                            else{        
+                                                $semaforizacion = 'text-success';
+                                                $icono = '<i class="fa-solid fa-circle-check text-success"></i>';
+
+                                            }                                        
+                                        }
+
+
+
+                                        if($indicador->variacion === "on"){
+                                            $variacion = $meta_minima; // aquí se usa como margen
+                                            $limite_inferior = $meta_maxima - $variacion;
+                                            $limite_superior = $meta_maxima + $variacion;
+                                            $texto_meta_minimo = "Variación";
+
+                                            if($resultado >= $limite_inferior && $resultado <= $limite_superior){
+                                                $semaforizacion = 'text-success'; // dentro del rango
+                                                $icono = '<i class="fa-solid fa-circle-check text-success"></i>';
+
+                                            } else {
+                                                $semaforizacion = 'text-danger'; // fuera del rango
+                                                $icono = '<i class="fa-solid text-danger fa-triangle-exclamation"></i>';
+                                                
+                                            }
+                                        }
+                                    @endphp
+
+
+                                    <a href="#" class="list-group-item list-group-item-action p-3 ">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1 fw-bold">{{ $indicador_lleno->nombre_campo }}</h6>
+
+
+                                            <span class="card-title {{ $semaforizacion }} fw-bold">
+                                                {!! $icono !!}
+                                                @if($indicador->unidad_medida === 'pesos')
+                                                    $ {{ $indicador_lleno->informacion_campo }}
+
+                                                @elseif($indicador->unidad_medida === 'porcentaje')
+                                                    {{ $indicador_lleno->informacion_campo }}%
+
+                                                @elseif($indicador->unidad_medida === 'dias')
+                                                    {{ $indicador_lleno->informacion_campo }} Días
+
+                                                @elseif($indicador->unidad_medida === 'toneladas')
+                                                    {{ $indicador_lleno->informacion_campo }} Ton.
+
+                                                @else
+                                                    {{ $indicador_lleno->informacion_campo }}
+                                                @endif
+
+                                            </span>
+
+
+                                        </div>
+                                        <p class="mb-1">
+                                            
+                                            <i class="fa fa-calendar"></i>
+                                            {{Carbon::parse($indicador_lleno->fecha_periodo)->translatedFormat('F Y')}}.
+                                        
+                                        </p>
+                                        <p class="fw-bold">
+                                            <i class="fa-solid fa-chart-line"></i>
+                                            <span>
+                                                Meta: {{ $meta_maxima }}
+                                            </span>
+                                                -
+                                            <span>
+                                                {{ $texto_meta_minimo }}: {{ $meta_minima }}
+                                            </span>
+                                        </p>
+        
+                              
+                                    </a>
+
                             @endif
                         @empty
                             
                         @endforelse
     
+
+
+
+                        {{-- aqui dentro estan las tarjetitas que muestran el istorial de los meses llenados. --}}
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer text-start h4">
+                @php
+                    $tipos = [
+                        "g" => "<i class='fa-solid fa-city'></i> Indicador General",
+                        "p" => "<i class='fa-solid fa-cow'></i> Pecuarios",
+                        "m" => "<i class='fa-solid fa-dog'></i> Mascotas",
+                    ];
+                @endphp
+
+                {!!  
+                    empty($indicador->planta)
+                        ? "<i class='fa-solid fa-circle-exclamation'></i> Sin asignación"
+                        : ($tipos[strtolower($indicador->planta)] 
+                            ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
+                !!}
 
             </div>
         </div>

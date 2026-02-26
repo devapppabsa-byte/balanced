@@ -948,7 +948,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: dataValores,
                     borderColor: "rgba(54,162,235,1)",
                     backgroundColor: "rgba(54,162,235,0.1)",
-                    tension: 0.3,
+                    tension: 0,
                     fill: true,
                     pointBackgroundColor: ctx => obtenerColor(ctx.raw),
                     pointRadius: 6
