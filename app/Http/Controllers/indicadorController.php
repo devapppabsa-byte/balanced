@@ -401,8 +401,11 @@ public function show_indicador_user(Indicador $indicador){
 
     
     //obtenemos la ultima fecha en la que se cargo el excel
-    $ultima_carga_excel = CampoForaneoInformacion::latest()->first();
-    $ultima_carga_indicador = IndicadorLleno::where('id_indicador', $indicador->id)->latest()->first();
+ $ultima_carga_excel = CampoForaneoInformacion::latest()->first();
+ $ultima_carga_indicador = IndicadorLleno::where('id_indicador', $indicador->id)->latest()->first();
+
+
+
 
 
 

@@ -65,8 +65,16 @@ use Carbon\Carbon;
     {{-- LOGICA DEL BLOQUEO DEL LLENADO DE INDICADORES- SE BLOQUEA SI YA SE LLENO ESTE MES Y SE BLOQUEA SI NO SE HA CARGADO EL EXCEL. --}}
     
         @php
+
             $fecha_excel = Carbon::parse($ultima_carga_excel->created_at);
-            $fecha_indicador = Carbon::parse($ultima_carga_indicador->fecha_periodo);
+            
+                if(empty($ultima_carga_indicador)){
+                    $fecha_indicador = Carbon::parse("2026-01-20 12:51:28");
+                }
+                else{
+                    $fecha_indicador = Carbon::parse($ultima_carga_indicador->fecha_periodo);
+                }
+
 
             $carga_excel = $fecha_excel->format('Y-m') ?? '0000-00';    
             $carga_indicador = $fecha_indicador->format('Y-m') ?? '0000-00';

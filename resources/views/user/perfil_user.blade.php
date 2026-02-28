@@ -139,11 +139,11 @@
               <i class="fa-solid fa-chart-column me-2"></i>Barras
             </a>
           </li>
-          <li class="nav-item">
+          {{-- <li class="nav-item">
             <a class="nav-link" data-mdb-tab-init href="#tab-linea" role="tab">
               <i class="fa-solid fa-chart-line me-2"></i>Línea
             </a>
-          </li>
+          </li> --}}
           <li class="nav-item">
             <a class="nav-link" data-mdb-tab-init href="#tab-pie" role="tab">
               <i class="fa-solid fa-chart-pie me-2"></i>Pie
