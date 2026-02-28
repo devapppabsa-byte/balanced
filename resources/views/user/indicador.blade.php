@@ -72,7 +72,7 @@ use Carbon\Carbon;
                     $fecha_indicador = Carbon::parse("2026-01-20 12:51:28");
                 }
                 else{
-                    $fecha_indicador = Carbon::parse($ultima_carga_indicador->fecha_periodo);
+                    $fecha_indicador = Carbon::parse($ultima_carga_indicador->fecha_periodo)->addMonth();
                 }
 
 
@@ -85,6 +85,8 @@ use Carbon\Carbon;
 
 
         @endphp
+
+        
 
         {{-- si la craga del excel es diferente a este mes y año o si la carga del indicador es menor o igual a ahora --}}
         @if ($carga_excel !== $ahora  || $carga_indicador === $ahora)

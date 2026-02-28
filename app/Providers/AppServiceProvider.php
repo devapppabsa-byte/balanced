@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale('es');
         
+        //con esta linea ayuda a que mis estillos se vean en ngrok y en local
         if (str_contains(request()->getHost(), 'ngrok')) {
             URL::forceScheme('https');
         }
