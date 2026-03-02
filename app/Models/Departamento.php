@@ -28,6 +28,10 @@ class Departamento extends Model
         return $this->hasMany(Encuesta::class, "id_departamento");
     }
 
+    public function aux_indicadores_foraneos(){
 
+        return $this->hasMany(AuxIndicadorForaneo::class, "id_departamento");
+    
+    }
 
 }

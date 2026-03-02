@@ -104,6 +104,7 @@
                                 Indicadores
                             </a>
                         </li>
+
                         <li class="nav-item" role="presentation">
                             <a class="nav-link py-3" 
                                id="ex1-tab-3" 
@@ -129,9 +130,22 @@
                                 <i class="fas fa-poll me-2"></i>
                                 Encuestas
                             </a>
-                        </li>
-                            
+                        </li>                            
                         @endif
+
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link py-3" 
+                               id="ex1-tab-5" 
+                               data-mdb-tab-init
+                               href="#ex1-tabs-5" 
+                               role="tab" 
+                               aria-controls="ex1-tabs-3" 
+                               aria-selected="false">
+                                <i class="fas fa-file-alt me-2"></i>
+                                Indicadores de Otras Areas
+                            </a>
+                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -363,6 +377,7 @@
                         </div>
                     </div>
                 </div>
+                
 
                 <!-- Normas Tab -->
                 <div class="tab-pane fade" 
@@ -570,6 +585,88 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="tab-pane fade" 
+                     id="ex1-tabs-5" 
+                     role="tabpanel" 
+                     aria-labelledby="ex1-tab-5">
+                    
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white border-0 pb-0 pt-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-list-check text-info me-2"></i>
+                                   Agregar Indicadores Foraneos
+                                </h4>
+                                <button type="button" 
+                                        class="btn btn-dark btn-sm"
+                                        data-mdb-ripple-init
+                                        data-mdb-modal-init
+                                        data-mdb-target="#agregar_indicador_foraneo">
+                                    <i class="fas fa-plus me-1"></i>
+                                    Agregar Indicadores Foraneos
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body p-4">
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th scope="col" class="border-0">Nombre</th>
+                                                <th scope="col" class="border-0">Departamento</th>
+                                                <th scope="col" class="border-0">Planta</th>
+                                                <th scope="col" class="border-0 text-end">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($indicadores_foraneos_agregados as $indicador_foraneo_agregado)
+                                            <tr class="border-bottom">
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar-sm bg-primary bg-opacity-10 text-primary rounded-circle me-3 d-flex align-items-center justify-content-center">
+                                                            <i class="fas fa-list-check"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="mb-0">{{ $indicador_foraneo_agregado->nombre }}</h6>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-primary p-2">
+                                                        <i class="fa-regular fa-building"></i>
+                                                        {{ $indicador_foraneo_agregado->departamento->nombre }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                                        
+                                                        {{ ($indicador_foraneo_agregado->planta) ? 'Planta '. $indicador_foraneo_agregado->planta : 'No asignado' }}
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <div class="btn-group" role="group">
+                                                        <button type="button" 
+                                                                class="btn btn-sm btn-outline-danger"
+                                                                data-mdb-ripple-init
+                                                                data-mdb-modal-init
+                                                                data-mdb-target="#del_indfor{{ $indicador_foraneo_agregado->id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -716,6 +813,47 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+{{-- //indicadores_foraneos_agregados --}}
+@forelse ($indicadores_foraneos_agregados as $indicador_foraneo_agregado)
+    <div class="modal fade" id="del_indfor{{ $indicador_foraneo_agregado->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header bg-danger py-4">
+                <h3 class="text-white" id="exampleModalLabel">¿Eliminar Indicador de solo Lectura ?</h3>
+                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <form action="{{ route('eliminar.indicador.foraneo', [$departamento->id , $indicador_foraneo_agregado->id]) }}" method="POST">
+                    @csrf @method('DELETE')
+                    <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
+                        <h6>Eliminar</h6>
+                    </button>
+                </form>
+            </div>
+            {{-- <div class="modal-footer">
+            </div> --}}
+            </div>
+        </div>
+    </div>
+
+    
+@empty
+@endforelse
+
+
+
+
+
+
+
+
+
+
 
 @foreach ($indicadores as $indicador)
 
@@ -1119,6 +1257,80 @@
 
 
 
+<div class="modal fade" id="agregar_indicador_foraneo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary py-4">
+        <h3 class="text-white" id="exampleModalLabel">Agregando Indicador Foraneo</h3>
+        <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        <form action="{{route('indicador.foraneo.store', $departamento->id)}}" id="indicador_foraneo_form" method="post">
+            @csrf
+            <div class="row justify-content-around">
+
+                @forelse ($indicadores_foraneos as $indicador_foraneo)
+
+
+                    <div class="col-3 m-1  tex-center p-4">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="checkbox" name="indicador_foraneo[]" value="{{ $indicador_foraneo->id }}" class="btn-check" id="{{$indicador_foraneo->id}}" autocomplete="off">
+                                <label class="btn btn-outline-primary custom-check text-start row w-100" for="{{$indicador_foraneo->id}}">
+                                    <div class="col-12 text-center mb-3 fw-bold">
+                                        {{ $indicador_foraneo->nombre }}
+                                    </div>
+                                    <div class="col-12">
+                                        <i class="fa-solid fa-building"></i>
+                                        Departamento:
+                                         {{ $indicador_foraneo->departamento->nombre }}
+                                    </div>
+                                    <div class="col-12">
+                                        <i class="fa-solid fa-industry"></i>
+                                        Planta:
+                                         {{ $indicador_foraneo->departamento->planta }}
+                                    </div>
+                                    
+                                </label>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+               
+
+                @empty
+                    
+                @endforelse
+
+
+
+
+            </div>
+        </form>
+       </div>
+        <div class="modal-footer">
+            <button form="indicador_foraneo_form" class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+                <h6>Guardar</h6>
+            </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 {{-- bucle que me da s modales para la gestios de usuarios --}}
 {{-- bucle de los modales del usuario --}}
 {{--Puros bucles de modales--}}
@@ -1438,6 +1650,13 @@
 @empty
     
 @endforelse
+
+
+
+
+
+
+
 
 
 

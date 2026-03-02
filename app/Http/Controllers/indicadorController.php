@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\AuxIndicadorForaneo;
 use App\Models\CampoForaneoInformacion;
 use Illuminate\Support\Str;
 use App\Models\CampoCalculado;
@@ -41,6 +42,23 @@ class indicadorController extends Controller
         $normas = Norma::where("id_departamento", $departamento->id)->get();
         $departamentos = Departamento::get();
 
+       // $indicadores_foraneos = Indicador::with('departamento')->where('id_departamento', '!=', $departamento->id)->get();
+        $id_departamento = $departamento->id;
+
+        $indicadores_foraneos = Indicador::with('departamento')
+            ->where(function ($query) use ($id_departamento) {
+                $query->where('id_departamento', '!=', $id_departamento)
+                    ->orWhereNull('id_departamento');
+            })
+            ->whereDoesntHave('departamentosForaneos', function ($query) use ($id_departamento) {
+                $query->where('departamentos.id', $id_departamento);
+            })
+            ->get();
+
+
+        $indicadores_foraneos_agregados = Indicador::whereHas('departamentosForaneos', function ($query) use ($id_departamento) {
+            $query->where('departamentos.id', $id_departamento);
+        })->get();
 
 
     
@@ -76,7 +94,7 @@ class indicadorController extends Controller
 
         
 
-        return view('admin.agregar_indicadores', compact('departamento','indicadores', 'usuarios', 'departamentos', 'encuestas', 'normas', 'ponderacion' ));
+        return view('admin.agregar_indicadores', compact('departamento','indicadores', 'usuarios', 'departamentos', 'encuestas', 'normas', 'ponderacion', 'indicadores_foraneos', 'indicadores_foraneos_agregados' ));
 
     }
 
@@ -1772,6 +1790,41 @@ public function borrar_info_indicador($id){
     IndicadorLleno::where('id_movimiento', $id)->delete();
 
     return back()->with('deleted', 'La información fue removida.');
+
+}
+
+
+
+
+public function indicador_foraneo_store(Departamento $departamento, Request $request){
+
+
+
+    foreach($request->indicador_foraneo as $indicador_foraneo){
+
+        AuxIndicadorForaneo::create([
+            "id_departamento" => $departamento->id,
+            "id_indicador" => $indicador_foraneo
+        ]);
+
+    }
+
+
+    return back()->with('success', 'Se agrego el indicador foraneo correctamen!');
+
+
+}
+
+
+public function eliminar_indicador_foraneo(Departamento $departamento, Indicador $indicador){
+    
+
+
+    AuxIndicadorForaneo::where('id_departamento', $departamento->id)->where('id_indicador', $indicador->id)->delete();
+
+
+    return back()->with('success', 'Indicador de solo lectura fue eliminado!');
+
 
 }
 

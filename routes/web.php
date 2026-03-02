@@ -267,6 +267,12 @@ Route::post('/perfil_admin/perspectiva/objetivo/agregar_ponderacion/{indicador}'
 
 
 
+//agregando indicadores solo para lectura a otros departamentos
+Route::post('/perfil_admin/agregar_indicadores_forneos/{departamento}', [indicadorController::class, 'indicador_foraneo_store'])->name('indicador.foraneo.store');
+Route::delete('/perfil_admin/eliminar_indicador_foraneo/{departamento}/{indicador}', [indicadorController::class, 'eliminar_indicador_foraneo'])->name('eliminar.indicador.foraneo');
+
+
+
 
 
 

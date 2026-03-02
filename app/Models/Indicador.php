@@ -55,16 +55,29 @@ class Indicador extends Model
 
     }
 
-
-
     public function indicadorLleno(){
 
         return $this->hasMany(IndicadorLleno::class, "id_indicador");
 
     }
 
-    
 
+    public function aux_indicadores_foraneos(){
+
+        return $this->hasMany(AuxIndicadorForaneo::class, "id_indicador");
+    
+    }
+
+    
+    public function departamentosForaneos()
+    {
+        return $this->belongsToMany(
+            Departamento::class,
+            'aux_indicadores_foraneos',
+            'id_indicador',
+            'id_departamento'
+        );
+    }
 
 
 
