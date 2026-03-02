@@ -627,7 +627,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                                         if($indicador->tipo_indicador === "normal"){
                                             $texto_meta_minimo = "Meta Minima";
 
-                                            if($resultado>=$meta_maxima){
+                                            if($resultado<=$meta_maxima){
                                                 $semaforizacion = 'text-danger';
                                                 $icono = '<i class="fa-solid text-danger fa-triangle-exclamation"></i>';
 

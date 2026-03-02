@@ -116,6 +116,8 @@
                                 Seguimiento a Normas
                             </a>
                         </li>
+
+                        @if ($departamento->nombre === "Ventas")
                         <li class="nav-item" role="presentation">
                             <a class="nav-link py-3" 
                                id="ex1-tab-4" 
@@ -128,6 +130,8 @@
                                 Encuestas
                             </a>
                         </li>
+                            
+                        @endif
                     </ul>
                 </div>
             </div>
@@ -668,6 +672,7 @@
                             <option value="toneladas">Toneladas</option>
                             <option value="porcentaje">Porcentaje</option>
                             <option value="pesos">Pesos</option>
+                            <option value="unidad">Unidad</option>
                         
                         </select>
                     </div>
@@ -831,6 +836,10 @@
                                     <option value="pesos" 
                                         {{ old('unidad_medida', $indicador->unidad_medida) == 'pesos' ? 'selected' : '' }}>
                                         $ Pesos
+                                    </option>
+                                    <option value="unidad" 
+                                        {{ old('unidad_medida', $indicador->unidad_medida) == 'pesos' ? 'selected' : '' }}>
+                                        Unidad
                                     </option>
     
                                 </select>
