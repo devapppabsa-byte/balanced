@@ -1265,33 +1265,50 @@
         <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body py-4">
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="form-group">
+              <input type="text" id="buscadorIndicadores" class="form-control form-control-lg" placeholder="Buscar por nombre del indicador o departamento...">
+            </div>
+          </div>
+        </div>
         <form action="{{route('indicador.foraneo.store', $departamento->id)}}" id="indicador_foraneo_form" method="post">
             @csrf
-            <div class="row justify-content-around">
+            <div class="row justify-content-around" id="contenedor_indicadores">
 
                 @forelse ($indicadores_foraneos as $indicador_foraneo)
 
 
-                    <div class="col-3 m-1  tex-center p-4">
+                    <div class="col-3 m-1  tex-center p-4 item-indicador" data-nombre="{{ strtolower($indicador_foraneo->nombre) }}" data-departamento="{{ strtolower($indicador_foraneo->departamento->nombre) }}">
 
                         <div class="row">
-                            <div class="col-12">
-                                <input type="checkbox" name="indicador_foraneo[]" value="{{ $indicador_foraneo->id }}" class="btn-check" id="{{$indicador_foraneo->id}}" autocomplete="off">
-                                <label class="btn btn-outline-primary custom-check text-start row w-100" for="{{$indicador_foraneo->id}}">
-                                    <div class="col-12 text-center mb-3 fw-bold">
+                            <div class="col-12 indicador-item">
+                                <input type="checkbox" 
+                                    name="indicador_foraneo[]" 
+                                    value="{{ $indicador_foraneo->id }}" 
+                                    class="btn-check" 
+                                    id="{{$indicador_foraneo->id}}" 
+                                    autocomplete="off">
+
+                                <label class="btn btn-outline-primary custom-check text-start row w-100"
+                                    for="{{$indicador_foraneo->id}}">
+
+                                    <div class="col-12 text-center mb-3 fw-bold indicador-nombre">
                                         {{ $indicador_foraneo->nombre }}
                                     </div>
-                                    <div class="col-12">
+
+                                    <div class="col-12 indicador-departamento">
                                         <i class="fa-solid fa-building"></i>
                                         Departamento:
-                                         {{ $indicador_foraneo->departamento->nombre }}
+                                        {{ $indicador_foraneo->departamento->nombre }}
                                     </div>
-                                    <div class="col-12">
+
+                                    <div class="col-12 indicador-planta">
                                         <i class="fa-solid fa-industry"></i>
                                         Planta:
-                                         {{ $indicador_foraneo->departamento->planta }}
+                                        {{ $indicador_foraneo->departamento->planta }}
                                     </div>
-                                    
+
                                 </label>
                             </div>
                         </div>
@@ -1667,7 +1684,38 @@
 
 
 @section('scripts')
+<script>
+document.getElementById('buscadorIndicadores')
+    .addEventListener('keyup', function () {
 
+    let filtro = this.value.toLowerCase();
+    // Seleccionar los contenedores .col-3 en lugar de .indicador-item
+    let contenedores = document.querySelectorAll('.col-3.m-1');
+
+    contenedores.forEach(function (contenedor) {
+
+        let nombre = contenedor.querySelector('.indicador-nombre')
+                         .textContent.toLowerCase();
+
+        let departamento = contenedor.querySelector('.indicador-departamento')
+                               .textContent.toLowerCase();
+
+        let planta = contenedor.querySelector('.indicador-planta')
+                         .textContent.toLowerCase();
+
+        if (
+            nombre.includes(filtro) ||
+            departamento.includes(filtro) ||
+            planta.includes(filtro)
+        ) {
+            contenedor.style.display = "";
+        } else {
+            contenedor.style.display = "none";
+        }
+
+    });
+});
+</script>
 
 
 
