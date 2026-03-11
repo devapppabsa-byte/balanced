@@ -53,17 +53,24 @@ class InputPrecargadoImport implements ToCollection, WithHeadingRow
 
 
                     //Aqui puedo poner la logica 
-                    $input_precargado = CampoPrecargado::where('id_input_foraneo', $campoForaneo->id_input)->first();
+                    //aqui estoy tomando el primer resultado de input_precargado y le estoy insertando los datos... Lo idealk seria insertarlo en todos los input_precargado
+                    $input_precargados = CampoPrecargado::where('id_input_foraneo', $campoForaneo->id_input)->get();
 
-                    if($input_precargado){
+                    if($input_precargados){
 
-                        InformacionInputPrecargado::create([
-                            'informacion' => $row['informacion'],
-                            'id_input_precargado' => $input_precargado->id,
-                            'mes' => $mes,
-                            'year' => $year
+                        foreach($input_precargados as $input_precargado){
                             
-                        ]);
+                            InformacionInputPrecargado::create([
+                                'informacion' => $row['informacion'],
+                                'id_input_precargado' => $input_precargado->id,
+                                'mes' => $mes,
+                                'year' => $year
+                                
+                            ]);
+                        }
+
+
+
 
                     }
 

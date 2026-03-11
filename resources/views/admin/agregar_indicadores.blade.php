@@ -830,6 +830,7 @@
             <div class="modal-body py-4">
                 <form action="{{ route('eliminar.indicador.foraneo', [$departamento->id , $indicador_foraneo_agregado->id]) }}" method="POST">
                     @csrf @method('DELETE')
+                    
                     <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
                         <h6>Eliminar</h6>
                     </button>
@@ -1268,7 +1269,7 @@
         <div class="row mb-4">
           <div class="col-12">
             <div class="form-group">
-              <input type="text" id="buscadorIndicadores" class="form-control form-control-lg" placeholder="Buscar por nombre del indicador o departamento...">
+              <input type="search" id="buscadorIndicadores" class="form-control form-control-lg" placeholder="Buscar por nombre del indicador o departamento...">
             </div>
           </div>
         </div>
@@ -1277,7 +1278,6 @@
             <div class="row justify-content-around" id="contenedor_indicadores">
 
                 @forelse ($indicadores_foraneos as $indicador_foraneo)
-
 
                     <div class="col-3 m-1  tex-center p-4 item-indicador" data-nombre="{{ strtolower($indicador_foraneo->nombre) }}" data-departamento="{{ strtolower($indicador_foraneo->departamento->nombre) }}">
 
@@ -1314,15 +1314,9 @@
                         </div>
                         
                     </div>
-
-               
-
                 @empty
                     
                 @endforelse
-
-
-
 
             </div>
         </form>

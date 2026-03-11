@@ -268,10 +268,11 @@ Route::post('/perfil_admin/perspectiva/objetivo/agregar_ponderacion/{indicador}'
 
 
 //agregando indicadores solo para lectura a otros departamentos
-Route::post('/perfil_admin/agregar_indicadores_forneos/{departamento}', [indicadorController::class, 'indicador_foraneo_store'])->name('indicador.foraneo.store');
-Route::delete('/perfil_admin/eliminar_indicador_foraneo/{departamento}/{indicador}', [indicadorController::class, 'eliminar_indicador_foraneo'])->name('eliminar.indicador.foraneo');
+Route::post('/perfil_admin/agregar_indicadores_forneos/{departamento}', [indicadorController::class, 'indicador_foraneo_store'])->name('indicador.foraneo.store')->middleware('auth:admin');
+Route::delete('/perfil_admin/eliminar_indicador_foraneo/{departamento}/{indicador}', [indicadorController::class, 'eliminar_indicador_foraneo'])->name('eliminar.indicador.foraneo')->middleware('auth:admin');
 
-
+//ruta del perifl del usuario para poder ver los indicadores foraneos que se le agregaron
+Route::get('/perfil_usuario/indicadores_foraneos', [indicadorController::class, 'indicadores_foraneos_user'])->name('indicadores.foraneos.user')->middleware('auth');
 
 
 

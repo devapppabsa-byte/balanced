@@ -59,7 +59,41 @@
 
 {{-- elaborando el perfil del usuario --}}
 
-<div class="container-fluid border-bottom my-5">
+<div class="container-fluid border-bottom mt-1">
+
+    <div class="row">
+        <div class="col-12">
+        <div class="card border-0 shadow-sm mb-2 ">
+            <div class="card-body">
+                <form action="#"  method="GET">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-12 col-sm-3 col-md-4 col-lg-3">
+                            <label for="fecha_inicio" class="form-label fw-semibold small text-muted text-uppercase">Fecha Inicio</label>
+                            <input type="date"
+                                    name="fecha_inicio"
+                                    value="{{request('fecha_inicio')}}"
+                                    class="form-control form-control-sm datepicker"
+                                    id="fecha_inicio"
+                                    onchange="this.form.submit()">
+                        </div>
+                        <div class="col-12 col-sm-3 col-md-4 col-lg-3">
+                            <label for="fecha_fin" class="form-label fw-semibold small text-muted text-uppercase">Fecha Final</label>
+                            <input type="date"
+                                    name="fecha_fin"
+                                    value="{{request('fecha_fin')}}"
+                                    class="form-control form-control-sm datepicker"
+                                    id="fecha_fin"
+                                    onchange="this.form.submit()">
+                                    
+                        </div>
+                    </form>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+
+
 
     <div class="row justify-content-center">
 

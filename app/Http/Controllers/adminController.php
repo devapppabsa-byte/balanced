@@ -77,58 +77,58 @@ class adminController extends Controller
 
 
 
-    public function perfil_admin(){
+public function perfil_admin(){
 
-    $inicio = request()->filled('fecha_inicio')
-        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
-            ->startOfDay()
-            ->utc()
-        : Carbon::now(config('app.timezone'))
-            ->startOfYear()
-            ->utc();
+$inicio = request()->filled('fecha_inicio')
+    ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+        ->startOfDay()
+        ->utc()
+    : Carbon::now(config('app.timezone'))
+        ->startOfYear()
+        ->utc();
 
-    $fin = request()->filled('fecha_fin')
-        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
-            ->endOfDay()
-            ->utc()
-        : Carbon::now(config('app.timezone'))
-            ->endOfYear()
-            ->utc();
+$fin = request()->filled('fecha_fin')
+    ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+        ->endOfDay()
+        ->utc()
+    : Carbon::now(config('app.timezone'))
+        ->endOfYear()
+        ->utc();
 
 
 
 $departamentos = Departamento::get();
 
 
-$sub = DB::table('indicadores_llenos as il')
-    ->join('indicadores as i', 'i.id', '=', 'il.id_indicador')
-    ->selectRaw("
-        i.id_departamento,
-        i.id as indicador_id,
-        DATE_FORMAT(il.created_at, '%Y-%m') as mes,
-        AVG(il.informacion_campo) as promedio,
-        i.ponderacion
-    ")
-    ->where('il.final', 'on')
-    ->whereBetween('il.created_at', [$inicio, $fin]) // 
-    ->groupBy(
-        'i.id_departamento',
-        'i.id',
-        'mes',
-        'i.ponderacion'
-    );
+    $sub = DB::table('indicadores_llenos as il')
+        ->join('indicadores as i', 'i.id', '=', 'il.id_indicador')
+        ->selectRaw("
+            i.id_departamento,
+            i.id as indicador_id,
+            DATE_FORMAT(il.created_at, '%Y-%m') as mes,
+            AVG(il.informacion_campo) as promedio,
+            i.ponderacion
+        ")
+        ->where('il.final', 'on')
+        ->whereBetween('il.fecha_periodo', [$inicio, $fin]) // 
+        ->groupBy(
+            'i.id_departamento',
+            'i.id',
+            'mes',
+            'i.ponderacion'
+        );
 
-$cumplimiento = DB::query()
-    ->fromSub($sub, 't')
-    ->selectRaw("
-        id_departamento,
-        mes,
-        ROUND(SUM(promedio * ponderacion) / 100, 2) as cumplimiento_total
-    ")
-    ->groupBy('id_departamento', 'mes')
-    ->orderBy('mes')
-    ->get()
-    ->groupBy('id_departamento');
+    $cumplimiento = DB::query()
+        ->fromSub($sub, 't')
+        ->selectRaw("
+            id_departamento,
+            mes,
+            ROUND(SUM(promedio * ponderacion) / 100, 2) as cumplimiento_total
+        ")
+        ->groupBy('id_departamento', 'mes')
+        ->orderBy('mes')
+        ->get()
+        ->groupBy('id_departamento');
 
 
 

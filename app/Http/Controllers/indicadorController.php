@@ -439,7 +439,7 @@ public function show_indicador_user(Indicador $indicador){
     $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
 
     //se consultan en la vista para que el usuario los vea
-    $campos_llenos = CampoPrecargado::where('id_indicador', $indicador->id)->get();
+   $campos_llenos = CampoPrecargado::with('InformacionInputPrecargado')->where('id_indicador', $indicador->id)->get();
 
     //esta es la consulta que me va a dar el arreglo para hacer los iclos y realizar las operaciones.
     $campos_calculados = CampoCalculado::with('campo_involucrado')->where('id_indicador', $indicador->id)->where(function ($q) {
@@ -1377,10 +1377,17 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
 
 
+    //fechas usadas para el llenado de indicadores del año ´pasado:
+    $fecha_periodo = Carbon::parse($request->fecha_periodo);
+    $created_at = Carbon::parse($request->fecha_periodo)->addMonth();
+
+
     $nombre_usuario = auth()->user()->name;
     $year = Carbon::now()->year;
     $mes = Carbon::now()->subMonth()->translatedFormat('F');
-    $fecha_periodo = now()->timezone('America/Mexico_City')->subMonth();
+
+    //esta es la fechsa periodo que se debe usar en el llenado original de los indicadores.
+    $fecha_periodo_original = now()->timezone('America/Mexico_City')->subMonth();
 
     //$id_movimiento = (string) Str::ulid();
 
@@ -1421,7 +1428,8 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                 "informacion_campo" => $request->informacion_indicador[$i], 
                 "id_indicador" =>$indicador->id,
                 "id_movimiento" => $id_movimiento,
-                "fecha_periodo" => $fecha_periodo
+                'fecha_periodo' => $fecha_periodo,
+                'created_at' => $created_at 
             ]);
         }
 
@@ -1442,12 +1450,16 @@ foreach($inputs_precargados as $index_precargados => $precargado){
      $informacion = InformacionInputPrecargado::where('id_input_precargado', $precargado->id)->latest()->first();
 
 
+
+
+
         IndicadorLleno::create([
             "nombre_campo" => $precargado->nombre,
             "informacion_campo" => $informacion->informacion,
             "id_indicador" =>$indicador->id,
             "id_movimiento" => $id_movimiento,
-            $fecha_periodo
+            'fecha_periodo' => $fecha_periodo,
+            'created_at' => $created_at 
         ]);  
 
 }
@@ -1472,6 +1484,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
         //Aqui es donde se desarrollara la logica, vamos a ver como.
         //se recorren los campos_calculados encontrados en el indicador
         foreach($campos_calculados_indicador as $index_calculado => $campo_calculado) {
+
             
             $informacion_campos_vacios_encontrados = [];
             $informacion_campos_precargados_encontrados = [];
@@ -1493,41 +1506,45 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                     $existe_en_precargados = CampoPrecargado::where('id_input', $campo_involucrado->id_input)->latest()->first();
                     $existe_en_calculados = CampoCalculado::where("id_input", $campo_involucrado->id_input)->latest()->first();
 
+
                     // Vacíos
                     if ($existe_en_vacios) {
+
                         $info = InformacionInputVacio::where('id_input', $existe_en_vacios->id)->latest()->first();
                         if ($info) {
                             $datos[$index_involucrado] = $info->informacion;
                         }
-                    }
 
-                    // Precargados
-                    if ($existe_en_precargados) {
+                    } elseif ($existe_en_precargados) {
+
                         $info = InformacionInputPrecargado::where('id_input_precargado', $existe_en_precargados->id)->latest()->first();
                         if ($info) {
                             $datos[$index_involucrado] = $info->informacion;
                         }
-                    }
 
-                    // Calculados
-                    if ($existe_en_calculados) {
+                    } elseif ($existe_en_calculados) {
+
                         $info = InformacionInputCalculado::where('id_input_calculado', $existe_en_calculados->id)->latest()->first();
                         if ($info) {
                             $datos[$index_involucrado] = $info->informacion;
                         }
+
                     }
                 }
 
 
                
 
-
-
-
+                // if($index_calculado===0){
+                //     return $datos;
+                // }
+                
+                
+                  
 
                     //aqui va la insercion de la info en el campo calculado
                     if($campo_calculado->operacion === "suma"){
-
+                        
                         
                         InformacionInputCalculado::create([
                             
@@ -1536,29 +1553,30 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'informacion' => round(array_sum($datos), 4),
                             'mes' => $mes,
                             'year' => $year
-
-                        ]);
-
-
-
-                        //paso la informacion a la tabla de indicadores llenos
-                      
-                        IndicadorLleno::create([
-
+                            
+                            ]);
+                            
+                            
+                            
+                            //paso la informacion a la tabla de indicadores llenos
+                            
+                            IndicadorLleno::create([
+                                
                             'nombre_campo' => $campo_calculado->nombre,
                             'informacion_campo' => round(array_sum($datos), 4),
                             'id_indicador' => $indicador->id,
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,
                             'referencia' => $campo_calculado->referencia,
-                            'fecha_periodo' => $fecha_periodo 
-
-                        ]);
-                        
-
-                    }
-
-
+                            'fecha_periodo' => $fecha_periodo,
+                            'created_at' => $created_at 
+                            
+                            ]);
+                            
+                            
+                            }
+                            
+                            
 
                     if($campo_calculado->operacion === "promedio"){
                                            
@@ -1583,7 +1601,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,
                             'referencia' => $campo_calculado->referencia,
-                            'fecha_periodo' => $fecha_periodo
+                            'fecha_periodo' => $fecha_periodo,
+                            'created_at' => $created_at 
 
                         ]);
 
@@ -1591,42 +1610,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
 
                     }
 
-
-
-
-
-                if($campo_calculado->operacion === "division"){
-
-             
-
-
-                    InformacionInputCalculado::create([
-
-                        'id_input_calculado' => $campo_calculado->id,
-                        'tipo' => $campo_involucrado->tipo,
-                        'informacion' => round($datos[1] / $datos[0], 4),
-                        'mes' => $mes,
-                        'year' => $year
-
-                    ]);
-
-
-
-                    IndicadorLleno::create([
-
-                        'nombre_campo' => $campo_calculado->nombre,
-                        'informacion_campo' => round($datos[1] / $datos[0], 4),
-                        'id_indicador' => $indicador->id,
-                        'id_movimiento' => $id_movimiento,
-                        'final' => $campo_calculado->resultado_final,
-                        'referencia' => $campo_calculado->referencia,
-                        'fecha_periodo' => $fecha_periodo
-
-                    ]);
-
-
-
-                }
+ 
 
 
 
@@ -1657,12 +1641,53 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,
                             'referencia' => $campo_calculado->referencia,                            
-                            'fecha_periodo' => $fecha_periodo
+                            'fecha_periodo' => $fecha_periodo,
+                            'created_at' => $created_at 
                         ]);
 
+                        
+                        }
+
+                     
+                        // if($index_calculado === 2){
+
+                        //     return $datos;       
+                        // }
+                        
+                        
+                    if($campo_calculado->operacion === "division"){
+                            
+             
+                    InformacionInputCalculado::create([
+
+                        'id_input_calculado' => $campo_calculado->id,
+                        'tipo' => $campo_involucrado->tipo,
+                        'informacion' => round($datos[1] / $datos[0], 4),
+                        'mes' => $mes,
+                        'year' => $year
+
+                    ]);
 
 
-                    }
+
+                    IndicadorLleno::create([
+
+                        'nombre_campo' => $campo_calculado->nombre,
+                        'informacion_campo' => round($datos[1] / $datos[0], 4),
+                        'id_indicador' => $indicador->id,
+                        'id_movimiento' => $id_movimiento,
+                        'final' => $campo_calculado->resultado_final,
+                        'referencia' => $campo_calculado->referencia,
+                        'fecha_periodo' => $fecha_periodo,
+                        'created_at' => $created_at 
+
+                    ]);
+
+                }
+
+
+
+
 
 
 
@@ -1685,7 +1710,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,
                             'referencia' => $campo_calculado->referencia,
-                            'fecha_periodo' => $fecha_periodo
+                            'fecha_periodo' => $fecha_periodo,
+                            'created_at' => $created_at 
 
                         ]);
 
@@ -1721,7 +1747,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'id_movimiento' => $id_movimiento,
                             'final' => $campo_calculado->resultado_final,
                             'referencia' => $campo_calculado->referencia,
-                            'fecha_periodo' => $fecha_periodo
+                            'fecha_periodo' => $fecha_periodo,
+                            'created_at' => $created_at 
                         ]);
 
 
@@ -1742,7 +1769,8 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                         "id_indicador" =>$indicador->id,
                         "id_movimiento" => $id_movimiento,
                         "final" => 'registro',
-                        'fecha_periodo' => $fecha_periodo
+                        'fecha_periodo' => $fecha_periodo,
+                        'created_at' => $created_at 
 
 
                 ]);
@@ -1757,7 +1785,9 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                 'informacion_campo' => $request->info_extra,
                 'id_indicador' => $indicador->id,
                 'id_movimiento' => $id_movimiento,
-                'final' => 'comentario'
+                'final' => 'comentario',
+                'fecha_periodo' => $fecha_periodo,
+                'created_at' => $created_at 
 
             ]);
         }
@@ -1826,6 +1856,19 @@ public function eliminar_indicador_foraneo(Departamento $departamento, Indicador
     return back()->with('success', 'Indicador de solo lectura fue eliminado!');
 
 
+}
+
+
+public function indicadores_foraneos_user(){
+
+    $id_departamento = Auth::user()->departamento->id;
+
+    $indicadores_foraneos_agregados = Indicador::whereHas('departamentosForaneos', function ($query) use ($id_departamento) {
+        $query->where('departamentos.id', $id_departamento);
+    })->get();
+
+
+    return view('user.indicadores_foraneos', compact('indicadores_foraneos_agregados'));
 }
 
 

@@ -66,7 +66,18 @@ use Carbon\Carbon;
     
         @php
 
-            $fecha_excel = Carbon::parse($ultima_carga_excel->created_at);
+            
+
+                if(empty($ultima_carga_excel)){
+
+                     $fecha_excel = Carbon::parse("2026-01-20 12:51:28");
+                }
+
+                else{
+                    
+                    $fecha_excel = Carbon::parse($ultima_carga_excel->created_at);
+                }
+
             
                 if(empty($ultima_carga_indicador)){
                     $fecha_indicador = Carbon::parse("2026-01-20 12:51:28");
@@ -89,7 +100,7 @@ use Carbon\Carbon;
         
 
         {{-- si la craga del excel es diferente a este mes y año o si la carga del indicador es menor o igual a ahora --}}
-        @if ($carga_excel !== $ahora  || $carga_indicador === $ahora)
+        {{-- @if ($carga_excel !== $ahora  || $carga_indicador === $ahora)
 
             @if ($carga_excel !== $ahora)
                 <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
@@ -117,9 +128,14 @@ use Carbon\Carbon;
                     Llenar este Indicador
                 </button>
             </div>
-        @endif
+        @endif --}}
 
-
+            <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+                <button class="btn btn-outline-primary btn-sm w-100 {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
+                    <i class="fa fa-plus"></i>
+                    Llenar este Indicador
+                </button>
+            </div>
 
 
 
@@ -135,13 +151,13 @@ use Carbon\Carbon;
                 Ver la informacion que se ocupa para este indicador.
             </button>
         </div>
-
+{{-- 
         <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
             <button class="btn btn-outline-primary btn-sm w-100"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
                 <i class="fa-solid fa-chart-pie"></i>
                 Grafico
             </button>
-        </div>
+        </div> --}}
 
     </div>
 </div>
@@ -150,8 +166,51 @@ use Carbon\Carbon;
 
 <div class="container-fluid">
 
-    <div class="row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-4">
-        <div  class="col-12 mx-2 bg-white shadow-sm px-5 py-3 pb-5">
+    <div class="row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-1">
+
+
+            <div class="card border-0 shadow-sm mb-2 ">
+            <div class="card-body">
+                <form action="#"  method="GET">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-12 col-sm-3 col-md-2 col-lg-2">
+                            <label for="fecha_inicio" class="form-label fw-semibold small text-muted text-uppercase">Fecha Inicio</label>
+                            <input type="date"
+                                    name="fecha_inicio"
+                                    value="{{request('fecha_inicio')}}"
+                                    class="form-control datepicker"
+                                    id="fecha_inicio"
+                                    onchange="this.form.submit()"
+                                    >
+                        </div>
+                        <div class="col-12 col-sm-3 col-md-2 col-lg-2">
+                            <label for="fecha_fin" class="form-label fw-semibold small text-muted text-uppercase">Fecha Final</label>
+                            <input type="date"
+                                    name="fecha_fin"
+                                    value="{{request('fecha_fin')}}"
+                                    class="form-control datepicker"
+                                    id="fecha_fin"
+                                    onchange="this.form.submit()"
+                                    >
+                        </div>
+                        {{-- <div class="col-12 col-sm-3 col-md-2 col-lg-2">
+                            <button class="btn btn-primary w-100">
+                                <i class="fa-solid fa-filter me-2"></i>
+                                Filtrar
+                            </button>
+                        </div> --}}
+                    </form>
+                        <div class="col-12 col-sm-3 col-md-2 col-lg-2 ">
+                            <button type="button" class="btn btn-info text-white w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
+                                <i class="fa-solid fa-chart-line me-2"></i>
+                                Gráfica
+                            </button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+    <div  class="col-12 mx-2  shadow-sm px-5 py-3 pb-5">
             
         <div class="row justify-content-center">
                 
@@ -441,8 +500,8 @@ use Carbon\Carbon;
                         $mismoMes = $fechaRegistro->isSameMonth(now());
                     @endphp
 
-                    <button class="btn btn-danger w-20 btn-sm"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}"
-                        @if(!$mismoMes) disabled onclick="alert('No se pueden eliminar registros de meses anteriores')" @endif>
+                    <button class="btn btn-danger w-20 btn-sm"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}">
+                        {{-- @if(!$mismoMes) disabled onclick="alert('No se pueden eliminar registros de meses anteriores')" @endif> --}}
                         <i class="fa fa-trash"></i> 
                     </button>
 
@@ -553,6 +612,17 @@ use Carbon\Carbon;
                         </div>
                     @endforelse
 
+                    <div class="row">
+                        <div class="col-12">
+                            Fecha Periodo
+                            <input type="datetime-local" name="fecha_periodo" class="form-control">
+                        </div>
+                        {{-- <div class="col-6">
+                            fecha_periodo
+                            <input type="datetime-local" name="fecha_periodo" class="form-control">
+                        </div> --}}
+                    </div>
+
                     @if (!$campos_vacios->isEmpty() )
                         <div class="col-12 bg-light p-3 rounded ql-toolbar">
                             <label> <i class="fa fa-table"></i> Información extra para el Indicador: </label>
@@ -575,6 +645,8 @@ use Carbon\Carbon;
                     </div>
                 </div>
             </div>
+
+
             <div class="modal-footer">
                 <button  class="btn btn-primary w-100 py-3" form="formulario_llenado_indicadores" data-mdb-ripple-init>
                     <h6>Guardar</h6>
@@ -593,7 +665,7 @@ use Carbon\Carbon;
                 <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
             </div>
             <div class="modal-body py-4 bg-light">
-                <div class="col-12  mx-2 bg-white shadow-sm p-5 mt-4" >
+                <div class="col-12  mx-2 bg-white shadow-sm p-5 mt-4" style="height: 500px" >
                     <canvas class="w-100 h-100" id="grafico"></canvas>
                 </div>
             </div>
@@ -718,13 +790,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const datosReferencia = datos.filter(d => d.referencia === "on");
 
     // ============================
-    // LABELS (MESES)
+    // LABELS (MES + AÑO)
     // ============================
 
     const labels = [...new Set(
         [...datosFinal, ...datosReferencia].map(item => {
-            const fecha = new Date(item.created_at);
-            return mesesES[fecha.getMonth() - 1];
+            const fecha = new Date(item.fecha_periodo);
+            const mes = mesesES[fecha.getMonth()];
+            const year = fecha.getFullYear();
+            return `${mes} ${year}`;
         })
     )];
 
@@ -737,14 +811,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const META_MINIMA = {{ $indicador->meta_minima }};
     const META_ESPERADA = {{ $indicador->meta_esperada }};
 
-    // Si variación está activa, meta_minima se usa como variación
     const VARIACION = VARIACION_ON ? META_MINIMA : null;
 
-    // Límites calculados solo si variación está activa
     const LIMITE_INFERIOR = VARIACION_ON ? META_ESPERADA - VARIACION : null;
     const LIMITE_SUPERIOR = VARIACION_ON ? META_ESPERADA + VARIACION : null;
 
-    // Colores
     const colorMetaMinima = "red";
     const colorMetaMaxima = "green";
     const colorVariacion = "red";
@@ -754,39 +825,42 @@ document.addEventListener("DOMContentLoaded", function () {
     // ============================
 
     const datasetFinal = {
+
         type: "bar",
         label: datosFinal.length > 0
             ? datosFinal[0].nombre_campo
             : "Cumplimiento",
 
-        data: labels.map(mes => {
+        data: labels.map(label => {
+
             const item = datosFinal.find(d => {
-                const fecha = new Date(d.created_at);
-                return mesesES[fecha.getMonth() - 1] === mes;
+                const fecha = new Date(d.fecha_periodo);
+                const mes = mesesES[fecha.getMonth()];
+                const year = fecha.getFullYear();
+                const labelData = `${mes} ${year}`;
+                return labelData === label;
             });
+
             return item ? parseFloat(item.informacion_campo) : null;
+
         }),
 
         backgroundColor: ctx => {
+
             const value = ctx.raw;
             if (value === null) return "rgba(200,200,200,0.3)";
 
-            // ============================
-            // SI VARIACIÓN ESTÁ ACTIVA
-            // ============================
             if (VARIACION_ON) {
-                // ❌ Fuera del rango → ROJO
+
                 if (value < LIMITE_INFERIOR || value > LIMITE_SUPERIOR) {
                     return "rgba(255,99,132,0.8)";
                 }
-                // ✅ Dentro del rango → VERDE
+
                 return "rgba(75,192,75,0.8)";
             }
 
-            // ============================
-            // SI NO HAY VARIACIÓN (NORMAL)
-            // ============================
             if (TIPO_INDICADOR === "riesgo") {
+
                 return value < META_MINIMA
                     ? "rgba(75,192,75,0.8)"
                     : "rgba(255,99,132,0.8)";
@@ -802,38 +876,49 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     // ============================
-    // REFERENCIAS (LINEAS RELLENAS)
+    // REFERENCIAS (LINEAS)
     // ============================
 
     const referenciasAgrupadas = {};
 
     datosReferencia.forEach(item => {
-        const fecha = new Date(item.created_at);
-        const mes = mesesES[fecha.getMonth() - 1];
+
+        const fecha = new Date(item.fecha_periodo);
+        const mes = mesesES[fecha.getMonth()];
+        const year = fecha.getFullYear();
+        const label = `${mes} ${year}`;
 
         if (!referenciasAgrupadas[item.nombre_campo]) {
             referenciasAgrupadas[item.nombre_campo] = {};
         }
 
-        referenciasAgrupadas[item.nombre_campo][mes] =
+        referenciasAgrupadas[item.nombre_campo][label] =
             parseFloat(item.informacion_campo);
+
     });
 
     const datasetsReferencias = Object.keys(referenciasAgrupadas).map((nombre, index) => {
+
         return {
+
             type: "line",
             label: nombre,
-            data: labels.map(mes =>
-                referenciasAgrupadas[nombre][mes] ?? null
+
+            data: labels.map(label =>
+                referenciasAgrupadas[nombre][label] ?? null
             ),
+
             borderWidth: 3,
             tension: 0.3,
             fill: true,
+
             borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
             backgroundColor: `rgba(${50 + index * 60}, 120, 255, 0.2)`,
+
             spanGaps: true,
-            order: 5
+            order: 9
         };
+
     });
 
     // ============================
@@ -850,27 +935,25 @@ document.addEventListener("DOMContentLoaded", function () {
     new Chart(canvas.getContext("2d"), {
 
         data: {
+
             labels,
+
             datasets: [
+
                 datasetFinal,
                 ...datasetsReferencias,
 
-                // ============================
-                // METAS DINÁMICAS
-                // ============================
                 ...(VARIACION_ON ? [
 
-                    // Meta esperada
                     {
                         type: "line",
                         label: "Meta esperada",
                         data: labels.map(() => META_ESPERADA),
                         borderColor: colorMetaMaxima,
                         borderWidth: 3,
-                        order: 10
+                        order: 9
                     },
 
-                    // Variación inferior
                     {
                         type: "line",
                         label: "Variación inferior",
@@ -881,7 +964,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         order: 9
                     },
 
-                    // Variación superior
                     {
                         type: "line",
                         label: "Variación superior",
@@ -894,7 +976,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 ] : [
 
-                    // Meta mínima
                     {
                         type: "line",
                         label: "Meta mínima",
@@ -905,39 +986,42 @@ document.addEventListener("DOMContentLoaded", function () {
                         order: 9
                     },
 
-                    // Meta máxima
                     {
                         type: "line",
                         label: "Meta máxima",
                         data: labels.map(() => META_ESPERADA),
                         borderColor: colorMetaMaxima,
                         borderWidth: 3,
-                        order: 10
+                        order: 0
                     }
 
                 ])
+
             ]
+
         },
 
         options: {
+
             responsive: true,
+
             plugins: {
                 legend: {
                     position: "top"
                 }
             },
+
             scales: {
                 y: {
                     beginAtZero: true
                 }
             }
+
         }
 
     });
 
 });
-
-
 
 </script>
 
@@ -952,38 +1036,41 @@ document.addEventListener("DOMContentLoaded", function () {
 {{-- AQUI ESTA EL SCRIPT QUE ENVIA LOS CORREOS ELECTRONICOS --}}
 <script>
 
-const data = document.getElementById('data-indicador');
 
-let filas = `Se llenó el indicador de ${data.dataset.indicador}
-del departamento ${data.dataset.departamento}`;
-const correos = JSON.parse(data.dataset.correos);
+// Aui yace elñ codigo que me deja enviarlos por correo
 
-document.getElementById('formulario_llenado_indicadores')
-.addEventListener('submit', function (e) {
+// const data = document.getElementById('data-indicador');
 
-    e.preventDefault();
+// let filas = `Se llenó el indicador de ${data.dataset.indicador}
+// del departamento ${data.dataset.departamento}`;
+// const correos = JSON.parse(data.dataset.correos);
+
+// document.getElementById('formulario_llenado_indicadores')
+// .addEventListener('submit', function (e) {
+
+//     e.preventDefault();
 
 
-    const inputs = document.querySelectorAll('.input');
+//     const inputs = document.querySelectorAll('.input');
 
-    // 🔹 Enviar correo con EmailJS
-    emailjs.send('service_ns6885s', 'template_zfgln7k', {
-        name: data.dataset.user,
-        time: new Date().toLocaleString(),
-        message: filas,
-        mails: correos
+//     // 🔹 Enviar correo con EmailJS
+//     emailjs.send('service_ns6885s', 'template_zfgln7k', {
+//         name: data.dataset.user,
+//         time: new Date().toLocaleString(),
+//         message: filas,
+//         mails: correos
 
-    }).then(() => {
+//     }).then(() => {
 
-        // 🔹 Cuando el correo se envía, ahora sí mandamos el form a Laravel
-        e.target.submit();
+//         // 🔹 Cuando el correo se envía, ahora sí mandamos el form a Laravel
+//         e.target.submit();
 
-    }).catch(error => {
-        console.error('Error al enviar correo:', error);
-        alert('Error al enviar notificación por correo');
-    });
+//     }).catch(error => {
+//         console.error('Error al enviar correo:', error);
+//         alert('Error al enviar notificación por correo');
+//     });
 
-});
+// });
 
 </script>
 
