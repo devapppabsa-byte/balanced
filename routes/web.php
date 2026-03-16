@@ -274,6 +274,8 @@ Route::delete('/perfil_admin/eliminar_indicador_foraneo/{departamento}/{indicado
 //ruta del perifl del usuario para poder ver los indicadores foraneos que se le agregaron
 Route::get('/perfil_usuario/indicadores_foraneos', [indicadorController::class, 'indicadores_foraneos_user'])->name('indicadores.foraneos.user')->middleware('auth');
 
+Route::get('/perfil_usuario_indicadores_foraneos/indicador_foraneo/{indicador}', [indicadorController::class, 'indicador_lleno_show_user_foraneo'])->name('indicador.lleno.show.user.foraneo');
+
 
 
 

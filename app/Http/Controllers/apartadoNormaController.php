@@ -24,7 +24,7 @@ class apartadoNormaController extends Controller
 
         $request->validate([
 
-            "titulo_apartado_norma" => "required|unique:apartado_norma,apartado",
+            "titulo_apartado_norma" => "required",
             "descripcion_apartado_norma" => "required"
             
         ]);

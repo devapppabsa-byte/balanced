@@ -98,7 +98,7 @@
                     <div class="card text-white {{($cumplimiento >= ($indicador->meta_esperada - $indicador->meta_minima)&& $cumplimiento <= ($indicador->meta_esperada + $indicador->meta_minima)) ? 'bg-success' : 'bg-danger'}} shadow-2-strong">
                     
                     
-                        <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
+                        <a href="{{route('indicador.lleno.show.user.foraneo', $indicador->id)}}" class="text-white w-100">
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 ">
@@ -182,7 +182,7 @@
 
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
                     <div class="card text-white {{($cumplimiento <= $indicador->meta_minima) ? 'bg-success' : 'bg-danger'}} shadow-2-strong">
-                        <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
+                     <a href="{{route('indicador.lleno.show.user.foraneo', $indicador->id)}}" class="text-white w-100">
 
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
@@ -260,7 +260,7 @@
                 @else
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
                     <div class="card text-white {{($cumplimiento < $indicador->meta_minima) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
-                        <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
+                         <a href="{{route('indicador.lleno.show.user.foraneo', $indicador->id)}}" class="text-white w-100">
 
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
@@ -348,7 +348,7 @@
 
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
                     <div class="card text-white bg-dark shadow-2-strong">
-                        <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
+                    <a href="{{route('indicador.lleno.show.user.foraneo', $indicador->id)}}" class="text-white w-100">
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-7 ">

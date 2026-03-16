@@ -1,25 +1,17 @@
 @extends('plantilla')
-@section('title', 'LLenado de Indicadores')
+@section('title', 'Evidencias del cumplimiento Normativo')
 @section('contenido')
 @php
-use App\Models\CampoCalculado;
-use App\Models\CampoInvolucrado;
-use App\Models\CampoPrecargado;
-use App\Models\CampoVacio;
-use App\Models\MetaIndicador;
-use App\Models\InformacionInputVacio;
-use App\Models\InformacionInputPrecargado;
-use App\Models\InformacionInputCalculado;
-use Carbon\Carbon;
-
+    use Carbon\Carbon;
+    use App\Models\InformacionInputPrecargado;
+    use App\Models\MetaIndicador;
 @endphp
-
-<div class="container-fluid sticky-top">
+<div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center">
 
-        <div class="col-8 col-sm-8 col-md-6 col-lg-9 py-2 ">
-            <h5 class="text-white"> {{$indicador->nombre}} </h5>
-            <h6 class="text-white fw-bold" id="fecha"></h6>
+        <div class="col-8 col-sm-8 col-md-6 col-lg-9  py-4  py-4 ">
+            <h3 class="text-white"> {{$indicador->nombre}} - {{$indicador->departamento->nombre}}</h3>
+            <h5 class="text-white fw-bold" id="fecha"></h5>
             @if (session('success'))
                 <div class="text-white fw-bold ">
                     <i class="fa fa-check-circle mx-2"></i>
@@ -43,7 +35,7 @@ use Carbon\Carbon;
                 </div>
             @endif
         </div>
-  
+
         <div class="col-4 col-sm-4 col-md-6 col-lg-3 text-end ">
             <form action="{{route('cerrar.session')}}" method="POST">
                 @csrf 
@@ -53,123 +45,65 @@ use Carbon\Carbon;
                 </button>
             </form>
         </div>
+
     </div>
     @include('user.assets.nav')
-</div>
+</div> 
 
 
 <div class="container-fluid">
-    <div class="row border-bottom mb-2 bg-white">
 
-
-    {{-- LOGICA DEL BLOQUEO DEL LLENADO DE INDICADORES- SE BLOQUEA SI YA SE LLENO ESTE MES Y SE BLOQUEA SI NO SE HA CARGADO EL EXCEL. --}}
-    
-        @php
-
-            
-
-                if(empty($ultima_carga_excel)){
-
-                     $fecha_excel = Carbon::parse("2026-01-20 12:51:28");
-                }
-
-                else{
-                    
-                    $fecha_excel = Carbon::parse($ultima_carga_excel->created_at);
-                }
-
-            
-                if(empty($ultima_carga_indicador)){
-                    $fecha_indicador = Carbon::parse("2026-01-20 12:51:28");
-                }
-                else{
-                    $fecha_indicador = Carbon::parse($ultima_carga_indicador->fecha_periodo)->addMonth();
-                }
-
-
-            $carga_excel = $fecha_excel->format('Y-m') ?? '0000-00';    
-            $carga_indicador = $fecha_indicador->format('Y-m') ?? '0000-00';
-            $ahora = now()->format('Y-m') ?? '0000-00';
-
-
-            
-
-
-        @endphp
-
-        
-
-        {{-- si la craga del excel es diferente a este mes y año o si la carga del indicador es menor o igual a ahora --}}
-        @if ($carga_excel !== $ahora  || $carga_indicador === $ahora)
-
-            @if ($carga_excel !== $ahora)
-                <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-                    <button class="btn btn-outline-primary btn-sm w-100" onclick="toastr.error('{{'El indicador aún no se puede llenar. Falta cargar información por parte del admin'}}', 'Error!')">
-                        <i class="fa fa-plus"></i>
-                        Llenar este Indicador (Aún no se carga el excel)
-                    </button>
-                </div>
-            @endif
-
-            @if ($carga_indicador === $ahora)
-                <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-                    <button class="btn btn-outline-danger btn-sm w-100" onclick="toastr.warning('{{'Ya se registro la información de este mes '}}', 'Aviso!')">
-                        <i class="fa fa-plus"></i>
-                        Ya se lleno el indicador este mes
-                    </button>
-                </div>
-            @endif
-
-
-        @else
-            <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-                <button class="btn btn-outline-primary btn-sm w-100 {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
-                    <i class="fa fa-plus"></i>
-                    Llenar este Indicador
-                </button>
+{{-- <div class="row bg-white">
+    <div class="accordion p-0 m-0 bg-white" id="accordionExample">
+        <div class="">
+            <div class="accordion-header text-start " id="headingTwo">
+                <a data-mdb-collapse-init class="fw-bold  collapsed m-2" type="button" data-mdb-target="#info_precargada" aria-expanded="false" aria-controls="collapseTwo">
+                    <i class="fa-solid fa-file-excel"></i>
+                    Información cargada desde Excel.
+                </a>
             </div>
-        @endif
+            <div id="info_precargada" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div class="row gap-4  justify-content-start d-flex align-items-center">
 
-            <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-                <button class="btn btn-outline-primary btn-sm w-100 {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
-                    <i class="fa fa-plus"></i>
-                    Llenar este Indicador
-                </button>
+
+                        @forelse ($campos_llenos as $campo_lleno)
+                            <div class="col-5 col-sm-5 col-md-5 col-lg-auto  text-center  bg-white   pt-2 rounded shadow-sm">
+                                <h5 class="fw-bold">{{$campo_lleno->nombre}}</h5>
+
+
+                                <h5  class="">
+                                    @php
+                                        $last_info = InformacionInputPrecargado::where('id_input_precargado', $campo_lleno->id)->latest()->first();
+                                        $meses = ["0","Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                                    @endphp
+                                    {{$last_info->informacion}}
+                                </h5>
+                                <p>{{$meses[$last_info->mes]}} {{$last_info->year}}</p>
+                                <small>{{$campo_lleno->descripcion}}</small>
+                            </div>
+                        @empty
+                            <div class="col-12 border border-4 p-5 text-center">
+                                <h2>
+                                    <i class="fa fa-exclamation-circle text-danger"></i>
+                                    No se encontraron datos
+                                </h2>
+                            </div>
+                        @endforelse
+
+
+                    </div>
+                </div>
             </div>
-
-
-
-
-
-{{-- LOGICA DEL BLOQUEO DEL LLENADO DE INDICADORES- SE BLOQUEA SI YA SE LLENO ESTE MES Y SE BLOQUEA SI NO SE HA CARGADO EL EXCEL. --}}
-
-
-
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-outline-primary btn-sm w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#informacion_indicador">
-                <i class="fa fa-eye"></i>
-                Ver la informacion que se ocupa para este indicador.
-            </button>
         </div>
-{{-- 
-        <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
-            <button class="btn btn-outline-primary btn-sm w-100"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
-                <i class="fa-solid fa-chart-pie"></i>
-                Grafico
-            </button>
-        </div> --}}
-
     </div>
-</div>
 
+</div> --}}
 
 
 <div class="container-fluid">
 
-    <div class="row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-1">
-
-
-            <div class="card border-0 shadow-sm mb-2 ">
+        <div class="card border-0 shadow-sm m-1">
             <div class="card-body">
                 <form action="#"  method="GET">
                     <div class="row g-3 align-items-end">
@@ -178,75 +112,59 @@ use Carbon\Carbon;
                             <input type="date"
                                     name="fecha_inicio"
                                     value="{{request('fecha_inicio')}}"
-                                    class="form-control datepicker"
-                                    id="fecha_inicio"
+                                    class="form-control form-control-sm datepicker"
                                     onchange="this.form.submit()"
-                                    >
+                                    id="fecha_inicio">
                         </div>
                         <div class="col-12 col-sm-3 col-md-2 col-lg-2">
                             <label for="fecha_fin" class="form-label fw-semibold small text-muted text-uppercase">Fecha Final</label>
                             <input type="date"
                                     name="fecha_fin"
                                     value="{{request('fecha_fin')}}"
-                                    class="form-control datepicker"
-                                    id="fecha_fin"
+                                    class="form-control form-control-sm datepicker"
                                     onchange="this.form.submit()"
-                                    >
+                                    id="fecha_fin">
                         </div>
-                        {{-- <div class="col-12 col-sm-3 col-md-2 col-lg-2">
-                            <button class="btn btn-primary w-100">
-                                <i class="fa-solid fa-filter me-2"></i>
-                                Filtrar
-                            </button>
-                        </div> --}}
                     </form>
                         <div class="col-12 col-sm-3 col-md-2 col-lg-2 ">
-                            <button type="button" class="btn btn-info text-white w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
+                            <button type="button" class="btn btn-info text-white w-100 btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
                                 <i class="fa-solid fa-chart-line me-2"></i>
                                 Gráfica
                             </button>
                         </div>
                     </div>
             </div>
-        </div>
+</div>
 
-    <div  class="col-12 mx-2  shadow-sm px-5 py-3 pb-5">
+
+
+
+<div class=" row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-1">
+        <div  class="col-12 mx-2 px-5 py-3 pb-5">
             
-        <div class="row justify-content-center">
-                
-                <div class="col-12">
-                    <h3><i class="fa fa-chart-simple"></i>
-                        Historico de llenado del Indicador
-                    </h3>
-                </div>
-        </div>
-
-
-
 <div class="row">
 
 @forelse($grupos as $movimiento => $items)
 
-    @php
-        $metas = MetaIndicador::where(
-            'id_movimiento_indicador_lleno',
-            $items->first()->id_movimiento
-        )->first();
+@php
+    $metas = MetaIndicador::where(
+        'id_movimiento_indicador_lleno',
+        $items->first()->id_movimiento
+    )->first();
 
-        $meta_minima = $metas->meta_minima ?? 0;
-        $meta_maxima = $metas->meta_maxima ?? 0;
+    $meta_minima = $metas->meta_minima ?? 0;
+    $meta_maxima = $metas->meta_maxima ?? 0;
 
-        Carbon::setLocale('es');
-        $fecha = Carbon::parse($items[0]->fecha_periodo);
+    Carbon::setLocale('es');
+    $fecha = Carbon::parse($items[0]->fecha_periodo);
 
-        $mes  = ucfirst($fecha->translatedFormat('F'));
-        $year = $fecha->translatedFormat('Y');
-    @endphp
-
+    $mes  = ucfirst($fecha->translatedFormat('F'));
+    $year = $fecha->translatedFormat('Y');
+@endphp
 
 <div class="col-12 col-lg-4 mt-3">
     <div class="card shadow-sm border-0 h-100">
-       <!-- HEADER -->
+        <!-- HEADER -->
         <div class="card-header bg-info text-white text-center py-2">
             <h6 class="fw-semibold mb-0">
                 <i class="fa-solid fa-calendar-days me-1"></i>
@@ -349,14 +267,22 @@ use Carbon\Carbon;
 
                 <!-- RESULTADO FINAL -->
                 @if($item->final === 'on')
-                    @php 
-                        if($indicador->variacion === "on"){
-                    
-                            $min = $meta_maxima - $meta_minima;
-                            $max = $meta_maxima + $meta_minima;
 
-                            $cumple = $item->informacion_campo >= $min 
-                                    && $item->informacion_campo <= $max;   
+                    @php 
+
+                        if($indicador->variacion === "on"){
+
+
+                    
+                            if ($meta_minima == 0 && $meta_maxima == 0) {
+                                $cumple = true; //aqui se cambia el sentido de este pequeño algoritmo.
+                            } else {
+                                $min = $meta_maxima - $meta_minima;
+                                $max = $meta_maxima + $meta_minima;
+
+                                $cumple = $item->informacion_campo >= $min 
+                                    && $item->informacion_campo <= $max;
+                            }
 
                         }
                         else{
@@ -366,8 +292,11 @@ use Carbon\Carbon;
                         }
                     @endphp
 
+
+
+
                     @if ($indicador->tipo_indicador == "riesgo")
-                    
+
                         <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
                             {{ $cumple ? 'border-danger' : 'border-success' }}">
                             
@@ -398,13 +327,13 @@ use Carbon\Carbon;
 
                                 </span>
                             </h4>
+
                         </div>    
 
                     @else
                     
-                        <div class=" col-8 bg-  dark border border-2 rounded text-center py-3 my-4
+                        <div class=" col-8   dark border border-2 rounded text-center py-3 my-4
                             {{ $cumple ? 'border-success' : 'border-danger' }}">
-                            
                             <h6 class="fw-bold mb-1">
                                 <i class="fa-solid {{ $cumple ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger' }}"></i>
                                 {{ $item->nombre_campo }}
@@ -432,9 +361,10 @@ use Carbon\Carbon;
 
                                 </span>
                             </h4>
-
                         </div>
+
                     @endif
+
                 @endif
 
                 <!-- COMENTARIO -->
@@ -443,19 +373,19 @@ use Carbon\Carbon;
                         <button class="btn btn-outline-secondary btn-sm py-1 px-2"
                                 data-mdb-modal-init
                                 data-mdb-target="#com{{ $item->id }}">
-                            <i class="fa fa-table"></i> Iniformación Extra
+                            <i class="fa fa-table"></i> Información Extra
                         </button>
                     </div>
 
                     <div class="modal fade" id="com{{ $item->id }}" tabindex="-1">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-dialog modal-xl">
                             <div class="modal-content">
-                                <div class="modal-header bg-primary text-white py-2">
-                                    <h6 class="modal-title">Inidcador: {!! $indicador->nombre !!}</h6>
+                                <div class="modal-header bg-primary text-white ">
+                                    <h4 class="modal-title">{{ $indicador->nombre }}</h4>
                                     <button class="btn-close" data-mdb-dismiss="modal"></button>
                                 </div>
-                                <div class="modal-body small ck-content">
-                                    {!! $item->informacion_campo !!}
+                                <div class="modal-body small ck-content table-responsive">
+                                   <h4> {!!  $item->informacion_campo !!} </h4>
                                 </div>
                             </div>
                         </div>
@@ -477,7 +407,7 @@ use Carbon\Carbon;
 
                 <!-- NORMAL -->
                 @if(is_null($item->final))
-                    <div class="col-6">
+                    <div class="col-6 card-click">
                         <div class="border rounded p-2 small">
                             <span class="text-muted">{{ $item->nombre_campo }}</span>
                             <div class="fw-bold format-number">
@@ -487,54 +417,7 @@ use Carbon\Carbon;
                     </div>
                 @endif
 
-
-
             @endforeach
-
-                    
-                <div class="col-12">
-
-                    @php
-                        $fechaRegistro = Carbon::parse($items->first()->fecha_periodo);
-                        //$fechaRegistro = $items->first()->created_at;
-                        $mismoMes = $fechaRegistro->isSameMonth(now());
-                    @endphp
-
-                    <button class="btn btn-danger w-20 btn-sm"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}">
-                        {{-- @if(!$mismoMes) disabled onclick="alert('No se pueden eliminar registros de meses anteriores')" @endif> --}}
-                        <i class="fa fa-trash"></i> 
-                    </button>
-
-                    {{-- <button class="btn btn-danger w-20"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}">
-                        <i class="fa fa-trash"></i> {{ $items->first()->fecha_periodo }}
-                    </button> --}}
-
-                    
-                </div>
-
-                <div class="modal fade" id="e{{$items->first()->id_movimiento}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-danger text-white">
-                                <h2>¿Eliminar Registro?</h2>
-                            </div>
-                            <div class="modal-body">
-                                <form action="{{route('borrar.info.indicador', $items->first()->id_movimiento)}}" method="POST">
-                                    @csrf @method('DELETE')
-                                    <h2>
-                                        <button class="btn btn-danger w-100 py-3">
-                                            Eliminar
-                                        </button>
-                                    </h2>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
-
 
             </div>
         </div>
@@ -542,7 +425,7 @@ use Carbon\Carbon;
 </div>
 
 @empty
-<div class="col-12 text-center text-muted py-5">
+<div class="col-12 text-center text-muted py-5 bg-white h2">
     <i class="fa-solid fa-circle-info"></i> Sin información disponible
 </div>
 @endforelse
@@ -550,193 +433,102 @@ use Carbon\Carbon;
 </div>
 
 
-
-
-
-
-            </div>
         </div>
+
     </div>
 </div>
 
 
-
-<div class="modal fade" id="llenado_indicadores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-primary py-4">
-                <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
-                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
-            </div>
-            <div class="modal-body py-4">
-
-                <form id="formulario_llenado_indicadores" method="POST" action="{{route('llenado.informacion.indicadores', $indicador->id)}}" class="row gap-4 p-2 justify-content-center form-loader">
-                    @csrf
-                    @forelse ($campos_vacios as $campo_vacio)
-
-                    <div class="col-11 col-sm-11 col-md-4 col-lg-3 mb-4">
-
-                        <div class="p-3 rounded-4 shadow-sm border bg-white campos_vacios h-100">
-
-                            {{-- Nombre del campo --}}
-                            <label class="fw-semibold mb-2 text-dark">
-                                {{$campo_vacio->nombre}}
-                            </label>
-
-                            {{-- Input --}}
-                            <input  type="number" step="0.0001"  class="form-control form-control-sm" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="Ingrese {{$campo_vacio->nombre}}" required min="-999999" >
-
-                            {{-- Campos ocultos (NO se tocan) --}}
-                            <input type="hidden" name="id_input[]" value="{{$campo_vacio->id}}">
-                            <input type="hidden" name="tipo_input[]" value="{{$campo_vacio->tipo}}">
-                            <input type="hidden" name="id_input_vacio[]" value="{{$campo_vacio->id_input}}">
-                            <input type="hidden" name="nombre_input_vacio[]" value="{{$campo_vacio->nombre}}">
-
-                            {{-- Descripción --}}
-                            <div class="mt-2 p-2 bg-light rounded-3">
-                                <small class="text-muted">
-                                    {{$campo_vacio->descripcion}}
-                                </small>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    @empty
-                        <div class="col-11 border border-4 p-5 text-center">
-                            <h2>
-                                <i class="fa fa-exclamation-circle text-danger"></i>
-                                No se encontraron datos
-                            </h2>
-                        </div>
-                    @endforelse
-
-                    <div class="row">
-                        <div class="col-12">
-                            Fecha Periodo
-                            <input type="datetime-local" name="fecha_periodo" class="form-control">
-                        </div>
-                        {{-- <div class="col-6">
-                            fecha_periodo
-                            <input type="datetime-local" name="fecha_periodo" class="form-control">
-                        </div> --}}
-                    </div>
-
-                    @if (!$campos_vacios->isEmpty() )
-                        <div class="col-12 bg-light p-3 rounded ql-toolbar">
-                            <label> <i class="fa fa-table"></i> Información extra para el Indicador: </label>
-
-                        <div class="form-group">
-                            <div id="editor_info_extra"></div>
-                            <input type="hidden" name="info_extra" id="info_extra">
-                        </div>
-
-                        </div>
-                </form>
-
-                <div class="row justify-content-center bg-light  rounded p-4">
-                    <div class="col-12">
-                        <i class="fa fa-exclamation-circle"></i>
-                        <span class="fw-bold">Descripción:</span>
-                    </div>
-                    <div class="col-12">
-                        <span>{{$indicador->descripcion}}</span>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="modal-footer">
-                <button  class="btn btn-primary w-100 py-3" form="formulario_llenado_indicadores" data-mdb-ripple-init>
-                    <h6>Guardar</h6>
-                </button>
-                @endif
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog  modal-xl">
+    <div class="modal-dialog  modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-4">
                 <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
                 <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
             </div>
-            <div class="modal-body py-4 bg-light">
-                <div class="col-12  mx-2 bg-white shadow-sm p-5 mt-4" style="height: 500px" >
-                    <canvas class="w-100 h-100" id="grafico"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+            <div class="modal-body  row justify-content-center" >
 
-
-
-<div class="modal fade" id="informacion_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog  modal-fullscreen">
-        <div class="modal-content">
-            <div class="modal-header bg-primary py-4">
-                <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
-                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
-            </div>
-            <div class="modal-body py-4 bg-light">
-
-                <div class="row gap-4  justify-content-center ">
-
-                    <div class="col-12 col-sm-12 border col-md-11 col-lg-10 bg-white boder  shadow shadow-sm py-2 px-5">
-
-                        <div class="row justify-content-center">
-                            <div class="col-12 text-center my-3">
-                                <h4>
-                                    <i class="fa fa-exclamation-circle text-primary"></i>
-                                    Información para este indicador
-                                </h4>
-                                <hr>
-                            </div>
-
-                            {{-- aqui vamos a consultar los campos precargados --}}
-
-                            @forelse ($campos_unidos as $campo)
-                            <div class="col-11 col-sm-11 col-md-5 col-lg-3 border border-4 p-4 shadow-sm m-3">
-
-                                <span class="fw-bold">{{$campo->nombre}}</span>
-                                @php
-
-                                    //se tiene que validar todo el desmadre por que de los campos que conformacn campos unidos hay vario que no tienen el campo informacion.
-                                    if(CampoPrecargado::where('id_input', $campo->id_input)->latest()->first()){
-
-                                        $precargado = CampoPrecargado::where('id_input', $campo->id_input)->latest()->first();
-
-                                        $info_precargada = InformacionInputPrecargado::where('id_input_precargado', $precargado->id)->latest()->first();
-                                    
-                                    }
-                                    else {
-                                        $precargado = null;
-                                        $info_precargada = null;
-                                    }
-                                    
-                                @endphp
-
-                                <input type="text" class="form-control"  name="{{$campo->nombre}}" value="{{($info_precargada != null  ?  $info_precargada->informacion : '' )}}" disabled>
-
-                                <small>{{$campo->descripcion}}</small>
-
-                            </div>                    
-                            @empty
-                                
-                            @endforelse
-
-                            <div class="col-12 p-3 bg-light">
-                                <p><i class="fa fa-info-circle text-primary"></i> {{$indicador->descripcion}}</p>
-                            </div>
-
+                <div class="col-12 py-2">
+                    <div class="row justify-content-center">
+                        <div class="col-auto text-white bg-success rounded-3 my-3 mx-2">
+                            <h4 class="mt-2">
+                                <i class="fa fa-check-circle"></i>
+                                Meta: {{ $indicador->meta_esperada }}
+                            </h4>
                         </div>
 
+                        @if ($indicador->variacion === "on")
+                            <div class="col-auto text-white bg-danger rounded-3 my-3 mx-2">
+                                <h4 class="mt-2">
+                                    <i class="fa-solid fa-arrow-trend-down"></i>
+                                    Variación:{{ $indicador->meta_minima }} </h4>
+                            </div>
+                            
+                        @else
+                            <div class="col-auto text-white bg-danger rounded-3 my-3 mx-2">
+                                <h4 class="mt-2">
+                                    <i class="fa-solid fa-arrow-trend-down"></i>
+                                    Minimo:{{ $indicador->meta_minima }} </h4>
+                            </div>
+                        @endif
+
                     </div>
-                    
+                </div>
+
+
+
+                    <div class="col-12" >
+                        <!-- Tabs navs -->
+                        <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
+                                    <i class="fa fa-chart-simple"></i>
+                                    Barras
+                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
+                                    <i class="fa fa-chart-pie"></i>
+                                    Pie
+                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
+                                    <i class="fa fa-circle"></i>
+                                    Lineas
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Tabs navs -->
+
+                        <!-- Tabs content -->
+                        <div class="tab-content" id="ex2-content">
+                            <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
+                                <div class="col-12  chart-container w-100" >
+                                    <canvas class="" id="grafico"></canvas>
+                                </div>
+                            </div>
+                            <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+
+                            <div class="row justify-content-center">
+                                    <div class="col-12 text-center chart-container w-100" >
+                                        <canvas id="graficoPie"></canvas>
+                                    </div>
+                            </div>
+
+                            </div>
+                            <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
+                                <div class="col-12 text-center chart-container w-100" >
+                                    <canvas id="graficoLine"></canvas>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tabs content -->
+
+
+
                 </div>
 
             </div>
@@ -749,21 +541,13 @@ use Carbon\Carbon;
 
 
 
-{{-- DATOS DEL INDICADOR PARA EL ENVIO DEL CORREO ELECTRONICO. --}}
-<div id="data-indicador"
-    data-user = "{{Auth::user()->name}}"
-    data-correos = '@json($correos)''
-     data-indicador="{{ $indicador->nombre }}"
-     data-departamento="{{ Auth::user()->departamento->nombre }}">
+
 </div>
 
+
+
+
 @endsection
-
-
-
-
-
-
 
 
 
@@ -1023,61 +807,175 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+
 </script>
-
-
-
-
-
-
-
-
-
-{{-- AQUI ESTA EL SCRIPT QUE ENVIA LOS CORREOS ELECTRONICOS --}}
 <script>
+document.addEventListener("DOMContentLoaded", function () {
 
+    const datos = @json($graficar);
+    const TIPO_INDICADOR = "{{ $tipo_indicador }}";
 
-// Aui yace elñ codigo que me deja enviarlos por correo
+    const mesesES = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
 
-// const data = document.getElementById('data-indicador');
+    if (!datos || datos.length === 0) return;
 
-// let filas = `Se llenó el indicador de ${data.dataset.indicador}
-// del departamento ${data.dataset.departamento}`;
-// const correos = JSON.parse(data.dataset.correos);
+    // ============================
+    // FILTRAR DATOS
+    // ============================
 
-// document.getElementById('formulario_llenado_indicadores')
-// .addEventListener('submit', function (e) {
+    const datosFinal = datos.filter(d => d.final === "on");
+    const datosReferencia = datos.filter(d => d.referencia === "on");
 
-//     e.preventDefault();
+    const todosDatos = [...datosFinal, ...datosReferencia];
 
+    // ============================
+    // LABELS (MES + AÑO ORDENADO)
+    // ============================
 
-//     const inputs = document.querySelectorAll('.input');
+    const fechasUnicas = [...new Set(
+        todosDatos.map(item => item.fecha_periodo)
+    )].sort((a, b) => new Date(a) - new Date(b));
 
-//     // 🔹 Enviar correo con EmailJS
-//     emailjs.send('service_ns6885s', 'template_zfgln7k', {
-//         name: data.dataset.user,
-//         time: new Date().toLocaleString(),
-//         message: filas,
-//         mails: correos
+    const labels = fechasUnicas.map(fechaStr => {
 
-//     }).then(() => {
+        const fecha = new Date(fechaStr);
+        const mes = mesesES[fecha.getMonth()];
+        const year = fecha.getFullYear();
 
-//         // 🔹 Cuando el correo se envía, ahora sí mandamos el form a Laravel
-//         e.target.submit();
+        return `${mes} ${year}`;
 
-//     }).catch(error => {
-//         console.error('Error al enviar correo:', error);
-//         alert('Error al enviar notificación por correo');
-//     });
+    });
 
-// });
+    // ============================
+    // METAS + VARIACIÓN
+    // ============================
 
+    const VARIACION_ON = "{{ $indicador->variacion }}" === "on";
+
+    const META_MINIMA = {{ $indicador->meta_minima ?? 0 }};
+    const META_ESPERADA = {{ $indicador->meta_esperada ?? 0 }};
+
+    const VARIACION = VARIACION_ON ? META_MINIMA : null;
+
+    const LIMITE_INFERIOR = VARIACION_ON ? META_ESPERADA - VARIACION : null;
+    const LIMITE_SUPERIOR = VARIACION_ON ? META_ESPERADA + VARIACION : null;
+
+    // ============================
+    // DATA FINAL
+    // ============================
+
+    const dataValores = fechasUnicas.map(fecha => {
+
+        const item = datosFinal.find(d => d.fecha_periodo === fecha);
+
+        return item ? parseFloat(item.informacion_campo) : null;
+
+    });
+
+    const nombreCampo = datosFinal.length > 0
+        ? datosFinal[0].nombre_campo
+        : "Indicador";
+
+    // ============================
+    // FUNCIÓN GLOBAL DE COLOR
+    // ============================
+
+    function obtenerColor(valor) {
+
+        if (valor === null) return "rgba(200,200,200,0.3)";
+
+        if (VARIACION_ON) {
+            if (valor < LIMITE_INFERIOR || valor > LIMITE_SUPERIOR) {
+                return "rgba(255,99,132,0.8)";
+            }
+            return "rgba(75,192,75,0.8)";
+        }
+
+        if (TIPO_INDICADOR === "riesgo") {
+            return valor < META_MINIMA
+                ? "rgba(75,192,75,0.8)"
+                : "rgba(255,99,132,0.8)";
+        }
+
+        return valor < META_MINIMA
+            ? "rgba(255,99,132,0.8)"
+            : "rgba(75,192,75,0.8)";
+    }
+
+    // ============================
+    // 📈 GRÁFICA DE LÍNEA
+    // ============================
+
+    const ctxLine = document.getElementById("graficoLine");
+
+    if (ctxLine) {
+
+        new Chart(ctxLine.getContext("2d"), {
+
+            type: "line",
+
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: nombreCampo,
+                    data: dataValores,
+                    borderColor: "rgba(54,162,235,1)",
+                    backgroundColor: "rgba(54,162,235,0.1)",
+                    tension: 0,
+                    fill: true,
+                    pointBackgroundColor: ctx => obtenerColor(ctx.raw),
+                    pointRadius: 6
+                }]
+            },
+
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+
+        });
+
+    }
+
+    // ============================
+    // 🥧 GRÁFICA DOUGHNUT
+    // ============================
+
+    const ctxPie = document.getElementById("graficoPie");
+
+    if (ctxPie) {
+
+        new Chart(ctxPie.getContext("2d"), {
+
+            type: "doughnut",
+
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: nombreCampo,
+                    data: dataValores,
+                    backgroundColor: dataValores.map(v => obtenerColor(v)),
+                    borderWidth: 1
+                }]
+            },
+
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+
+        });
+
+    }
+
+});
 </script>
-
-
-
-
-
-
-
-@endsection

@@ -1205,7 +1205,7 @@
                     <div class="form-group mt-3">
                         <div class="form-outline" data-mdb-input-init>
                             <div class="form-outline" data-mdb-input-init>
-                                <textarea class="form-control w-100 {{ $errors->first('descripcion_norma') ? 'is-invalid' : '' }}" id="descripcion_norma" name="descripcion_norma" required >{{old('descripcion_norma')}}</textarea>
+                                <textarea class="form-control w-100 {{ $errors->first('descripcion_norma') ? 'is-invalid' : '' }}" id="descripcion_norma" name="descripcion_norma" required >{{old('descripcion_norma')}}.</textarea>
                                 <label class="form-label" for="descripcion_norma">Descripción de la Norma <span class="text-danger">*</span></label>
                             </div>
                         </div>
@@ -1216,7 +1216,7 @@
                 <div class="col-6 mt-4 ">
                     <div class="form-group mt-2">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="number" value="{{old('meta_minima_norma')}}" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('meta_minima_norma') ? 'is-invalid' : '' }}" id="meta_minima_norma" name="meta_minima_norma" required >
+                            <input type="number" value="90" min="1" max="100" class="form-control form-control-lg w-100 {{ $errors->first('meta_minima_norma') ? 'is-invalid' : '' }}" id="meta_minima_norma" name="meta_minima_norma" required >
                             <label class="form-label" for="meta_minima_norma">Meta Minima <span class="text-danger">*</span></label>
                         </div>
                     </div>
@@ -1226,7 +1226,7 @@
                 <div class="col-6 mt-4 ">
                     <div class="form-group mt-2">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="number" min="1" max="100" value="{{old('meta_esperada_norma')}}" class="form-control form-control-lg w-100 {{ $errors->first('meta_esperada_norma') ? 'is-invalid' : '' }}" id="meta_esperada_norma" name="meta_esperada_norma" required >
+                            <input type="number" min="1" max="100" value="100" class="form-control form-control-lg w-100 {{ $errors->first('meta_esperada_norma') ? 'is-invalid' : '' }}" id="meta_esperada_norma" name="meta_esperada_norma" required >
                             <label class="form-label" for="meta_esperada_norma">Meta Esperada <span class="text-danger">*</span></label>
                         </div>
                     </div>
@@ -1237,7 +1237,7 @@
                 <div class="col-12 mt-4 ">
                     <div class="form-group mt-2">
                         <div class="form-outline" data-mdb-input-init>
-                            <input type="number" min="1" value="{{old('ponderacion_norma')}}" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_norma') ? 'is-invalid' : '' }}" id="ponderacion_norma" name="ponderacion_norma" required ></textarea>
+                            <input type="number" min="1" value="10" max="100" class="form-control form-control-lg w-100 {{ $errors->first('ponderacion_norma') ? 'is-invalid' : '' }}" id="ponderacion_norma" name="ponderacion_norma" required ></textarea>
                             <label class="form-label" for="ponderacion_norma">Ponderación de la encuesta dentro de la evaluación total  <span class="text-danger">*</span></label>
                         </div>
                     </div>

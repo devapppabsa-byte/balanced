@@ -22,7 +22,7 @@
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10 pt-2">
-            <h3 class="text-white league-spartan">Detalle del  indicador:  {{$indicador->nombre}}</h3>
+            <h2 class="text-white league-spartan">{{$indicador->nombre}}</h2>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -75,6 +75,7 @@
 
 <div class="container-fluid">
 
+@if (count($campos_llenos) != 0)
 <div class="row bg-white">
     <div class="accordion p-0 m-0 bg-white" id="accordionExample">
         <div class="">
@@ -120,7 +121,8 @@
         </div>
     </div>
 
-</div>
+</div> 
+@endif
 
 
 <div class="container-fluid">
@@ -139,8 +141,21 @@
             </div>
         </div> --}}
 
-        <div class="card border-0 shadow-sm mb-2 mt-3">
+        <div class="card border-0 shadow-sm m-1">
+
+
+
             <div class="card-body">
+
+                <div class="row justify-content-center border">
+                    <div class="col-auto border border-3 border-primary bg-white card text-center">
+                        <small>Promedio Anual</small>
+                        <h3 class="m-2">10050%</h3>
+                        <span>Año: 2026</span>
+                    </div>
+                </div>
+
+
                 <form action="{{route('indicador.lleno.show.admin', $indicador->id)}}"  method="GET">
                     <div class="row g-3 align-items-end">
                         <div class="col-12 col-sm-3 col-md-2 col-lg-2">
@@ -148,7 +163,8 @@
                             <input type="date"
                                     name="fecha_inicio"
                                     value="{{request('fecha_inicio')}}"
-                                    class="form-control datepicker"
+                                    class="form-control form-control-sm datepicker"
+                                    onchange="this.form.submit()"
                                     id="fecha_inicio">
                         </div>
                         <div class="col-12 col-sm-3 col-md-2 col-lg-2">
@@ -156,25 +172,29 @@
                             <input type="date"
                                     name="fecha_fin"
                                     value="{{request('fecha_fin')}}"
-                                    class="form-control datepicker"
+                                    class="form-control form-control-sm datepicker"
+                                    onchange="this.form.submit()"
                                     id="fecha_fin">
                         </div>
-                        <div class="col-12 col-sm-3 col-md-2 col-lg-2">
+                        {{-- <div class="col-12 col-sm-3 col-md-2 col-lg-2">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="fa-solid fa-filter me-2"></i>
                                 Filtrar
                             </button>
-                        </div>
+                        </div> --}}
                     </form>
-                        <div class="col-12 col-sm-3 col-md-2 col-lg-2 ">
-                            <button type="button" class="btn btn-info text-white w-100" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
+                        <div class="col-12 col-sm-3 col-md-3 col-lg-3 ">
+                            <button type="button" class="btn btn-info text-white btn-sm " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
                                 <i class="fa-solid fa-chart-line me-2"></i>
                                 Gráfica
                             </button>
                         </div>
                     </div>
-            </div>
-        </div>
+                    
+
+</div>
+
+</div>
 
 
 
@@ -481,7 +501,7 @@
 
 
 <div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog  modal-xl modal-dialog-centered">
+    <div class="modal-dialog  modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-4">
                 <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
@@ -539,6 +559,12 @@
                                     Lineas
                                 </a>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex4-tab-4" href="#ex4-tabs-4" role="tab" aria-controls="ex4-tabs-4" aria-selected="false">
+                                    <i class="fa fa-circle"></i>
+                                    Gauge
+                                </a>
+                            </li>
                         </ul>
                         <!-- Tabs navs -->
 
@@ -561,6 +587,12 @@
                             <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
                                 <div class="col-12 text-center chart-container w-100" >
                                     <canvas id="graficoLine"></canvas>
+
+                                </div>
+                            </div>
+                            <div class="tab-pane " id="ex4-tabs-4" role="tabpanel" aria-labelledby="ex4-tab-4">
+                                <div class="col-12 text-center chart-container w-100" >
+                                    <canvas id="graficoGauge"></canvas>
 
                                 </div>
                             </div>
@@ -1024,7 +1056,113 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+const ctxGauge = document.getElementById("graficoGauge");
+
+if (ctxGauge) {
+const ultimoValor = dataValores[dataValores.length - 1];
+
+const valoresLimpios = dataValores.filter(v => v !== null);
+
+const max = Math.max(...valoresLimpios) * 1.2;
+
+const META_MINIMA = {{ $indicador->meta_minima ?? 0 }};
+const META_ESPERADA = {{ $indicador->meta_esperada ?? 100 }};
+    new Chart(ctxGauge.getContext("2d"), {
+
+        type: "doughnut",
+
+        data: {
+            datasets: [{
+                data: [
+                    META_MINIMA,                          // rojo
+                    META_ESPERADA - META_MINIMA,         // verde
+                    max - META_ESPERADA                  // gris
+                ],
+                backgroundColor: [
+                    "rgba(255,99,132,0.8)",   // bajo
+                    "rgba(75,192,75,0.8)",    // óptimo
+                    "rgba(39, 88, 245, 0.8)"   // resto
+                ],
+                borderWidth: 0
+            }]
+        },
+
+        options: {
+            responsive: true,
+            rotation: -90,          // empieza abajo
+            circumference: 180,     // media dona
+            cutout: "70%",          // grosor
+
+            plugins: {
+                tooltip: { enabled: true },
+                legend: { display: true },
+
+                // TEXTO CENTRAL
+                beforeDraw: function(chart) {
+                    const { width } = chart;
+                    const { height } = chart;
+                    const ctx = chart.ctx;
+
+                    ctx.restore();
+
+                    const fontSize = (height / 5).toFixed(2);
+                    ctx.font = fontSize + "px sans-serif";
+                    ctx.textBaseline = "middle";
+                    ctx.textAlign = "center";
+
+                    const text = ultimoValor.toFixed(2);
+
+                    ctx.fillStyle = obtenerColor(ultimoValor);
+
+                    ctx.fillText(text, width / 2, height / 1.2);
+
+                    ctx.save();
+                }
+            }
+        }
+
+    });
+
+}
+
+
+
+
+
+
+
+
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 

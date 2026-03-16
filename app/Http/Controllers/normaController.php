@@ -43,7 +43,7 @@ class normaController extends Controller
 
         $request->validate([
 
-            "titulo_norma" => 'required|unique:norma,nombre',
+            "titulo_norma" => 'required',
             "descripcion_norma" => 'required',
             "ponderacion_norma" => 'required',
             "meta_minima_norma" => 'required',

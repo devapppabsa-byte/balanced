@@ -406,6 +406,8 @@ public function show_indicador_user(Indicador $indicador){
             ->startOfYear()
             ->utc();
 
+    $inicio = "2025-01-01T06:00:00.000000Z";
+
     $fin = request()->filled('fecha_fin')
         ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
             //->subMonth()    
@@ -1869,6 +1871,72 @@ public function indicadores_foraneos_user(){
 
 
     return view('user.indicadores_foraneos', compact('indicadores_foraneos_agregados'));
+}
+
+
+public function indicador_lleno_show_user_foraneo(Indicador $indicador){
+
+    $tipo_indicador = $indicador->tipo_indicador;
+
+    //fehcas de filtrado, si request->fecha_inicio trae algo lo pone en la variable inicio si no deja aa inicio como el inicio del año.
+    //se convirtieron las fechas a UTC para que coincidieran con el registro de busqueda.
+    $inicio = request()->filled('fecha_inicio')
+        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+            ->startOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            //->subMonth()
+            ->startOfYear()
+            ->utc();
+
+    $fin = request()->filled('fecha_fin')
+        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            //->subMonth()    
+            ->endOfDay()
+            ->utc()
+
+        : Carbon::now(config('app.timezone'))
+            ->endOfYear()
+            ->utc();
+
+
+    //Para lgraficar los datos del indicador
+    IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->get();
+
+
+
+
+    $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->whereBetween('fecha_periodo', [$inicio, $fin])
+        ->where(function ($q) {
+            $q->where('final', 'on')
+            ->orWhere('referencia', 'on');
+        })
+        ->orderBy('created_at')
+        ->get();
+
+
+
+    //para graficar os datos del indicaor
+
+
+    //Para mostrar los datos del indicador
+     $datos = IndicadorLleno::where('id_indicador', $indicador->id)->whereBetween('fecha_periodo', [$inicio, $fin])->get();
+    
+    $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
+
+ 
+    //Se consulta el campo de resultado final.
+
+    $campo_resultado_final = CampoCalculado::where('id_indicador', $indicador->id)->whereNotNull('resultado_final')->where('resultado_final', '!=', '')->first();
+    //Para mostrar los datos el indicador
+
+    $campos_llenos = CampoPrecargado::where('id_indicador', $indicador->id)->get();
+
+
+    return view('user.indicador_foraneo_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos', 'indicador', 'tipo_indicador'));
+
+
 }
 
 
