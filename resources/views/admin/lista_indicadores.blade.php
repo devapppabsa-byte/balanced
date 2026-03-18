@@ -4,6 +4,7 @@
 @php
     use Carbon\Carbon;
     use App\Models\MetaIndicador;
+    use App\Models\IndicadorLleno;
 @endphp
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center">
@@ -572,21 +573,89 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
 @foreach ($indicadores as $indicador)
 
 <div class="modal fade" id="detall{{ $indicador->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-header bg-primary py-4">
             <h4 class="text-white" id="exampleModalLabel">
                 <i class="fa fa-calendar mx-1"></i>
-                Historial de {{ $indicador->nombre }}
+                Historial de {{ $indicador->nombre }} -
+
+                        @php
+                        $tipos = [
+                            "g" => "<i class='fa-solid fa-city'></i> Indicador General",
+                            "p" => "<i class='fa-solid fa-cow'></i> Pecuarios",
+                            "m" => "<i class='fa-solid fa-dog'></i> Mascotas",
+                        ];
+                        @endphp
+
+                        {!!  
+                            empty($indicador->planta)
+                                ? "<i class='fa-solid fa-circle-exclamation'></i> Sin asignación"
+                                : ($tipos[strtolower($indicador->planta)] 
+                                    ?? "<i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
+                        !!}
+
+                        @php
+                            $promedios = IndicadorLleno::select(
+                                DB::raw('YEAR(fecha_periodo) as anio'),
+                                DB::raw('AVG(informacion_campo) as promedio')
+                            )
+                            ->where('final', 'on')
+                            ->where('id_indicador', $indicador->id)
+                            ->groupBy(DB::raw('YEAR(fecha_periodo)'))
+                            ->orderBy('anio')
+                            ->get();
+                        @endphp  
+
+
+
             </h4>
             <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
         </div>
-            <div class="modal-body py-4">
+            <div class="modal-body ">
+  
+                
+                <div class="row justify-content-center mb-2">
+                    @forelse ($promedios as $promedio)
+                        <div class="col-auto p-3 border border-3 border-dark rounded m-2 text-center">
+                            <h5>Promedio Anual</h5>
+                            <div class="row">
+                                <div class="col-12">
+                                        <span class="card-title fw-bold  mt-3 h3">
+
+                                            @if($indicador->unidad_medida === 'pesos')
+                                                ${{ number_format($promedio->promedio, 2) }}
+
+                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                {{ round($promedio->promedio, 2) }}%
+
+                                            @elseif($indicador->unidad_medida === 'dias')
+                                                {{ round($promedio->promedio, 2) }} Días
+
+                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                {{ round($promedio->promedio, 2) }} Ton.
+
+                                            @else
+                                                {{ round($promedio->promedio, 2) }}
+                                            @endif
+
+                                        </span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="fw-bold">Año: {{ $promedio->anio }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        
+                    @endforelse
+                </div>
+
                 <div class="row justify-content-center px-4">
                     <div class="list-group shadow-sm rounded-4">
                         {{-- aqui dentro estan las tarjetitas que muestran el istorial de los meses llenados. --}}
+                        @forelse ($indicador->indicadorLleno->reverse() as $indicador_lleno)
 
-                        @forelse ($indicador->indicadorLleno as $indicador_lleno)
                             @if ($indicador_lleno->final === 'on')
 
                
@@ -687,7 +756,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
 
 
                                         </div>
-                                        <p class="mb-1">
+                                        <p class="mb-1 h4">
                                             
                                             <i class="fa fa-calendar"></i>
                                             {{Carbon::parse($indicador_lleno->fecha_periodo)->translatedFormat('F Y')}}.

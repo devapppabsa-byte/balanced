@@ -1022,68 +1022,68 @@ public function lista_indicadores_admin(Departamento $departamento){
 
 
 
-//Consulta SQL que me tra el cumplimiento  de los indicadores multiplicados por su ponderacion.
- $subQuery = DB::table('indicadores_llenos as il')
-    ->join('indicadores as i', 'i.id', '=', 'il.id_indicador')
-    ->where('il.final', 'on')
-    ->where('i.id_departamento', $departamento->id)
-    ->whereBetween('il.created_at', [$inicio, $fin])
-    ->selectRaw("
-        il.id_indicador,
-        i.ponderacion,
-        DATE_FORMAT(il.created_at, '%Y-%m') as mes,
-        AVG(CAST(il.informacion_campo AS DECIMAL(10,2))) as promedio_indicador
-    ")
-    ->groupBy('il.id_indicador', 'mes', 'i.ponderacion');
+    //Consulta SQL que me tra el cumplimiento  de los indicadores multiplicados por su ponderacion.
+    $subQuery = DB::table('indicadores_llenos as il')
+        ->join('indicadores as i', 'i.id', '=', 'il.id_indicador')
+        ->where('il.final', 'on')
+        ->where('i.id_departamento', $departamento->id)
+        ->whereBetween('il.created_at', [$inicio, $fin])
+        ->selectRaw("
+            il.id_indicador,
+            i.ponderacion,
+            DATE_FORMAT(il.created_at, '%Y-%m') as mes,
+            AVG(CAST(il.informacion_campo AS DECIMAL(10,2))) as promedio_indicador
+        ")
+        ->groupBy('il.id_indicador', 'mes', 'i.ponderacion');
 
 
 
-$cumplimientoIndicadoresMensual = DB::query()
-    ->fromSub($subQuery, 't')
-    ->selectRaw("
-        mes,
-        SUM(ROUND((promedio_indicador * ponderacion)/100, 2)) as cumplimiento_total
-    ")
+    $cumplimientoIndicadoresMensual = DB::query()
+        ->fromSub($subQuery, 't')
+        ->selectRaw("
+            mes,
+            SUM(ROUND((promedio_indicador * ponderacion)/100, 2)) as cumplimiento_total
+        ")
+        ->groupBy('mes')
+        ->orderBy('mes')
+        ->get();
+
+
+
+
+    //CONSULTA SQL DE LAS ENCUESTAS..
+    $resultado_encuestas = DB::table(DB::raw('
+        (
+            SELECT 
+                DATE_FORMAT(r.created_at, "%Y-%m") AS mes,
+                e.id AS encuesta_id,
+                e.ponderacion,
+                AVG(r.respuesta) AS promedio
+            FROM encuestas e
+            JOIN preguntas p ON p.id_encuesta = e.id
+            JOIN respuestas r ON r.id_pregunta = p.id
+            WHERE 
+                e.id_departamento = ?
+                AND p.cuantificable = 1
+                AND r.created_at BETWEEN ? AND ?
+            GROUP BY 
+                e.id,
+                e.ponderacion,
+                mes
+        ) as sub
+    '))
+    ->setBindings([
+        $departamento->id,
+        $inicio,
+        $fin
+    ])
+    ->select(
+        'mes',
+        DB::raw('SUM((promedio * (ponderacion / 10))) AS cumplimiento_total')
+    )
     ->groupBy('mes')
     ->orderBy('mes')
     ->get();
-
-
-
-
-//CONSULTA SQL DE LAS ENCUESTAS..
- $resultado_encuestas = DB::table(DB::raw('
-    (
-        SELECT 
-            DATE_FORMAT(r.created_at, "%Y-%m") AS mes,
-            e.id AS encuesta_id,
-            e.ponderacion,
-            AVG(r.respuesta) AS promedio
-        FROM encuestas e
-        JOIN preguntas p ON p.id_encuesta = e.id
-        JOIN respuestas r ON r.id_pregunta = p.id
-        WHERE 
-            e.id_departamento = ?
-            AND p.cuantificable = 1
-            AND r.created_at BETWEEN ? AND ?
-        GROUP BY 
-            e.id,
-            e.ponderacion,
-            mes
-    ) as sub
-'))
-->setBindings([
-    $departamento->id,
-    $inicio,
-    $fin
-])
-->select(
-    'mes',
-    DB::raw('SUM((promedio * (ponderacion / 10))) AS cumplimiento_total')
-)
-->groupBy('mes')
-->orderBy('mes')
-->get();
 
 
 
@@ -1281,6 +1281,9 @@ $encuestas = DB::table('encuestas as e')
     ->get();
 
 //CODIGO QUE ME AYUDA A MOSTRAR EL CUMPLIMIENTO DE LAS ENCUESTAS
+
+
+
 
 
  return view('admin.lista_indicadores', compact('indicadores', 'departamento', 'encuestas', 'resultado_normas', 'cumplimiento_general'));
