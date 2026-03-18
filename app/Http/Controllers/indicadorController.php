@@ -1344,6 +1344,8 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
 
 
+
+
     //para graficar os datos del indicaor
 
 

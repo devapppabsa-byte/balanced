@@ -141,60 +141,63 @@
             </div>
         </div> --}}
 
-        <div class="card border-0 shadow-sm m-1">
+        <div class="card border-0 shadow-sm mt-1 m-o w-100 ">
 
 
 
-            <div class="card-body">
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body py-3 px-4">
 
-                <div class="row p-0">
-                    @forelse ($promedios as $promedio)
-                        <div class="col-auto  bg-white card text-center mx-2">
-                            <small>Promedio Anual</small>
-                            <h5 class="m-2">{{ round($promedio->promedio,4)}}</h5>
-                            <span>Año: {{$promedio->anio}}</span>
-                        </div>                        
-                    @empty
-                        
-                    @endforelse
+        <form action="{{route('indicador.lleno.show.admin', $indicador->id)}}" method="GET">
+            <div class="d-flex flex-wrap align-items-end gap-3">
 
+                <!-- Fecha inicio -->
+                <div>
+                    <label class="form-label small text-muted fw-semibold mb-1">Desde</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="fa-solid fa-calendar-days text-primary"></i>
+                        </span>
+                        <input type="date"
+                            name="fecha_inicio"
+                            value="{{ request('fecha_inicio') ?? now()->format('Y-m-d') }}"
+                            class="form-control border-0 bg-light datepicker"
+                            onchange="this.form.submit()">
+                    </div>
                 </div>
 
-                <hr>
-                <form action="{{route('indicador.lleno.show.admin', $indicador->id)}}"  method="GET">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-12 col-sm-3 col-md-2 col-lg-2">
-                            <label for="fecha_inicio" class="form-label fw-semibold small text-muted text-uppercase">Fecha Inicio</label>
-                            <input type="date"
-                                    name="fecha_inicio"
-                                    value="{{request('fecha_inicio')}}"
-                                    class="form-control form-control-sm datepicker"
-                                    onchange="this.form.submit()"
-                                    id="fecha_inicio">
-                        </div>
-                        <div class="col-12 col-sm-3 col-md-2 col-lg-2">
-                            <label for="fecha_fin" class="form-label fw-semibold small text-muted text-uppercase">Fecha Final</label>
-                            <input type="date"
-                                    name="fecha_fin"
-                                    value="{{request('fecha_fin')}}"
-                                    class="form-control form-control-sm datepicker"
-                                    onchange="this.form.submit()"
-                                    id="fecha_fin">
-                        </div>
-                        {{-- <div class="col-12 col-sm-3 col-md-2 col-lg-2">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fa-solid fa-filter me-2"></i>
-                                Filtrar
-                            </button>
-                        </div> --}}
-                    </form>
-                        <div class="col-12 col-sm-3 col-md-3 col-lg-3 ">
-                            <button type="button" class="btn btn-info text-white btn-sm " data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
-                                <i class="fa-solid fa-chart-line me-2"></i>
-                                Gráfica
-                            </button>
-                        </div>
+                <!-- Fecha fin -->
+                <div>
+                    <label class="form-label small text-muted fw-semibold mb-1">Hasta</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="fa-solid fa-calendar-days text-danger"></i>
+                        </span>
+                        <input type="date"
+                            name="fecha_fin"
+                            value="{{ request('fecha_fin') ?? now()->format('Y-m-d') }}"
+                            class="form-control border-0 bg-light datepicker"
+                            onchange="this.form.submit()">
                     </div>
+                </div>
+
+                <!-- Botón gráfica -->
+                <div class="ms-auto">
+                    <button type="button"
+                        class="btn btn-info btn-sm px-4 rounded-pill shadow-sm text-white"
+                        data-mdb-ripple-init
+                        data-mdb-modal-init
+                        data-mdb-target="#grafico_indicador">
+                        <i class="fa-solid fa-chart-line me-2"></i>
+                        Ver detalles y grafica
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
                     
 
 </div>
@@ -205,9 +208,9 @@
 
 
 <div class=" row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-1">
-        <div  class="col-12 mx-2 px-5 py-3 pb-5">
+<div  class="col-12 mx-2 px-5 py-3 pb-5">
             
-<div class="row">
+<div class="row ">
 
 @forelse($grupos as $movimiento => $items)
 
@@ -227,14 +230,228 @@
     $year = $fecha->translatedFormat('Y');
 @endphp
 
-<div class="col-12 col-lg-4 mt-3">
+
+<div class="col-12 mb-3 mt-1">
+    <div class="card shadow-sm border-0">
+
+        <!-- HEADER -->
+        <div class="card-header bg-info text-white text-center py-3">
+            <h4 class="fw-semibold mb-0">
+                <i class="fa-solid fa-chart-line me-1"></i>
+                {{ $mes }} {{ $year }}
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <!-- METAS -->
+            <div class="d-flex justify-content-center gap-3 flex-wrap mb-3">
+
+                @if ($indicador->variacion == "on")
+                    <span class="badge bg-success-subtle text-success p-2">
+                        Variación: {{ $meta_minima }}
+                    </span>
+                    <span class="badge bg-danger-subtle text-danger p-2">
+                        Meta: {{ $meta_maxima }}
+                    </span>
+                @else
+                    <span class="badge bg-danger-subtle text-danger p-2">
+                        Mínima: {{ $meta_minima }}
+                    </span>
+                    <span class="badge bg-success-subtle text-success p-2">
+                        Máxima: {{ $meta_maxima }}
+                    </span>
+                @endif
+
+            </div>
+
+            <!-- KPI PRINCIPALES -->
+            <div class="row justify-content-center">
+
+                @foreach($items as $item)
+
+                    {{-- ================= KPI GRANDE ================= --}}
+                    @if($item->final === 'on')
+
+                        @php
+
+                    if($indicador->tipo_indicador === "riesgo"){
+
+
+
+                        if($item->informacion_campo <= $meta_maxima){
+                        
+                            $semaforizacion = 'text-success';
+                            $icono = '<i class="fa-solid fa-circle-check text-success"></i>';
+                        
+                        }
+                        else{ 
+
+                            $semaforizacion = 'text-danger';
+                            $icono = '<i class="fa-solid text-danger fa-triangle-exclamation"></i>';
+                        
+                            }
+                    
+                    }
+
+
+                    if($indicador->tipo_indicador === "normal"){
+
+
+
+                        if($item->informacion_campo <= $meta_maxima){
+                            $semaforizacion = 'text-danger';
+                            $icono = '<i class="fa-solid text-danger fa-triangle-exclamation"></i>';             
+                        }
+
+                        else{ 
+                            $semaforizacion = 'text-success';
+                            $icono = '<i class="fa-solid fa-circle-check text-success"></i>';
+                        }
+                    
+                    }
+
+                            // if($indicador->variacion === "on"){
+                            //     if ($meta_minima == 0 && $meta_maxima == 0) {
+                            //         $cumple = true;
+                            //     } else {
+                            //         $min = $meta_maxima - $meta_minima;
+                            //         $max = $meta_maxima + $meta_minima;
+                            //         $cumple = $item->informacion_campo >= $min 
+                            //             && $item->informacion_campo <= $max;
+                            //     }
+                            // } else {
+                            //     $cumple = $item->informacion_campo >= $meta_minima; 
+                            // }
+
+                            
+
+                        @endphp
+
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-3">
+                            <div class="card border-0 shadow-sm h-100 text-center 
+                                {{ $semaforizacion }}">
+
+                                <div class="card-body shadow-0">
+
+                                    <div class="mb-2">
+                                        {!!  $icono !!}
+                                    </div>
+
+                                    <h4 class="text-dark">{{ $item->nombre_campo }}</h4>
+
+                                    <h2 class="fw-bold">
+
+                                        @if($indicador->unidad_medida === 'pesos')
+                                            ${{ $item->informacion_campo }}
+                                        @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ $item->informacion_campo }}%
+                                        @elseif($indicador->unidad_medida === 'dias')
+                                            {{ $item->informacion_campo }} Días
+                                        @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ $item->informacion_campo }} Ton.
+                                        @else
+                                            {{ $item->informacion_campo }}
+                                        @endif
+
+                                    </h2>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    @endif
+
+                @endforeach
+
+            </div>
+
+            <!-- KPI SECUNDARIOS -->
+            <div class="row mt-2 justify-content-center">
+
+                @foreach($items as $item)
+
+                    @if(is_null($item->final))
+                        <div class="col-12 col-md-3 mb-1">
+                            <div class="border p-1  h-100 h6 p-3">
+                                <small class=" h5">{{ $item->nombre_campo }}</small>
+                                <div class="fw-bold  h3 mt-1">
+                                    {{ $item->informacion_campo }}
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                @endforeach
+
+            </div>
+
+            <!-- REGISTROS -->
+            <div class="mt-3">
+
+                @foreach($items as $item)
+
+                    @if($item->final === 'registro')
+                        <div class="bg-light border rounded p-2 mb-2 small">
+                            <div class="fw-semibold">{{ $item->nombre_campo }}</div>
+                            <div class="text-muted">
+                                {{ $item->informacion_campo }} ·
+                                {{ $item->created_at->translatedFormat('d M Y H:i') }}
+                            </div>
+                        </div>
+                    @endif
+
+                @endforeach
+
+            </div>
+
+            <!-- COMENTARIOS -->
+            <div class="mt-3 text-center">
+
+                @foreach($items as $item)
+
+                    @if($item->final === 'comentario')
+
+                        <button class="btn btn-outline-secondary btn-sm m-1"
+                                data-mdb-modal-init
+                                data-mdb-target="#com{{ $item->id }}">
+                            <i class="fa fa-table"></i>
+                            Información Extra
+                        </button>
+
+                        <div class="modal fade" id="com{{ $item->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h4 class="modal-title">{{ $indicador->nombre }}</h4>
+                                        <button class="btn-close" data-mdb-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body small ck-content">
+                                        <h4>{!! $item->informacion_campo !!}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    @endif
+
+                @endforeach
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{{-- <div class="col-12 col-lg-4 mt-3">
     <div class="card shadow-sm border-0 h-100">
         <!-- HEADER -->
         <div class="card-header bg-info text-white text-center py-2">
-            <h6 class="fw-semibold mb-0">
+            <h5 class="fw-semibold mb-0 p-1">
                 <i class="fa-solid fa-calendar-days me-1"></i>
                 {{ $mes }} {{ $year }}
-            </h6>
+            </h5>
         </div>
 
         <div class="card-body py-3">
@@ -474,8 +691,8 @@
                 @if(is_null($item->final))
                     <div class="col-6 card-click">
                         <div class="border rounded p-2 small">
-                            <span class="text-muted">{{ $item->nombre_campo }}</span>
-                            <div class="fw-bold format-number">
+                            <span class="text-muted h5">{{ $item->nombre_campo }}</span>
+                            <div class="fw-bold format-number h4">
                                 {{ $item->informacion_campo }}
                             </div>
                         </div>
@@ -487,7 +704,12 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
+
+
+
+
+
 
 @empty
 <div class="col-12 text-center text-muted py-5 bg-white h2">
@@ -506,7 +728,7 @@
 
 
 <div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
-    <div class="modal-dialog  modal-lg modal-dialog-centered">
+    <div class="modal-dialog  modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary py-4">
                 <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
@@ -514,32 +736,24 @@
             </div>
             <div class="modal-body  row justify-content-center" >
 
-                <div class="col-12 py-2">
-                    <div class="row justify-content-center">
-                        <div class="col-auto text-white bg-success rounded-3 my-3 mx-2">
-                            <h4 class="mt-2">
-                                <i class="fa fa-check-circle"></i>
-                                Meta: {{ $indicador->meta_esperada }}
-                            </h4>
+                    <div class="col-12 py-2 m-3">
+                        <div class="row p-0">
+                            @forelse ($promedios as $promedio)
+                                <div class="col-auto  bg-white card text-center mx-2">
+                                    <small>Promedio Anual</small>
+                                    <h5 class="m-2">{{ round($promedio->promedio,4)}}</h5>
+                                    <span>Año: {{$promedio->anio}}</span>
+                                </div>                        
+                            @empty
+
+                            <div class="col-6">
+                                <h2>No hay datos que mostrar</h2>
+                            </div>
+                                
+                            @endforelse
+
                         </div>
-
-                        @if ($indicador->variacion === "on")
-                            <div class="col-auto text-white bg-danger rounded-3 my-3 mx-2">
-                                <h4 class="mt-2">
-                                    <i class="fa-solid fa-arrow-trend-down"></i>
-                                    Variación:{{ $indicador->meta_minima }} </h4>
-                            </div>
-                            
-                        @else
-                            <div class="col-auto text-white bg-danger rounded-3 my-3 mx-2">
-                                <h4 class="mt-2">
-                                    <i class="fa-solid fa-arrow-trend-down"></i>
-                                    Minimo:{{ $indicador->meta_minima }} </h4>
-                            </div>
-                        @endif
-
                     </div>
-                </div>
 
 
 
@@ -564,12 +778,6 @@
                                     Lineas
                                 </a>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex4-tab-4" href="#ex4-tabs-4" role="tab" aria-controls="ex4-tabs-4" aria-selected="false">
-                                    <i class="fa fa-circle"></i>
-                                    Gauge
-                                </a>
-                            </li>
                         </ul>
                         <!-- Tabs navs -->
 
@@ -592,12 +800,6 @@
                             <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
                                 <div class="col-12 text-center chart-container w-100" >
                                     <canvas id="graficoLine"></canvas>
-
-                                </div>
-                            </div>
-                            <div class="tab-pane " id="ex4-tabs-4" role="tabpanel" aria-labelledby="ex4-tab-4">
-                                <div class="col-12 text-center chart-container w-100" >
-                                    <canvas id="graficoGauge"></canvas>
 
                                 </div>
                             </div>
@@ -635,6 +837,10 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
+    const indicador = @json($indicador);
+
+
+
     const datos = @json($graficar);
     const TIPO_INDICADOR = "{{ $tipo_indicador }}";
 
@@ -643,29 +849,15 @@ document.addEventListener("DOMContentLoaded", function () {
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
 
-    // ============================
-    // FILTRAR DATOS
-    // ============================
-
     const datosFinal = datos.filter(d => d.final === "on");
     const datosReferencia = datos.filter(d => d.referencia === "on");
-
-    // ============================
-    // LABELS (MES + AÑO)
-    // ============================
 
     const labels = [...new Set(
         [...datosFinal, ...datosReferencia].map(item => {
             const fecha = new Date(item.fecha_periodo);
-            const mes = mesesES[fecha.getMonth()];
-            const year = fecha.getFullYear();
-            return `${mes} ${year}`;
+            return `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}`;
         })
     )];
-
-    // ============================
-    // METAS + VARIACIÓN
-    // ============================
 
     const VARIACION_ON = "{{ $indicador->variacion }}" === "on";
 
@@ -676,52 +868,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const LIMITE_INFERIOR = VARIACION_ON ? META_ESPERADA - VARIACION : null;
     const LIMITE_SUPERIOR = VARIACION_ON ? META_ESPERADA + VARIACION : null;
-
-    const colorMetaMinima = "red";
-    const colorMetaMaxima = "green";
-    const colorVariacion = "red";
-
-    // ============================
-    // DATASET FINAL (BARRAS)
-    // ============================
+    const UNIDAD_MEDIDA = "{{ $indicador->unidad_medida }}";
 
     const datasetFinal = {
-
         type: "bar",
-        label: datosFinal.length > 0
-            ? datosFinal[0].nombre_campo
-            : "Cumplimiento",
+        label: datosFinal.length > 0 ? datosFinal[0].nombre_campo : "Cumplimiento",
 
         data: labels.map(label => {
-
             const item = datosFinal.find(d => {
                 const fecha = new Date(d.fecha_periodo);
-                const mes = mesesES[fecha.getMonth()];
-                const year = fecha.getFullYear();
-                const labelData = `${mes} ${year}`;
-                return labelData === label;
+                return `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}` === label;
             });
-
             return item ? parseFloat(item.informacion_campo) : null;
-
         }),
 
         backgroundColor: ctx => {
-
             const value = ctx.raw;
             if (value === null) return "rgba(200,200,200,0.3)";
 
             if (VARIACION_ON) {
-
                 if (value < LIMITE_INFERIOR || value > LIMITE_SUPERIOR) {
                     return "rgba(255,99,132,0.8)";
                 }
-
                 return "rgba(75,192,75,0.8)";
             }
 
             if (TIPO_INDICADOR === "riesgo") {
-
                 return value < META_MINIMA
                     ? "rgba(75,192,75,0.8)"
                     : "rgba(255,99,132,0.8)";
@@ -733,21 +905,47 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         borderWidth: 1,
-        order: 1
-    };
+        order: 1,
 
-    // ============================
-    // REFERENCIAS (LINEAS)
-    // ============================
+        // 🔥 LABELS EN BARRAS
+        datalabels: {
+            anchor: 'end',
+            align: 'bottom',
+            color: '#fff',
+            font: {
+                weight: 'bold',
+                size: 22
+            },
+            formatter: function(value) {
+
+                if (value === null) return '';
+
+                switch (UNIDAD_MEDIDA) {
+
+                    case 'pesos':
+                        return '$' + value.toFixed(2);
+
+                    case 'porcentaje':
+                        return value.toFixed(2) + '%';
+
+                    case 'dias':
+                        return value.toFixed(2) + ' Días';
+
+                    case 'toneladas':
+                        return value.toFixed(2) + ' Ton.';
+
+                    default:
+                        return value.toFixed(2);
+                }
+            }
+        }
+    };
 
     const referenciasAgrupadas = {};
 
     datosReferencia.forEach(item => {
-
         const fecha = new Date(item.fecha_periodo);
-        const mes = mesesES[fecha.getMonth()];
-        const year = fecha.getFullYear();
-        const label = `${mes} ${year}`;
+        const label = `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}`;
 
         if (!referenciasAgrupadas[item.nombre_campo]) {
             referenciasAgrupadas[item.nombre_campo] = {};
@@ -755,120 +953,96 @@ document.addEventListener("DOMContentLoaded", function () {
 
         referenciasAgrupadas[item.nombre_campo][label] =
             parseFloat(item.informacion_campo);
-
     });
 
-    const datasetsReferencias = Object.keys(referenciasAgrupadas).map((nombre, index) => {
+    const datasetsReferencias = Object.keys(referenciasAgrupadas).map((nombre, index) => ({
+        type: "line",
+        label: nombre,
 
-        return {
+        data: labels.map(label =>
+            referenciasAgrupadas[nombre][label] ?? null
+        ),
 
-            type: "line",
-            label: nombre,
+        borderWidth: 3,
+        tension: 0.3,
+        fill: true,
 
-            data: labels.map(label =>
-                referenciasAgrupadas[nombre][label] ?? null
-            ),
+        borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
+        backgroundColor: `rgba(${50 + index * 60}, 120, 255, 0.2)`,
 
-            borderWidth: 3,
-            tension: 0.3,
-            fill: true,
-
-            borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
-            backgroundColor: `rgba(${50 + index * 60}, 120, 255, 0.2)`,
-
-            spanGaps: true,
-            order: 9
-        };
-
-    });
-
-    // ============================
-    // CANVAS
-    // ============================
+        spanGaps: true,
+        order: 10 // 🔥 SIEMPRE ENCIMA
+    }));
 
     const canvas = document.getElementById("grafico");
     if (!canvas) return;
 
-    // ============================
-    // CHART
-    // ============================
-
     new Chart(canvas.getContext("2d"), {
 
         data: {
-
             labels,
-
             datasets: [
-
                 datasetFinal,
                 ...datasetsReferencias,
 
                 ...(VARIACION_ON ? [
-
                     {
                         type: "line",
                         label: "Meta esperada",
                         data: labels.map(() => META_ESPERADA),
-                        borderColor: colorMetaMaxima,
+                        borderColor: "green",
                         borderWidth: 3,
-                        order: 9
+                        order: 10
                     },
-
                     {
                         type: "line",
                         label: "Variación inferior",
                         data: labels.map(() => LIMITE_INFERIOR),
-                        borderColor: colorVariacion,
+                        borderColor: "red",
                         borderWidth: 2,
                         borderDash: [6, 6],
-                        order: 9
+                        order: 10
                     },
-
                     {
                         type: "line",
                         label: "Variación superior",
                         data: labels.map(() => LIMITE_SUPERIOR),
-                        borderColor: colorVariacion,
+                        borderColor: "red",
                         borderWidth: 2,
                         borderDash: [6, 6],
-                        order: 9
+                        order: 10
                     }
-
                 ] : [
-
                     {
                         type: "line",
                         label: "Meta mínima",
                         data: labels.map(() => META_MINIMA),
-                        borderColor: colorMetaMinima,
+                        borderColor: "red",
                         borderWidth: 2,
                         borderDash: [6, 6],
-                        order: 9
+                        order: 10
                     },
-
                     {
                         type: "line",
                         label: "Meta máxima",
                         data: labels.map(() => META_ESPERADA),
-                        borderColor: colorMetaMaxima,
+                        borderColor: "green",
                         borderWidth: 3,
-                        order: 0
+                        order: 10
                     }
-
                 ])
-
             ]
-
         },
 
         options: {
-
             responsive: true,
 
             plugins: {
                 legend: {
                     position: "top"
+                },
+                datalabels: {
+                    display: context => context.dataset.type === 'bar'
                 }
             },
 
@@ -877,14 +1051,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     beginAtZero: true
                 }
             }
+        },
 
-        }
-
+        plugins: [ChartDataLabels] // 🔥 ACTIVAR PLUGIN
     });
 
 });
-
-
 </script>
 
 
