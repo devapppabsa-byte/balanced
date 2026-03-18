@@ -406,7 +406,7 @@ public function show_indicador_user(Indicador $indicador){
             ->startOfYear()
             ->utc();
 
-    $inicio = "2025-01-01T06:00:00.000000Z";
+    //$inicio = "2025-01-01T06:00:00.000000Z";
 
     $fin = request()->filled('fecha_fin')
         ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
@@ -1346,6 +1346,16 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
     //Para mostrar los datos del indicador
      $datos = IndicadorLleno::where('id_indicador', $indicador->id)->whereBetween('fecha_periodo', [$inicio, $fin])->get();
+
+    $promedios = IndicadorLleno::select(
+        DB::raw('YEAR(fecha_periodo) as anio'),
+        DB::raw('AVG(informacion_campo) as promedio')
+    )
+    ->where('final', 'on')
+    ->where('id_indicador', $indicador->id)
+    ->groupBy(DB::raw('YEAR(fecha_periodo)'))
+    ->orderBy('anio')
+    ->get();
     
     $grupos = $datos->groupBy('id_movimiento')->sortKeysDesc();
 
@@ -1359,7 +1369,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
     
 
-    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos', 'indicador', 'tipo_indicador'));
+    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos', 'indicador', 'tipo_indicador', 'promedios'));
 
 }
 
@@ -1380,8 +1390,8 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
 
 
     //fechas usadas para el llenado de indicadores del año ´pasado:
-    $fecha_periodo = Carbon::parse($request->fecha_periodo);
-    $created_at = Carbon::parse($request->fecha_periodo)->addMonth();
+    $fecha_periodo = Carbon::now()->subMonth();
+   // $created_at = Carbon::parse($request->fecha_periodo)->addMonth();
 
 
     $nombre_usuario = auth()->user()->name;
@@ -1431,7 +1441,7 @@ public function llenado_informacion_indicadores(Indicador $indicador, Request $r
                 "id_indicador" =>$indicador->id,
                 "id_movimiento" => $id_movimiento,
                 'fecha_periodo' => $fecha_periodo,
-                'created_at' => $created_at 
+                //'created_at' => $created_at 
             ]);
         }
 
@@ -1461,7 +1471,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
             "id_indicador" =>$indicador->id,
             "id_movimiento" => $id_movimiento,
             'fecha_periodo' => $fecha_periodo,
-            'created_at' => $created_at 
+            //'created_at' => $created_at 
         ]);  
 
 }
@@ -1571,7 +1581,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'final' => $campo_calculado->resultado_final,
                             'referencia' => $campo_calculado->referencia,
                             'fecha_periodo' => $fecha_periodo,
-                            'created_at' => $created_at 
+                            //'created_at' => $created_at 
                             
                             ]);
                             
@@ -1604,7 +1614,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'final' => $campo_calculado->resultado_final,
                             'referencia' => $campo_calculado->referencia,
                             'fecha_periodo' => $fecha_periodo,
-                            'created_at' => $created_at 
+                            //'created_at' => $created_at 
 
                         ]);
 
@@ -1644,7 +1654,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'final' => $campo_calculado->resultado_final,
                             'referencia' => $campo_calculado->referencia,                            
                             'fecha_periodo' => $fecha_periodo,
-                            'created_at' => $created_at 
+                            //'created_at' => $created_at 
                         ]);
 
                         
@@ -1681,7 +1691,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                         'final' => $campo_calculado->resultado_final,
                         'referencia' => $campo_calculado->referencia,
                         'fecha_periodo' => $fecha_periodo,
-                        'created_at' => $created_at 
+                        //'created_at' => $created_at 
 
                     ]);
 
@@ -1713,7 +1723,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'final' => $campo_calculado->resultado_final,
                             'referencia' => $campo_calculado->referencia,
                             'fecha_periodo' => $fecha_periodo,
-                            'created_at' => $created_at 
+                            //'created_at' => $created_at 
 
                         ]);
 
@@ -1750,7 +1760,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                             'final' => $campo_calculado->resultado_final,
                             'referencia' => $campo_calculado->referencia,
                             'fecha_periodo' => $fecha_periodo,
-                            'created_at' => $created_at 
+                            //'created_at' => $created_at 
                         ]);
 
 
@@ -1772,7 +1782,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                         "id_movimiento" => $id_movimiento,
                         "final" => 'registro',
                         'fecha_periodo' => $fecha_periodo,
-                        'created_at' => $created_at 
+                        //'created_at' => $created_at 
 
 
                 ]);
@@ -1789,7 +1799,7 @@ foreach($inputs_precargados as $index_precargados => $precargado){
                 'id_movimiento' => $id_movimiento,
                 'final' => 'comentario',
                 'fecha_periodo' => $fecha_periodo,
-                'created_at' => $created_at 
+                //'created_at' => $created_at 
 
             ]);
         }

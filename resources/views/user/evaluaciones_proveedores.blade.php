@@ -6,7 +6,7 @@
     <div class="row bg-primary d-flex align-items-center">
 
         <div class="col-8 col-sm-8 col-md-6 col-lg-9  py-4  py-4 ">
-            <h2 class="text-white"> Evaluaciones Porveedores</h2>
+            <h2 class="text-white"> Evaluaciones Proveedores</h2>
             <h5 class="text-white fw-bold" id="fecha"></h5>
             @if (session('success'))
                 <div class="text-white fw-bold ">

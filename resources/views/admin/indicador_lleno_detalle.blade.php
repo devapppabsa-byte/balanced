@@ -147,15 +147,20 @@
 
             <div class="card-body">
 
-                <div class="row justify-content-center border">
-                    <div class="col-auto border border-3 border-primary bg-white card text-center">
-                        <small>Promedio Anual</small>
-                        <h3 class="m-2">10050%</h3>
-                        <span>Año: 2026</span>
-                    </div>
+                <div class="row p-0">
+                    @forelse ($promedios as $promedio)
+                        <div class="col-auto  bg-white card text-center mx-2">
+                            <small>Promedio Anual</small>
+                            <h5 class="m-2">{{ round($promedio->promedio,4)}}</h5>
+                            <span>Año: {{$promedio->anio}}</span>
+                        </div>                        
+                    @empty
+                        
+                    @endforelse
+
                 </div>
 
-
+                <hr>
                 <form action="{{route('indicador.lleno.show.admin', $indicador->id)}}"  method="GET">
                     <div class="row g-3 align-items-end">
                         <div class="col-12 col-sm-3 col-md-2 col-lg-2">

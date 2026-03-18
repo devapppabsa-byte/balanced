@@ -128,19 +128,11 @@ class userController extends Controller
 
 
 //Filtro de fechas para los indicadores
-$inicio = request()->filled('fecha_inicio')
-    ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
-        ->startOfDay()
-        ->utc()
-    : Carbon::now(config('app.timezone'))
+$inicio = Carbon::now(config('app.timezone'))
         ->startOfYear()
         ->utc();
 
-$fin = request()->filled('fecha_fin')
-    ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
-        ->endOfDay()
-        ->utc()
-    : Carbon::now(config('app.timezone'))
+$fin =  Carbon::now(config('app.timezone'))
         ->endOfYear()
         ->utc();
 
@@ -216,7 +208,7 @@ foreach ($normas as $norma) {
     ->join('indicadores as i', 'i.id', '=', 'il.id_indicador')
     ->where('il.final', 'on')
     ->where('i.id_departamento', $id_dep)
-    ->whereBetween('il.created_at', [$inicio, $fin])
+    ->whereBetween('il.fecha_periodo', [$inicio, $fin])
     ->selectRaw("
         il.id_indicador,
         i.ponderacion,
@@ -358,15 +350,15 @@ $meses = collect()
     ->values();
 
 
-$cumplimiento_general = $meses->map(function ($mes) use ($indicadores, $encuestas, $normas) {
-    return [
-        'mes' => $mes,
-        'total' =>
-            ($indicadores[$mes] ?? 0) +
-            ($encuestas[$mes] ?? 0) +
-            ($normas[$mes] ?? 0),
-    ];
-});
+    $cumplimiento_general = $meses->map(function ($mes) use ($indicadores, $encuestas, $normas) {
+        return [
+            'mes' => $mes,
+            'total' =>
+                ($indicadores[$mes] ?? 0) +
+                ($encuestas[$mes] ?? 0) +
+                ($normas[$mes] ?? 0),
+        ];
+    });
 
 
 

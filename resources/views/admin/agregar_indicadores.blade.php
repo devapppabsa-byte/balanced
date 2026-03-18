@@ -315,6 +315,7 @@
                                                 <th scope="col" class="border-0">Min - Max</th>
                                                 <th scope="col" class="border-0">Tipo de Indicador</th>
                                                 <th scope="col" class="border-0">Unidad</th>
+                                                <th scope="col" class="border-0">Planta</th>
                                                 <th scope="col" class="border-0 text-end">Acciones</th>
                                             </tr>
                                         </thead>
@@ -341,11 +342,27 @@
                                                 <td>
                                                     <small class="text-muted text-capitalize">{{ $indicador->tipo_indicador }}</small>
                                                 </td>
+                                                
                                                 <td>
                                                     <small class="text-muted text-capitalize">
                                                         {{ $indicador->unidad_medida }}
+
                                                     </small>
                                                 </td>
+
+                                                <td>
+                                                    <small class="text-muted text-capitalize">
+                                                        {{
+                                                        $indicador->planta == '1' ? 'Planta 1' :
+                                                        ($indicador->planta == '2' ? 'Planta 2' :
+                                                        ($indicador->planta == '3' ? 'Planta 3' :
+                                                        ($indicador->planta == 'm' ? 'Mascotas' :
+                                                        ($indicador->planta == 'p' ? 'Pecuarios' :
+                                                        ($indicador->planta == 'g' ? 'General' : 'Sin definir')))))
+                                                        }}
+                                                    </small>
+                                                </td>
+
                                                 <td class="text-end">
                                                     <div class="btn-group" role="group">
                                                         <a href="{{ route('indicador.index', $indicador->id) }}" 
@@ -928,11 +945,11 @@
 
                             <div class="col-12 col-sm-12 col-md-4 col-lg-4 mt-2">
                                     <label for="tipo_ind{{$indicador->id}}" class="form-label fw-semibold">
-                                        Planta
+ 
                                         <span class="text-danger">*</span>
                                     </label>
                                     <select name="planta_indicador"  class="form-select w-100 {{ $errors->first('planta_indicador') ? 'is-invalid' : '' }}"  id="" required>
-                                        <option value="" disabled>Selecciona una Planta</option>
+                                        <option value="" {{old('planta_indicador', $indicador->planta) == null ? 'selected' : ''}} disabled>Selecciona una Planta</option>
                                         <option value="1" {{old('planta_indicador', $indicador->planta) == '1' ? 'selected' : ''}}>Planta 1</option>
                                         <option value="2" {{old('planta_indicador', $indicador->planta) == '2' ? 'selected' : ''}}>Planta 2</option>
                                         <option value="3" {{old('planta_indicador', $indicador->planta) == '3' ? 'selected' : ''}}>Planta 3</option>

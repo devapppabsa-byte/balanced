@@ -102,6 +102,7 @@
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 ">
+                                    <h3 class="archivo-font"> {{ $indicador->departamento->nombre }}</h3>
                                     <h4 class="card-text fw-bold">{{$indicador->nombre}}</h4>
                                     
                                         <span class="card-title fw-bold display-6 mt-3 h3">
@@ -187,6 +188,7 @@
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 ">
+                                    <h3 class="archivo-font"> {{ $indicador->departamento->nombre }}</h3>
                                     <h4 class="card-text fw-bold">{{$indicador->nombre}}</h4>
                                         <span class="card-title fw-bold display-6 mt-3 h3">
 
@@ -265,6 +267,7 @@
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 ">
+                                    <h3 class="archivo-font"> {{ $indicador->departamento->nombre }}</h3>
                                     <h4 class="card-text fw-bold">{{$indicador->nombre}}</h4>
                                         <span class="card-title fw-bold display-6 mt-3 h3">
 
@@ -323,11 +326,11 @@
                                                     ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
                                         !!}
                                     </div>
-                                <div class="col-auto mx-2">
-                                    <a href="#" class="text-white" data-mdb-ripple-init data-mdb-tooltip-init data-mdb-placement="top" title="Ver historial" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#detall{{ $indicador->id }}">
-                                        <i class="fa-solid fa-list"></i>
-                                    </a>
-                                </div>
+                                    <div class="col-auto mx-2">
+                                        <a href="#" class="text-white" data-mdb-ripple-init data-mdb-tooltip-init data-mdb-placement="top" title="Ver historial" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#detall{{ $indicador->id }}">
+                                            <i class="fa-solid fa-list"></i>
+                                        </a>
+                                    </div>
                                 </div>
                         </div>                        
                     </div>
@@ -352,6 +355,7 @@
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-7 ">
+                                    <h3 class="archivo-font"> {{ $indicador->departamento->nombre }}</h3>
                                     <h5 class="card-title fw-bold  x">
                                         Sin registros aún.
                                     </h5>
@@ -369,6 +373,12 @@
 
 
         @empty
+
+            <div class="col-12 text-center h3 mt-5 ">
+                <i class="fa fa-exclamation-circle"></i>
+                No hay indicadores asignados
+            </div>
+
 
         @endforelse
 

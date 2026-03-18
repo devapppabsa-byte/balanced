@@ -185,7 +185,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                 @if ($indicador->tipo_indicador === "riesgo")
 
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
-                    <div class="card text-white {{($cumplimiento <= $indicador->meta_minima) ? 'bg-success' : 'bg-danger'}} shadow-2-strong">
+                    <div class="card text-white {{($cumplimiento < $indicador->meta_minima) ? 'bg-success' : 'bg-danger'}} shadow-2-strong">
                         <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
 
                         <div class="card-body">
@@ -608,7 +608,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                                             $texto_meta_minimo = "Aceptable";
 
 
-                                            if($resultado>=$meta_maxima){
+                                            if($resultado <= $meta_minima){
                                            
                                                 $semaforizacion = 'text-success';
                                                 $icono = '<i class="fa-solid fa-circle-check text-success"></i>';
@@ -627,7 +627,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
                                         if($indicador->tipo_indicador === "normal"){
                                             $texto_meta_minimo = "Meta Minima";
 
-                                            if($resultado<=$meta_maxima){
+                                            if($resultado < $meta_minima){
                                                 $semaforizacion = 'text-danger';
                                                 $icono = '<i class="fa-solid text-danger fa-triangle-exclamation"></i>';
 

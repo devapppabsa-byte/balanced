@@ -61,7 +61,7 @@
 <div class="container-fluid">
     <div class="row justify-content-around p-3">
         @forelse ($normas as $norma)
-        <div class="col-11 col-sm-11 col-md-5   col-lg-5 ">
+        <div class="col-11 col-sm-11 col-md-5   col-lg-3 m-3">
 
             <div class="card shadow">
                 <div class="card-header text-center">
@@ -70,12 +70,9 @@
                         {{$norma->nombre}}
                     </h6>
                 </div>
-                <div class="card-body">
-                    {{$norma->descripcion}}
-                </div>
                 <div class="card-footer">
-                    <a href="{{route('registro.cumplimiento.normativa.index', $norma->id)}}" class="btn btn-light text-dark w-100">
-                        Ver
+                    <a href="{{route('registro.cumplimiento.normativa.index', $norma->id)}}" class="btn btn-primary  w-100">
+                        Ver Apartados
                     </a>
                 </div>
             </div>

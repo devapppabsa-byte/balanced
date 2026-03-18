@@ -130,12 +130,12 @@ use Carbon\Carbon;
             </div>
         @endif
 
-            <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
+            {{-- <div class="col-12 col-sm-12 col-md-6 col-lg-auto my-1">
                 <button class="btn btn-outline-primary btn-sm w-100 {{(Auth::user()->tipo_usuario != "principal") ? 'disabled' : ''  }}" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
                     <i class="fa fa-plus"></i>
                     Llenar este Indicador
                 </button>
-            </div>
+            </div> --}}
 
 
 
@@ -495,19 +495,16 @@ use Carbon\Carbon;
                 <div class="col-12">
 
                     @php
-                        $fechaRegistro = Carbon::parse($items->first()->fecha_periodo);
-                        //$fechaRegistro = $items->first()->created_at;
+                        //$fechaRegistro = Carbon::parse($items->first()->fecha_periodo);
+                        $fechaRegistro = $items->first()->created_at;
                         $mismoMes = $fechaRegistro->isSameMonth(now());
                     @endphp
 
-                    <button class="btn btn-danger w-20 btn-sm"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}">
-                        {{-- @if(!$mismoMes) disabled onclick="alert('No se pueden eliminar registros de meses anteriores')" @endif> --}}
+                    <button class="btn btn-danger w-20 btn-sm"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}"
+                         @if(!$mismoMes)" disabled onclick="alert('No se pueden eliminar registros de meses anteriores')" @endif>
                         <i class="fa fa-trash"></i> 
                     </button>
 
-                    {{-- <button class="btn btn-danger w-20"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$items->first()->id_movimiento}}">
-                        <i class="fa fa-trash"></i> {{ $items->first()->fecha_periodo }}
-                    </button> --}}
 
                     
                 </div>
@@ -612,16 +609,7 @@ use Carbon\Carbon;
                         </div>
                     @endforelse
 
-                    <div class="row">
-                        <div class="col-12">
-                            Fecha Periodo
-                            <input type="datetime-local" name="fecha_periodo" class="form-control">
-                        </div>
-                        {{-- <div class="col-6">
-                            fecha_periodo
-                            <input type="datetime-local" name="fecha_periodo" class="form-control">
-                        </div> --}}
-                    </div>
+
 
                     @if (!$campos_vacios->isEmpty() )
                         <div class="col-12 bg-light p-3 rounded ql-toolbar">
