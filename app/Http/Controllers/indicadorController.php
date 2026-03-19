@@ -1960,4 +1960,68 @@ public function indicador_lleno_show_user_foraneo(Indicador $indicador){
 
 
 
+
+
+public function analizar_indicador(Indicador $indicador){
+
+    $inicio = request()->filled('fecha_inicio')
+        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+            ->startOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            //->subMonth()
+            ->startOfYear()
+            ->utc();
+
+    //$inicio = "2025-01-01T06:00:00.000000Z";
+
+    $fin = request()->filled('fecha_fin')
+        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            //->subMonth()    
+            ->endOfDay()
+            ->utc()
+
+        : Carbon::now(config('app.timezone'))
+            ->endOfYear()
+            ->utc();
+
+
+
+    //datos para graficar...
+    $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->whereBetween('fecha_periodo', [$inicio, $fin])
+        ->where(function ($q) {
+            $q->where('final', 'on')
+            ->orWhere('referencia', 'on');
+        })
+        ->orderBy('created_at')
+        ->get();
+
+
+    //Para mostrar los datos del indicador
+    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'asc')->get();
+
+
+
+    $promedios = IndicadorLleno::select(
+        DB::raw('YEAR(fecha_periodo) as anio'),
+        DB::raw('AVG(informacion_campo) as promedio')
+    )
+    ->where('final', 'on')
+    ->where('id_indicador', $indicador->id)
+    ->groupBy(DB::raw('YEAR(fecha_periodo)'))
+    ->orderBy('anio')
+    ->get();
+
+
+
+    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios')); 
+
+}
+
+
+
+
+
+
 }

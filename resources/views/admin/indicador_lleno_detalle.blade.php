@@ -67,7 +67,86 @@
         </div>
     </div>
     @include('admin.assets.nav')
+
+
+
+
+<div class="row">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body py-3 px-4">
+
+            <form action="{{route('indicador.lleno.show.admin', $indicador->id)}}" method="GET">
+                <div class="d-flex flex-wrap align-items-end gap-3">
+
+                    <!-- Fecha inicio -->
+                    <div>
+                        <label class="form-label small text-muted fw-semibold mb-1">Desde</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-0">
+                                <i class="fa-solid fa-calendar-days text-primary"></i>
+                            </span>
+                            <input type="date"
+                                name="fecha_inicio"
+                                value="{{ request('fecha_inicio') ?? now()->format('Y-m-d') }}"
+                                class="form-control border-0 bg-light datepicker"
+                                onchange="this.form.submit()">
+                        </div>
+                    </div>
+
+                    <!-- Fecha fin -->
+                    <div>
+                        <label class="form-label small text-muted fw-semibold mb-1">Hasta</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-0">
+                                <i class="fa-solid fa-calendar-days text-danger"></i>
+                            </span>
+                            <input type="date"
+                                name="fecha_fin"
+                                value="{{ request('fecha_fin') ?? now()->format('Y-m-d') }}"
+                                class="form-control border-0 bg-light datepicker"
+                                onchange="this.form.submit()">
+                        </div>
+                    </div>
+
+                    <!-- Botón gráfica -->
+                    <div class="ms-auto">
+                        <button type="button" class="btn btn-info btn-sm px-4 rounded-pill shadow-sm text-white" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
+                            <i class="fa-solid fa-chart-line me-2"></i>
+                            Ver detalles y grafica
+                        </button>
+                        <a href="{{ route('analizar.indicador', $indicador->id) }}" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm text-white"  >
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            Analizar Datos
+                        </a>                        
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
 </div>
+
+
+</div>
+
+
+
+
+
+
+<!-- BOTONES FLOTANTES -->
+<div class="scroll-buttons">
+    <button id="btnUp" class="btn btn-primary  shadow">
+        <i class="fa-solid fa-arrow-up pl-3"></i>
+    </button>
+
+    <button id="btnDown" class="btn btn-primary  shadow mt-2">
+        <i class="fa-solid fa-arrow-down pl-3"></i>
+    </button>
+</div>
+
+
+
 
 
 
@@ -125,90 +204,8 @@
 @endif
 
 
-<div class="container-fluid">
-
-        {{-- <div class="card border-0 shadow-sm mb-2 mt-3">
-            <div class="card-body">
-                <div class="d-flex align-items-center justify-content-between flex-wrap">
-                    <div>
-                        <h2 class="mb-1 fw-bold">
-                            <i class="fa-regular fa-simple-chart text-primary me-2"></i>
-                            Historico del llenado del indicador 
-                        </h2>
-                    </div>
-
-                </div>
-            </div>
-        </div> --}}
-
-        <div class="card border-0 shadow-sm mt-1 m-o w-100 ">
-
-
-
-<div class="card border-0 shadow-sm rounded-4">
-    <div class="card-body py-3 px-4">
-
-        <form action="{{route('indicador.lleno.show.admin', $indicador->id)}}" method="GET">
-            <div class="d-flex flex-wrap align-items-end gap-3">
-
-                <!-- Fecha inicio -->
-                <div>
-                    <label class="form-label small text-muted fw-semibold mb-1">Desde</label>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-light border-0">
-                            <i class="fa-solid fa-calendar-days text-primary"></i>
-                        </span>
-                        <input type="date"
-                            name="fecha_inicio"
-                            value="{{ request('fecha_inicio') ?? now()->format('Y-m-d') }}"
-                            class="form-control border-0 bg-light datepicker"
-                            onchange="this.form.submit()">
-                    </div>
-                </div>
-
-                <!-- Fecha fin -->
-                <div>
-                    <label class="form-label small text-muted fw-semibold mb-1">Hasta</label>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-light border-0">
-                            <i class="fa-solid fa-calendar-days text-danger"></i>
-                        </span>
-                        <input type="date"
-                            name="fecha_fin"
-                            value="{{ request('fecha_fin') ?? now()->format('Y-m-d') }}"
-                            class="form-control border-0 bg-light datepicker"
-                            onchange="this.form.submit()">
-                    </div>
-                </div>
-
-                <!-- Botón gráfica -->
-                <div class="ms-auto">
-                    <button type="button"
-                        class="btn btn-info btn-sm px-4 rounded-pill shadow-sm text-white"
-                        data-mdb-ripple-init
-                        data-mdb-modal-init
-                        data-mdb-target="#grafico_indicador">
-                        <i class="fa-solid fa-chart-line me-2"></i>
-                        Ver detalles y grafica
-                    </button>
-                </div>
-
-            </div>
-        </form>
-
-    </div>
-</div>
-                    
-
-</div>
-
-</div>
-
-
-
-
 <div class=" row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-1">
-<div  class="col-12 mx-2 px-5 py-3 pb-5">
+<div  class="col-12 mx-2 px-5 py-3 pb-5 ">
             
 <div class="row ">
 
@@ -231,7 +228,7 @@
 @endphp
 
 
-<div class="col-12 mb-3 mt-1">
+<div class="col-12 mb-3 mt-1 item-scroll">
     <div class="card shadow-sm border-0">
 
         <!-- HEADER -->
@@ -243,28 +240,6 @@
         </div>
 
         <div class="card-body">
-
-            <!-- METAS -->
-            <div class="d-flex justify-content-center gap-3 flex-wrap mb-3">
-
-                @if ($indicador->variacion == "on")
-                    <span class="badge bg-success-subtle text-success p-2">
-                        Variación: {{ $meta_minima }}
-                    </span>
-                    <span class="badge bg-danger-subtle text-danger p-2">
-                        Meta: {{ $meta_maxima }}
-                    </span>
-                @else
-                    <span class="badge bg-danger-subtle text-danger p-2">
-                        Mínima: {{ $meta_minima }}
-                    </span>
-                    <span class="badge bg-success-subtle text-success p-2">
-                        Máxima: {{ $meta_maxima }}
-                    </span>
-                @endif
-
-            </div>
-
             <!-- KPI PRINCIPALES -->
             <div class="row justify-content-center">
 
@@ -282,13 +257,13 @@
                         if($item->informacion_campo <= $meta_maxima){
                         
                             $semaforizacion = 'text-success';
-                            $icono = '<i class="fa-solid fa-circle-check text-success"></i>';
+                            $icono = '<i class="fa-solid fa-2x fa-circle-check text-success"></i>';
                         
                         }
                         else{ 
 
                             $semaforizacion = 'text-danger';
-                            $icono = '<i class="fa-solid text-danger fa-triangle-exclamation"></i>';
+                            $icono = '<i class="fa-solid fa-2x text-danger fa-triangle-exclamation"></i>';
                         
                             }
                     
@@ -299,14 +274,14 @@
 
 
 
-                        if($item->informacion_campo <= $meta_maxima){
+                        if($item->informacion_campo <= $meta_minima){
                             $semaforizacion = 'text-danger';
-                            $icono = '<i class="fa-solid text-danger fa-triangle-exclamation"></i>';             
+                            $icono = '<i class="fa-solid fa-2x text-danger fa-triangle-exclamation"></i>';             
                         }
 
                         else{ 
                             $semaforizacion = 'text-success';
-                            $icono = '<i class="fa-solid fa-circle-check text-success"></i>';
+                            $icono = '<i class="fa-solid fa-2x fa-circle-check text-success"></i>';
                         }
                     
                     }
@@ -340,7 +315,7 @@
 
                                     <h4 class="text-dark">{{ $item->nombre_campo }}</h4>
 
-                                    <h2 class="fw-bold">
+                                    <h2 class="fw-bold format-number">
 
                                         @if($indicador->unidad_medida === 'pesos')
                                             ${{ round($item->informacion_campo,2) }}
@@ -355,6 +330,26 @@
                                         @endif
 
                                     </h2>
+
+                                    <!-- METAS -->
+                                    <div class="d-flex justify-content-center flex-wrap gap-3">
+
+                                        @if ($indicador->tipo_indicador == "riesgo")
+                                            <span class="badge bg-success-subtle text-success p-2">
+                                                Limite: {{ $meta_maxima }}
+                                            </span>
+                                        @endif
+
+                                        @if ($indicador->tipo_indicador == "normal")
+                                            <span class="badge bg-danger-subtle text-danger p-2">
+                                                Aceptable: {{ $meta_minima }}
+                                            </span>
+                                            <span class="badge bg-success-subtle text-success p-2">
+                                                Esperada: {{ $meta_maxima }}
+                                            </span>
+                                        @endif
+                                    </div>                                    
+
 
                                 </div>
                             </div>
@@ -375,7 +370,7 @@
                         <div class="col-12 col-md-3 mb-1">
                             <div class="border p-1  h-100 h6 p-3">
                                 <small class=" h5">{{ $item->nombre_campo }}</small>
-                                <div class="fw-bold  h3 mt-1">
+                                <div class="fw-bold  h3 mt-1 format-number">
                                     {{ $item->informacion_campo }}
                                 </div>
                             </div>
@@ -787,17 +782,18 @@
 
                         </div>
 
-                        <div class="row g-3 my-3 justify-content-start">
+                        <div class="row g-3 my-1 justify-content-start">
                             
                             @forelse ($info_meses as $info_mes)
 
-                                <div class="col-2 {{ ($loop->last ? 'bg-light border border-3' : '') }}  text-center border-bottom mb-1">
+                                <div class="col-auto shadow-sm mx-1 text-center border-bottom mb-1 p-2">
                                     <span class="fw-bold">
-                                        <i class="fa fa-calendar"></i>
+                                        <i class="fa {{ ($loop->last ? 'fa-location-dot text-primary' : 'fa-calendar') }} "></i>
                                         {{ Carbon::parse($info_mes->fecha_periodo)->translatedFormat('F Y') }} 
                                     </span>
                                     
                                     <br>
+                                    <i class="fa fa-exclamation-circle text-danger"></i>
                                     <span class="h5">
                                         @if($indicador->unidad_medida === 'pesos')
                                             ${{ number_format($info_mes->informacion_campo, 2) }}
@@ -853,26 +849,28 @@
                                     
                                 </h5> 
                             </div>
-                        @elseif($indicador->tipo_indicador === "normal")
-                            <div class="col-12 text-center text-info">
+                        @endif
+                        @if($indicador->tipo_indicador === "normal")
+                            <div class="col-12 text-center">
                                 <h5>
-                                    <i class="fa fa-circle-exclamation"></i>
-                                    Minimo:                                         @if($indicador->unidad_medida === 'pesos')
-                                            ${{ $indicador->meta_esperada }}
+                                    <i class="fa fa-circle-exclamation text-primary"></i>
+                                    Minimo Esperado:
+                                        @if($indicador->unidad_medida === 'pesos')
+                                            ${{ $indicador->meta_minima }}
 
                                         @elseif($indicador->unidad_medida === 'porcentaje')
-                                            {{ $indicador->meta_esperada }}%
+                                            {{ $indicador->meta_minima }}%
 
                                         @elseif($indicador->unidad_medida === 'dias')
-                                           {{ $indicador->meta_esperada }} Días
+                                           {{ $indicador->meta_minima }} Días
 
                                         @elseif($indicador->unidad_medida === 'toneladas')
-                                            {{ $indicador->meta_esperada }} Ton.
+                                            {{ $indicador->meta_minima }} Ton.
 
                                         @else
-                                            {{ $indicador->meta_esperada }}
+                                            {{ $indicador->meta_minima }}
                                         @endif  - 
-                                    
+                                    Meta
                                         @if($indicador->unidad_medida === 'pesos')
                                             ${{ $indicador->meta_esperada }}
 
@@ -1431,7 +1429,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                             const total = context.chart.data.labels.length;
 
-                            let size = 20;
+                            let size = 15;
 
                             if (total > 6) size = 15;
                             if (total > 10) size = 10;
@@ -1491,6 +1489,67 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const items = document.querySelectorAll('.item-scroll');
+    let currentIndex = 0;
+
+    function scrollToItem(index) {
+        if (index >= 0 && index < items.length) {
+
+            const offset = 200;
+
+            const elementPosition = items[index].getBoundingClientRect().top + window.scrollY;
+
+            window.scrollTo({
+                top: elementPosition - offset,
+                behavior: 'smooth'
+            });
+
+            currentIndex = index;
+        }
+    }
+
+    document.getElementById('btnDown').addEventListener('click', function () {
+        if (currentIndex < items.length - 1) {
+            scrollToItem(currentIndex + 1);
+        }
+    });
+
+    document.getElementById('btnUp').addEventListener('click', function () {
+        if (currentIndex > 0) {
+            scrollToItem(currentIndex - 1);
+        }
+    });
+
+    // 👇 DETECTAR SCROLL DEL USUARIO (la magia)
+    window.addEventListener('scroll', () => {
+
+        let closestIndex = 0;
+        let closestDistance = Infinity;
+
+        items.forEach((item, index) => {
+            const rect = item.getBoundingClientRect();
+
+            const distance = Math.abs(rect.top - 120); // offset visual
+
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestIndex = index;
+            }
+        });
+
+        currentIndex = closestIndex;
+    });
+
+});
+</script>
 
 
 

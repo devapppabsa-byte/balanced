@@ -319,3 +319,11 @@ Route::delete('perfil_usuario/indicador/eliminar_info/{id}', [indicadorControlle
 Route::get('perfil_usuario/encuestas_clientes_user', [encuestaController::class, 'ver_encuestas_user'])->name('ver.encuestas.user')->middleware('auth');
 Route::get('perfil_usuario/encuestas_clientes_user/contestar_encuesta/{encuesta}', [encuestaController::class, 'encuesta_contestar_user'])->name('encuesta.contestar.user')->middleware('auth');
 Route::post('perfil_usuario/encuestas_clientes_user/contestando/{encuesta}', [clienteController::class, 'contestando_encuesta_user'] )->name('contestando.encuesta.user')->middleware('auth');
+
+
+
+
+
+
+//escudriñando la informacion que se da en el indicador
+Route::get('perfil_admin/lista_indicadores/escudriñando_indicador/{indicador}', [indicadorController::class, 'analizar_indicador'])->name('analizar.indicador');
