@@ -1352,6 +1352,10 @@ public function indicador_lleno_show_admin(Indicador $indicador){
     //Para mostrar los datos del indicador
      $datos = IndicadorLleno::where('id_indicador', $indicador->id)->whereBetween('fecha_periodo', [$inicio, $fin])->get();
 
+     $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'asc')->get();
+
+
+
     $promedios = IndicadorLleno::select(
         DB::raw('YEAR(fecha_periodo) as anio'),
         DB::raw('AVG(informacion_campo) as promedio')
@@ -1374,7 +1378,7 @@ public function indicador_lleno_show_admin(Indicador $indicador){
 
     
 
-    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos', 'indicador', 'tipo_indicador', 'promedios'));
+    return view('admin.indicador_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos', 'indicador', 'tipo_indicador', 'promedios', 'info_meses'));
 
 }
 

@@ -49,9 +49,9 @@
     <div class="row justify-content-center">
 
         <!-- RESPUESTAS -->
-        <div class="col-12 col-md-10 col-lg-9 mb-4">
+        <div class="col-12 col-md-10 col-lg-10 mb-4">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white text-center">
+                <div class="card-header bg-primary text-white text-center py-4">
                     <h4 class="mb-0">
                         Respuestas de <span class="fw-bold">{{ $cliente->nombre }}</span>
                     </h4>
@@ -60,7 +60,7 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light border-bottom">
+                            <thead class="table-light border-bottom h5">
                                 <tr>
                                     <th style="width:70%">Pregunta</th>
                                     <th class="text-center">Calificación</th>
@@ -70,6 +70,7 @@
                             <tbody>
                                 @forelse ($preguntas as $pregunta)
                                     <tr>
+                                        
                                         <td class="fw-semibold">
                                             {{ $pregunta->pregunta }}
                                         </td>
@@ -77,18 +78,25 @@
                                         @foreach ($pregunta->respuestas as $respuesta)
                                             <td class="text-center">
                                                 @if ($pregunta->cuantificable === 1)
-                                                    <span class="badge bg-success fs-6">
+
+                                                    <span class="badge  {{ $respuesta->respuesta <= 7 ? 'bg-danger' : 'bg-success' }} fs-6">
                                                         {{ $respuesta->respuesta }} pts
                                                     </span>
+
                                                     <input type="hidden"
                                                            value="{{ $respuesta->respuesta }}"
                                                            class="sumar">
-                                                @else
-                                                    <span class="text-muted">
-                                                        {{ $respuesta->respuesta }}
-                                                    </span>
                                                 @endif
+                                                @if ($pregunta->cuantificable === 0)
+                                                    <span class="text-dark fw-bold bg-light p-2">
+                                                    {{ $respuesta->respuesta }} 
+                                                    </span>
+                                                    
+                                                @endif
+                                           
                                             </td>
+
+                                            
                                         @endforeach
                                     </tr>
                                 @empty

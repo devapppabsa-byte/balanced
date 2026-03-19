@@ -257,7 +257,6 @@ public function show_respuestas(Cliente $cliente, Encuesta $encuesta){
                 $q->where('id_cliente', $clienteId);
             }])
             ->where('id_encuesta', $encuestaId)
-            ->where('cuantificable', 1)
             ->get();
 
 
