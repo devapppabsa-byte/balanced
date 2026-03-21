@@ -31,7 +31,7 @@
     }
 </style>
     
-<div class="container-fluid">
+<div class="container-fluid sticky-top">
     <div class="row bg-primary  d-flex align-items-center">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  pt-2 text-white">
             <h3 class="mt-1 mb-0 league-spartan">Perspectivas</h3>

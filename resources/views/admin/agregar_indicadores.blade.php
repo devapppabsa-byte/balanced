@@ -5,7 +5,7 @@
 
 @section('contenido')
 
-<div class="container-fluid">
+<div class="container-fluid sticky-top">
     <div class="row bg-primary  d-flex align-items-center">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  pt-2 text-white">
             <h3 class="mt-1 mb-0 league-spartan">{{$departamento->nombre}}</h3>
@@ -342,7 +342,7 @@
                                                 <td>
                                                     <small class="text-muted text-capitalize">{{ $indicador->tipo_indicador }}</small>
                                                 </td>
-                                                
+
                                                 <td>
                                                     <small class="text-muted text-capitalize">
                                                         {{ $indicador->unidad_medida }}
@@ -994,7 +994,7 @@
                                         $ Pesos
                                     </option>
                                     <option value="unidad" 
-                                        {{ old('unidad_medida', $indicador->unidad_medida) == 'pesos' ? 'selected' : '' }}>
+                                        {{ old('unidad_medida', $indicador->unidad_medida) == 'unidad' ? 'selected' : '' }}>
                                         Unidad
                                     </option>
     

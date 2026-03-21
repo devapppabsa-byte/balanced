@@ -5,7 +5,7 @@
     use Carbon\Carbon;
 @endphp
 
-<div class="container-fluid">
+<div class="container-fluid sticky-top">
     <div class="row bg-primary  d-flex align-items-center">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  pt-2 text-white">
             <h3 class="mt-1 league-spartan">Cargar Información Externa</h3>

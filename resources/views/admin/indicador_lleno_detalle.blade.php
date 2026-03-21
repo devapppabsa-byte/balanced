@@ -793,7 +793,7 @@
                                     </span>
                                     
                                     <br>
-                                    <i class="fa fa-exclamation-circle text-danger"></i>
+
                                     <span class="h5">
                                         @if($indicador->unidad_medida === 'pesos')
                                             ${{ number_format($info_mes->informacion_campo, 2) }}

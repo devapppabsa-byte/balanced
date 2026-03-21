@@ -282,14 +282,21 @@ use Carbon\Carbon;
                             <div class="col-6">
                                 <span class="badge bg-success-subtle text-success p-2 w-100">
                                     <i class="fa-solid fa-arrow-up"></i>
-                                    Maximo:  {{ $meta_minima }}
+                                    Minimo:  {{ $meta_minima }}
                                 </span>
                             </div>
                             <div class="col-6">
-                                <span class="badge bg-danger-subtle text-danger p-2 w-100">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
-                                    Exceso:  {{ $meta_maxima }}
-                                </span>
+                                @if ($meta_maxima == 0)
+                                    <span class="badge bg-primary-subtle text-primary p-2 w-100">
+                                        <i class="fa-solid fa-exclamation-circle"></i>
+                                        Meta:  {{ $meta_maxima }}
+                                    </span>
+                                        @else    
+                                    <span class="badge bg-danger-subtle text-danger p-2 w-100">
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                        Maximo:  {{ $meta_maxima }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
                     @endif

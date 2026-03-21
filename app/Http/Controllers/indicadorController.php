@@ -1994,12 +1994,12 @@ public function analizar_indicador(Indicador $indicador){
             $q->where('final', 'on')
             ->orWhere('referencia', 'on');
         })
-        ->orderBy('created_at')
+        ->orderBy('fecha_periodo', 'desc')
         ->get();
 
 
     //Para mostrar los datos del indicador
-    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'asc')->get();
+    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
 
 
 
@@ -2015,12 +2015,69 @@ public function analizar_indicador(Indicador $indicador){
 
 
 
-    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios')); 
+    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'years', 'meses')); 
 
 }
 
 
+public function estacionalidad_show(Indicador $indicador){
 
+    
+    // $registros = IndicadorLleno::whereIn(\DB::raw('YEAR(fecha_periodo)'), $year)
+    //     ->whereIn(\DB::raw('MONTH(fecha_periodo)'), $mes)
+    //     ->where('id_indicador', $indicador->id)
+    //     ->where('final', 'on')
+    //     ->get();
+
+
+    $registros = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->where('final', 'on')
+        ->get();
+
+
+
+    $agrupados = $registros
+    ->groupBy(function ($item) {
+        return Carbon::parse($item->fecha_periodo)->month;
+    })
+    ->map(function ($grupo) {
+    
+    $grupo->map(function ($item) {
+            $fecha = Carbon::parse($item->fecha_periodo);
+
+            return [
+                'label' => $fecha->isoFormat('MMMM YYYY'), // marzo 2025
+                'year' => $fecha->year,
+                'mes' => $fecha->month,
+                'valor' => $item->informacion_campo,
+            ];
+        });
+    })
+    ->sortKeys();
+
+
+
+
+
+    //esto es para los controles de mes y año de la restacionalidad
+    $years = IndicadorLleno::selectRaw('YEAR(fecha_periodo) as year')
+    ->distinct()
+    ->orderBy('year', 'desc')
+    ->where('id_indicador', $indicador->id)
+    ->pluck('year');
+
+    $meses = IndicadorLleno::selectRaw('MONTH(fecha_periodo) as mes')
+    ->distinct()
+    ->orderBy('mes', 'asc') 
+    ->where('id_indicador', $indicador->id)
+    ->pluck('mes');
+
+
+
+
+    return view('admin.estacionalidad', compact('agrupados', 'indicador','years', 'meses'));
+
+}
 
 
 

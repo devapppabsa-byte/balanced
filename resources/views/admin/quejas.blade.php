@@ -2,7 +2,7 @@
 @section('title', 'Quejas presentada')
 
 @section('contenido')
-<div class="container-fluid">
+<div class="container-fluid sticky-top">
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10 pt-2">
