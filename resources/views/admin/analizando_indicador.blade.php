@@ -104,76 +104,206 @@
 
 <div class="container-fluid">
 
-    <div class="row justify-content-center px-2">
-
-
-        <div class="col-12 col-sm-12 col-md-7 col-lg-7 ">
+    @if (isset($resultado['tendencia']))
 
 
 
-            <div class="row mt-3  me-1">
-                <div class="col-12">
-                    <div class="card shadow-sm p-3 mb-3">
+        <div class="row mt-2 mx-1">
 
-                        <h5 class="mb-3">{{ $indicador->nombre }}</h5>
+            {{-- TENDENCIA --}}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 bg-white p-3">
+                <div class="p-2 border rounded h-100">
 
-                        {{--  TENDENCIA --}}
-                        <p class="mb-1">
-                            <strong>Tendencia:</strong>
-                        <span class="badge bg-info">{{ $resultado['tendencia'] }}</span>
-                        </p>
-                        <small class="text-muted d-block mb-2">
-                            Indica si el indicador va mejorando, empeorando o se mantiene sin cambios claros en el tiempo.
-                        </small>
-
-                        {{--  CAMBIO --}}
-                        <p class="mb-1">
-                            <strong>Cambio:</strong>
-                            {{ number_format($resultado['cambio'], 2) }}
-                            ({{ number_format($resultado['cambio_porcentual'], 2) }}%)
-                        </p>
-                        <small class="text-muted d-block mb-2">
-                            Diferencia entre el valor inicial y el actual. Muestra qué tanto ha mejorado o empeorado en el periodo analizado.
-                        </small>
-
-                        {{--  CUMPLIMIENTO --}}
-                        <p class="mb-1">
-                            <strong>Estado:</strong>
-                        <span class="badge bg-success">{{ $resultado['cumplimiento'] }}</span>
-                        </p>
-                        <small class="text-muted d-block mb-2">
-                            Indica si el valor actual cumple con la meta establecida.
-                        
-                        </small>
-
-                        {{--  ESTABILIDAD --}}
-                        <p class="mb-1">
-                            <strong>Estabilidad:</strong>
-                            <span class="badge bg-warning text-dark">{{ $resultado['estabilidad'] }}</span>
-                        </p>
-                        <small class="text-muted d-block mb-2">
-                            Muestra qué tan constante es el indicador. Si es volátil, significa que sube y baja mucho; si es estable, su comportamiento es consistente.
-                        </small>
-
-                        {{--  INTERPRETACIÓN --}}
-                        <p class="mb-1">
-                            <strong>Interpretación de tendencia:</strong>
-                        </p>
-                        <small class="text-muted d-block mb-2">
-                            Se compara el cambio del indicador contra su variación normal. 
-                            Si el cambio supera lo habitual, se considera una tendencia real; de lo contrario, puede ser solo variación natural.
-                        </small>
-
-                        {{--  MENSAJE FINAL --}}
-                        <div class="alert alert-secondary mt-2 mb-0">
-                            {{ $resultado['mensaje'] }}
-                        </div>                      
-
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Tendencia</strong>
+                        <button class="btn btn-sm btn-light p-1" data-bs-toggle="modal" data-bs-target="#modalTendencia">
+                            <i class="fa fa-circle-info"></i>
+                        </button>
                     </div>
+
+                    <div class="mt-2">
+                        <span class="badge bg-info me-1">{{ $resultado['tendencia'] }}</span>
+                        <span class="badge bg-dark">{{ $resultado['fuerza_tendencia'] }}</span>
+                    </div>
+
+                    <small class="text-muted d-block mt-2">
+                        Indica la dirección del indicador y qué tan confiable es la tendencia según su comportamiento.
+                    </small>
+
+                </div>
+            </div>
+
+            {{-- CAMBIO --}}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 bg-white p-3">
+                <div class="p-2 border rounded h-100">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Cambio</strong>
+                        <button class="btn btn-sm btn-light p-1" data-bs-toggle="modal" data-bs-target="#modalCambio">
+                            <i class="fa fa-circle-info"></i>
+                        </button>
+                    </div>
+
+                    <div class="mt-2 fw-bold">
+                        {{ number_format($resultado['cambio'], 2) }}
+                        <span class="text-muted">
+                            ({{ number_format($resultado['cambio_porcentual'], 2) }}%)
+                        </span>
+                    </div>
+
+                    <small class="text-muted d-block mt-2">
+                        Diferencia entre el valor inicial y el actual en el periodo analizado.
+                    </small>
+
+                </div>
+            </div>
+
+            {{-- ESTADO --}}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 bg-white p-3">
+                <div class="p-2 border rounded h-100">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Estado actual</strong>
+                        <button class="btn btn-sm btn-light p-1" data-bs-toggle="modal" data-bs-target="#modalEstado">
+                            <i class="fa fa-circle-info"></i>
+                        </button>
+                    </div>
+
+                    <div class="mt-2">
+                        <span class="badge {{ $resultado['cumplimiento'] == 'en meta' ? 'bg-success' : 'bg-danger' }}">
+                            {{ $resultado['cumplimiento'] }}
+                        </span>
+                    </div>
+
+                    <small class="text-muted d-block mt-2">
+                        Evalúa si el valor más reciente cumple con la meta establecida.
+                    </small>
+
+                </div>
+            </div>
+
+            {{-- HISTORICO --}}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 bg-white p-3">
+                <div class="p-2 border rounded h-100">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Histórico</strong>
+                        <button class="btn btn-sm btn-light p-1" data-bs-toggle="modal" data-bs-target="#modalHistorico">
+                            <i class="fa fa-circle-info"></i>
+                        </button>
+                    </div>
+
+                    <div class="mt-2">
+                        <span class="badge bg-secondary">{{ $resultado['estado_historico'] }}</span>
+                        <span class="text-muted ms-1">
+                            ({{ number_format($resultado['porcentaje_cumplimiento'], 0) }}%)
+                        </span>
+                    </div>
+
+                    <small class="text-muted d-block mt-2">
+                        Muestra qué tan frecuentemente el indicador ha cumplido la meta en el tiempo.
+                    </small>
+
+                </div>
+            </div>
+
+            {{-- ESTABILIDAD --}}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 bg-white p-3">
+                <div class="p-2 border rounded h-100">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Estabilidad</strong>
+                        <button class="btn btn-sm btn-light p-1" data-bs-toggle="modal" data-bs-target="#modalEstabilidad">
+                            <i class="fa fa-circle-info"></i>
+                        </button>
+                    </div>
+
+                    <div class="mt-2">
+                        <span class="badge bg-warning text-dark">{{ $resultado['estabilidad'] }}</span>
+                    </div>
+
+                    <small class="text-muted d-block mt-2">
+                        Indica qué tanto varía el indicador; valores altos implican mayor fluctuación.
+                    </small>
+
                 </div>
             </div>
 
 
+            {{-- PROYECCION --}}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 bg-white p-3">
+                <div class="p-2 border rounded h-100">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Proyección siguiente</strong>
+                        <button class="btn btn-sm btn-light p-1" data-bs-toggle="modal" data-bs-target="#modalProyeccion">
+                            <i class="fa fa-circle-info"></i>
+                        </button>
+                    </div>
+
+                    <div class="mt-2 fw-bold">
+                        @if($indicador->unidad_medida === 'pesos')
+                            ${{ number_format($promedio->promedio, 2) }}
+
+                        @elseif($indicador->unidad_medida === 'porcentaje')
+                            {{ number_format($resultado['proyeccion_siguiente'], 2) }}%
+
+                        @elseif($indicador->unidad_medida === 'dias')
+                            {{ number_format($resultado['proyeccion_siguiente'], 2) }} Días
+
+                        @elseif($indicador->unidad_medida === 'toneladas')
+                            {{ number_format($resultado['proyeccion_siguiente'], 2) }} Ton.
+
+                        @else
+                            {{ number_format($resultado['proyeccion_siguiente'], 2) }}
+                        @endif
+
+                    </div>
+
+                    <small class="text-muted d-block mt-2">
+                        Estimación del próximo valor basada en la tendencia actual del indicador.
+                    </small>
+
+                </div>
+            </div>
+
+        </div>
+    
+
+            @if($resultado['mensaje'])
+                <div class="row justify-content-center border me-1">
+                    <div class="col-12 bg-white mt-3 p-3 ">
+                        <div class="row g-2">
+                            <div class="col-12 my-2">
+                                <h5 class="fw-bold">
+                                    <i class="fa-regular fa-message"></i>
+                                    Mensaje:
+                                </h5>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card-body text-center text-white ">
+                                    @if(($resultado['mensaje']))
+                                    <div class="alert alert-info py-2 border-dashed border-info h-3">
+                                        <i class="fa-solid fa-comment-dots"></i>
+                                           <b> {{ $resultado['mensaje'] }} </b> <br> en el periodo seleccionado.
+                                    </div>
+                                    @endif                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            @endif
+
+
+
+
+    <div class="row justify-content-center px-2">
+
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-7 ">
 
 
             <div class="row justify-content-center border me-1">
@@ -238,11 +368,82 @@
                 </div>
             </div>
 
+            <div class="row justify-content-center border me-1">
+                <div class="col-12 bg-white mt-3 p-3 shadow-sm">
+                    <div class="row g-2">
+                        <div class="col-12 my-2">
+                            <h5 class="fw-bold">
+                                <i class="fa-solid fa-up-down"></i>
+                                Mejor y Peor mes:
+                            </h5>
+                        </div>
+
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                            <div class="card bg-success">
+                                <div class="card-body text-center text-white">
+                                    <span class="h4 fw-bold">
+                                        <i class="fa fa-calendar"></i>
+                                        {{ $mejor_mes["mes"] }}  {{ $mejor_mes["anio"] }}
+                                    </span> <br>
+                                    <span class="h3 fw-bold">
+                                        @if($indicador->unidad_medida === 'pesos')
+                                            ${{ number_format($mejor_mes["valor"], 2) }}
+
+                                        @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ number_format($mejor_mes["valor"], 2) }}%
+
+                                        @elseif($indicador->unidad_medida === 'dias')
+                                            {{ number_format($mejor_mes["valor"], 2) }} Días
+
+                                        @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ number_format($mejor_mes["valor"], 2) }} Ton.
+
+                                        @else
+                                            {{ number_format($mejor_mes["valor"], 2) }}
+                                        @endif
+                                    </span>
+                                </div>
+                
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                            <div class="card bg-danger">
+                                <div class="card-body text-center text-white">
+                                    <span class="h4 fw-bold">
+                                        <i class="fa fa-calendar"></i>
+                                        {{ $peor_mes["mes"] }}  {{ $peor_mes["anio"] }}
+                                    </span> <br>
+                                    <span class="h3 fw-bold">
+                                        @if($indicador->unidad_medida === 'pesos')
+                                            ${{ number_format($peor_mes["valor"], 2) }}
+
+                                        @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ number_format($peor_mes["valor"], 2) }}%
+
+                                        @elseif($indicador->unidad_medida === 'dias')
+                                            {{ number_format($peor_mes["valor"], 2) }} Días
+
+                                        @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ number_format($peor_mes["valor"], 2) }} Ton.
+
+                                        @else
+                                            {{ number_format($peor_mes["valor"], 2) }}
+                                        @endif
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
 
 
             <div class="row  mt-1 mb-1 me-1">
                 <div class="col-12 bg-white mt-3 p-3 shadow-sm">
-                    <div class="row justify-content-center">
+                    <div class="row">
                         <div class="col-12 my-2">
                             <h5 class="fw-bold">
                                 <i class="fa fa-list"></i>
@@ -252,7 +453,7 @@
 
                     
                     @forelse ($info_meses as $info_mes)
-                    <div class="col-12 col-sm-4 col-md-4 col-lg-3 shadow-sm mx-1 shadow-bottom border border-4 mb-1 p-2 bg-white ">
+                    <div class="col-12 col-sm-5 col-md-5 col-lg-3 shadow-sm mx-1  mb-1 p-2 bg-white ">
                         <span class="fw-bold">
                             <i class="fa {{ ($loop->first ? 'fa-location-dot text-primary' : 'fa-calendar') }} "></i>
                             {{ Carbon::parse($info_mes->fecha_periodo)->translatedFormat('F Y') }} 
@@ -350,7 +551,7 @@
 
                                         @if (!is_null($prev))
 
-                                            <div class="col-12 col-sm-12 col-md-5 col-lg-4 mb-4">
+                                            <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-4">
                                                 <div class="card shadow-3 border-0 h-100">
 
                                                     <!-- HEADER -->
@@ -456,15 +657,27 @@
                         </div>
                     </div>
              </div>
+        </div>
 
+        @else
 
-
-
-
+        <div class="row justify-content-center">
+            <div class="col-10 bg-white p-4 mt-4">
+                <h1 class="text-center my-4">
+                    <i class="fa fa-exclamation-circle text-danger"></i>
+                    No hay suficientes datos para analizar
+                </h1>
+            </div>
         </div>
 
 
-        <div class="col-12 col-sm-12 col-md-5 col-lg-5">
+
+        @endif
+
+
+
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-5">
             <div class="row">
 
                 <div class="col-12 p-1 bg-white mt-3 p-3">
@@ -475,13 +688,13 @@
                 </div>
 
                 <div class="col-12 p-1 bg-white mt-3 p-3">
-                    <h5>Pie</h5>
-                    <canvas id="graficoPie"></canvas>
+                    <h5>Tendencia</h5>
+                    <canvas id="graficoLine"></canvas>
                 </div>
 
                 <div class="col-12 p-1 bg-white mt-3 p-3">
-                    <h5>Tendencia</h5>
-                    <canvas id="graficoLine"></canvas>
+                    <h5>Pie</h5>
+                    <canvas id="graficoPie"></canvas>
                 </div>
 
             </div>

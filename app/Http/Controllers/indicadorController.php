@@ -2045,7 +2045,46 @@ public function analizar_indicador(Indicador $indicador){
         ->sortBy('anio')
         ->values();
 
+
+        //para sacar el mejor y el peor mes
+
+            $registros_mejor_peor_mes = IndicadorLleno::where('id_indicador', $indicador->id)
+                ->where('final', 'on')
+                ->orderBy('fecha_periodo', 'desc')
+                ->whereBetween('fecha_periodo', [$inicio, $fin])
+                ->get();
+
+
+            $historico_mejor_peor_mes = $registros_mejor_peor_mes->map(function ($item) {
+                    return [
+                        'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                        'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                        'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                        'valor' => (float) $item->informacion_campo
+                    ];
+                })
+                ->sortBy('mes_num')
+                ->sortBy('anio')
+                ->values();
+
+            if($indicador->tipo_indicador == "riesgo"){
+
+                 $peor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+                 $mejor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+            }
+
+            if($indicador->tipo_indicador == "normal"){
+
+                $mejor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+                $peor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+
+            }
+
         
+        
+        //para sacar el mejor y el peor mes
+
+
 
         // Agregar comparación
         $historico = $historico->map(function ($item) use ($historico) {
@@ -2070,10 +2109,15 @@ public function analizar_indicador(Indicador $indicador){
         ])->values();
 //Para sacar la estacionalidad
 
+
+
+        //mejor mes y peor mes
+
+
     
 
 
-    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado')); 
+    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes')); 
 
 }
 
@@ -2091,7 +2135,6 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
         ->orderBy('fecha_periodo', 'asc')
         ->get();
 
-    // Se convierten los valores a float
     $valores = $registros->pluck('informacion_campo')
         ->map(fn($v) => (float) $v)
         ->toArray();
@@ -2103,9 +2146,8 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
     }
 
     // =========================
-    // 2. EJE X (TIEMPO)
+    // 2. EJE X
     // =========================
-    // Representa el orden de los datos (meses, periodos, etc.)
     $x = range(1, $n);
 
     $sumX = array_sum($x);
@@ -2120,9 +2162,8 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
     }
 
     // =========================
-    // 3. PENDIENTE (TENDENCIA)
+    // 3. PENDIENTE
     // =========================
-    // Fórmula de regresión lineal
     $m = ($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - pow($sumX, 2));
 
     // =========================
@@ -2131,7 +2172,7 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
     $promedio = $sumY / $n;
 
     // =========================
-    // 5. DESVIACIÓN ESTÁNDAR
+    // 5. DESVIACIÓN
     // =========================
     $suma = 0;
     foreach ($valores as $v) {
@@ -2142,46 +2183,33 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
     $desviacion = sqrt($varianza);
 
     // =========================
-    // 6. UMBRAL DINÁMICO
+    // 6. UMBRAL
     // =========================
-    // Define qué tanto cambio es significativo
     $umbral = $desviacion * 0.5;
 
     // =========================
-    // 7. CLASIFICAR TENDENCIA
+    // 7. TENDENCIA
     // =========================
     if ($tipo == 'normal') {
-        if ($m > $umbral) {
-            $tendencia = 'mejora';
-        } elseif ($m < -$umbral) {
-            $tendencia = 'deterioro';
-        } else {
-            $tendencia = 'estable';
-        }
-    }
-    
-    if($tipo == "riesgo")
-    {
-        if ($m < -$umbral) {
-            $tendencia = 'mejora';
-        } elseif ($m > $umbral) {
-            $tendencia = 'deterioro';
-        } else {
-            $tendencia = 'estable';
-        }
+        if ($m > $umbral) $tendencia = 'mejora';
+        elseif ($m < -$umbral) $tendencia = 'deterioro';
+        else $tendencia = 'estable';
+    } else {
+        if ($m < -$umbral) $tendencia = 'mejora';
+        elseif ($m > $umbral) $tendencia = 'deterioro';
+        else $tendencia = 'estable';
     }
 
-
     // =========================
-    // 8. CAMBIO TOTAL
+    // 8. CAMBIO
     // =========================
-    $inicio = $valores[0];
+    $inicioVal = $valores[0];
     $ultimo = end($valores);
 
-    $cambio = $ultimo - $inicio;
+    $cambio = $ultimo - $inicioVal;
 
-    $cambioPorcentual = ($inicio != 0)
-        ? (($cambio / $inicio) * 100)
+    $cambioPorcentual = ($inicioVal != 0)
+        ? (($cambio / $inicioVal) * 100)
         : 0;
 
     // =========================
@@ -2196,7 +2224,7 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
     }
 
     // =========================
-    // 10. CUMPLIMIENTO DE META
+    // 10. CUMPLIMIENTO ACTUAL
     // =========================
     if ($tipo === 'normal') {
         $cumplimiento = ($ultimo >= $meta) ? 'en meta' : 'fuera de meta';
@@ -2205,7 +2233,48 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
     }
 
     // =========================
-    // 11. FUERZA DE TENDENCIA (R²)
+    // 10.1 CUMPLIMIENTO HISTÓRICO
+    // =========================
+    $cumplen = 0;
+
+    foreach ($valores as $v) {
+        if ($tipo === 'normal') {
+            if ($v >= $meta) $cumplen++;
+        } else {
+            if ($v <= $meta) $cumplen++;
+        }
+    }
+
+    $porcentajeCumplimiento = ($cumplen / $n) * 100;
+
+    if ($porcentajeCumplimiento >= 80) {
+        $estadoHistorico = 'historicamente en meta';
+    } elseif ($porcentajeCumplimiento >= 50) {
+        $estadoHistorico = 'cumplimiento irregular';
+    } else {
+        $estadoHistorico = 'mayormente fuera de meta';
+    }
+
+    // =========================
+    // 10.2 Cambio brusco
+    // =========================
+        $caidaBrusca = false;
+        $subidaBrusca = false;
+
+        if ($n >= 2) {
+            $ultimoCambio = $valores[$n - 1] - $valores[$n - 2];
+
+            if ($ultimoCambio < 0 && abs($ultimoCambio) > (2 * $desviacion)) {
+                $caidaBrusca = true;
+            }
+
+            if ($ultimoCambio > 0 && abs($ultimoCambio) > (2 * $desviacion)) {
+                $subidaBrusca = true;
+            }
+        }
+
+    // =========================
+    // 11. R²
     // =========================
     $mediaX = $sumX / $n;
     $mediaY = $promedio;
@@ -2222,13 +2291,9 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
 
     $r2 = ($ssTot != 0) ? (1 - ($ssRes / $ssTot)) : 0;
 
-    if ($r2 > 0.8) {
-        $fuerza = 'fuerte';
-    } elseif ($r2 > 0.5) {
-        $fuerza = 'media';
-    } else {
-        $fuerza = 'debil';
-    }
+    if ($r2 > 0.8) $fuerza = 'fuerte';
+    elseif ($r2 > 0.5) $fuerza = 'media';
+    else $fuerza = 'debil';
 
     // =========================
     // 12. ANOMALÍAS
@@ -2237,15 +2302,12 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
 
     foreach ($valores as $i => $v) {
         if (abs($v - $promedio) > (2 * $desviacion)) {
-            $anomalias[] = [
-                'indice' => $i,
-                'valor' => $v
-            ];
+            $anomalias[] = ['indice' => $i, 'valor' => $v];
         }
     }
 
     // =========================
-    // 13. VELOCIDAD DE CAMBIO
+    // 13. VELOCIDAD
     // =========================
     $velocidades = [];
 
@@ -2258,9 +2320,10 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
         : 0;
 
     // =========================
-    // 14. DISTANCIA A META
+    // 14. DISTANCIA META
     // =========================
     $meta = (float) $meta;
+
     $distanciaMeta = $ultimo - $meta;
 
     $distanciaPorcentual = ($meta != 0)
@@ -2278,9 +2341,19 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
     $mensajes = [];
 
     if ($tendencia == 'mejora') $mensajes[] = 'Tendencia positiva';
+    if ($tendencia == 'deterioro') $mensajes[] = 'Tendencia negativa';
     if ($fuerza == 'debil') $mensajes[] = 'Comportamiento inestable';
-    if (count($anomalias) > 0) $mensajes[] = 'Hay anomalías';
     if ($cumplimiento == 'fuera de meta') $mensajes[] = 'No cumple meta';
+
+    if ($cumplimiento == 'fuera de meta' && $porcentajeCumplimiento > 70) {
+        $mensajes[] = 'Históricamente cumplía, pero cayó recientemente';
+    }
+
+    if ($caidaBrusca) {
+        $mensajes[] = 'Caída brusca detectada';
+    }
+
+    if (count($anomalias) > 0) $mensajes[] = 'Hay anomalías';
 
     $mensaje = implode(' | ', $mensajes);
 
@@ -2288,6 +2361,7 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
     // RETURN FINAL
     // =========================
     return [
+
         'tendencia' => $tendencia,
         'pendiente' => $m,
         'umbral' => $umbral,
@@ -2300,15 +2374,20 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
         'cumplimiento' => $cumplimiento,
         'mensaje' => $mensaje,
         'ultimo_valor' => $ultimo,
+        'subida_brusca' => $subidaBrusca,
 
-        // 🔥 nuevos
         'fuerza_tendencia' => $fuerza,
         'r2' => $r2,
         'anomalias' => $anomalias,
         'velocidad_promedio' => $velocidadPromedio,
         'distancia_meta' => $distanciaMeta,
         'distancia_meta_porcentual' => $distanciaPorcentual,
-        'proyeccion_siguiente' => $siguiente
+        'proyeccion_siguiente' => $siguiente,
+
+        'estado_historico' => $estadoHistorico,
+        'porcentaje_cumplimiento' => $porcentajeCumplimiento,
+        'caida_brusca' => $caidaBrusca
+    
     ];
 }
 
