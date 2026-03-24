@@ -56,53 +56,48 @@
     </div>
     @include('admin.assets.nav')
 
+    <div class="row">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body py-3 px-4">
 
+                <form action="#" method="GET">
+                    <div class="d-flex flex-wrap align-items-end gap-3">
 
+                        <!-- Fecha inicio -->
+                        <div>
+                            <label class="form-label small text-muted fw-semibold mb-1">Desde</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light border-0">
+                                    <i class="fa-solid fa-calendar-days text-primary"></i>
+                                </span>
+                                <input type="date"
+                                    name="fecha_inicio"
+                                    value="{{ request('fecha_inicio') ?? now()->format('Y-m-d') }}"
+                                    class="form-control border-0 bg-light datepicker"
+                                    onchange="this.form.submit()">
+                            </div>
+                        </div>
 
-<div class="row">
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body py-3 px-4">
-
-            <form action="#" method="GET">
-                <div class="d-flex flex-wrap align-items-end gap-3">
-
-                    <!-- Fecha inicio -->
-                    <div>
-                        <label class="form-label small text-muted fw-semibold mb-1">Desde</label>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-light border-0">
-                                <i class="fa-solid fa-calendar-days text-primary"></i>
-                            </span>
-                            <input type="date"
-                                name="fecha_inicio"
-                                value="{{ request('fecha_inicio') ?? now()->format('Y-m-d') }}"
-                                class="form-control border-0 bg-light datepicker"
-                                onchange="this.form.submit()">
+                        <!-- Fecha fin -->
+                        <div>
+                            <label class="form-label small text-muted fw-semibold mb-1">Hasta</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light border-0">
+                                    <i class="fa-solid fa-calendar-days text-danger"></i>
+                                </span>
+                                <input type="date"
+                                    name="fecha_fin"
+                                    value="{{ request('fecha_fin') ?? now()->format('Y-m-d') }}"
+                                    class="form-control border-0 bg-light datepicker"
+                                    onchange="this.form.submit()">
+                            </div>
                         </div>
                     </div>
+                </form>
 
-                    <!-- Fecha fin -->
-                    <div>
-                        <label class="form-label small text-muted fw-semibold mb-1">Hasta</label>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-light border-0">
-                                <i class="fa-solid fa-calendar-days text-danger"></i>
-                            </span>
-                            <input type="date"
-                                name="fecha_fin"
-                                value="{{ request('fecha_fin') ?? now()->format('Y-m-d') }}"
-                                class="form-control border-0 bg-light datepicker"
-                                onchange="this.form.submit()">
-                        </div>
-                    </div>
-                </div>
-            </form>
-
+            </div>
         </div>
     </div>
-</div>
-
-
 </div>
 
 
@@ -110,7 +105,366 @@
 <div class="container-fluid">
 
     <div class="row justify-content-center px-2">
-        <div class="col-5 ">
+
+
+        <div class="col-12 col-sm-12 col-md-7 col-lg-7 ">
+
+
+
+            <div class="row mt-3  me-1">
+                <div class="col-12">
+                    <div class="card shadow-sm p-3 mb-3">
+
+                        <h5 class="mb-3">{{ $indicador->nombre }}</h5>
+
+                        {{--  TENDENCIA --}}
+                        <p class="mb-1">
+                            <strong>Tendencia:</strong>
+                        <span class="badge bg-info">{{ $resultado['tendencia'] }}</span>
+                        </p>
+                        <small class="text-muted d-block mb-2">
+                            Indica si el indicador va mejorando, empeorando o se mantiene sin cambios claros en el tiempo.
+                        </small>
+
+                        {{--  CAMBIO --}}
+                        <p class="mb-1">
+                            <strong>Cambio:</strong>
+                            {{ number_format($resultado['cambio'], 2) }}
+                            ({{ number_format($resultado['cambio_porcentual'], 2) }}%)
+                        </p>
+                        <small class="text-muted d-block mb-2">
+                            Diferencia entre el valor inicial y el actual. Muestra qué tanto ha mejorado o empeorado en el periodo analizado.
+                        </small>
+
+                        {{--  CUMPLIMIENTO --}}
+                        <p class="mb-1">
+                            <strong>Estado:</strong>
+                        <span class="badge bg-success">{{ $resultado['cumplimiento'] }}</span>
+                        </p>
+                        <small class="text-muted d-block mb-2">
+                            Indica si el valor actual cumple con la meta establecida.
+                        
+                        </small>
+
+                        {{--  ESTABILIDAD --}}
+                        <p class="mb-1">
+                            <strong>Estabilidad:</strong>
+                            <span class="badge bg-warning text-dark">{{ $resultado['estabilidad'] }}</span>
+                        </p>
+                        <small class="text-muted d-block mb-2">
+                            Muestra qué tan constante es el indicador. Si es volátil, significa que sube y baja mucho; si es estable, su comportamiento es consistente.
+                        </small>
+
+                        {{--  INTERPRETACIÓN --}}
+                        <p class="mb-1">
+                            <strong>Interpretación de tendencia:</strong>
+                        </p>
+                        <small class="text-muted d-block mb-2">
+                            Se compara el cambio del indicador contra su variación normal. 
+                            Si el cambio supera lo habitual, se considera una tendencia real; de lo contrario, puede ser solo variación natural.
+                        </small>
+
+                        {{--  MENSAJE FINAL --}}
+                        <div class="alert alert-secondary mt-2 mb-0">
+                            {{ $resultado['mensaje'] }}
+                        </div>                      
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="row justify-content-center border me-1">
+                <div class="col-12 bg-white mt-3 p-3 shadow-sm">
+                    <div class="row">
+                        <div class="col-12 my-2">
+                            <h5 class="fw-bold">
+                                <i class="fa-solid fa-calendar"></i>
+                                Promedios Anuales:
+                            </h5>
+                        </div>
+
+                            @forelse ($promedios as $promedio)
+                                <div class="col-12 col-sm-6 col-md-5 col-lg-4 mt-1">
+                                    <div class="card shadow-sm bg-info text-white border-0 h-100 text-center">
+                                        <div class="card-body  py-3">
+                                            <span class="text-white d-block mb-1">
+                                                <i class="fa-solid fa-calendar-days"></i>                                            
+                                                Promedio Anual
+                                            </span>
+
+                                            <h5 class="fw-bold mb-2">
+                                                @if($indicador->unidad_medida === 'pesos')
+                                                    ${{ number_format($promedio->promedio, 2) }}
+
+                                                @elseif($indicador->unidad_medida === 'porcentaje')
+                                                    {{ round($promedio->promedio, 2) }}%
+
+                                                @elseif($indicador->unidad_medida === 'dias')
+                                                    {{ round($promedio->promedio, 2) }} Días
+
+                                                @elseif($indicador->unidad_medida === 'toneladas')
+                                                    {{ round($promedio->promedio, 2) }} Ton.
+
+                                                @else
+                                                    {{ round($promedio->promedio, 2) }}
+                                                @endif
+
+                                            </h5>
+
+                                            <h5>
+                                                <span class="badge bg-light text-dark badge-lg">
+                                                       Año: {{ $promedio->anio }}                                                 
+                                                </span>                                                 
+                                            </h5>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="col-12 text-center py-4">
+                                    <div class="alert alert-light border">
+                                        <h5 class="mb-0 text-muted">
+                                            <i class="fa fa-exclamation-circle"></i>
+                                            No hay datos que mostrar
+                                        </h5>
+                                    </div>
+                                </div>
+                            @endforelse
+
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row  mt-1 mb-1 me-1">
+                <div class="col-12 bg-white mt-3 p-3 shadow-sm">
+                    <div class="row justify-content-center">
+                        <div class="col-12 my-2">
+                            <h5 class="fw-bold">
+                                <i class="fa fa-list"></i>
+                                Historial:
+                            </h5>
+                        </div>
+
+                    
+                    @forelse ($info_meses as $info_mes)
+                    <div class="col-12 col-sm-4 col-md-4 col-lg-3 shadow-sm mx-1 shadow-bottom border border-4 mb-1 p-2 bg-white ">
+                        <span class="fw-bold">
+                            <i class="fa {{ ($loop->first ? 'fa-location-dot text-primary' : 'fa-calendar') }} "></i>
+                            {{ Carbon::parse($info_mes->fecha_periodo)->translatedFormat('F Y') }} 
+                        </span>
+                        
+                        <br>
+                        
+                        <span class="">
+                            @if($indicador->unidad_medida === 'pesos')
+                            ${{ number_format($info_mes->informacion_campo, 2) }}
+                            
+                            @elseif($indicador->unidad_medida === 'porcentaje')
+                            {{ round($info_mes->informacion_campo, 2) }}%
+                            
+                            @elseif($indicador->unidad_medida === 'dias')
+                            {{ round($info_mes->informacion_campo, 2) }} Días
+                            
+                            @elseif($indicador->unidad_medida === 'toneladas')
+                            {{ round($info_mes->informacion_campo, 2) }} Ton.
+                            
+                            @else
+                            {{ round($info_mes->informacion_campo, 2) }}
+                            @endif 
+                            
+                        </span>
+                        
+                    </div>
+                    
+                    @empty
+                    
+                    @endforelse
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="row  mt-2 mb-4 me-1">
+                <div class="col-12 bg-white mt-1 p-3 shadow-sm">
+                    <div class="row">
+                        <div class="col-12 my-2">
+                            <h5 class="fw-bold">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                                Estacionalidad:
+                            </h5>
+                        </div>
+                            <div class="col-12">
+                                <div class="row">
+                                    @foreach($historico as $item)
+                                        @php
+                                            $valor = round($item['valor'], 2);
+                                            $prev = $item['valor_anterior'];
+                                            $dif = $item['diferencia'];
+
+                                        if ($indicador->tipo_indicador === "riesgo"){
+                                    
+                                            if(is_null($dif)){
+                                                $color = 'secondary';
+                                                $icon = 'fa-minus';
+                                            } elseif($dif < 0){
+                                                $color = 'success';
+                                                $icon = 'fa-arrow-down';
+                                            } elseif($dif > 0){
+                                                $color = 'danger';
+                                                $icon = 'fa-arrow-up';
+                                            } else {
+                                                $color = 'info';
+                                                $icon = 'fa-equals';
+                                            }
+                                        }
+
+                                        if($indicador->tipo_indicador === "normal"){
+
+                                            if(is_null($dif)){
+                                                $color = 'secondary';
+                                                $icon = 'fa-minus';
+                                            } elseif($dif > 0){
+                                                $color = 'success';
+                                                $icon = 'fa-arrow-up';
+                                            } elseif($dif < 0){
+                                                $color = 'danger';
+                                                $icon = 'fa-arrow-down';
+                                            } else {
+                                                $color = 'info';
+                                                $icon = 'fa-equals';
+                                            }
+
+
+                                        }
+                                        
+
+
+                                        @endphp
+
+                                        @if (!is_null($prev))
+
+                                            <div class="col-12 col-sm-12 col-md-5 col-lg-4 mb-4">
+                                                <div class="card shadow-3 border-0 h-100">
+
+                                                    <!-- HEADER -->
+                                                    <div class="card-header bg-dark text-white text-center">
+                                                        <h5 class="mb-0 text-capitalize">
+                                                            {{ $item['mes'] }}
+                                                        </h5>
+                                                        <span class="fw-bold">{{ $item['anio'] }}</span>
+                                                    </div>
+
+                                                    <!-- BODY -->
+                                                    <div class="card-body text-center">
+
+                                                        <!-- Valor actual -->
+                                                        <h3 class="fw-bold">
+                                                            @if($indicador->unidad_medida === 'pesos')
+                                                                ${{ number_format($valor, 2) }}
+
+                                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                                {{ round($valor, 2) }}%
+
+                                                            @elseif($indicador->unidad_medida === 'dias')
+                                                                {{ round($valor, 2) }} Días
+
+                                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                                {{ round($valor, 2) }} Ton.
+
+                                                            @else
+                                                                {{ round($valor, 2) }}
+                                                            @endif
+                                                        </h3>
+
+                                                        <!-- Valor anterior -->
+                                                        @if(!is_null($prev))
+                                                            <span class="cascadia-code d-block">
+                                                                Año anterior {{ $item['anio']-1 }}: 
+                                                                <h4>
+                                                                    <div class="badge badge-secondary">
+                                                                        @if($indicador->unidad_medida === 'pesos')
+                                                                            ${{ number_format($prev, 2) }}
+
+                                                                        @elseif($indicador->unidad_medida === 'porcentaje')
+                                                                            {{ round($prev, 2) }}%
+
+                                                                        @elseif($indicador->unidad_medida === 'dias')
+                                                                            {{ round($prev, 2) }} Días
+
+                                                                        @elseif($indicador->unidad_medida === 'toneladas')
+                                                                            {{ round($prev, 2) }} Ton.
+
+                                                                        @else
+                                                                            {{ round($prev, 2) }}
+                                                                        @endif
+                                                                    </div> 
+                                                                </h4>
+                                                            </span>
+                                                        @endif
+
+                                                        <!-- Diferencia -->
+                                                        @if(!is_null($dif))
+
+                                                            <div class="mt-2">
+                                                                <span class="badge bg-{{ $color }} fs-6">
+                                                                    <i class="fa-solid {{ $icon }} me-1"></i>
+                                       
+                                                                        @if($indicador->unidad_medida === 'pesos')
+                                                                            ${{ $dif > 0 ? '+' : '' }}{{ $dif }}
+
+                                                                        @elseif($indicador->unidad_medida === 'porcentaje')
+                                                                            {{ $dif > 0 ? '+' : '' }}{{ $dif }}%
+
+                                                                        @elseif($indicador->unidad_medida === 'dias')
+                                                                            {{ $dif > 0 ? '+' : '' }}{{ $dif }} Días
+
+                                                                        @elseif($indicador->unidad_medida === 'toneladas')
+                                                                            {{ $dif > 0 ? '+' : '' }}{{ $dif }} Ton.
+
+                                                                        @else
+                                                                           {{ $dif > 0 ? '+' : '' }}{{ $dif }}
+                                                                        @endif
+                                                                                                                                   
+
+
+                                                                </span>
+                                                            </div>
+
+                                                        @else
+                                                            <span class="badge bg-secondary mt-2">
+                                                                Sin histórico
+                                                            </span>
+                                                        @endif
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            
+                                        @endif
+
+                                    @endforeach
+                                </div>      
+                            </div>                    
+                        </div>
+                    </div>
+             </div>
+
+
+
+
+
+        </div>
+
+
+        <div class="col-12 col-sm-12 col-md-5 col-lg-5">
             <div class="row">
 
                 <div class="col-12 p-1 bg-white mt-3 p-3">
@@ -131,68 +485,6 @@
                 </div>
 
             </div>
-        </div>
-
-
-
-        <div class="col-7 ">
-
-            <div class="row mt-3 ">
-                <div class="col-2">
-                    <a href="{{ route('estacionalidad.show', $indicador->id) }}" class="btn btn-success w-100">
-                        Estacionalidad
-                    </a>
-                </div>
-            </div>
-
-
-
-
-            <div class="row  mt-5">
-                <div class="col-12 ">
-                    <h5 class="fw-bold">
-                        <i class="fa fa-calendar"></i>
-                        Historial:
-                    </h5>
-                </div>
-                @forelse ($info_meses as $info_mes)
-                    <div class="col-2 shadow-sm mx-1  border-bottom mb-1 p-2 bg-white ">
-                        <span class="fw-bold">
-                            <i class="fa {{ ($loop->first ? 'fa-location-dot text-primary' : 'fa-calendar') }} "></i>
-                            {{ Carbon::parse($info_mes->fecha_periodo)->translatedFormat('F Y') }} 
-                        </span>
-                        
-                        <br>
-
-                        <span class="">
-                            @if($indicador->unidad_medida === 'pesos')
-                                ${{ number_format($info_mes->informacion_campo, 2) }}
-
-                            @elseif($indicador->unidad_medida === 'porcentaje')
-                                {{ round($info_mes->informacion_campo, 2) }}%
-
-                            @elseif($indicador->unidad_medida === 'dias')
-                                {{ round($info_mes->informacion_campo, 2) }} Días
-
-                            @elseif($indicador->unidad_medida === 'toneladas')
-                                {{ round($info_mes->informacion_campo, 2) }} Ton.
-
-                            @else
-                                {{ round($info_mes->informacion_campo, 2) }}
-                            @endif 
-                            
-                        </span>
-
-                    </div>
-
-                @empty
-                    
-                @endforelse
-            </div>
-
-
-
-
         </div>
 
 

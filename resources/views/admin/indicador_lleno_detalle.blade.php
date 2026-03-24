@@ -217,7 +217,8 @@
         $items->first()->id_movimiento
     )->first();
 
-    $meta_minima = $metas->meta_minima ?? 0;
+    //ouse los dos en la meta maxima para no ir a mover en la base de datos. 
+    $meta_minima = $metas->meta_maxima ?? 0;
     $meta_maxima = $metas->meta_maxima ?? 0;
 
     Carbon::setLocale('es');
@@ -244,28 +245,22 @@
             <div class="row justify-content-center">
 
                 @foreach($items as $item)
-
-                    {{-- ================= KPI GRANDE ================= --}}
-                    @if($item->final === 'on')
-
-                        @php
+                {{-- ================= KPI GRANDE ================= --}}
+                @if($item->final === 'on')
+                @php
 
                     if($indicador->tipo_indicador === "riesgo"){
 
 
-
                         if($item->informacion_campo <= $meta_maxima){
-                        
                             $semaforizacion = 'text-success';
-                            $icono = '<i class="fa-solid fa-2x fa-circle-check text-success"></i>';
-                        
+                            $icono = '<i class="fa-solid fa-2x text-success fa-check-circle"></i>';
                         }
-                        else{ 
 
+                        if($item->informacion_campo > $meta_maxima){
                             $semaforizacion = 'text-danger';
                             $icono = '<i class="fa-solid fa-2x text-danger fa-triangle-exclamation"></i>';
-                        
-                            }
+                        }                    
                     
                     }
 
@@ -274,7 +269,7 @@
 
 
 
-                        if($item->informacion_campo <= $meta_minima){
+                        if($item->informacion_campo < $meta_maxima){
                             $semaforizacion = 'text-danger';
                             $icono = '<i class="fa-solid fa-2x text-danger fa-triangle-exclamation"></i>';             
                         }

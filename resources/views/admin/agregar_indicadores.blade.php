@@ -945,7 +945,7 @@
 
                             <div class="col-12 col-sm-12 col-md-4 col-lg-4 mt-2">
                                     <label for="tipo_ind{{$indicador->id}}" class="form-label fw-semibold">
- 
+                                        Planta:
                                         <span class="text-danger">*</span>
                                     </label>
                                     <select name="planta_indicador"  class="form-select w-100 {{ $errors->first('planta_indicador') ? 'is-invalid' : '' }}"  id="" required>

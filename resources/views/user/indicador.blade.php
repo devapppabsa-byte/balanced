@@ -660,8 +660,8 @@ use Carbon\Carbon;
                 <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
             </div>
             <div class="modal-body py-4 bg-light">
-                <div class="col-12  mx-2 bg-white shadow-sm p-5 mt-4" style="height: 500px" >
-                    <canvas class="w-100 h-100" id="grafico"></canvas>
+                <div class="col-12  mx-2 bg-white shadow-sm p-5 mt-4" >
+                    <canvas class="" id="grafico"></canvas>
                 </div>
             </div>
         </div>

@@ -1994,7 +1994,7 @@ public function analizar_indicador(Indicador $indicador){
             $q->where('final', 'on')
             ->orWhere('referencia', 'on');
         })
-        ->orderBy('fecha_periodo', 'desc')
+        ->orderBy('fecha_periodo', 'asc')
         ->get();
 
 
@@ -2015,70 +2015,302 @@ public function analizar_indicador(Indicador $indicador){
 
 
 
-    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'years', 'meses')); 
-
-}
-
-
-public function estacionalidad_show(Indicador $indicador){
-
-    
-    // $registros = IndicadorLleno::whereIn(\DB::raw('YEAR(fecha_periodo)'), $year)
-    //     ->whereIn(\DB::raw('MONTH(fecha_periodo)'), $mes)
-    //     ->where('id_indicador', $indicador->id)
-    //     ->where('final', 'on')
-    //     ->get();
-
-
-    $registros = IndicadorLleno::where('id_indicador', $indicador->id)
+//para calcular 
+    $registros_tendencia = IndicadorLleno::where('id_indicador', $indicador->id)
         ->where('final', 'on')
+        ->orderBy('fecha_periodo', 'asc')
+        ->whereBetween('fecha_periodo', [$inicio, $fin])
         ->get();
 
 
+    //Le mandamos los datos a mi funcion que calcula la desviacion estandar.
+    $resultado = $this->calcularTendenciaKPI($indicador->id, $indicador->meta_esperada, $indicador->tipo_indicador, $inicio, $fin); // o 'mayor_mejor'
+       
+    //Para sacar la estacionalidad
+    $registros = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->where('final', 'on')
+        ->orderBy('fecha_periodo', 'desc')
+        ->get();
 
-    $agrupados = $registros
-    ->groupBy(function ($item) {
-        return Carbon::parse($item->fecha_periodo)->month;
-    })
-    ->map(function ($grupo) {
-    
-    $grupo->map(function ($item) {
-            $fecha = Carbon::parse($item->fecha_periodo);
 
+    $historico = $registros->map(function ($item) {
             return [
-                'label' => $fecha->isoFormat('MMMM YYYY'), // marzo 2025
-                'year' => $fecha->year,
-                'mes' => $fecha->month,
-                'valor' => $item->informacion_campo,
+                'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                'valor' => (float) $item->informacion_campo
             ];
+        })
+        ->sortBy('mes_num')
+        ->sortBy('anio')
+        ->values();
+
+        
+
+        // Agregar comparación
+        $historico = $historico->map(function ($item) use ($historico) {
+
+            $prev = $historico->first(function ($i) use ($item) {
+                return $i['mes_num'] === $item['mes_num']
+                    && $i['anio'] === ($item['anio'] - 1);
+            });
+
+            $item['valor_anterior'] = $prev['valor'] ?? null;
+
+            $item['diferencia'] = $prev
+                ? round($item['valor'] - $prev['valor'], 2)
+                : null;
+
+            return $item;
         });
-    })
-    ->sortKeys();
+
+        $historico = $historico->sortBy([
+            ['anio', 'desc'],
+            ['mes_num', 'desc']
+        ])->values();
+//Para sacar la estacionalidad
+
+    
 
 
-
-
-
-    //esto es para los controles de mes y año de la restacionalidad
-    $years = IndicadorLleno::selectRaw('YEAR(fecha_periodo) as year')
-    ->distinct()
-    ->orderBy('year', 'desc')
-    ->where('id_indicador', $indicador->id)
-    ->pluck('year');
-
-    $meses = IndicadorLleno::selectRaw('MONTH(fecha_periodo) as mes')
-    ->distinct()
-    ->orderBy('mes', 'asc') 
-    ->where('id_indicador', $indicador->id)
-    ->pluck('mes');
-
-
-
-
-    return view('admin.estacionalidad', compact('agrupados', 'indicador','years', 'meses'));
+    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado')); 
 
 }
 
+
+
+
+function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $fin)
+{
+    // =========================
+    // 1. OBTENER DATOS
+    // =========================
+    $registros = IndicadorLleno::where('id_indicador', $indicadorId)
+        ->where('final', 'on')
+        ->whereBetween('fecha_periodo', [$inicio, $fin])
+        ->orderBy('fecha_periodo', 'asc')
+        ->get();
+
+    // Se convierten los valores a float
+    $valores = $registros->pluck('informacion_campo')
+        ->map(fn($v) => (float) $v)
+        ->toArray();
+
+    $n = count($valores);
+
+    if ($n < 2) {
+        return ['mensaje' => 'Sin suficiente información'];
+    }
+
+    // =========================
+    // 2. EJE X (TIEMPO)
+    // =========================
+    // Representa el orden de los datos (meses, periodos, etc.)
+    $x = range(1, $n);
+
+    $sumX = array_sum($x);
+    $sumY = array_sum($valores);
+
+    $sumXY = 0;
+    $sumX2 = 0;
+
+    for ($i = 0; $i < $n; $i++) {
+        $sumXY += $x[$i] * $valores[$i];
+        $sumX2 += $x[$i] * $x[$i];
+    }
+
+    // =========================
+    // 3. PENDIENTE (TENDENCIA)
+    // =========================
+    // Fórmula de regresión lineal
+    $m = ($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - pow($sumX, 2));
+
+    // =========================
+    // 4. PROMEDIO
+    // =========================
+    $promedio = $sumY / $n;
+
+    // =========================
+    // 5. DESVIACIÓN ESTÁNDAR
+    // =========================
+    $suma = 0;
+    foreach ($valores as $v) {
+        $suma += pow($v - $promedio, 2);
+    }
+
+    $varianza = $suma / $n;
+    $desviacion = sqrt($varianza);
+
+    // =========================
+    // 6. UMBRAL DINÁMICO
+    // =========================
+    // Define qué tanto cambio es significativo
+    $umbral = $desviacion * 0.5;
+
+    // =========================
+    // 7. CLASIFICAR TENDENCIA
+    // =========================
+    if ($tipo == 'normal') {
+        if ($m > $umbral) {
+            $tendencia = 'mejora';
+        } elseif ($m < -$umbral) {
+            $tendencia = 'deterioro';
+        } else {
+            $tendencia = 'estable';
+        }
+    }
+    
+    if($tipo == "riesgo")
+    {
+        if ($m < -$umbral) {
+            $tendencia = 'mejora';
+        } elseif ($m > $umbral) {
+            $tendencia = 'deterioro';
+        } else {
+            $tendencia = 'estable';
+        }
+    }
+
+
+    // =========================
+    // 8. CAMBIO TOTAL
+    // =========================
+    $inicio = $valores[0];
+    $ultimo = end($valores);
+
+    $cambio = $ultimo - $inicio;
+
+    $cambioPorcentual = ($inicio != 0)
+        ? (($cambio / $inicio) * 100)
+        : 0;
+
+    // =========================
+    // 9. ESTABILIDAD
+    // =========================
+    if ($desviacion < ($promedio * 0.05)) {
+        $estabilidad = 'muy estable';
+    } elseif ($desviacion < ($promedio * 0.15)) {
+        $estabilidad = 'moderado';
+    } else {
+        $estabilidad = 'volatil';
+    }
+
+    // =========================
+    // 10. CUMPLIMIENTO DE META
+    // =========================
+    if ($tipo === 'normal') {
+        $cumplimiento = ($ultimo >= $meta) ? 'en meta' : 'fuera de meta';
+    } else {
+        $cumplimiento = ($ultimo <= $meta) ? 'en meta' : 'fuera de meta';
+    }
+
+    // =========================
+    // 11. FUERZA DE TENDENCIA (R²)
+    // =========================
+    $mediaX = $sumX / $n;
+    $mediaY = $promedio;
+
+    $ssTot = 0;
+    $ssRes = 0;
+
+    for ($i = 0; $i < $n; $i++) {
+        $yPred = $m * $x[$i] + ($mediaY - $m * $mediaX);
+
+        $ssTot += pow($valores[$i] - $mediaY, 2);
+        $ssRes += pow($valores[$i] - $yPred, 2);
+    }
+
+    $r2 = ($ssTot != 0) ? (1 - ($ssRes / $ssTot)) : 0;
+
+    if ($r2 > 0.8) {
+        $fuerza = 'fuerte';
+    } elseif ($r2 > 0.5) {
+        $fuerza = 'media';
+    } else {
+        $fuerza = 'debil';
+    }
+
+    // =========================
+    // 12. ANOMALÍAS
+    // =========================
+    $anomalias = [];
+
+    foreach ($valores as $i => $v) {
+        if (abs($v - $promedio) > (2 * $desviacion)) {
+            $anomalias[] = [
+                'indice' => $i,
+                'valor' => $v
+            ];
+        }
+    }
+
+    // =========================
+    // 13. VELOCIDAD DE CAMBIO
+    // =========================
+    $velocidades = [];
+
+    for ($i = 1; $i < $n; $i++) {
+        $velocidades[] = $valores[$i] - $valores[$i - 1];
+    }
+
+    $velocidadPromedio = count($velocidades) > 0
+        ? array_sum($velocidades) / count($velocidades)
+        : 0;
+
+    // =========================
+    // 14. DISTANCIA A META
+    // =========================
+    $meta = (float) $meta;
+    $distanciaMeta = $ultimo - $meta;
+
+    $distanciaPorcentual = ($meta != 0)
+        ? (($distanciaMeta / $meta) * 100)
+        : 0;
+
+    // =========================
+    // 15. PROYECCIÓN
+    // =========================
+    $siguiente = $m * ($n + 1) + ($mediaY - $m * $mediaX);
+
+    // =========================
+    // 16. MENSAJE INTELIGENTE
+    // =========================
+    $mensajes = [];
+
+    if ($tendencia == 'mejora') $mensajes[] = 'Tendencia positiva';
+    if ($fuerza == 'debil') $mensajes[] = 'Comportamiento inestable';
+    if (count($anomalias) > 0) $mensajes[] = 'Hay anomalías';
+    if ($cumplimiento == 'fuera de meta') $mensajes[] = 'No cumple meta';
+
+    $mensaje = implode(' | ', $mensajes);
+
+    // =========================
+    // RETURN FINAL
+    // =========================
+    return [
+        'tendencia' => $tendencia,
+        'pendiente' => $m,
+        'umbral' => $umbral,
+        'desviacion' => $desviacion,
+        'promedio' => $promedio,
+        'valores' => $valores,
+        'cambio' => $cambio,
+        'cambio_porcentual' => $cambioPorcentual,
+        'estabilidad' => $estabilidad,
+        'cumplimiento' => $cumplimiento,
+        'mensaje' => $mensaje,
+        'ultimo_valor' => $ultimo,
+
+        // 🔥 nuevos
+        'fuerza_tendencia' => $fuerza,
+        'r2' => $r2,
+        'anomalias' => $anomalias,
+        'velocidad_promedio' => $velocidadPromedio,
+        'distancia_meta' => $distanciaMeta,
+        'distancia_meta_porcentual' => $distanciaPorcentual,
+        'proyeccion_siguiente' => $siguiente
+    ];
+}
 
 
 }
