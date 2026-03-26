@@ -1,7 +1,9 @@
 @extends('plantilla')
 @section('title', 'Cuestionario del cliente')
 @section('contenido')
-
+@php
+    Auth::logout();
+@endphp
 <div class="container-fluid">
     <div class="row   d-flex align-items-center py-2 bg-primary" >
         <div class="col-auto pt-2 text-white">

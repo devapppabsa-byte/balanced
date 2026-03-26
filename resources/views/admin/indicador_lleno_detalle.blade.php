@@ -75,7 +75,7 @@
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body py-3 px-4">
 
-            <form action="{{route('indicador.lleno.show.admin', $indicador->id)}}" method="GET">
+            <form action="#" method="GET">
                 <div class="d-flex flex-wrap align-items-end gap-3">
 
                     <!-- Fecha inicio -->
@@ -212,6 +212,7 @@
 @forelse($grupos as $movimiento => $items)
 
 @php
+
     $metas = MetaIndicador::where(
         'id_movimiento_indicador_lleno',
         $items->first()->id_movimiento
@@ -243,31 +244,39 @@
         <div class="card-body">
             <!-- KPI PRINCIPALES -->
             <div class="row justify-content-center">
-
+              
                 @foreach($items as $item)
                 {{-- ================= KPI GRANDE ================= --}}
                 @if($item->final === 'on')
+
                 @php
 
                     if($indicador->tipo_indicador === "riesgo"){
 
-
-                        if($item->informacion_campo <= $meta_maxima){
+                        if($item->informacion_campo < $meta_maxima){
                             $semaforizacion = 'text-success';
                             $icono = '<i class="fa-solid fa-2x text-success fa-check-circle"></i>';
                         }
 
-                        if($item->informacion_campo > $meta_maxima){
+                        if($item->informacion_campo >= $meta_maxima){
                             $semaforizacion = 'text-danger';
                             $icono = '<i class="fa-solid fa-2x text-danger fa-triangle-exclamation"></i>';
-                        }                    
+                        }
+                    
+
+                        //este es un comodin, si el indicador de menor es mejor es menor o igual a cero se va a cumplimiento muajajajajaja
+                        if($item->informacion_campo <= 0){
+                            $semaforizacion = 'text-success';
+                            $icono = '<i class="fa-solid fa-2x text-success fa-check-circle"></i>';
+                        }                  
+
                     
                     }
 
 
                     if($indicador->tipo_indicador === "normal"){
 
-
+                        $porcentaje = ($item->informacion_campo / $meta_maxima) * 100; 
 
                         if($item->informacion_campo < $meta_maxima){
                             $semaforizacion = 'text-danger';
@@ -298,57 +307,162 @@
 
                         @endphp
 
-                        <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-3">
-                            <div class="card border-0 shadow-sm h-100 text-center 
-                                {{ $semaforizacion }}">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
 
-                                <div class="card-body shadow-0">
+                            <div class="row">
+                                @if ($indicador->unidad_medida === "porcentaje")
+                                    <div class="col-12">
+                                        <div class="card border-0 shadow-sm h-100 text-center 
+                                            {{ $semaforizacion }}">
+                                            <div class="card-body shadow-0">
 
-                                    <div class="mb-2">
-                                        {!!  $icono !!}
+                                                <div class="row">
+
+                                                    <div class="col-12 mb-2">
+                                                        {!!  $icono !!}
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <h4 class="text-dark">{{ $item->nombre_campo }}</h4>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <h2 class="fw-bold format-number">
+                                                            @if($indicador->unidad_medida === 'pesos')
+                                                                ${{ round($item->informacion_campo,2) }}
+                                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                                {{ round($item->informacion_campo,2) }}%
+                                                            @elseif($indicador->unidad_medida === 'dias')
+                                                                {{ round($item->informacion_campo,2) }} Días
+                                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                                {{ round($item->informacion_campo,2) }} Ton.
+                                                            @else
+                                                                {{ round($item->informacion_campo,2) }}
+                                                            @endif
+                                                        </h2>
+                                                    </div>
+                                                </div>
+                                                <!-- METAS -->
+                                                <div class="col-12 d-flex justify-content-center flex-wrap gap-3">
+
+                                                    @if ($indicador->tipo_indicador == "riesgo")
+                                                        <span class="badge bg-info-subtle text-info p-2">
+                                                            Limite: {{ $meta_maxima }}
+                                                        </span>
+                                                    @endif
+
+                                                    @if ($indicador->tipo_indicador == "normal")
+                                                        <span class="badge bg-danger-subtle text-danger p-2">
+                                                            Aceptable: {{ $meta_minima }}
+                                                        </span>
+                                                        <span class="badge bg-success-subtle text-success p-2">
+                                                            Esperada: {{ $meta_maxima }}
+                                                        </span>
+                                                    @endif
+                                                </div>                                    
+                                            </div>
+                                        </div>
+                                    </div>                                
+                                @else 
+                                {{-- Aqui va el cumplimiento en la unidad de medida que esta y en porcentaje de acuerdo a la meta dada.                                --}}
+                                    <div class="col-6">
+                                        <div class="card border-0 shadow-sm h-100 text-center 
+                                            {{ $semaforizacion }}">
+                                            <div class="card-body shadow-0">
+
+                                                <div class="row">
+
+                                                    <div class="col-12 mb-2">
+                                                        {!!  $icono !!}
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <h4 class="text-dark">{{ $item->nombre_campo }}</h4>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <h2 class="fw-bold format-number">
+                                                            @if($indicador->unidad_medida === 'pesos')
+                                                                ${{ round($item->informacion_campo,2) }}
+                                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                                {{ round($item->informacion_campo,2) }}%
+                                                            @elseif($indicador->unidad_medida === 'dias')
+                                                                {{ round($item->informacion_campo,2) }} Días
+                                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                                {{ round($item->informacion_campo,2) }} Ton.
+                                                            @else
+                                                                {{ round($item->informacion_campo,2) }}
+                                                            @endif
+                                                        </h2>
+                                                    </div>
+                                                </div>
+                                                <!-- METAS -->
+                                                <div class="col-12 d-flex justify-content-center flex-wrap gap-3">
+
+                                                    @if ($indicador->tipo_indicador == "riesgo")
+                                                        <span class="badge bg-info-subtle text-info p-2">
+                                                            Limite: {{ $meta_maxima }}
+                                                        </span>
+                                                    @endif
+
+                                                    @if ($indicador->tipo_indicador == "normal")
+                                                        <span class="badge bg-danger-subtle text-danger p-2">
+                                                            Aceptable: {{ $meta_minima }}
+                                                        </span>
+                                                        <span class="badge bg-success-subtle text-success p-2">
+                                                            Esperada: {{ $meta_maxima }}
+                                                        </span>
+                                                    @endif
+                                                </div>                                    
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div class="col-6">
+                                        <div class="card border-0 shadow-sm h-100 text-center 
+                                            {{ $semaforizacion }}">
+                                            <div class="card-body shadow-0">
 
-                                    <h4 class="text-dark">{{ $item->nombre_campo }}</h4>
+                                                <div class="row">
 
-                                    <h2 class="fw-bold format-number">
+                                                    <div class="col-12 mb-2">
+                                                        {!!  $icono !!}
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <h5>% de Cumplimiento de:</h5>
+                                                        <h4 class="text-dark">{{ $item->nombre_campo }}</h4>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <h2 class="fw-bold format-number">
+                                                            @if ($indicador->tipo_indicador === "riesgo")
+                                                                {{ round(($meta_maxima / $item->informacion_campo) * 100, 2) }}%
+                                                            @endif
+                                                            @if ($indicador->tipo_indicador === "normal")
+                                                                {{ round(($item->informacion_campo / $meta_maxima)  * 100, 2) }}%
+                                                            @endif
+                                                        </h2>
+                                                    </div>
+                                                </div>
+                                                <!-- METAS -->
+                                                <div class="col-12 d-flex justify-content-center flex-wrap gap-3">
 
-                                        @if($indicador->unidad_medida === 'pesos')
-                                            ${{ round($item->informacion_campo,2) }}
-                                        @elseif($indicador->unidad_medida === 'porcentaje')
-                                            {{ round($item->informacion_campo,2) }}%
-                                        @elseif($indicador->unidad_medida === 'dias')
-                                            {{ round($item->informacion_campo,2) }} Días
-                                        @elseif($indicador->unidad_medida === 'toneladas')
-                                            {{ round($item->informacion_campo,2) }} Ton.
-                                        @else
-                                            {{ round($item->informacion_campo,2) }}
-                                        @endif
+                                                    @if ($indicador->tipo_indicador == "riesgo")
+                                                        <span class="badge bg-info-subtle text-info p-2">
+                                                            Limite: {{ $meta_maxima }}
+                                                        </span>
+                                                    @endif
 
-                                    </h2>
-
-                                    <!-- METAS -->
-                                    <div class="d-flex justify-content-center flex-wrap gap-3">
-
-                                        @if ($indicador->tipo_indicador == "riesgo")
-                                            <span class="badge bg-success-subtle text-success p-2">
-                                                Limite: {{ $meta_maxima }}
-                                            </span>
-                                        @endif
-
-                                        @if ($indicador->tipo_indicador == "normal")
-                                            <span class="badge bg-danger-subtle text-danger p-2">
-                                                Aceptable: {{ $meta_minima }}
-                                            </span>
-                                            <span class="badge bg-success-subtle text-success p-2">
-                                                Esperada: {{ $meta_maxima }}
-                                            </span>
-                                        @endif
-                                    </div>                                    
-
-
-                                </div>
+                                                    @if ($indicador->tipo_indicador == "normal")
+                                                        <span class="badge bg-danger-subtle text-danger p-2">
+                                                            Aceptable: {{ $meta_minima }}
+                                                        </span>
+                                                        <span class="badge bg-success-subtle text-success p-2">
+                                                            Esperada: {{ $meta_maxima }}
+                                                        </span>
+                                                    @endif
+                                                </div>                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
+
 
                     @endif
 

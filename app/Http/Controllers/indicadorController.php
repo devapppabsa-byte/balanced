@@ -495,9 +495,22 @@ public function show_indicador_user(Indicador $indicador){
     $tipo_indicador = $indicador->tipo_indicador;
 
     
+    $promedios = IndicadorLleno::select(
+    DB::raw('YEAR(fecha_periodo) as anio'),
+    DB::raw('AVG(informacion_campo) as promedio')
+    )
+    ->where('final', 'on')
+    ->where('id_indicador', $indicador->id)
+    ->groupBy(DB::raw('YEAR(fecha_periodo)'))
+    ->orderBy('anio')
+    ->get();
 
 
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos', 'meta_minima_general', 'meta_maxima_general', 'tipo_indicador', 'ultima_carga_excel', 'ultima_carga_indicador'));
+    //Para mostrar los datos del indicador
+    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
+        
+
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos', 'meta_minima_general', 'meta_maxima_general', 'tipo_indicador', 'ultima_carga_excel', 'ultima_carga_indicador', 'promedios', 'info_meses'));
 
 
 
@@ -1922,6 +1935,20 @@ public function indicador_lleno_show_user_foraneo(Indicador $indicador){
     //Para lgraficar los datos del indicador
     IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->get();
 
+    $promedios = IndicadorLleno::select(
+    DB::raw('YEAR(fecha_periodo) as anio'),
+    DB::raw('AVG(informacion_campo) as promedio')
+    )
+    ->where('final', 'on')
+    ->where('id_indicador', $indicador->id)
+    ->groupBy(DB::raw('YEAR(fecha_periodo)'))
+    ->orderBy('anio')
+    ->get();
+
+
+    //Para mostrar los datos del indicador
+    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
+        
 
 
 
@@ -1953,7 +1980,7 @@ public function indicador_lleno_show_user_foraneo(Indicador $indicador){
     $campos_llenos = CampoPrecargado::where('id_indicador', $indicador->id)->get();
 
 
-    return view('user.indicador_foraneo_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos', 'indicador', 'tipo_indicador'));
+    return view('user.indicador_foraneo_lleno_detalle', compact('indicador', 'campos_llenos', 'graficar', 'datos', 'grupos', 'indicador', 'tipo_indicador', 'promedios', 'info_meses'));
 
 
 }
@@ -2120,6 +2147,180 @@ public function analizar_indicador(Indicador $indicador){
     return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes')); 
 
 }
+
+
+
+
+
+
+
+public function analizar_indicador_usuario(Indicador $indicador){
+
+    $inicio = request()->filled('fecha_inicio')
+        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+            ->startOfDay()
+            ->utc()
+        : Carbon::now(config('app.timezone'))
+            //->subMonth()
+            ->startOfYear()
+            ->utc();
+
+    //$inicio = "2025-01-01T06:00:00.000000Z";
+
+    $fin = request()->filled('fecha_fin')
+        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            //->subMonth()    
+            ->endOfDay()
+            ->utc()
+
+        : Carbon::now(config('app.timezone'))
+            ->endOfYear()
+            ->utc();
+
+
+
+    //datos para graficar...
+    $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->whereBetween('fecha_periodo', [$inicio, $fin])
+        ->where(function ($q) {
+            $q->where('final', 'on')
+            ->orWhere('referencia', 'on');
+        })
+        ->orderBy('fecha_periodo', 'asc')
+        ->get();
+
+
+    //Para mostrar los datos del indicador
+    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
+
+
+
+    $promedios = IndicadorLleno::select(
+        DB::raw('YEAR(fecha_periodo) as anio'),
+        DB::raw('AVG(informacion_campo) as promedio')
+    )
+    ->where('final', 'on')
+    ->where('id_indicador', $indicador->id)
+    ->groupBy(DB::raw('YEAR(fecha_periodo)'))
+    ->orderBy('anio')
+    ->get();
+
+
+
+//para calcular 
+    $registros_tendencia = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->where('final', 'on')
+        ->orderBy('fecha_periodo', 'asc')
+        ->whereBetween('fecha_periodo', [$inicio, $fin])
+        ->get();
+
+
+    //Le mandamos los datos a mi funcion que calcula la desviacion estandar.
+    $resultado = $this->calcularTendenciaKPI($indicador->id, $indicador->meta_esperada, $indicador->tipo_indicador, $inicio, $fin); // o 'mayor_mejor'
+       
+    //Para sacar la estacionalidad
+    $registros = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->where('final', 'on')
+        ->orderBy('fecha_periodo', 'desc')
+        ->get();
+
+
+    $historico = $registros->map(function ($item) {
+            return [
+                'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                'valor' => (float) $item->informacion_campo
+            ];
+        })
+        ->sortBy('mes_num')
+        ->sortBy('anio')
+        ->values();
+
+
+        //para sacar el mejor y el peor mes
+
+            $registros_mejor_peor_mes = IndicadorLleno::where('id_indicador', $indicador->id)
+                ->where('final', 'on')
+                ->orderBy('fecha_periodo', 'desc')
+                ->whereBetween('fecha_periodo', [$inicio, $fin])
+                ->get();
+
+
+            $historico_mejor_peor_mes = $registros_mejor_peor_mes->map(function ($item) {
+                    return [
+                        'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                        'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                        'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                        'valor' => (float) $item->informacion_campo
+                    ];
+                })
+                ->sortBy('mes_num')
+                ->sortBy('anio')
+                ->values();
+
+            if($indicador->tipo_indicador == "riesgo"){
+
+                 $peor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+                 $mejor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+            }
+
+            if($indicador->tipo_indicador == "normal"){
+
+                $mejor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+                $peor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+
+            }
+
+        
+        
+        //para sacar el mejor y el peor mes
+
+
+
+        // Agregar comparación
+        $historico = $historico->map(function ($item) use ($historico) {
+
+            $prev = $historico->first(function ($i) use ($item) {
+                return $i['mes_num'] === $item['mes_num']
+                    && $i['anio'] === ($item['anio'] - 1);
+            });
+
+            $item['valor_anterior'] = $prev['valor'] ?? null;
+
+            $item['diferencia'] = $prev
+                ? round($item['valor'] - $prev['valor'], 2)
+                : null;
+
+            return $item;
+        });
+
+        $historico = $historico->sortBy([
+            ['anio', 'desc'],
+            ['mes_num', 'desc']
+        ])->values();
+//Para sacar la estacionalidad
+
+
+
+
+
+    return view('user.analizando_indicador_user', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes'));
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2349,9 +2550,11 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
         $mensajes[] = 'Históricamente cumplía, pero cayó recientemente';
     }
 
+    
     if ($caidaBrusca) {
         $mensajes[] = 'Caída brusca detectada';
     }
+
 
     if (count($anomalias) > 0) $mensajes[] = 'Hay anomalías';
 
@@ -2386,7 +2589,31 @@ function calcularTendenciaKPI($indicadorId, $meta, $tipo = 'normal', $inicio, $f
 
         'estado_historico' => $estadoHistorico,
         'porcentaje_cumplimiento' => $porcentajeCumplimiento,
-        'caida_brusca' => $caidaBrusca
+        'caida_brusca' => $caidaBrusca,
+
+        //aqui va la explicacion de las
+
+        // 'debug' => [
+        //     'valores' => $valores,
+        //     'inicio' => $inicio,
+        //     'ultimo' => $ultimo,
+        //     'meta' => $meta,
+
+        //     'calculos' => [
+        //         'suma_valores' => $sumY,
+        //         'promedio' => $promedio,
+        //         'desviacion' => $desviacion,
+        //         'umbral' => $umbral,
+        //         'pendiente' => $m,
+        //     ],
+
+        //     'formulas' => [
+        //         'cambio' => "$ultimo - $inicio = " . ($ultimo - $inicio),
+        //         'cambio_porcentual' => "(($ultimo - $inicio) / $inicio) * 100",
+        //         'umbral' => "$desviacion * 0.5 = $umbral",
+        //         'tendencia' => "pendiente ($m) vs umbral ($umbral)"
+        //     ]
+        // ]
     
     ];
 }

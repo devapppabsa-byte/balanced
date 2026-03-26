@@ -32,7 +32,7 @@
 </style>
 
 
-<div class="container-fluid">
+<div class="container-fluid sticky-top">
     <div class="row bg-primary  d-flex align-items-center">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  pt-2 text-white">
             <h3 class="mt-1 mb-0 league-spartan">Objetivos</h3>
@@ -81,14 +81,9 @@
         </div>
     </div>
     @include('admin.assets.nav')
-</div>
 
 
-
-
-<div class="container-fluid py-4">
-    <div class="row justify-content-center">
-        <div class="col-12 col-xl-11">
+    <div class="row">
             <!-- Header Card -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
@@ -112,6 +107,17 @@
                 </div>
             </div>
 
+    </div>
+
+
+</div>
+
+
+
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-11">
         
                 <!-- Departamentos Grid -->
             <div class="row g-4">
@@ -124,21 +130,18 @@
                                 <div class="flex-grow-1 mb-1 row">
                                     <div class="col-12">
                                         <h4 class="fw-bold mb-0 department-name text-truncate" data-mdb-tooltip-init title="{{ $objetivo->nombre }}" >
-                                            <i class="fa-regular fa-eye me-2 text-primary"></i>
                                             {{ $objetivo->nombre }}
                                         </h4>
-                                    </div> 
-                                    <div class="col-12 text-center mt-3">
-                                        <span class="text-center  fw-bold department-name p-2 mt-2 rounded">
+                                        <h5 class="text-primary fw-bold">
                                             Ponderación {{ $objetivo->ponderacion }}%
-                                        </span>
+                                        </h5>
                                     </div>
                                     <hr>
                                     <div class="col-12 ">
-                                        <span class="fw-bold">Indicadores:</span>
+                                        <span class=" bungee-regular text-muted">Indicadores:</span>
                                     </div>
                                     <div class="col-12">
-                                        <div class="row">
+                                        <div class="row justify-content-center">
 
                                             @php
                                                 $indicadoresObjetivo = \App\Models\Indicador::where(
@@ -151,12 +154,11 @@
 
                                             @forelse($indicadoresObjetivo as $indicador)
 
-                                                    <div class="col-12 my-2">
-                                                        <div class="p-2 rounded shadow-sm border border-2 bg-white indicador-card">
-
+                                                    <div class="col-11 my-2 p-2 rounded shadow-sm border border-2 bg-white indicador-card">
+                                                        
                                                             <!-- Nombre -->
                                                             <div class="fw-bold text-truncate" style="font-size: 14px;">
-                                                                {{ $indicador->nombre }} 
+                                                                 {{ $indicador->nombre }} 
                                                                 @if(!is_null($indicador->ponderacion_indicador))
                                                                     <span class="text-success">
                                                                         -  Ponderacion: 
@@ -166,15 +168,11 @@
                                                                 <a class="text-primary mx-1" data-mdb-tooltip-init title="Agregar ponderacion al indicador" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#pon{{ $indicador->id }}">
                                                                     <i class="fa fa-plus-circle"></i>
                                                                 </a>
+                                                                <a href="#" class="text-danger"></a>
                                                             </div>
                                                             <hr>
                                                             <!-- Info secundaria -->
                                                             <div class="d-flex gap-3 mt-1 flex-wrap text-muted" style="font-size: 13px;">
-
-                                                                <span>
-                                                                    <i class="fa-solid fa-percent me-1"></i>
-                                                                    {{ $indicador->ponderacion }}%
-                                                                </span>
 
                                                                 <span>
                                                                     <i class="fa-solid fa-bullseye me-1"></i>
@@ -224,7 +222,7 @@
 
                                                             </div>
 
-                                                        </div>
+                                                        
 
                                                     </div>
 

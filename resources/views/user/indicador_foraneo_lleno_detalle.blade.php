@@ -6,7 +6,7 @@
     use App\Models\InformacionInputPrecargado;
     use App\Models\MetaIndicador;
 @endphp
-<div class="container-fluid">
+<div class="container-fluid sticky-top">
     <div class="row bg-primary d-flex align-items-center">
 
         <div class="col-8 col-sm-8 col-md-6 col-lg-9  py-4  py-4 ">
@@ -47,100 +47,75 @@
         </div>
 
     </div>
+    
     @include('user.assets.nav')
+    
+<div class="row">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body py-3 px-4">
+
+            <form action="#" method="GET">
+                <div class="d-flex flex-wrap align-items-end gap-3">
+
+                    <!-- Fecha inicio -->
+                    <div>
+                        <label class="form-label small text-muted fw-semibold mb-1">Desde</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-0">
+                                <i class="fa-solid fa-calendar-days text-primary"></i>
+                            </span>
+                            <input type="date"
+                                name="fecha_inicio"
+                                value="{{ request('fecha_inicio') ?? now()->format('Y-m-d') }}"
+                                class="form-control border-0 bg-light datepicker"
+                                onchange="this.form.submit()">
+                        </div>
+                    </div>
+
+                    <!-- Fecha fin -->
+                    <div>
+                        <label class="form-label small text-muted fw-semibold mb-1">Hasta</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-0">
+                                <i class="fa-solid fa-calendar-days text-danger"></i>
+                            </span>
+                            <input type="date"
+                                name="fecha_fin"
+                                value="{{ request('fecha_fin') ?? now()->format('Y-m-d') }}"
+                                class="form-control border-0 bg-light datepicker"
+                                onchange="this.form.submit()">
+                        </div>
+                    </div>
+
+                    <!-- Botón gráfica -->
+                    <div class="ms-auto">
+                        <button type="button" class="btn btn-info btn-sm px-4 rounded-pill shadow-sm text-white" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
+                            <i class="fa-solid fa-chart-line me-2"></i>
+                            Ver detalles y grafica
+                        </button>
+                        <a href="{{ route('analizar.indicador.usuario', $indicador->id) }}" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm text-white"  >
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            Analizar Datos
+                        </a>                        
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
 </div> 
 
 
 <div class="container-fluid">
 
-{{-- <div class="row bg-white">
-    <div class="accordion p-0 m-0 bg-white" id="accordionExample">
-        <div class="">
-            <div class="accordion-header text-start " id="headingTwo">
-                <a data-mdb-collapse-init class="fw-bold  collapsed m-2" type="button" data-mdb-target="#info_precargada" aria-expanded="false" aria-controls="collapseTwo">
-                    <i class="fa-solid fa-file-excel"></i>
-                    Información cargada desde Excel.
-                </a>
-            </div>
-            <div id="info_precargada" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#accordionExample">
-                <div class="accordion-body">
-                    <div class="row gap-4  justify-content-start d-flex align-items-center">
-
-
-                        @forelse ($campos_llenos as $campo_lleno)
-                            <div class="col-5 col-sm-5 col-md-5 col-lg-auto  text-center  bg-white   pt-2 rounded shadow-sm">
-                                <h5 class="fw-bold">{{$campo_lleno->nombre}}</h5>
-
-
-                                <h5  class="">
-                                    @php
-                                        $last_info = InformacionInputPrecargado::where('id_input_precargado', $campo_lleno->id)->latest()->first();
-                                        $meses = ["0","Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-                                    @endphp
-                                    {{$last_info->informacion}}
-                                </h5>
-                                <p>{{$meses[$last_info->mes]}} {{$last_info->year}}</p>
-                                <small>{{$campo_lleno->descripcion}}</small>
-                            </div>
-                        @empty
-                            <div class="col-12 border border-4 p-5 text-center">
-                                <h2>
-                                    <i class="fa fa-exclamation-circle text-danger"></i>
-                                    No se encontraron datos
-                                </h2>
-                            </div>
-                        @endforelse
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div> --}}
-
-
-<div class="container-fluid">
-
-        <div class="card border-0 shadow-sm m-1">
-            <div class="card-body">
-                <form action="#"  method="GET">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-12 col-sm-3 col-md-2 col-lg-2">
-                            <label for="fecha_inicio" class="form-label fw-semibold small text-muted text-uppercase">Fecha Inicio</label>
-                            <input type="date"
-                                    name="fecha_inicio"
-                                    value="{{request('fecha_inicio')}}"
-                                    class="form-control form-control-sm datepicker"
-                                    onchange="this.form.submit()"
-                                    id="fecha_inicio">
-                        </div>
-                        <div class="col-12 col-sm-3 col-md-2 col-lg-2">
-                            <label for="fecha_fin" class="form-label fw-semibold small text-muted text-uppercase">Fecha Final</label>
-                            <input type="date"
-                                    name="fecha_fin"
-                                    value="{{request('fecha_fin')}}"
-                                    class="form-control form-control-sm datepicker"
-                                    onchange="this.form.submit()"
-                                    id="fecha_fin">
-                        </div>
-                    </form>
-                        <div class="col-12 col-sm-3 col-md-2 col-lg-2 ">
-                            <button type="button" class="btn btn-info text-white w-100 btn-sm" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico_indicador">
-                                <i class="fa-solid fa-chart-line me-2"></i>
-                                Gráfica
-                            </button>
-                        </div>
-                    </div>
-            </div>
-</div>
-
 
 
 
 <div class=" row justify-content-center pb-5 m border-bottom d-flex align-items-center mt-1">
-        <div  class="col-12 mx-2 px-5 py-3 pb-5">
+
+<div  class="col-12 mx-2 px-5  pb-5">
             
 <div class="row">
 
@@ -162,14 +137,14 @@
     $year = $fecha->translatedFormat('Y');
 @endphp
 
-<div class="col-12 col-lg-4 mt-3">
+<div class="col-12 col-lg-4 my-2">
     <div class="card shadow-sm border-0 h-100">
         <!-- HEADER -->
-        <div class="card-header bg-info text-white text-center py-2">
-            <h6 class="fw-semibold mb-0">
+        <div class="card-header bg-info text-white text-center py-3">
+            <h5 class="fw-semibold mb-0">
                 <i class="fa-solid fa-calendar-days me-1"></i>
                 {{ $mes }} {{ $year }}
-            </h6>
+            </h5>
         </div>
 
         <div class="card-body py-3">
@@ -443,90 +418,221 @@
 <div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog  modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-primary py-4">
-                <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
+            <div class="modal-header bg-primary py-3">
+                <h4 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h4>
                 <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
             </div>
             <div class="modal-body  row justify-content-center" >
 
-                <div class="col-12 py-2">
-                    <div class="row justify-content-center">
-                        <div class="col-auto text-white bg-success rounded-3 my-3 mx-2">
-                            <h4 class="mt-2">
-                                <i class="fa fa-check-circle"></i>
-                                Meta: {{ $indicador->meta_esperada }}
-                            </h4>
+                    <div class="col-12 py-3">
+                        <div class="row g-3">
+                            
+                            @forelse ($promedios as $promedio)
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="card shadow-sm bg-info text-white border-0 h-100 text-center">
+                                        <div class="card-body  py-3">
+                                            <small class="text-white d-block mb-1">
+                                                <i class="fa-solid fa-calendar-days"></i>                                            
+                                                Promedio Anual
+                                            </small>
+
+                                            <h5 class="fw-bold mb-2">
+                                                @if($indicador->unidad_medida === 'pesos')
+                                                    ${{ number_format($promedio->promedio, 2) }}
+
+                                                @elseif($indicador->unidad_medida === 'porcentaje')
+                                                    {{ round($promedio->promedio, 2) }}%
+
+                                                @elseif($indicador->unidad_medida === 'dias')
+                                                    {{ round($promedio->promedio, 2) }} Días
+
+                                                @elseif($indicador->unidad_medida === 'toneladas')
+                                                    {{ round($promedio->promedio, 2) }} Ton.
+
+                                                @else
+                                                    {{ round($promedio->promedio, 2) }}
+                                                @endif
+
+                                            </h5>
+
+                                            <span class="badge bg-light text-dark">
+                                                Año: {{ $promedio->anio }}
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="col-12 text-center py-4">
+                                    <div class="alert alert-light border">
+                                        <h5 class="mb-0 text-muted">
+                                            <i class="fa fa-exclamation-circle"></i>
+                                            No hay datos que mostrar
+                                        </h5>
+                                    </div>
+                                </div>
+                            @endforelse
+
                         </div>
 
-                        @if ($indicador->variacion === "on")
-                            <div class="col-auto text-white bg-danger rounded-3 my-3 mx-2">
-                                <h4 class="mt-2">
-                                    <i class="fa-solid fa-arrow-trend-down"></i>
-                                    Variación:{{ $indicador->meta_minima }} </h4>
-                            </div>
+                        <div class="row g-3 my-1 justify-content-start">
                             
-                        @else
-                            <div class="col-auto text-white bg-danger rounded-3 my-3 mx-2">
-                                <h4 class="mt-2">
-                                    <i class="fa-solid fa-arrow-trend-down"></i>
-                                    Minimo:{{ $indicador->meta_minima }} </h4>
-                            </div>
-                        @endif
+                            @forelse ($info_meses as $info_mes)
+
+                                <div class="col-auto shadow-sm mx-1 text-center border-bottom mb-1 p-2">
+                                    <span class="fw-bold">
+                                        <i class="fa {{ ($loop->last ? 'fa-location-dot text-primary' : 'fa-calendar') }} "></i>
+                                        {{ Carbon::parse($info_mes->fecha_periodo)->translatedFormat('F Y') }} 
+                                    </span>
+                                    
+                                    <br>
+
+                                    <span class="h5">
+                                        @if($indicador->unidad_medida === 'pesos')
+                                            ${{ number_format($info_mes->informacion_campo, 2) }}
+
+                                        @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ round($info_mes->informacion_campo, 2) }}%
+
+                                        @elseif($indicador->unidad_medida === 'dias')
+                                            {{ round($info_mes->informacion_campo, 2) }} Días
+
+                                        @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ round($info_mes->informacion_campo, 2) }} Ton.
+
+                                        @else
+                                            {{ round($info_mes->informacion_campo, 2) }}
+                                        @endif 
+                                      
+                                    </span>
+
+                                </div>
+
+                            @empty
+                                
+                            @endforelse
+                        </div>
+
 
                     </div>
-                </div>
+
+
+                    <div class="row">
+                        @if ($indicador->tipo_indicador  === "riesgo")
+                            <div class="col-12 text-center text-danger">
+                                <h5 class="fw-bold ">
+                                    <i class="fa-solid fa-circle-exclamation"></i>         
+                                    Limite:            
+                                        @if($indicador->unidad_medida === 'pesos')
+                                            ${{ $indicador->meta_esperada }}
+
+                                        @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ $indicador->meta_esperada }}%
+
+                                        @elseif($indicador->unidad_medida === 'dias')
+                                           {{ $indicador->meta_esperada }} Días
+
+                                        @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ $indicador->meta_esperada }} Ton.
+
+                                        @else
+                                            {{ $indicador->meta_esperada }}
+                                        @endif 
+
+                                    
+                                </h5> 
+                            </div>
+                        @endif
+                        @if($indicador->tipo_indicador === "normal")
+                            <div class="col-12 text-center">
+                                <h5>
+                                    <i class="fa fa-circle-exclamation text-primary"></i>
+                                    Minimo Esperado:
+                                        @if($indicador->unidad_medida === 'pesos')
+                                            ${{ $indicador->meta_minima }}
+
+                                        @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ $indicador->meta_minima }}%
+
+                                        @elseif($indicador->unidad_medida === 'dias')
+                                           {{ $indicador->meta_minima }} Días
+
+                                        @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ $indicador->meta_minima }} Ton.
+
+                                        @else
+                                            {{ $indicador->meta_minima }}
+                                        @endif  - 
+                                    Meta
+                                        @if($indicador->unidad_medida === 'pesos')
+                                            ${{ $indicador->meta_esperada }}
+
+                                        @elseif($indicador->unidad_medida === 'porcentaje')
+                                            {{ $indicador->meta_esperada }}%
+
+                                        @elseif($indicador->unidad_medida === 'dias')
+                                           {{ $indicador->meta_esperada }} Días
+
+                                        @elseif($indicador->unidad_medida === 'toneladas')
+                                            {{ $indicador->meta_esperada }} Ton.
+
+                                        @else
+                                            {{ $indicador->meta_esperada }}
+                                        @endif 
+                                </h5> 
+                            </div>
+                        @endif
+                    </div>
 
 
 
-                    <div class="col-12" >
+                    <div class="row" >
+                        <!-- Tabs content -->
+                        <div class="tab-content" id="ex2-content">
+
+                            <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
+                                <div class="col-12 d-flex justify-content-center chart-container w-100" style="height: 500px" >
+                                    <canvas class="" id="grafico"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+                                <div class="col-12 d-flex justify-content-center chart-container w-100" style="height: 500px" >
+                                    <canvas id="graficoPie"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3" >
+                                <div class="col-12 d-flex justify-content-center chart-container w-100" style="height: 500px" >
+                                    <canvas id="graficoLine"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- Tabs content -->
+
                         <!-- Tabs navs -->
-                        <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                        <ul class="nav nav-tabs nav-justified mb-3 " id="ex1" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
+                                <a data-mdb-tab-init class="nav-link fw-bold display-2 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
                                     <i class="fa fa-chart-simple"></i>
-                                    Barras
+                                    Gráfico Barras
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
                                     <i class="fa fa-chart-pie"></i>
-                                    Pie
+                                    Gráfico Pie
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
                                     <i class="fa fa-circle"></i>
-                                    Lineas
+                                    Gráfico Lineas
                                 </a>
                             </li>
                         </ul>
                         <!-- Tabs navs -->
-
-                        <!-- Tabs content -->
-                        <div class="tab-content" id="ex2-content">
-                            <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
-                                <div class="col-12  chart-container w-100" >
-                                    <canvas class="" id="grafico"></canvas>
-                                </div>
-                            </div>
-                            <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
-
-                            <div class="row justify-content-center">
-                                    <div class="col-12 text-center chart-container w-100" >
-                                        <canvas id="graficoPie"></canvas>
-                                    </div>
-                            </div>
-
-                            </div>
-                            <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                                <div class="col-12 text-center chart-container w-100" >
-                                    <canvas id="graficoLine"></canvas>
-
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Tabs content -->
-
 
 
                 </div>
@@ -555,40 +661,32 @@
 
 @section('scripts')
 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
+    const indicador = @json($indicador);
     const datos = @json($graficar);
-    const TIPO_INDICADOR = "{{ $tipo_indicador }}";
+    const TIPO_INDICADOR = "{{ $indicador->tipo_indicador }}";
 
     const mesesES = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
 
-    // ============================
-    // FILTRAR DATOS
-    // ============================
+    if (!datos || datos.length === 0) return;
 
     const datosFinal = datos.filter(d => d.final === "on");
     const datosReferencia = datos.filter(d => d.referencia === "on");
 
-    // ============================
-    // LABELS (MES + AÑO)
-    // ============================
-
     const labels = [...new Set(
         [...datosFinal, ...datosReferencia].map(item => {
             const fecha = new Date(item.fecha_periodo);
-            const mes = mesesES[fecha.getMonth()];
-            const year = fecha.getFullYear();
-            return `${mes} ${year}`;
+            return `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}`;
         })
     )];
-
-    // ============================
-    // METAS + VARIACIÓN
-    // ============================
 
     const VARIACION_ON = "{{ $indicador->variacion }}" === "on";
 
@@ -600,51 +698,36 @@ document.addEventListener("DOMContentLoaded", function () {
     const LIMITE_INFERIOR = VARIACION_ON ? META_ESPERADA - VARIACION : null;
     const LIMITE_SUPERIOR = VARIACION_ON ? META_ESPERADA + VARIACION : null;
 
-    const colorMetaMinima = "red";
-    const colorMetaMaxima = "green";
-    const colorVariacion = "red";
+    const UNIDAD_MEDIDA = "{{ $indicador->unidad_medida }}";
 
     // ============================
-    // DATASET FINAL (BARRAS)
+    // DATASET PRINCIPAL (BARRAS)
     // ============================
 
     const datasetFinal = {
-
         type: "bar",
-        label: datosFinal.length > 0
-            ? datosFinal[0].nombre_campo
-            : "Cumplimiento",
+        label: datosFinal.length > 0 ? datosFinal[0].nombre_campo : "Cumplimiento",
 
         data: labels.map(label => {
-
             const item = datosFinal.find(d => {
                 const fecha = new Date(d.fecha_periodo);
-                const mes = mesesES[fecha.getMonth()];
-                const year = fecha.getFullYear();
-                const labelData = `${mes} ${year}`;
-                return labelData === label;
+                return `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}` === label;
             });
-
             return item ? parseFloat(item.informacion_campo) : null;
-
         }),
 
         backgroundColor: ctx => {
-
             const value = ctx.raw;
             if (value === null) return "rgba(200,200,200,0.3)";
 
             if (VARIACION_ON) {
-
                 if (value < LIMITE_INFERIOR || value > LIMITE_SUPERIOR) {
                     return "rgba(255,99,132,0.8)";
                 }
-
                 return "rgba(75,192,75,0.8)";
             }
 
             if (TIPO_INDICADOR === "riesgo") {
-
                 return value < META_MINIMA
                     ? "rgba(75,192,75,0.8)"
                     : "rgba(255,99,132,0.8)";
@@ -656,21 +739,47 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         borderWidth: 1,
-        order: 1
+        order: 1,
+
+        datalabels: {
+            anchor: 'end',
+            align: 'top',
+            color: '#000',
+            font: function(context) {
+                const total = context.chart.data.labels.length;
+                let size = 14;
+                if (total > 6) size = 12;
+                if (total > 10) size = 10;
+                if (total > 15) size = 8;
+
+                return {
+                    weight: 'bold',
+                    size: size
+                };
+            },
+            formatter: function(value) {
+                if (value === null) return '';
+
+                switch (UNIDAD_MEDIDA) {
+                    case 'pesos': return '$' + value.toFixed(2);
+                    case 'porcentaje': return value.toFixed(2) + '%';
+                    case 'dias': return value.toFixed(2) + ' Días';
+                    case 'toneladas': return value.toFixed(2) + ' Ton.';
+                    default: return value.toFixed(2);
+                }
+            }
+        }
     };
 
     // ============================
-    // REFERENCIAS (LINEAS)
+    // REFERENCIAS (LÍNEAS)
     // ============================
 
     const referenciasAgrupadas = {};
 
     datosReferencia.forEach(item => {
-
         const fecha = new Date(item.fecha_periodo);
-        const mes = mesesES[fecha.getMonth()];
-        const year = fecha.getFullYear();
-        const label = `${mes} ${year}`;
+        const label = `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}`;
 
         if (!referenciasAgrupadas[item.nombre_campo]) {
             referenciasAgrupadas[item.nombre_campo] = {};
@@ -678,32 +787,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         referenciasAgrupadas[item.nombre_campo][label] =
             parseFloat(item.informacion_campo);
-
     });
 
-    const datasetsReferencias = Object.keys(referenciasAgrupadas).map((nombre, index) => {
-
-        return {
-
-            type: "line",
-            label: nombre,
-
-            data: labels.map(label =>
-                referenciasAgrupadas[nombre][label] ?? null
-            ),
-
-            borderWidth: 3,
-            tension: 0.3,
-            fill: true,
-
-            borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
-            backgroundColor: `rgba(${50 + index * 60}, 120, 255, 0.2)`,
-
-            spanGaps: true,
-            order: 9
-        };
-
-    });
+    const datasetsReferencias = Object.keys(referenciasAgrupadas).map((nombre, index) => ({
+        type: "line",
+        label: nombre,
+        data: labels.map(label => referenciasAgrupadas[nombre][label] ?? null),
+        borderWidth: 3,
+        tension: 0.1,
+        fill: false,
+        borderColor: `rgba(${50 + index * 60}, 120, 255, 1)`,
+        spanGaps: true,
+        order: 10
+    }));
 
     // ============================
     // CANVAS
@@ -712,86 +808,89 @@ document.addEventListener("DOMContentLoaded", function () {
     const canvas = document.getElementById("grafico");
     if (!canvas) return;
 
+    // 🔥 EVITAR DUPLICACIÓN
+    if (window.miGrafica) {
+        window.miGrafica.destroy();
+    }
+
     // ============================
-    // CHART
+    // CREAR GRÁFICA
     // ============================
 
-    new Chart(canvas.getContext("2d"), {
+    window.miGrafica = new Chart(canvas.getContext("2d"), {
 
         data: {
-
             labels,
-
             datasets: [
-
                 datasetFinal,
                 ...datasetsReferencias,
 
                 ...(VARIACION_ON ? [
-
                     {
                         type: "line",
                         label: "Meta esperada",
                         data: labels.map(() => META_ESPERADA),
-                        borderColor: colorMetaMaxima,
+                        borderColor: "green",
                         borderWidth: 3,
-                        order: 9
+                        order: 10
                     },
-
                     {
                         type: "line",
                         label: "Variación inferior",
                         data: labels.map(() => LIMITE_INFERIOR),
-                        borderColor: colorVariacion,
+                        borderColor: "red",
                         borderWidth: 2,
                         borderDash: [6, 6],
-                        order: 9
+                        order: 10
                     },
-
                     {
                         type: "line",
                         label: "Variación superior",
                         data: labels.map(() => LIMITE_SUPERIOR),
-                        borderColor: colorVariacion,
+                        borderColor: "red",
                         borderWidth: 2,
                         borderDash: [6, 6],
-                        order: 9
+                        order: 10
                     }
-
                 ] : [
-
                     {
                         type: "line",
                         label: "Meta mínima",
                         data: labels.map(() => META_MINIMA),
-                        borderColor: colorMetaMinima,
+                        borderColor: "red",
                         borderWidth: 2,
                         borderDash: [6, 6],
-                        order: 9
+                        order: 10
                     },
-
                     {
                         type: "line",
                         label: "Meta máxima",
                         data: labels.map(() => META_ESPERADA),
-                        borderColor: colorMetaMaxima,
+                        borderColor: "green",
                         borderWidth: 3,
-                        order: 0
+                        order: 10
                     }
-
                 ])
-
             ]
-
         },
 
         options: {
-
             responsive: true,
 
             plugins: {
                 legend: {
-                    position: "top"
+                    display: true,
+                    labels: {
+                        filter: function(item, chart) {
+
+                            const dataset = chart.datasets[item.datasetIndex];
+
+                            return dataset.type !== 'bar'; // 👈 oculta solo barras
+                        }
+                    }
+                },
+                datalabels: {
+                    display: context => context.dataset.type === 'bar'
                 }
             },
 
@@ -800,20 +899,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     beginAtZero: true
                 }
             }
+        },
 
-        }
+        plugins: [ChartDataLabels]
 
     });
 
 });
-
-
 </script>
+
+
+
+
+
+{{-- los otros graficos  --}}
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
     const datos = @json($graficar);
-    const TIPO_INDICADOR = "{{ $tipo_indicador }}";
+    const TIPO_INDICADOR = "{{ $indicador->tipo_indicador }}";
+    const UNIDAD_MEDIDA = "{{ $indicador->unidad_medida }}";
 
     const mesesES = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -840,13 +946,10 @@ document.addEventListener("DOMContentLoaded", function () {
     )].sort((a, b) => new Date(a) - new Date(b));
 
     const labels = fechasUnicas.map(fechaStr => {
-
         const fecha = new Date(fechaStr);
         const mes = mesesES[fecha.getMonth()];
         const year = fecha.getFullYear();
-
         return `${mes} ${year}`;
-
     });
 
     // ============================
@@ -868,11 +971,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // ============================
 
     const dataValores = fechasUnicas.map(fecha => {
-
         const item = datosFinal.find(d => d.fecha_periodo === fecha);
-
         return item ? parseFloat(item.informacion_campo) : null;
-
     });
 
     const nombreCampo = datosFinal.length > 0
@@ -935,8 +1035,55 @@ document.addEventListener("DOMContentLoaded", function () {
                 responsive: true,
                 scales: {
                     y: { beginAtZero: true }
+                },
+                plugins: {
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'center',
+                        color: '#000',
+                        font: function(context) {
+
+                            const total = context.chart.data.labels.length;
+
+                            let size = 17;
+
+                            if (total > 6) size = 15;
+                            if (total > 10) size = 12;
+                            if (total > 15) size = 10;
+                            if (total > 20) size = 8;
+
+                            return {
+                                weight: 'bold',
+                                size: size
+                            };
+                        },
+                        formatter: function(value) {
+
+                            if (value === null) return '';
+
+                            switch (UNIDAD_MEDIDA) {
+
+                                case 'pesos':
+                                    return '$' + value.toFixed(2);
+
+                                case 'porcentaje':
+                                    return value.toFixed(2) + '%';
+
+                                case 'dias':
+                                    return value.toFixed(2) + ' Días';
+
+                                case 'toneladas':
+                                    return value.toFixed(2) + ' Ton.';
+
+                                default:
+                                    return value.toFixed(2);
+                            }
+                        }
+                    }
                 }
-            }
+            },
+
+            plugins: [ChartDataLabels]
 
         });
 
@@ -968,10 +1115,64 @@ document.addEventListener("DOMContentLoaded", function () {
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: "bottom"
+                        display:false
+                    },
+                    datalabels: {
+                        color: '#fff',
+                        font: function(context) {
+
+                            const total = context.chart.data.labels.length;
+
+                            let size = 15;
+
+                            if (total > 6) size = 15;
+                            if (total > 10) size = 10;
+                            if (total > 15) size = 8;
+                            if (total > 20) size = 8;
+
+                            return {
+                                weight: 'bold',
+                                size: size
+                            };
+                        },
+                        formatter: function(value, context) {
+
+                            if (value === null) return '';
+
+                            const label = context.chart.data.labels[context.dataIndex];
+
+                            let valorFormateado = '';
+
+                            switch (UNIDAD_MEDIDA) {
+
+                                case 'pesos':
+                                    valorFormateado = '$' + value.toFixed(2);
+                                    break;
+
+                                case 'porcentaje':
+                                    valorFormateado = value.toFixed(2) + '%';
+                                    break;
+
+                                case 'dias':
+                                    valorFormateado = value.toFixed(2) + ' Días';
+                                    break;
+
+                                case 'toneladas':
+                                    valorFormateado = value.toFixed(2) + ' Ton.';
+                                    break;
+
+                                default:
+                                    valorFormateado = value.toFixed(2);
+                            }
+
+                            return label + '\n' + valorFormateado;
+                        },
+
                     }
                 }
-            }
+            },
+
+            plugins: [ChartDataLabels]
 
         });
 
@@ -979,3 +1180,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+
+
+
+
+
+
+
+
+{{-- Aqui yacen os scripts de la estacionalidad --}}
+
+
+
+
+
+@endsection

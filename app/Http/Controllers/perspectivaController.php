@@ -72,6 +72,7 @@ class perspectivaController extends Controller
 
     public function detalle_perspectiva(Perspectiva $perspectiva){
 
+
         $objetivos = Objetivo::where('id_perspectiva', $perspectiva->id)->get();
         $indicadores = Indicador::get();
 

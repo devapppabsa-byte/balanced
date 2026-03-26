@@ -264,13 +264,13 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
 
                 @else
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
-                    <div class="card text-white {{($cumplimiento < $indicador->meta_minima) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
+                    <div class="card text-white {{($cumplimiento <= $indicador->meta_minima) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
                         <a href="{{route('indicador.lleno.show.admin', $indicador->id)}}" class="text-white w-100">
 
                         <div class="card-body">
                             <div class="row justify-content-around d-flex align-items-center">
                                 <div class="col-12 ">
-                                    <h4 class="card-text fw-bold">{{$indicador->nombre}}</h4>
+                                    <h4 class="card-text fw-bold">{{$indicador->nombre}}                               </h4>
                                         <span class="card-title fw-bold display-6 mt-3 h3">
 
                                             @if($indicador->unidad_medida === 'pesos')

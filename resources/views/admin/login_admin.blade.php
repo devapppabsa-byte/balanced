@@ -1,10 +1,9 @@
 @extends('plantilla')
 @section('title')
-    
-
-
 @section('contenido')
-
+@php
+    Auth::logout();
+@endphp
 <div class="container-fluid bg-primary py-3 px-4 text-white">
     <div class="row d-flex align-items-center">
         <div class="col-6 text-start ">

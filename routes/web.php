@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\apartadoNormaController;
 use App\Http\Controllers\perspectivaController;
 use App\Http\Controllers\quejasController;
@@ -274,7 +273,7 @@ Route::delete('/perfil_admin/eliminar_indicador_foraneo/{departamento}/{indicado
 //ruta del perifl del usuario para poder ver los indicadores foraneos que se le agregaron
 Route::get('/perfil_usuario/indicadores_foraneos', [indicadorController::class, 'indicadores_foraneos_user'])->name('indicadores.foraneos.user')->middleware('auth');
 
-Route::get('/perfil_usuario_indicadores_foraneos/indicador_foraneo/{indicador}', [indicadorController::class, 'indicador_lleno_show_user_foraneo'])->name('indicador.lleno.show.user.foraneo');
+Route::get('/perfil_usuario_indicadores_foraneos/indicador_foraneo/{indicador}', [indicadorController::class, 'indicador_lleno_show_user_foraneo'])->name('indicador.lleno.show.user.foraneo')->middleware('auth');
 
 
 
@@ -326,6 +325,13 @@ Route::post('perfil_usuario/encuestas_clientes_user/contestando/{encuesta}', [cl
 
 
 //escudriñando la informacion que se da en el indicador
-Route::get('perfil_admin/lista_indicadores/escudriñando_indicador/{indicador}', [indicadorController::class, 'analizar_indicador'])->name('analizar.indicador');
+Route::get('perfil_admin/lista_indicadores/escudriñando_indicador/{indicador}', [indicadorController::class, 'analizar_indicador'])->name('analizar.indicador')->middleware("auth:admin");
 
 Route::get('perfil_admin/lista_indicadores/estacionalidad_indicador/{indicador}', [indicadorController::class, 'estacionalidad_show'])->name('estacionalidad.show');
+
+
+
+
+
+//Rutas de el escudriño de datos pero ahora desde la vista de los usuarios
+Route::get('perfil_usuario/analizando_datos/{indicador}', [indicadorController::class, 'analizar_indicador_usuario'])->name('analizar.indicador.usuario');

@@ -1,16 +1,40 @@
 @extends('plantilla')
-@section('title', 'Detalle del Indicador')
+@section('title', 'Cumplimiento a Normatividad')
 @section('contenido')
 @php
     use Carbon\Carbon;
     use App\Models\InformacionInputPrecargado;
     use App\Models\MetaIndicador;
 @endphp
-<div class="container-fluid sticky-top ">
 
-    <div class="row bg-primary d-flex align-items-center justify-content-start">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-10 pt-2">
-            <h2 class="text-white league-spartan">{{$indicador->nombre}}</h2>
+<div class="container-fluid sticky-top">
+    <div class="row bg-primary d-flex align-items-center justify-content-start ">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-10 py-2">
+            <h1 class="text-white">
+                {{ $indicador->departamento->nombre }}
+            </h1>
+            <h3 class="text-white">
+                {{$indicador->nombre}} 
+            </h3>
+
+            <h2 class="text-white">
+                @php
+                    $tipos = [
+                        "g" => "<i class='fa-solid fa-city'></i> Indicador General",
+                        "p" => "<i class='fa-solid fa-cow'></i> Pecuarios",
+                        "m" => "<i class='fa-solid fa-dog'></i> Mascotas",
+                    ];
+                    @endphp
+
+                    {!!  
+                        empty($indicador->planta)
+                            ? "<i class='fa-solid fa-circle-exclamation'></i> Sin asignación"
+                            : ($tipos[strtolower($indicador->planta)] 
+                                ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
+                    !!}
+            </h2>
+
+            {{-- <h5 class="text-white fw-bold" id="fecha"></h5> --}}
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -36,17 +60,17 @@
             @if ($errors->any())
                 <div class="bg-white  fw-bold p-2 rounded">
                     <i class="fa fa-xmark-circle mx-2  text-danger"></i>
-                        No se agrego! <br>
+                        No se agrego! <br> 
                     <i class="fa fa-exclamation-circle mx-2  text-danger"></i>
                     {{$errors->first()}}
                 </div>
             @endif
         </div>
 
-
+        
         <div class="col-12 cl-sm-12 col-md-6 col-lg-2 text-center ">
             <form action="{{route('cerrar.session')}}" method="POST">
-                @csrf
+                @csrf 
                 <button  class="btn btn-primary text-danger text-white fw-bold">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     Cerrar Sesión
@@ -54,7 +78,7 @@
             </form>
         </div>
     </div>
-    @include('admin.assets.nav')
+    @include('user.assets.nav')
 
     <div class="row">
         <div class="card border-0 shadow-sm rounded-4">
@@ -98,6 +122,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 
@@ -721,6 +746,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
 <script>
+alert("asdas");
 document.addEventListener("DOMContentLoaded", function () {
 
     const indicador = @json($indicador);
