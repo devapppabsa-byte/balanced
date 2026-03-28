@@ -132,14 +132,46 @@ class apartadoNormaController extends Controller
     }
 
 
-    public function registro_actividad_cumplimiento_norma(Request $request, ApartadoNorma $apartado){
-
+    public function registro_actividad_cumplimiento_norma(Request $request){
+        
+        //Esta variable se usa para el LOG
         $autor = 'Id: '.auth()->user()->id.' - '.auth()->user()->name.' - '.auth()->user()->puesto;
+
 
         Carbon::setLocale('es'); // Establece el idioma a español
         setlocale(LC_TIME, 'es_ES.UTF-8'); // Asegura que PHP use el locale correcto (depende del servidor)
 
         $mes = Carbon::now()->translatedFormat('F Y');
+     
+
+        //ciclo para insertar la marquita de cumplimiento
+         //solo aparecen las key de los apartados
+        $keys_realizada = array_keys($request->realizada);
+
+        foreach($keys_realizada as $key_realizada){
+
+            $cumplimiento_norma =  CumplimientoNorma::create([
+                'mes' => $mes,
+                'descripcion' => $request->descripcion_actividad,
+                'id_apartado_norma' => $key_realizada
+
+            ]);
+
+        }
+       //ciclo para insertar la marquita de cumplimiento
+
+       
+
+       //ciclo para insertar la evidencia, que aqui creo que van a ser un par de ciclos anidados
+
+       
+
+
+
+
+        $keys_evidencia = array_keys($request->evidencia);
+        
+
 
 
         $request->validate([
@@ -179,12 +211,17 @@ class apartadoNormaController extends Controller
             }
         }
 
+
+
         LogBalanced::create([
             'autor' => $autor,
             'accion' => "add",
             'descripcion' => "Se registro cumplimiento normativo para el apartado: '{$apartado->apartado}' de la norma: {$norma_nombre} (ID cumplimiento: {$cumplimiento_norma->id})",
             'ip' => request()->ip() 
         ]);
+
+
+
 
         return back()->with('success', 'La actividad fue registrada');
     }

@@ -61,8 +61,6 @@
 
 <div class="container-fluid">
 
-
-
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
 
@@ -93,15 +91,17 @@
                 @if (!$apartados->isEmpty())
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
-
                             <thead class="table-light border-bottom">
                                 <tr>
                                     <th class="ps-4" style="min-width: 220px;">
                                         <small class="text-muted fw-semibold text-uppercase">Apartado</small>
                                     </th>
-                                    <th style="min-width: 320px;">
-                                        <small class="text-muted fw-semibold text-uppercase">Entregables</small>
+                                    <th class="ps-4" style="min-width: 220px;">
+                                        <small class="text-muted fw-semibold text-uppercase">Marcar</small>
                                     </th>
+                                    <th class="ps-4" style="min-width: 220px;">
+                                        <small class="text-muted fw-semibold text-uppercase">Evidencia</small>
+                                    </th>                                    
                                     <th class="text-center pe-4" style="width: 160px;">
                                         <small class="text-muted fw-semibold text-uppercase">Acciones</small>
                                     </th>
@@ -109,6 +109,8 @@
                             </thead>
 
                             <tbody>
+                            <form action="{{route('registro.actividad.cumplimiento.norma')}}" id="form_cumplimiento_normativo" method="post" enctype="multipart/form-data" >
+                                @csrf
                                 @foreach ($apartados as $apartado)
                                     <tr class="border-bottom">
 
@@ -117,27 +119,29 @@
                                             {{ $apartado->apartado }}
                                         </td>
 
-                                        {{-- Descripción --}}
-                                        <td>
-                                            <small class="text-muted">
-                                                {{ $apartado->descripcion }}
-                                            </small>
+                                        <td class="ps-4 fw-semibold text-dark">
+                                            <div class="form-check">
+                                            <input class="form-check-input"
+                                            name="realizada[{{ $apartado->id }}]"
+                                            value="check"
+                                            type="checkbox" value="" id="a{{ $apartado->id }}"/>
+                                            <label class="form-check-label" for="a{{ $apartado->id }}">Realizada</label>
+                                            </div>
                                         </td>
+
+                                        <td>
+                                            <div class="form-group mt-4">
+                                                <input type="file" 
+                                                name="evidencias[{{ $apartado->id }}]" multiple class="form-control" accept=".jpg,.png,.pdf,.docx,.mp4" >
+                                            </div>                                            
+                                        </td>
+
+                                        {{-- Descripción --}}
+
 
                                         {{-- Acciones --}}
                                         <td class="text-center pe-4">
                                             <div class="btn-group btn-group-sm" role="group">
-
-                                                <button
-                                                    class="btn btn-outline-success"
-                                                    data-mdb-ripple-init
-                                                    data-mdb-modal-init
-                                                    data-mdb-target="#reg{{ $apartado->id }}"
-                                                    {{ Auth::user()->tipo_usuario !== 'principal' ? 'disabled' : '' }}
-                                                    title="Registrar cumplimiento">
-                                                    <i class="fa-regular fa-square-check"></i>
-                                                </button>
-
                                                 <a href="{{ route('ver.evidencia.cumplimiento.normativo', $apartado->id) }}"
                                                    class="btn btn-outline-primary"
                                                    title="Ver evidencias">
@@ -147,10 +151,19 @@
                                         </td>
 
                                     </tr>
+
                                 @endforeach
+                                </form>
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="col-12  text-center my-3">
+                        <button type="submit" class="btn p-3 btn-primary w-50" form="form_cumplimiento_normativo">
+                            Enviar 
+                        </button>
+                    </div>
+
 
                 @else
                     {{-- Empty state --}}
@@ -185,7 +198,7 @@
 
 
 
-@forelse ($apartados as $apartado)
+{{-- @forelse ($apartados as $apartado)
     <div class="modal fade" id="reg{{$apartado->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -197,39 +210,29 @@
                     <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body py-4">
-                    <form action="{{route('registro.actividad.cumplimiento.norma', $apartado->id)}}" id="form_cumplimiento_normativo"  method="POST" enctype="multipart/form-data">
-                        @csrf 
-                        <div class="form-group">
-                            <div class="form-outline" data-mdb-input-init>
-                                <textarea  class="form-control form-control-lg {{ $errors->first('descripcion_actividad') ? 'is-invalid' : '' }} " value="{{old("descripcion_actividad")}}"  name="descripcion_actividad" required></textarea>
-                                <label class="form-label" for="descripcion_actividad" >Descripción Actividad <span class="text-danger">*</span> </label>
-                            </div>
+
+                    <div class="form-group">
+                        <div class="form-outline" data-mdb-input-init>
+                            <textarea  class="form-control form-control-lg {{ $errors->first('descripcion_actividad') ? 'is-invalid' : '' }} " value="{{old("descripcion_actividad")}}"  name="descripcion_actividad" required></textarea>
+                            <label class="form-label" for="descripcion_actividad" >Descripción Actividad <span class="text-danger">*</span> </label>
                         </div>
+                    </div>
 
-                        <div class="form-group mt-4">
-                            <label class="bg-light my-2">
-                                <i class="fa fa-exclamation-circle"></i>
-                                Puedes subir PDF, imagenes, documentos de word y videos de no mas de 10 mb.
-                            </label>
-                            <input type="file" name="evidencias[]" multiple class="form-control" accept=".jpg,.png,.pdf,.docx,.mp4" required>
-                        </div>
+                    <div class="form-group mt-4">
+                        <label class="bg-light my-2">
+                            <i class="fa fa-exclamation-circle"></i>
+                            Puedes subir PDF, imagenes, documentos de word y videos de no mas de 10 mb.
+                        </label>
+                        <input type="file" form="form_cumplimiento_normativo" name="evidencias[]" multiple class="form-control" accept=".jpg,.png,.pdf,.docx,.mp4" required>
+                    </div>
 
-
-                        <div class="form-group mt-3">
-                            <button  class="btn btn-primary w-100 " data-mdb-ripple-init>
-                                <i class="fa fa-save"></i>
-                                Guardar Registro
-                            </button>
-                        </div>
-
-                    </form>
                 </div>
             </div>
         </div>
     </div>    
 @empty
     
-@endforelse
+@endforelse --}}
 
 
 
@@ -237,13 +240,14 @@
 
 {{-- DESDE AQUI LIMPIO LOS DATOS QUE VIENEN DEL CONTROLADOR Y LOS PASO A HTML PARA QUE JS LOS PUEDA TOMAR, SEGURO QUE SE PUEDE HACER DE UNA MEJOR MANERA PERO ASI ESTA BIEN DE MOMENTO. --}}
 
-<div id="data-norma"
+
+{{-- <div id="data-norma"
     data-user = "{{Auth::user()->name}}"
     data-correos = '@json($correos)''
     data-correo = "{{Auth::user()->email}}"
      data-norma="{{ $norma->nombre }}"
      data-departamento="{{ Auth::user()->departamento->nombre }}">
-</div>
+</div> --}}
 
 
 @endsection
@@ -252,7 +256,7 @@
 @section('scripts')
     
 
-<script>
+{{-- <script>
 
 
  const data = document.getElementById('data-norma');
@@ -292,6 +296,6 @@ document.getElementById('form_cumplimiento_normativo')
 
 });
 
-</script>
+</script> --}}
 
 @endsection
