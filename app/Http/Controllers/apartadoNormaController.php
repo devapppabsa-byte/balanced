@@ -7,6 +7,7 @@ use App\Models\EvidenciaCumplimientoNorma;
 use Carbon\Carbon;
 use App\Models\Admin;
 use App\Models\Norma;
+use Illuminate\Support\Facades\DB;
 use App\Models\CumplimientoNorma;
 use App\Models\ApartadoNorma;
 use App\Models\LogBalanced;
@@ -47,14 +48,69 @@ class apartadoNormaController extends Controller
 
     }
 
+    
     public function registro_cumplimiento_normativa_index(Norma $norma){
 
 
-        $apartados = ApartadoNorma::where('id_norma', $norma->id)->get();
-        $correos = Admin::pluck('email');
+        $apartados = ApartadoNorma::where('id_norma',$norma->id)->get();
+
+        //mega grafica
+        $totalesApartados = ApartadoNorma::select('id_norma')
+            ->selectRaw('COUNT(*) as total_apartados')
+            ->where('id_norma', $norma->id)
+            ->groupBy('id_norma');
 
 
-        return view('user.registro_cumplimiento_normativo', compact('norma', 'apartados', 'correos'));
+        $cumplimientos = CumplimientoNorma::join(
+                'apartado_norma',
+                'cumplimiento_norma.id_apartado_norma',
+                '=',
+                'apartado_norma.id'
+            )
+            ->where('apartado_norma.id_norma', $norma->id)
+            ->select(
+                'apartado_norma.id_norma',
+                'cumplimiento_norma.mes',
+                DB::raw('COUNT(DISTINCT cumplimiento_norma.id_apartado_norma) as cumplidos')
+            )
+            ->groupBy('apartado_norma.id_norma', 'cumplimiento_norma.mes');
+
+
+
+         $grafica = DB::table('norma')
+            ->where('norma.id', $norma->id)
+            ->joinSub($totalesApartados, 'totales', function ($join) {
+                $join->on('norma.id', '=', 'totales.id_norma');
+            })
+            ->leftJoinSub($cumplimientos, 'cumple', function ($join) {
+                $join->on('norma.id', '=', 'cumple.id_norma');
+            })
+            ->select(
+                'norma.id',
+                'norma.nombre',
+                'norma.meta_minima',
+                'norma.meta_esperada',
+                'cumple.mes',
+                DB::raw('IFNULL(ROUND((cumple.cumplidos / totales.total_apartados) * 100, 2), 0) as porcentaje')
+            )
+            ->orderByRaw("
+                FIELD(cumple.mes, 
+                    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                )
+            ")
+            ->get();
+
+
+
+            $labels = $grafica->pluck('mes');
+            $valores = $grafica->pluck('porcentaje');
+
+            $metaMinima   = optional($grafica->first())->meta_minima ?? 0;
+            $metaEsperada = optional($grafica->first())->meta_esperada ?? 0;
+
+
+        return view('user.registro_cumplimiento_normativo', compact('norma', 'apartados', 'labels', 'valores', 'metaMinima', 'metaEsperada'));
 
 
     }
@@ -132,93 +188,103 @@ class apartadoNormaController extends Controller
     }
 
 
-    public function registro_actividad_cumplimiento_norma(Request $request){
-        
-        //Esta variable se usa para el LOG
-        $autor = 'Id: '.auth()->user()->id.' - '.auth()->user()->name.' - '.auth()->user()->puesto;
+public function registro_actividad_cumplimiento_norma(Request $request){
+    
+    
+    //Esta variable se usa para el LOG
+    $autor = 'Id: '.auth()->user()->id.' - '.auth()->user()->name.' - '.auth()->user()->puesto;
+    
+    
+    Carbon::setLocale('es'); // Establece el idioma a español
+    setlocale(LC_TIME, 'es_ES.UTF-8'); // Asegura que PHP use el locale correcto (depende del servidor)
+    
+    $mes = Carbon::now()->translatedFormat('F Y');
+    $mes = Carbon::parse($request->fecha)->translatedFormat('m-y');
 
+    //esta es la lista de a´partados, apartir de esta lista se creara el ciclo.    
+    $lista_apartados = array_keys($request->realizada);
+    $keys_descripciones = array_keys($request->descripcion);
+    $keys_realizada = array_keys($request->realizada);
+    if($request->evidencias != null) $keys_evidencias = array_keys($request->evidencias);
 
-        Carbon::setLocale('es'); // Establece el idioma a español
-        setlocale(LC_TIME, 'es_ES.UTF-8'); // Asegura que PHP use el locale correcto (depende del servidor)
+    //y si solo recorro los apartados que sten marcados como realizados
 
-        $mes = Carbon::now()->translatedFormat('F Y');
-     
+    
+    foreach($lista_apartados as $apartado){
 
-        //ciclo para insertar la marquita de cumplimiento
-         //solo aparecen las key de los apartados
-        $keys_realizada = array_keys($request->realizada);
+            //si el apartado es marcado como "Realizado"  busco a ver si tiene descripcion
+            if(in_array($apartado, $keys_descripciones)){
 
-        foreach($keys_realizada as $key_realizada){
-
-            $cumplimiento_norma =  CumplimientoNorma::create([
-                'mes' => $mes,
-                'descripcion' => $request->descripcion_actividad,
-                'id_apartado_norma' => $key_realizada
-
-            ]);
-
-        }
-       //ciclo para insertar la marquita de cumplimiento
-
-       
-
-       //ciclo para insertar la evidencia, que aqui creo que van a ser un par de ciclos anidados
-
-       
+                 $descripcion = $request->descripcion[$apartado];
+                 $descripcion == null ? $descripcion = " No se cargo descripción de la actividad " : "";
 
 
 
-
-        $keys_evidencia = array_keys($request->evidencia);
-        
-
-
-
-        $request->validate([
-
-            'descripcion_actividad' => 'required',
-            'evidencias.*' => 'required|file'
-            
-        ]);
-
-        $norma = Norma::find($apartado->id_norma);
-        $norma_nombre = $norma ? $norma->nombre : 'N/A';
-
-        //Guardo la actividad que realizo y guardo todo en una variable para poder  usar el ID  de lo que se registro
-        $cumplimiento_norma =  CumplimientoNorma::create([
-                'mes' => $mes,
-                'descripcion' => $request->descripcion_actividad,
-                'id_apartado_norma' => $apartado->id
-
-        ]);
+                if($request->evidencias != null){
+                    
+                    if(in_array($apartado, $keys_evidencias)){
+                        //se obtiene el el del cumplimiento creado
+                       $cumplimiento_norma = CumplimientoNorma::create([
+                       'mes'=> $mes,
+                       'descripcion' => $descripcion,
+                       'id_apartado_norma' => $apartado,
+                       'check' => $request->realizada[$apartado]
+                       ]);
+    
+                    }
+                }
 
 
 
-        //registra las evidencias de la actividad que se registro 
-        if ($request->hasFile('evidencias')) {
-            foreach ($request->file('evidencias') as $archivo) {
-                // Guarda el archivo en storage/app/public/archivos
-                $ruta = $archivo->store('evidencias_normas', 'public');
+                else {
+                   CumplimientoNorma::create([
+                   'mes'=> $mes,
+                   'descripcion' => $descripcion,
+                   'id_apartado_norma' => $apartado,
+                   'check' => $request->realizada[$apartado]
+                   ]);
+                }
+
+
+
+
+
+
+
+                if($request->evidencias != null){
+
+                    if(in_array($apartado, $keys_evidencias)){
+
+                        if($request->hasFile('evidencias')){
+                            
+                            foreach($request->file('evidencias') as $id => $archivo){
+                                
+                                if($archivo){
+                                $nombre = $archivo->getClientOriginalName(); 
+                                $path = $archivo->store('evidencias', 'public');
+
+                                    EvidenciaCumplimientoNorma::create([
+                                        'evidencia' => $path,
+                                        'nombre_archivo' => $nombre,
+                                        'id_cumplimiento_norma' => $cumplimiento_norma->id
+                                    ]);
+                                }
+
+                            }
+                        }
+                    }
+                }
                 
-                EvidenciaCumplimientoNorma::create([
-
-                    'evidencia' => $ruta,
-                    'nombre_archivo' => $archivo->getClientOriginalName(),
-                    'id_cumplimiento_norma' => $cumplimiento_norma->id
-
-                ]);
-
             }
         }
 
 
-
-        LogBalanced::create([
-            'autor' => $autor,
-            'accion' => "add",
-            'descripcion' => "Se registro cumplimiento normativo para el apartado: '{$apartado->apartado}' de la norma: {$norma_nombre} (ID cumplimiento: {$cumplimiento_norma->id})",
-            'ip' => request()->ip() 
-        ]);
+        // LogBalanced::create([
+        //     'autor' => $autor,
+        //     'accion' => "add",
+        //     'descripcion' => "Se registro cumplimiento normativo para el apartado: '{$apartado->apartado}' de la norma: {$norma_nombre} (ID cumplimiento: {$cumplimiento_norma->id})",
+        //     'ip' => request()->ip() 
+        // ]);
 
 
 
@@ -229,10 +295,16 @@ class apartadoNormaController extends Controller
 
     public function ver_evidencia_cumplimiento_normativo(ApartadoNorma $apartado){
 
-        $cumplimientos  = CumplimientoNorma::with('evidencia_cumplimiento_norma')->where('id_apartado_norma', $apartado->id)->orderBy('created_at', 'desc')->get();
 
-
-        
+        $cumplimientos = CumplimientoNorma::with('evidencia_cumplimiento_norma')
+        ->where('id_apartado_norma', $apartado->id)
+        ->get()
+        ->sortByDesc(function ($item) {
+            return Carbon::createFromFormat('m-y', $item->mes);
+        })
+        ->unique('mes')
+        ->values();
+       
        
 
         return view('user.evidencia_cumplimiento_normativo', compact('apartado', 'cumplimientos'));
@@ -243,7 +315,16 @@ class apartadoNormaController extends Controller
 
     public function ver_evidencia_cumplimiento_normativo_admin(ApartadoNorma $apartado){
 
-        $cumplimientos  = CumplimientoNorma::with('evidencia_cumplimiento_norma')->where('id_apartado_norma', $apartado->id)->orderBy('created_at', 'desc')->get();
+
+        
+    $cumplimientos = CumplimientoNorma::with('evidencia_cumplimiento_norma')
+        ->where('id_apartado_norma', $apartado->id)
+        ->get()
+        ->sortByDesc(function ($item) {
+            return Carbon::createFromFormat('m-y', $item->mes);
+        })
+        ->unique('mes')
+        ->values();
 
         
 

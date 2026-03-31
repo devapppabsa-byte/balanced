@@ -1,7 +1,9 @@
 @extends('plantilla')
 @section('title', 'Evidencia del cumplimiento a la norma')
-
 @section('contenido')
+@php
+    use Carbon\Carbon;
+@endphp
 <div class="container-fluid">
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
@@ -61,21 +63,30 @@
         <div class="col-10 py-3 text-center bg-white card">
             <h2>
                 <i class="fa-solid fa-photo-film"></i>
-                Evidencias del cumplimiento normativo
-                
+                Registro del cumplimiento Normativo.
             </h2>
         </div>
     </div>
-    <div class="row justify-content-center pt-3">
-        @forelse ($cumplimientos as $cumplimiento)
-            <div class="col-10 my-1">
+    <div class="row justify-content-center">
+        @forelse ($cumplimientos as $cumplimiento)    
+        @php
+        Carbon::setLocale('es');
+        $mes = Carbon::createFromFormat('m-y-d', $cumplimiento->mes . '-01')
+            ->translatedFormat('F Y');
+        @endphp
+            <div class="col-9 my-1">
                 <div class="accordion" id="accordionExample">
-                    <div class="accordion-item border shadow">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button data-mdb-collapse-init class="accordion-button fw-bold  collapsed" type="button" data-mdb-target="#cump{{$cumplimiento->id}}" aria-expanded="false" aria-controls="collapseTwo">
-                               Evidencias del mes de {{$cumplimiento->mes}} - {{$cumplimiento->descripcion}}
+                    <div class="accordion-item border-2 shadow-sm">
+                        <h5 class="accordion-header" id="headingTwo">
+                             <div class="badge badge-primary w-100"> {{$mes}}</div>
+                            <button  data-mdb-collapse-init class="accordion-button fw-bold  collapsed" type="button" data-mdb-target="#cump{{$cumplimiento->id}}" aria-expanded="false" aria-controls="collapseTwo">
+                                <i class="fa fa-check-circle me-1 text-primary"></i> 
+                                Se marco el mes de como cumplido - {{$cumplimiento->descripcion}}
+
+                     
+                        
                             </button>
-                        </h2>
+                        </h5>
                         <div id="cump{{$cumplimiento->id}}" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#accordionExample">
                             <div class="accordion-body">
                                 <div class="row">
@@ -129,7 +140,14 @@
                                                 </div>
                                             </div>
                                         @endif
+
                                     @empty
+                                        <div class="col-12 p-5 text-center">
+                                            <h2>
+                                                <i class="fa fa-exclamation-circle"></i>
+                                                No se agrego evidencia
+                                            </h2>
+                                        </div>
                                     @endforelse
                                 </div>
                             </div>
@@ -138,19 +156,7 @@
                 </div>
             </div>
         @empty
-            <div class="col-9 py-5 bg-white border border-2 shadows-sm ">
-                <div class="row py-5">
-                    <div class="col-12 text-center">
-                        <img src="{{asset('/img/iconos/empty.png')}}" class="img-fluid" alt="">
-                    </div>
-                    <div class="col-12 text-center">
-                        <h3>
-                            <i class="fa fa-exclamation-circle text-danger"></i>
-                            Aún no hay datos.
-                        </h3>
-                    </div>
-                </div>
-            </div>  
+            
         @endforelse
     </div>
 </div>

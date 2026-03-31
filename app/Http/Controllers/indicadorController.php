@@ -1118,7 +1118,7 @@ $meses = DB::table('cumplimiento_norma')
  | Consulta principal
  |------------------------------------------------------------
  */
- $resultado_norma = DB::table('norma as n')
+$resultado_norma = DB::table('norma as n')
     ->joinSub($meses, 'm', function ($join) {
         // cross join lógico para evaluar cada norma por mes
         $join->on(DB::raw('1'), '=', DB::raw('1'));
@@ -1155,12 +1155,9 @@ $meses = DB::table('cumplimiento_norma')
     ->groupBy('m.mes')
     ->orderBy('m.mes')
     ->get();
-
-
-
-
-
 //CONSULTA SQL DEL CUMPLIMIENTO NORMATIVO..
+
+
 
 
 //Uniendo los campos para generar la grafica del cumplimiento general
@@ -1197,14 +1194,9 @@ $cumplimiento_general = $meses->map(function ($mes) use ($indicadores, $encuesta
 
 
 //FINALIZA PRUEBAS  PARA LO DE LAS GRAFICAS
-
-
-
-
-
 $indicadores = Indicador::with('indicadorLleno')->where('id_departamento', $departamento->id)->get();
+//Este codigo es para sacar el cumplimiento normativo
 
-    //Este codigo es para sacar el cumplimiento normativo
 
 $inicio = Carbon::now()->startOfMonth();
 $fin = Carbon::now()->endOfMonth();
@@ -1212,64 +1204,36 @@ $diasMes = $inicio->daysInMonth;
 
 
 
-$mesActual = now()->format('Y-m');
+$mesActual = now()->format('m-y');
 
-$normas = DB::table('norma')
-    ->where('id_departamento', $departamento->id)
-    ->select('id', 'nombre', 'meta_minima', 'meta_esperada')
+
+//aqui vamos a poner el codigo del cumplimiento normativo
+$normas = DB::table('apartado_norma as an') 
+    ->join('norma as n', 'an.id_norma', '=', 'n.id')
+    ->join('departamentos as d', 'n.id_departamento', '=', 'd.id')
+
+    ->leftJoin('cumplimiento_norma as cn', function ($join) use ($mesActual) {
+        $join->on('cn.id_apartado_norma', '=', 'an.id')
+             ->where('cn.mes', '=', $mesActual);
+    })
+
+    ->where('d.id', $departamento->id)
+
+    ->select(
+        'n.*', // todos los campos de norma
+
+        DB::raw('COUNT(DISTINCT an.id) as total_apartados'),
+        DB::raw('COUNT(DISTINCT cn.id_apartado_norma) as cumplidos'),
+        DB::raw('
+            (COUNT(DISTINCT cn.id_apartado_norma) * 100.0) 
+            / COUNT(DISTINCT an.id) as porcentaje_cumplimiento
+        ')
+    )
+
+    ->groupBy('n.id') 
     ->get();
+//aqui vamos a poner el codigo del cumplimiento normativo
 
-
-
-
-$resultado_normas = [];
-
-foreach ($normas as $norma) {
-
-    // Total de apartados de la norma
-    $totalApartados = DB::table('apartado_norma')
-        ->where('id_norma', $norma->id)
-        ->count();
-
-    // Apartados cumplidos con evidencia en el mes
-    $apartadosCumplidos = DB::table('apartado_norma')
-        ->join('cumplimiento_norma', 'cumplimiento_norma.id_apartado_norma', '=', 'apartado_norma.id')
-        ->join(
-            'evidencia_cumplimiento_norma',
-            'evidencia_cumplimiento_norma.id_cumplimiento_norma',
-            '=',
-            'cumplimiento_norma.id'
-        )
-        ->where('apartado_norma.id_norma', $norma->id)
-        ->whereRaw("DATE_FORMAT(cumplimiento_norma.created_at, '%Y-%m') = ?", [$mesActual])
-        ->distinct('apartado_norma.id')
-        ->count('apartado_norma.id');
-
-    // Porcentaje de cumplimiento
-    $porcentaje = $totalApartados > 0
-        ? round(($apartadosCumplidos / $totalApartados) * 100, 2)
-        : 0;
-
-    // Evaluación contra metas
-    if ($porcentaje < $norma->meta_minima) {
-        $estatus = 'bajo';
-    } elseif ($porcentaje < $norma->meta_esperada) {
-        $estatus = 'riesgo';
-    } else {
-        $estatus = 'cumple';
-    }
-
-    $resultado_normas[] = [
-        'id_norma'        => $norma->id,
-        'norma'           => $norma->nombre,
-        'total_apartados' => $totalApartados,
-        'cumplimiento'       => $apartadosCumplidos,
-        'porcentaje'      => $porcentaje,
-        'meta_minima'     => $norma->meta_minima,
-        'meta_esperada'   => $norma->meta_esperada,
-        'estatus'         => $estatus,
-    ];
-}
 
 
 
@@ -1299,9 +1263,7 @@ $encuestas = DB::table('encuestas as e')
 
 
 
- return view('admin.lista_indicadores', compact('indicadores', 'departamento', 'encuestas', 'resultado_normas', 'cumplimiento_general'));
-
-
+ return view('admin.lista_indicadores', compact('indicadores', 'departamento', 'encuestas', 'cumplimiento_general', 'normas'));
 
 }
 

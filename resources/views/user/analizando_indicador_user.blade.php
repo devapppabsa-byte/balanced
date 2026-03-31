@@ -746,7 +746,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
 <script>
-alert("asdas");
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const indicador = @json($indicador);

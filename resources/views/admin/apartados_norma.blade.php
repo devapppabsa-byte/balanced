@@ -249,26 +249,31 @@
                             Grafico de Linea
                         </a>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    {{-- <li class="nav-item" role="presentation">
                         <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
                             <i class="fa fa-circle"></i>
                             Grafico de Dona
                         </a>
-                    </li>
+                    </li> --}}
                 </ul>
                 <!-- Tabs navs -->
 
                 <!-- Tabs content -->
                 <div class="tab-content" id="ex2-content">
                     <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
-                         <canvas id="chartBar"></canvas>
+                         <div style="style="width: 100%; height: 400px;">
+                            <canvas id="chartBar"></canvas>
+
+                        </div> 
                     </div>
                     <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
-                        <canvas id="chartLinea"></canvas>
+                        <div style="style="width: 100%; height: 400px;">
+                           <canvas id="chartLinea"></canvas>
+                    </div> 
                     </div>
-                    <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
+                    {{-- <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
                         <canvas id="chartDonut"></canvas>
-                    </div>
+                    </div> --}}
                 </div>
                 <!-- Tabs content -->
 
@@ -359,25 +364,37 @@
 @section('scripts')
 
 
-
-
-
-
 <script>
-const labels        = @json($labels);
+//const labels        = @json($labels);
 const valores       = @json($valores);
 const metaMinima    = Number(@json($metaMinima));
 const metaEsperada  = Number(@json($metaEsperada));
 
-const lineaMinima   = labels.map(() => metaMinima);
-const lineaEsperada = labels.map(() => metaEsperada);
+const labelsOriginal = @json($labels);
+
+const meses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
+
+const labelsFormateados = labelsOriginal.map(fecha => {
+    const [mes, anio] = fecha.split('-');
+    return `${meses[parseInt(mes) - 1]} 20${anio}`;
+});
+
+console.log(labelsFormateados);
+
+const lineaMinima   = labelsFormateados.map(() => metaMinima);
+const lineaEsperada = labelsFormateados.map(() => metaEsperada);
+
+
 
 const ctx = document.getElementById('chartBar').getContext('2d');
 
 new Chart(ctx, {
   type: 'bar', // 
   data: {
-    labels: labels,
+    labels: labelsFormateados,
     datasets: [
       {
         type: 'bar',
@@ -422,6 +439,7 @@ new Chart(ctx, {
   },
   options: {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { position: 'top' },
       tooltip: {
@@ -456,7 +474,7 @@ const ctx2 = document.getElementById('chartLinea');
 new Chart(ctx2, {
   type: 'line',
   data: {
-    labels: labels,
+    labels: labelsFormateados,
     datasets: [
       {
         label: 'Cumplimiento (%)',
@@ -472,7 +490,7 @@ new Chart(ctx2, {
       },
       {
         label: 'Meta mínima',
-        data: labels.map(() => metaMinima),
+        data: labelsFormateados.map(() => metaMinima),
         borderColor: 'red',
         borderDash: [6, 6],
         borderWidth: 2,
@@ -481,7 +499,7 @@ new Chart(ctx2, {
       },
       {
         label: 'Meta esperada',
-        data: labels.map(() => metaEsperada),
+        data: labelsFormateados.map(() => metaEsperada),
         borderColor: 'green',
         borderDash: [4, 4],
         borderWidth: 2,
@@ -492,10 +510,11 @@ new Chart(ctx2, {
   },
   options: {
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       y: {
         beginAtZero: true,
-        max: 100,   // 👈 ESTO ES CLAVE
+        max: 100,   
         ticks: {
           callback: v => v + '%'
         }
@@ -515,10 +534,6 @@ new Chart(ctx2, {
 });
 
 </script>
-
-
-
-
 
 
 {{-- grafico de burbuja --}}
@@ -566,5 +581,4 @@ new Chart(ctx3, {
 
 
 @endsection
-
 

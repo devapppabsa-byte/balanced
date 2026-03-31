@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string("mes");
             $table->text("descripcion"); //si / no / no aplica
+            $table->string("check");
+
             $table->unsignedBigInteger("id_apartado_norma");
             $table->foreign("id_apartado_norma")
                   ->references("id")

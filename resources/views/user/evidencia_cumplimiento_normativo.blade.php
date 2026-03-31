@@ -1,11 +1,13 @@
 @extends('plantilla')
 @section('title', 'Evidencias del cumplimiento Normativo')
-
 @section('contenido')
+@php
+use Carbon\Carbon;  
+@endphp
 <div class="container-fluid">
     <div class="row bg-primary d-flex align-items-center justify-content-start ">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-10 col-xl-12  py-4">
-            <h1 class="text-white">Evidencias</h1>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-9 col-xl-9  py-4">
+            <h1 class="text-white">Registro de Cumplimiento Normativo</h1>
             <h5 class="text-white">{{$apartado->apartado}}</h5>
 
             @if (session('success'))
@@ -56,6 +58,9 @@
 
 
 
+
+
+
 <div class="container-fluid mt-5">
     <div class="row justify-content-center">
         <div class="col-11 bg-white py-5  shadow border border-5">
@@ -63,7 +68,7 @@
             <div class="col-12 text-center">
                 <h2>
                     <i class="fa-solid fa-camera-retro"></i>
-                    Evidencias
+                    Registro de Cumplimiento Normativo.
                 </h2>
                 <h5 class="text-muted">{{$apartado->apartado}}</h5>
                 <p class="text-muted">{{$apartado->descripcion}}</p>
@@ -71,12 +76,20 @@
             <div class="col-12 mt-5">
                 <div class="row justify-content-center">
                     @forelse ($cumplimientos as $cumplimiento)
+                    @php
+                    Carbon::setLocale('es');
+                    $mes = Carbon::createFromFormat('m-y-d', $cumplimiento->mes . '-01')
+                        ->translatedFormat('F Y');
+                    @endphp
                         <div class="col-9 my-1">
                             <div class="accordion" id="accordionExample">
                                 <div class="accordion-item border-2 shadow-sm">
                                     <h2 class="accordion-header" id="headingTwo">
+                                        <div class="badge badge-primary w-100"> {{$mes}}</div>                                        
                                         <button data-mdb-collapse-init class="accordion-button fw-bold  collapsed" type="button" data-mdb-target="#cump{{$cumplimiento->id}}" aria-expanded="false" aria-controls="collapseTwo">
-                                        Evidencias del mes de {{$cumplimiento->mes}} - {{$cumplimiento->descripcion}}
+                                        Se marco el mes de {{$mes}} como cumplido  -  <small class="ms-3"> 
+                                            {{ $cumplimiento->descripcion}}
+                                        </small>
                                         </button>
                                     </h2>
                                     <div id="cump{{$cumplimiento->id}}" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#accordionExample">
@@ -134,7 +147,12 @@
                                                     @endif
 
                                                 @empty
-                                                    
+                                                    <div class="col-12 p-5 text-center">
+                                                        <h2>
+                                                            <i class="fa fa-exclamation-circle"></i>
+                                                            No se agrego evidencia
+                                                        </h2>
+                                                    </div>
                                                 @endforelse
                                             </div>
                                         </div>
@@ -143,7 +161,12 @@
                             </div>
                         </div>
                     @empty
-                        
+                        <div class="col-9">
+                            <h3 class="text-muted text-center">
+                                <i class="fa fa-exclamation-circle"></i>
+                                No hay registros.
+                            </h3>
+                        </div>
                     @endforelse
                 </div>
             </div>

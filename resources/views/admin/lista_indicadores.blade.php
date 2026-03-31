@@ -387,16 +387,16 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
 {{-- Foreach de las encuestas --}}
 
 
-    @forelse ($resultado_normas as $norma)
+    @forelse ($normas as $norma)
 
         <div class="col-10 col-sm-10 col-md-6 col-lg-4 my-3">
-            <div class="card text-white {{($norma['meta_minima'] > $norma['porcentaje']) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
-                <a href="{{route('apartado.norma', $norma['id_norma'])}}" class="text-white w-100">
+            <div class="card text-white {{($norma->meta_minima > $norma->porcentaje_cumplimiento) ? 'bg-danger' : 'bg-success'}} shadow-2-strong">
+                <a href="{{route('apartado.norma', $norma->id)}}" class="text-white w-100">
                 <div class="card-body">
                     <div class="row justify-content-around d-flex align-items-center">
                         <div class="col-12 col-sm-12 col-md-12 col-lg-7 ">
-                            <h2 class="card-title fw-bold display-6 x">{{$norma['porcentaje']}}%</h2>
-                            <p class="card-text fw-bold">{{$norma['norma']}}</p>
+                            <h2 class="card-title fw-bold display-6 x">{{round($norma->porcentaje_cumplimiento, 2)}}%</h2>
+                            <p class="card-text fw-bold">{{$norma->nombre}}</p>
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-lg-4 p-0 m-0">
                             <i class="fas fa-chart-line fa-3x"></i>
@@ -465,7 +465,7 @@ Aqui yacen los restosa de algo que pudo ser y no fue (si puede ser solo que todo
     </div>
 
 
-    @if ($encuestas->isEmpty() && count($resultado_normas) == 0  &&  $indicadores->isEmpty() )
+    @if ($encuestas->isEmpty()  &&  $indicadores->isEmpty() )
         <div class="row mt-5 justify-content-center">
             <div class="col-9 p-5 text-center bg-white shadow shadow-sm border">
                 <h4>

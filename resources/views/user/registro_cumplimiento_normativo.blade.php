@@ -4,14 +4,14 @@
 @section('contenido')
 
 
-<div class="container-fluid">
+<div class="container-fluid sticky-top">
     <div class="row bg-primary d-flex align-items-center justify-content-start ">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  py-4">
-            <h2 class="text-white">
+            <h5 class="text-white">
                 <i class="fa-regular fa-file-lines"></i>
                 {{Auth::user()->departamento->nombre}} - {{$norma->nombre}}
-            </h2>
-            <h4 class="text-white" id="fecha"></h4>
+            </h5>
+            {{-- <h4 class="text-white" id="fecha"></h4> --}}
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -59,10 +59,72 @@
 </div>    
 
 
+
+<button class="btn btn-danger flotante" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#grafico" style="z-index: 9999">
+    <i class="fa-solid fa-chart-pie fa-2x "></i>
+</button>
+
+<div class="modal fade" id="grafico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Gráfica</h5>
+        <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <div class="modal-body">
+            <div class="col-12 pb-5 px-5 pt-2" >
+                <!-- Tabs navs -->
+                <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark active" id="ex3-tab-1" href="#ex3-tabs-1" role="tab" aria-controls="ex3-tabs-1" aria-selected="true">
+                            <i class="fa fa-chart-simple"></i>
+                            Grafico de Barras
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-2" href="#ex3-tabs-2" role="tab" aria-controls="ex3-tabs-2" aria-selected="false">
+                            <i class="fa fa-chart-line"></i>
+                            Grafico de Linea
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item" role="presentation">
+                        <a data-mdb-tab-init class="nav-link fw-bold h-4 text-dark" id="ex3-tab-3" href="#ex3-tabs-3" role="tab" aria-controls="ex3-tabs-3" aria-selected="false">
+                            <i class="fa fa-circle"></i>
+                            Grafico de Dona
+                        </a>
+                    </li> --}}
+                </ul>
+                <!-- Tabs navs -->
+
+                <!-- Tabs content -->
+                <div class="tab-content" id="ex2-content">
+                    <div class="tab-pane  show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1" >
+                        <div style="style="width: 100%; height: 400px;">
+                            <canvas id="chartBar"></canvas>
+                        </div> 
+                    </div>
+                    <div class="tab-pane  p-5" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+                        <div style="style="width: 100%; height: 400px;">
+                            <canvas id="chartLinea"></canvas>
+                        </div>
+                    </div>
+                    {{-- <div class="tab-pane " id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
+                        <canvas id="chartDonut"></canvas>
+                    </div> --}}
+                </div>
+                <!-- Tabs content -->
+
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="container-fluid">
 
 <div class="row justify-content-center mt-4">
-    <div class="col-12 col-lg-10">
+    <div class="col-11 ">
 
         <div class="card border-0 shadow-sm">
 
@@ -73,7 +135,7 @@
                     Apartados de {{ $norma->nombre }}
                 </h4>
 
-                <p class="text-muted mb-0" style="text-align: justify;">
+                <p class="text-muted mb-0" style="text-align: justify; ">
                     {{ $norma->descripcion }}
                 </p>
 
@@ -100,7 +162,10 @@
                                         <small class="text-muted fw-semibold text-uppercase">Marcar</small>
                                     </th>
                                     <th class="ps-4" style="min-width: 220px;">
-                                        <small class="text-muted fw-semibold text-uppercase">Evidencia</small>
+                                        <small class="text-muted fw-semibold text-uppercase">Evidencia (no obligatorio)</small>
+                                    </th>  
+                                    <th class="ps-4" style="min-width: 220px;">
+                                        <small class="text-muted fw-semibold text-uppercase">Descripción (no obligatorio)</small>
                                     </th>                                    
                                     <th class="text-center pe-4" style="width: 160px;">
                                         <small class="text-muted fw-semibold text-uppercase">Acciones</small>
@@ -115,7 +180,7 @@
                                     <tr class="border-bottom">
 
                                         {{-- Apartado --}}
-                                        <td class="ps-4 fw-semibold text-dark">
+                                        <td class="ps-4 fw-semibold text-dark" style="font-size: 18px">
                                             {{ $apartado->apartado }}
                                         </td>
 
@@ -135,6 +200,14 @@
                                                 name="evidencias[{{ $apartado->id }}]" multiple class="form-control" accept=".jpg,.png,.pdf,.docx,.mp4" >
                                             </div>                                            
                                         </td>
+                                        <td>
+                                            <div class="form-group mt-4">
+                                                <div class="form-outline" data-mdb-input-init>
+                                                <textarea class="form-control" name="descripcion[{{ $apartado->id }}]" id="text{{ $apartado->id }}" rows="4"></textarea>
+                                                <label class="form-label" for="text{{$apartado->id}}">Descripción:</label>
+                                                </div>
+                                            </div>                                            
+                                        </td>                                        
 
                                         {{-- Descripción --}}
 
@@ -156,6 +229,14 @@
                                 </form>
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="col-12 text-center py-3 bg-danger">
+                        <div class="row justify-content-center">
+                            <div class="col-5 text-center">
+                                <input type="month" name="fecha" form="form_cumplimiento_normativo" class="form-control form-control-lg">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-12  text-center my-3">
@@ -254,48 +335,222 @@
 
 
 @section('scripts')
-    
-
-{{-- <script>
 
 
- const data = document.getElementById('data-norma');
+<script>
+//const labels        = @json($labels);
+const valores       = @json($valores);
+const metaMinima    = Number(@json($metaMinima));
+const metaEsperada  = Number(@json($metaEsperada));
 
-let filas = `Se agrego evidencia a: ${data.dataset.norma}
-del departamento ${data.dataset.departamento}`;
+const labelsOriginal = @json($labels);
 
+const meses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
 
-
-const correos = JSON.parse(data.dataset.correos);
-
-document.getElementById('form_cumplimiento_normativo')
-.addEventListener('submit', function (e) {
-
-    e.preventDefault();
-
-
-    const inputs = document.querySelectorAll('.input');
-
-    // 🔹 Enviar correo con EmailJS
-    emailjs.send('service_ns6885s', 'template_zfgln7k', {
-        name: data.dataset.user,
-        time: new Date().toLocaleString(),
-        message: filas,
-        correo: data.dataset.correo,
-        mails: correos
-
-    }).then(() => {
-
-        // 🔹 Cuando el correo se envía, ahora sí mandamos el form a Laravel
-        e.target.submit();
-
-    }).catch(error => {
-        console.error('Error al enviar correo:', error);
-        alert('Error al enviar notificación por correo');
-    });
-
+const labelsFormateados = labelsOriginal.map(fecha => {
+    const [mes, anio] = fecha.split('-');
+    return `${meses[parseInt(mes) - 1]} 20${anio}`;
 });
 
-</script> --}}
+console.log(labelsFormateados);
+
+const lineaMinima   = labelsFormateados.map(() => metaMinima);
+const lineaEsperada = labelsFormateados.map(() => metaEsperada);
+
+
+
+const ctx = document.getElementById('chartBar').getContext('2d');
+
+new Chart(ctx, {
+  type: 'bar', // 
+  data: {
+    labels: labelsFormateados,
+    datasets: [
+      {
+        type: 'bar',
+        label: 'Cumplimiento (%)',
+        data: valores,
+        backgroundColor: (context) => {
+          const v = context.raw;
+          return v < metaMinima
+            ? 'rgba(231, 76, 60, 0.7)'   // rojo
+            : 'rgba(46, 204, 113, 0.7)'; // verde
+        },
+        borderColor: (context) => {
+          const v = context.raw;
+          return v < metaMinima ? '#c0392b' : '#27ae60';
+        },
+        borderWidth: 1,
+        order: 2 //
+      },
+      {
+        type: 'line',
+        label: 'Meta mínima',
+        data: lineaMinima,
+        borderColor: 'red',
+        borderWidth: 2,
+        borderDash: [6, 6],
+        pointRadius: 0,
+        fill: false,
+        order: 1 // 
+      },
+      {
+        type: 'line',
+        label: 'Meta esperada',
+        data: lineaEsperada,
+        borderColor: 'green',
+        borderWidth: 2,
+        borderDash: [4, 4],
+        pointRadius: 0,
+        fill: false,
+        order: 1
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top' },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.raw + '%'
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+        ticks: {
+          callback: v => v + '%'
+        }
+      }
+    }
+  }
+});
+
+
+</script>
+
+
+
+{{-- Grafico de Pie --}}
+
+
+
+<script>
+const ctx2 = document.getElementById('chartLinea');
+new Chart(ctx2, {
+  type: 'line',
+  data: {
+    labels: labelsFormateados,
+    datasets: [
+      {
+        label: 'Cumplimiento (%)',
+        data: valores,
+        borderColor: '#36a2eb',
+        backgroundColor: 'rgba(54,162,235,0.15)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: valores.map(v =>
+          v < metaMinima ? '#e74c3c' : '#2ecc71'
+        )
+      },
+      {
+        label: 'Meta mínima',
+        data: labelsFormateados.map(() => metaMinima),
+        borderColor: 'red',
+        borderDash: [6, 6],
+        borderWidth: 2,
+        pointRadius: 0,
+        fill: false
+      },
+      {
+        label: 'Meta esperada',
+        data: labelsFormateados.map(() => metaEsperada),
+        borderColor: 'green',
+        borderDash: [4, 4],
+        borderWidth: 2,
+        pointRadius: 0,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,   
+        ticks: {
+          callback: v => v + '%'
+        }
+      }
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.raw + '%'
+        }
+      },
+      legend: {
+        position: 'top'
+      }
+    }
+  }
+});
+
+</script>
+
+
+{{-- grafico de burbuja --}}
+
+
+
+<script>
+const ctx3 = document.getElementById('chartDonut');
+
+new Chart(ctx3, {
+  type: 'doughnut',
+  data: {
+    labels: ['Cumplido', 'No cumplido'],
+    datasets: [{
+      data: [
+        valores[0],                 // cumplimiento
+        100 - valores[0]             // restante
+      ],
+      backgroundColor: [
+        valores[0] < metaMinima
+          ? 'rgba(231,76,60,0.8)'    // rojo
+          : 'rgba(46,204,113,0.8)', // verde
+        'rgba(189,195,199,0.4)'
+      ],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '65%',
+    plugins: {
+      legend: {
+        position: 'bottom'
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.raw + '%'
+        }
+      }
+    }
+  }
+});
+
+</script>
+
 
 @endsection

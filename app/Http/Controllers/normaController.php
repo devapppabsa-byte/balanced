@@ -180,9 +180,7 @@ class normaController extends Controller
 
         $apartados = ApartadoNorma::where('id_norma',$norma->id)->get();
 
-
         //mega grafica
-
         $totalesApartados = ApartadoNorma::select('id_norma')
             ->selectRaw('COUNT(*) as total_apartados')
             ->where('id_norma', $norma->id)
@@ -205,7 +203,7 @@ class normaController extends Controller
 
 
 
-        $grafica = DB::table('norma')
+         $grafica = DB::table('norma')
             ->where('norma.id', $norma->id)
             ->joinSub($totalesApartados, 'totales', function ($join) {
                 $join->on('norma.id', '=', 'totales.id_norma');
