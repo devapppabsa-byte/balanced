@@ -924,7 +924,7 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <div class="form-outline" data-mdb-input-init>
-                                    <input type="number" min="1" max="100" value="{{$indicador->ponderacion}}" class="form-control {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador_edit" name="ponderacion_indicador_edit" required />
+                                    <input type="number" step="0.0001"  min="1" max="100" value="{{$indicador->ponderacion}}" class="form-control {{ $errors->first('ponderacion_indicador') ? 'is-invalid' : '' }}" id="ponderacion_indicador_edit" name="ponderacion_indicador_edit" required />
                                     <label class="form-label" for="ponderacion_indicador_edit">Ponderación % Indicador dentro de la evaluación total  <span class="text-danger">*</span></label>
                                 </div>
                             </div>

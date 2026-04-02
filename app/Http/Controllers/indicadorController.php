@@ -250,57 +250,57 @@ class indicadorController extends Controller
 
 
 
-    public function indicador_index(Indicador $indicador){
+public function indicador_index(Indicador $indicador){
 
-        //esta linea me ayuda a cargar las relaciones que tiene el Inidcador, por que inyecte el indicador directo en el metodo y no lo consulte con su respectiva query
-        $indicador->load('departamento');
-
-
-        //verificar si ya hay un campo_final en este indicador.
-         $campo_final = CampoCalculado::where('id_indicador', $indicador->id)->where('resultado_final', 'on')->get();
-
-        //consultar el campo de referencia.
-        $campo_referencia = CampoCalculado::where('id_indicador', $indicador->id)->where('referencia', 'on')->get();
+    //esta linea me ayuda a cargar las relaciones que tiene el Inidcador, por que inyecte el indicador directo en el metodo y no lo consulte con su respectiva query
+    $indicador->load('departamento');
 
 
+    //verificar si ya hay un campo_final en este indicador.
+        $campo_final = CampoCalculado::where('id_indicador', $indicador->id)->where('resultado_final', 'on')->get();
 
-
-        $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
-        $campos_precargados = CampoPrecargado::where('id_indicador', $indicador->id)->get();
-
-        $campos_calculados = CampoCalculado::where('id_indicador', $indicador->id)->get();
-        
-        //DEspues de obtener los capos calculados correspondientes a este Indicador
-        //Se procedera a obtener los id de los campos involucrados con el campo calculado.
-        //se optienen para saber como van a ser las opereaciones, aunque en esta seccion podria
-        //no obtenerlos ya que esas operaciones se van a hacer en el lado del usuario 
+    //consultar el campo de referencia.
+    $campo_referencia = CampoCalculado::where('id_indicador', $indicador->id)->where('referencia', 'on')->get();
 
 
 
 
+    $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
+    $campos_precargados = CampoPrecargado::where('id_indicador', $indicador->id)->get();
 
-        // $campos_unidos = $campos_vacios->union($campos_precargados)->orderBy('created_at', 'desc')->get();
-
-
-        $campos_unidos = $campos_vacios
-        ->concat($campos_precargados)
-        ->concat($campos_calculados)
-        ->sortBy('created_at')
-        ->values()
-        ->map(function($item, $index){
-            $item->id_nuevo = $index + 1; //con esto empezara en 1
-            return $item;
-        });
+    $campos_calculados = CampoCalculado::where('id_indicador', $indicador->id)->get();
+    
+    //DEspues de obtener los capos calculados correspondientes a este Indicador
+    //Se procedera a obtener los id de los campos involucrados con el campo calculado.
+    //se optienen para saber como van a ser las opereaciones, aunque en esta seccion podria
+    //no obtenerlos ya que esas operaciones se van a hacer en el lado del usuario 
 
 
 
 
-        //Llamar a la informacion 
-        $informacion_foranea = CampoForaneo::get();
 
-        return view('admin.indicador', compact('indicador', 'campos_vacios','campos_precargados', 'informacion_foranea', 'campos_unidos', 'campo_final', 'campo_referencia'));
+    // $campos_unidos = $campos_vacios->union($campos_precargados)->orderBy('created_at', 'desc')->get();
 
-    }
+
+    $campos_unidos = $campos_vacios
+    ->concat($campos_precargados)
+    ->concat($campos_calculados)
+    ->sortBy('created_at')
+    ->values()
+    ->map(function($item, $index){
+        $item->id_nuevo = $index + 1; //con esto empezara en 1
+        return $item;
+    });
+
+
+
+
+    //Llamar a la informacion 
+    $informacion_foranea = CampoForaneo::get();
+
+    return view('admin.indicador', compact('indicador', 'campos_vacios','campos_precargados', 'informacion_foranea', 'campos_unidos', 'campo_final', 'campo_referencia'));
+
+}
 
 
 
@@ -309,7 +309,7 @@ class indicadorController extends Controller
 
 public function borrar_campo(Request $request, $campo){
 
-
+        
 
         $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
 
@@ -323,7 +323,6 @@ public function borrar_campo(Request $request, $campo){
             return back()->with('error_input', 'Este campo esta siendo utilizado como parte de otro campo, por lo que no puede ser eliminado');
 
         }
-
 
 
     
@@ -379,6 +378,25 @@ public function borrar_campo(Request $request, $campo){
             ]);
             
             return back()->with("deleted", "El campo fue eliminado del indicador");
+
+        }
+
+
+        if($request->id_input){
+    
+            $campo_delete = CampoVacio::where('id_input', $request->id_input)->first();
+            $nombre_campo = $campo_delete->nombre;
+            $campo_delete->delete();
+            
+            LogBalanced::create([
+                'autor' => $autor,
+                'accion' => "deleted",
+                'descripcion' => "Se elimino el campo precargado: ".$nombre_campo." (ID: ".$campo.") del indicador",
+                'ip' => request()->ip() 
+            ]);
+            
+            return back()->with("deleted", "El campo fue eliminado del indicador");         
+
 
         }
 
