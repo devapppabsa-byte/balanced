@@ -60,7 +60,7 @@
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-body py-3 px-4">
 
-                <form action="#" method="GET">
+                <form action="#" method="GET" id="filtro_analisis_datos">
                     <div class="d-flex flex-wrap align-items-end gap-3">
 
                         <!-- Fecha inicio -->
@@ -70,9 +70,10 @@
                                 <span class="input-group-text bg-light border-0">
                                     <i class="fa-solid fa-calendar-days text-primary"></i>
                                 </span>
+
                                 <input type="date"
                                     name="fecha_inicio"
-                                    value="{{ request('fecha_inicio') ?? now()->format('Y-m-d') }}"
+                                    value="{{ request('fecha_inicio') ?? '2025-01-01' }}"
                                     class="form-control border-0 bg-light datepicker"
                                     onchange="this.form.submit()">
                             </div>
@@ -93,6 +94,7 @@
                             </div>
                         </div>
                     </div>
+                    <button type="submit" id="btn-trigger-form" style="display: none;"></button>
                 </form>
 
             </div>
@@ -140,8 +142,52 @@
     <div class="row justify-content-center px-2">
 
 
-        <div class="col-12 col-sm-12 col-md-3 col-lg-3">
-            <div class="row justify-content-center border me-1">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-5 mt-3">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-outline">
+                        <select class="form-select form-select-lg select-grande" form="filtro_analisis_datos" name="campos_a_graficar" id="campos_graficar">
+                            <option value="" disabled {{ request('campos_a_graficar') ? '' : 'selected' }}>
+                                Selecciona un campo a graficar.
+                            </option>
+
+                            @forelse ($campos_graficar as $campo)
+                                @if ($campo != 'Registro')
+                                    <option value="{{ $campo }}"
+                                        {{ request('campos_a_graficar') == $campo ? 'selected' : '' }}>
+                                        {{ $campo }}
+                                    </option>
+                                @endif
+                            @empty
+                                <option value="">No hay datos</option>
+                            @endforelse
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-12 p-1 bg-white mt-3 p-3">
+        <!-- BOTÓN + GRAFICA 1 -->
+                    <h5>Barras + Linea</h5>
+                    <canvas id="grafico"></canvas>
+
+                </div>
+
+                <div class="col-12 p-1 bg-white mt-3 p-3">
+                    <h5>Tendencia</h5>
+                    <canvas id="graficoLine"></canvas>
+                </div>
+
+                <div class="col-12 p-1 bg-white mt-3 p-3">
+                    <h5>Pie</h5>
+                    <canvas id="graficoPie"></canvas>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="col-12 col-sm-12 col-md-3 col-lg-2">
+            <div class="row justify-content-center border ms-1">
 
                 {{-- TENDENCIA --}}
                 <div class="col-12 bg-white mt-3 p-3">
@@ -308,7 +354,7 @@
         <div class="col-12 col-sm-12 col-md-9 col-lg-5 ">
 
 
-            <div class="row justify-content-center border me-1">
+            <div class="row justify-content-center border ms-1">
                 <div class="col-12 bg-white mt-3 p-3 shadow-sm">
                     <div class="row">
                         <div class="col-12 my-2">
@@ -370,7 +416,7 @@
                 </div>
             </div>
 
-            <div class="row justify-content-center border me-1">
+            <div class="row justify-content-center border ms-1">
                 <div class="col-12 bg-white mt-3 p-3 shadow-sm">
                     <div class="row g-2">
                         <div class="col-12 my-2">
@@ -443,7 +489,7 @@
 
 
 
-            <div class="row  mt-1 mb-1 me-1">
+            <div class="row  mt-1 mb-1 ms-1">
                 <div class="col-12 bg-white mt-3 p-3 shadow-sm">
                     <div class="row">
                         <div class="col-12 my-2">
@@ -494,7 +540,7 @@
 
 
 
-            <div class="row  mt-2 mb-4 me-1">
+            <div class="row  mt-2 mb-4 ms-1">
                 <div class="col-12 bg-white mt-1 p-3 shadow-sm">
                     <div class="row">
                         <div class="col-12 my-2">
@@ -672,40 +718,7 @@
             </div>
         </div>
 
-
-
         @endif
-
-
-
-
-        <div class="col-12 col-sm-12 col-md-12 col-lg-4">
-            <div class="row">
-
-                <div class="col-12 p-1 bg-white mt-3 p-3">
-        <!-- BOTÓN + GRAFICA 1 -->
-                    <h5>Barras + Linea</h5>
-                    <canvas id="grafico"></canvas>
-
-                </div>
-
-                <div class="col-12 p-1 bg-white mt-3 p-3">
-                    <h5>Tendencia</h5>
-                    <canvas id="graficoLine"></canvas>
-                </div>
-
-                <div class="col-12 p-1 bg-white mt-3 p-3">
-                    <h5>Pie</h5>
-                    <canvas id="graficoPie"></canvas>
-                </div>
-
-            </div>
-        </div>
-
-
-
-
-
 
     </div>
 </div>
@@ -717,8 +730,22 @@
 
 
 @section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const select = document.getElementById('campos_graficar');
+        const form = document.getElementById('filtro_analisis_datos');
 
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+        if (select && form) {
+            select.addEventListener('change', function() {
+
+                form.requestSubmit();
+                console.log('Enviando formulario...'); // Para que verifiques en consola
+            });
+        }
+    });
+</script>
+
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -726,7 +753,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const indicador = @json($indicador);
     const datos = @json($graficar);
     const TIPO_INDICADOR = "{{ $indicador->tipo_indicador }}";
-
+    const MODO_DINAMICO = !datos.some(d => d.final === "on" ); //|| d.referencia === "on"
+    
     const mesesES = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
@@ -734,15 +762,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!datos || datos.length === 0) return;
 
-    const datosFinal = datos.filter(d => d.final === "on");
-    const datosReferencia = datos.filter(d => d.referencia === "on");
+    const datosFinal = MODO_DINAMICO 
+        ? datos 
+        : datos.filter(d => d.final === "on");
+
+    const datosReferencia = MODO_DINAMICO 
+        ? [] 
+        : datos.filter(d => d.referencia === "on");
+
 
     const labels = [...new Set(
-        [...datosFinal, ...datosReferencia].map(item => {
+        datosFinal.map(item => {
             const fecha = new Date(item.fecha_periodo);
             return `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}`;
         })
     )];
+
+
 
     const VARIACION_ON = "{{ $indicador->variacion }}" === "on";
 
@@ -774,7 +810,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         backgroundColor: ctx => {
             const value = ctx.raw;
+
             if (value === null) return "rgba(200,200,200,0.3)";
+
+
+            if (MODO_DINAMICO) {
+                return "rgba(25, 128, 11, 0.7)"; // azul tipo Chart.js
+            }
 
             if (VARIACION_ON) {
                 if (value < LIMITE_INFERIOR || value > LIMITE_SUPERIOR) {
@@ -798,33 +840,85 @@ document.addEventListener("DOMContentLoaded", function () {
         order: 1,
 
         datalabels: {
-            anchor: 'end',
-            align: 'top',
-            color: '#000',
+            anchor: function(context) {
+                const meta = context.chart.getDatasetMeta(context.datasetIndex);
+                const bar = meta.data[context.dataIndex];
+
+                // altura real en pixeles
+                const height = bar.height;
+
+                return height < 30 ? 'end' : 'center';
+            },
+
+            align: function(context) {
+                const meta = context.chart.getDatasetMeta(context.datasetIndex);
+                const bar = meta.data[context.dataIndex];
+
+                const height = bar.height;
+
+                return height < 30 ? 'top' : 'center';
+            },
+
+            rotation: function(context) {
+                const meta = context.chart.getDatasetMeta(context.datasetIndex);
+                const bar = meta.data[context.dataIndex];
+
+                const height = bar.height;
+
+                return height < 30 ? 0 : -90;
+            },
+
+            clamp: true,
+            clip: false,
+
+            color: function(context) {
+                const meta = context.chart.getDatasetMeta(context.datasetIndex);
+                const bar = meta.data[context.dataIndex];
+
+                const height = bar.height;
+
+                return height < 30 ? '#000' : '#fff';
+            },
+    
             font: function(context) {
-                const total = context.chart.data.labels.length;
-                let size = 14;
-                if (total > 6) size = 12;
-                if (total > 10) size = 10;
-                if (total > 15) size = 8;
+                const meta = context.chart.getDatasetMeta(context.datasetIndex);
+                const bar = meta.data[context.dataIndex];
+                const height = bar.height;
+
+                let size = 20;
+
+                if (height < 30) size = 10;
+                if (height < 20) size = 8;
 
                 return {
                     weight: 'bold',
                     size: size
                 };
             },
+
+            
             formatter: function(value) {
                 if (value === null) return '';
 
+                if (MODO_DINAMICO) {
+                    return Number(value).toLocaleString('es-MX');
+                }
+
                 switch (UNIDAD_MEDIDA) {
-                    case 'pesos': return '$' + value.toFixed(2);
-                    case 'porcentaje': return value.toFixed(2) + '%';
-                    case 'dias': return value.toFixed(2) + ' Días';
-                    case 'toneladas': return value.toFixed(2) + ' Ton.';
-                    default: return value.toFixed(2);
+                    case 'pesos':
+                        return '$' + Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 });
+                    case 'porcentaje':
+                        return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '%';
+                    case 'dias':
+                        return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Días';
+                    case 'toneladas':
+                        return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Ton.';
+                    default:
+                        return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 });
                 }
             }
         }
+
     };
 
     // ============================
@@ -877,57 +971,61 @@ document.addEventListener("DOMContentLoaded", function () {
 
         data: {
             labels,
-            datasets: [
-                datasetFinal,
-                ...datasetsReferencias,
+datasets: [
+    datasetFinal,
 
-                ...(VARIACION_ON ? [
-                    {
-                        type: "line",
-                        label: "Meta esperada",
-                        data: labels.map(() => META_ESPERADA),
-                        borderColor: "green",
-                        borderWidth: 3,
-                        order: 10
-                    },
-                    {
-                        type: "line",
-                        label: "Variación inferior",
-                        data: labels.map(() => LIMITE_INFERIOR),
-                        borderColor: "red",
-                        borderWidth: 2,
-                        borderDash: [6, 6],
-                        order: 10
-                    },
-                    {
-                        type: "line",
-                        label: "Variación superior",
-                        data: labels.map(() => LIMITE_SUPERIOR),
-                        borderColor: "red",
-                        borderWidth: 2,
-                        borderDash: [6, 6],
-                        order: 10
-                    }
-                ] : [
-                    {
-                        type: "line",
-                        label: "Meta mínima",
-                        data: labels.map(() => META_MINIMA),
-                        borderColor: "red",
-                        borderWidth: 2,
-                        borderDash: [6, 6],
-                        order: 10
-                    },
-                    {
-                        type: "line",
-                        label: "Meta máxima",
-                        data: labels.map(() => META_ESPERADA),
-                        borderColor: "green",
-                        borderWidth: 3,
-                        order: 10
-                    }
-                ])
-            ]
+    // SOLO agregar líneas si NO es dinámico
+    ...(!MODO_DINAMICO ? [
+        ...datasetsReferencias,
+
+        ...(VARIACION_ON ? [
+            {
+                type: "line",
+                label: "Meta esperada",
+                data: labels.map(() => META_ESPERADA),
+                borderColor: "green",
+                borderWidth: 3,
+                order: 10
+            },
+            {
+                type: "line",
+                label: "Variación inferior",
+                data: labels.map(() => LIMITE_INFERIOR),
+                borderColor: "red",
+                borderWidth: 2,
+                borderDash: [6, 6],
+                order: 10
+            },
+            {
+                type: "line",
+                label: "Variación superior",
+                data: labels.map(() => LIMITE_SUPERIOR),
+                borderColor: "red",
+                borderWidth: 2,
+                borderDash: [6, 6],
+                order: 10
+            }
+        ] : [
+            {
+                type: "line",
+                label: "Meta mínima",
+                data: labels.map(() => META_MINIMA),
+                borderColor: "red",
+                borderWidth: 2,
+                borderDash: [6, 6],
+                order: 10
+            },
+            {
+                type: "line",
+                label: "Meta máxima",
+                data: labels.map(() => META_ESPERADA),
+                borderColor: "green",
+                borderWidth: 3,
+                order: 10
+            }
+        ])
+    ] : [])
+]
         },
 
         options: {
@@ -973,43 +1071,40 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
+    const indicador = @json($indicador);
     const datos = @json($graficar);
+
     const TIPO_INDICADOR = "{{ $indicador->tipo_indicador }}";
     const UNIDAD_MEDIDA = "{{ $indicador->unidad_medida }}";
 
+    const MODO_DINAMICO = !datos.some(d => d.final === "on");
+
     const mesesES = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+        "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
     ];
 
     if (!datos || datos.length === 0) return;
 
     // ============================
-    // FILTRAR DATOS
+    // FILTRAR
     // ============================
 
-    const datosFinal = datos.filter(d => d.final === "on");
-    const datosReferencia = datos.filter(d => d.referencia === "on");
+    const datosFinal = MODO_DINAMICO 
+        ? datos 
+        : datos.filter(d => d.final === "on");
 
-    const todosDatos = [...datosFinal, ...datosReferencia];
+    const todosDatos = [...datosFinal];
 
-    // ============================
-    // LABELS (MES + AÑO ORDENADO)
-    // ============================
-
-    const fechasUnicas = [...new Set(
-        todosDatos.map(item => item.fecha_periodo)
-    )].sort((a, b) => new Date(a) - new Date(b));
-
-    const labels = fechasUnicas.map(fechaStr => {
-        const fecha = new Date(fechaStr);
-        const mes = mesesES[fecha.getMonth()];
-        const year = fecha.getFullYear();
-        return `${mes} ${year}`;
-    });
+    const labels = [...new Set(
+        todosDatos.map(item => {
+            const fecha = new Date(item.fecha_periodo);
+            return `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}`;
+        })
+    )];
 
     // ============================
-    // METAS + VARIACIÓN
+    // METAS
     // ============================
 
     const VARIACION_ON = "{{ $indicador->variacion }}" === "on";
@@ -1023,11 +1118,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const LIMITE_SUPERIOR = VARIACION_ON ? META_ESPERADA + VARIACION : null;
 
     // ============================
-    // DATA FINAL
+    // DATA
     // ============================
 
-    const dataValores = fechasUnicas.map(fecha => {
-        const item = datosFinal.find(d => d.fecha_periodo === fecha);
+    const dataValores = labels.map(label => {
+        const item = datosFinal.find(d => {
+            const fecha = new Date(d.fecha_periodo);
+            return `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}` === label;
+        });
         return item ? parseFloat(item.informacion_campo) : null;
     });
 
@@ -1036,12 +1134,16 @@ document.addEventListener("DOMContentLoaded", function () {
         : "Indicador";
 
     // ============================
-    // FUNCIÓN GLOBAL DE COLOR
+    // COLOR
     // ============================
 
     function obtenerColor(valor) {
 
         if (valor === null) return "rgba(200,200,200,0.3)";
+
+        if (MODO_DINAMICO) {
+            return "rgba(25,128,11,0.7)";
+        }
 
         if (VARIACION_ON) {
             if (valor < LIMITE_INFERIOR || valor > LIMITE_SUPERIOR) {
@@ -1062,185 +1164,289 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ============================
-    // 📈 GRÁFICA DE LÍNEA
+    // FORMATO
     // ============================
+
+    function formatear(valor) {
+
+        if (valor === null) return '';
+
+        if (MODO_DINAMICO) {
+            return Number(valor).toLocaleString('es-MX');
+        }
+
+        switch (UNIDAD_MEDIDA) {
+            case 'pesos':
+                return '$' + Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
+            case 'porcentaje':
+                return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '%';
+            case 'dias':
+                return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Días';
+            case 'toneladas':
+                return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Ton.';
+            default:
+                return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
+        }
+    }
 
     const ctxLine = document.getElementById("graficoLine");
 
-    if (ctxLine) {
+    if (!ctxLine) return;
 
-        new Chart(ctxLine.getContext("2d"), {
+    if (window.miGraficaLine) {
+        window.miGraficaLine.destroy();
+    }
 
-            type: "line",
+    window.miGraficaLine = new Chart(ctxLine.getContext("2d"), {
 
-            data: {
-                labels: labels,
-                datasets: [{
+        data: {
+            labels,
+            datasets: [
+                {
+                    type: "line",
                     label: nombreCampo,
                     data: dataValores,
-                    borderColor: "rgba(54,162,235,1)",
-                    backgroundColor: "rgba(54,162,235,0.1)",
-                    tension: 0,
-                    fill: true,
+                    borderWidth: 3,
+                    tension: 0.2,
+                    fill: false,
+                    borderColor: MODO_DINAMICO 
+                        ? "rgba(25,128,11,1)" 
+                        : "rgba(54,162,235,1)",
                     pointBackgroundColor: ctx => obtenerColor(ctx.raw),
                     pointRadius: 6
-                }]
-            },
-
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
                 },
-                plugins: {
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'center',
-                        color: '#000',
-                        font: function(context) {
 
-                            const total = context.chart.data.labels.length;
-
-                            let size = 17;
-
-                            if (total > 6) size = 15;
-                            if (total > 10) size = 12;
-                            if (total > 15) size = 10;
-                            if (total > 20) size = 8;
-
-                            return {
-                                weight: 'bold',
-                                size: size
-                            };
-                        },
-                        formatter: function(value) {
-
-                            if (value === null) return '';
-
-                            switch (UNIDAD_MEDIDA) {
-
-                                case 'pesos':
-                                    return '$' + value.toFixed(2);
-
-                                case 'porcentaje':
-                                    return value.toFixed(2) + '%';
-
-                                case 'dias':
-                                    return value.toFixed(2) + ' Días';
-
-                                case 'toneladas':
-                                    return value.toFixed(2) + ' Ton.';
-
-                                default:
-                                    return value.toFixed(2);
-                            }
-                        }
-                    }
-                }
-            },
-
-            plugins: [ChartDataLabels]
-
-        });
-
-    }
-
-    // ============================
-    // 🥧 GRÁFICA DOUGHNUT
-    // ============================
-
-    const ctxPie = document.getElementById("graficoPie");
-
-    if (ctxPie) {
-
-        new Chart(ctxPie.getContext("2d"), {
-
-            type: "doughnut",
-
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: nombreCampo,
-                    data: dataValores,
-                    backgroundColor: dataValores.map(v => obtenerColor(v)),
-                    borderWidth: 1
-                }]
-            },
-
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display:false
+                ...(!MODO_DINAMICO ? (VARIACION_ON ? [
+                    {
+                        type: "line",
+                        label: "Meta esperada",
+                        data: labels.map(() => META_ESPERADA),
+                        borderColor: "green",
+                        borderWidth: 3
                     },
-                    datalabels: {
-                        color: '#fff',
-                        font: function(context) {
-
-                            const total = context.chart.data.labels.length;
-
-                            let size = 15;
-
-                            if (total > 6) size = 15;
-                            if (total > 10) size = 10;
-                            if (total > 15) size = 8;
-                            if (total > 20) size = 8;
-
-                            return {
-                                weight: 'bold',
-                                size: size
-                            };
-                        },
-                        formatter: function(value, context) {
-
-                            if (value === null) return '';
-
-                            const label = context.chart.data.labels[context.dataIndex];
-
-                            let valorFormateado = '';
-
-                            switch (UNIDAD_MEDIDA) {
-
-                                case 'pesos':
-                                    valorFormateado = '$' + value.toFixed(2);
-                                    break;
-
-                                case 'porcentaje':
-                                    valorFormateado = value.toFixed(2) + '%';
-                                    break;
-
-                                case 'dias':
-                                    valorFormateado = value.toFixed(2) + ' Días';
-                                    break;
-
-                                case 'toneladas':
-                                    valorFormateado = value.toFixed(2) + ' Ton.';
-                                    break;
-
-                                default:
-                                    valorFormateado = value.toFixed(2);
-                            }
-
-                            return label + '\n' + valorFormateado;
-                        },
-
+                    {
+                        type: "line",
+                        label: "Variación inferior",
+                        data: labels.map(() => LIMITE_INFERIOR),
+                        borderColor: "red",
+                        borderDash: [6,6]
+                    },
+                    {
+                        type: "line",
+                        label: "Variación superior",
+                        data: labels.map(() => LIMITE_SUPERIOR),
+                        borderColor: "red",
+                        borderDash: [6,6]
                     }
-                }
+                ] : [
+                    {
+                        type: "line",
+                        label: "Meta mínima",
+                        data: labels.map(() => META_MINIMA),
+                        borderColor: "red",
+                        borderDash: [6,6]
+                    },
+                    {
+                        type: "line",
+                        label: "Meta máxima",
+                        data: labels.map(() => META_ESPERADA),
+                        borderColor: "green"
+                    }
+                ]) : [])
+            ]
+        },
+
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
             },
+            plugins: {
+                legend: {
+                    display: !MODO_DINAMICO
+                },
+                datalabels: {
+                    formatter: value => formatear(value),
+                    color: '#000',
+                    font: { weight: 'bold', size: 14 }
+                }
+            }
+        },
 
-            plugins: [ChartDataLabels]
-
-        });
-
-    }
+        plugins: [ChartDataLabels]
+    });
 
 });
 </script>
 
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    window.indicador = @json($indicador);
+    window.datos = @json($graficar);
+
+    window.TIPO_INDICADOR = "{{ $indicador->tipo_indicador }}";
+    window.UNIDAD_MEDIDA = "{{ $indicador->unidad_medida }}";
+
+    window.MODO_DINAMICO = !datos.some(d => d.final === "on");
+    
 
 
+    if (!datos || datos.length === 0) return;
+
+    window.mesesES = [
+        "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+        "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+    ];
+
+    window.datosFinal = MODO_DINAMICO 
+        ? datos 
+        : datos.filter(d => d.final === "on");
+
+    window.labels = [...new Set(
+        datosFinal.map(item => {
+            const fecha = new Date(item.fecha_periodo);
+            return `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}`;
+        })
+    )];
+
+    window.VARIACION_ON = "{{ $indicador->variacion }}" === "on";
+
+    window.META_MINIMA = {{ $indicador->meta_minima ?? 0 }};
+    window.META_ESPERADA = {{ $indicador->meta_esperada ?? 0 }};
+
+    window.VARIACION = VARIACION_ON ? META_MINIMA : null;
+
+    window.LIMITE_INFERIOR = VARIACION_ON ? META_ESPERADA - VARIACION : null;
+    window.LIMITE_SUPERIOR = VARIACION_ON ? META_ESPERADA + VARIACION : null;
+
+    window.dataValores = labels.map(label => {
+        const item = datosFinal.find(d => {
+            const fecha = new Date(d.fecha_periodo);
+            return `${mesesES[fecha.getMonth()]} ${fecha.getFullYear()}` === label;
+        });
+        return item ? parseFloat(item.informacion_campo) : null;
+    });
+
+    window.obtenerColor = function(valor) {
+
+        if (valor === null) return "rgba(200,200,200,0.3)";
+
+        if (VARIACION_ON) {
+            if (valor < LIMITE_INFERIOR || valor > LIMITE_SUPERIOR) {
+                return "rgba(255,99,132,0.8)";
+            }
+            return "rgba(75,192,75,0.8)";
+        }
+
+        if (TIPO_INDICADOR === "riesgo") {
+            return valor < META_MINIMA
+                ? "rgba(75,192,75,0.8)"
+                : "rgba(255,99,132,0.8)";
+        }
+
+        return valor < META_MINIMA
+            ? "rgba(255,99,132,0.8)"
+            : "rgba(75,192,75,0.8)";
+    };
+
+});
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+    if (!window.datos || window.datos.length === 0) return;
+
+    let dataPie;
+    let labelsPie;
+    let coloresPie;
+
+    if (MODO_DINAMICO) {
+
+        dataPie = dataValores;
+        labelsPie = labels;
+        coloresPie = "rgba(25,128,11,0.7)";
+
+    } else {
+
+        let dentro = 0;
+        let fuera = 0;
+
+        dataValores.forEach(v => {
+            if (v === null) return;
+
+            if (VARIACION_ON) {
+                if (v < LIMITE_INFERIOR || v > LIMITE_SUPERIOR) {
+                    fuera++;
+                } else {
+                    dentro++;
+                }
+            } else {
+                if (TIPO_INDICADOR === "riesgo") {
+                    v < META_MINIMA ? dentro++ : fuera++;
+                } else {
+                    v < META_MINIMA ? fuera++ : dentro++;
+                }
+            }
+        });
+
+        dataPie = [dentro, fuera];
+        labelsPie = ["Dentro de meta", "Fuera de meta"];
+        coloresPie = ["rgba(75,192,75,0.8)", "rgba(255,99,132,0.8)"];
+    }
+
+    const ctxPie = document.getElementById("graficoPie");
+    if (!ctxPie) return;
+
+    if (window.miGraficaPie) {
+        window.miGraficaPie.destroy();
+    }
+
+    window.miGraficaPie = new Chart(ctxPie.getContext("2d"), {
+
+        type: "doughnut",
+
+        data: {
+            labels: labelsPie,
+            datasets: [{
+                data: dataPie,
+                backgroundColor: coloresPie
+            }]
+        },
+
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: !MODO_DINAMICO
+                },
+                datalabels: {
+                    formatter: (value, ctx) => {
+
+                        if (!MODO_DINAMICO) {
+                            const total = ctx.chart._metasets[0].total;
+                            const porcentaje = (value / total * 100).toFixed(1);
+                            return porcentaje + "%";
+                        }
+
+                        const label = ctx.chart.data.labels[ctx.dataIndex];
+                        return label + '\n' + Number(value).toLocaleString('es-MX');
+                    },
+                    color: '#fff',
+                    font: { weight: 'bold', size: 12 }
+                }
+            }
+        },
+
+        plugins: [ChartDataLabels]
+    });
+
+});
+</script>
 
 
 

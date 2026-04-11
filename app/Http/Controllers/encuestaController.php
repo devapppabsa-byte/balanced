@@ -110,6 +110,8 @@ class encuestaController extends Controller
     }
 
 
+
+    
     public function encuesta_store_two(Request $request){
 
 

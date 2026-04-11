@@ -16,6 +16,17 @@ body{
 
 }
 
+
+.select-grande {
+    font-size: 20px;
+    padding: 10px 15px;
+    height: 70px;
+    width: 100%;
+  font-weight: bolder;
+
+}
+
+
 .scroll-buttons {
     position: fixed;
     right: 20px;
