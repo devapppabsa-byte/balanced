@@ -2171,7 +2171,7 @@ public function analizar_indicador(Request $request, Indicador $indicador){
 
 
     //datos para graficar...
-    $campo = $request->campos_a_graficar;
+    $campo_graficar = $request->campos_a_graficar;
     $campo_final = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->first();
     $campos_referencia = IndicadorLleno::where('id_indicador', $indicador->id)->where('referencia', 'on')->pluck('nombre_campo');
 
@@ -2187,13 +2187,13 @@ public function analizar_indicador(Request $request, Indicador $indicador){
 
 $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
     ->whereBetween('fecha_periodo', [$inicio, $fin])
-    ->where(function ($q) use ($campo, $campo_final, $campos_referencia) {
+    ->where(function ($q) use ($campo_graficar, $campo_final, $campos_referencia) {
 
         //si el usuario hizo un cambio de campo 
-        if (!empty($campo)) {
+        if (!empty($campo_graficar)) {
 
             //si el usuario seleccion el campo que se grafica por default
-            if($campo === $campo_final->nombre_campo){
+            if($campo_graficar === $campo_final->nombre_campo){
 
                 $q->where('final', 'on')
                 ->orWhere('referencia', 'on');
@@ -2202,13 +2202,13 @@ $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
 
             else{
 
-                if(in_array($campo, json_decode($campos_referencia))){
-                    $q->where('nombre_campo', $campo);
+                if(in_array($campo_graficar, json_decode($campos_referencia))){
+                    $q->where('nombre_campo', $campo_graficar);
                 }
     
                 //si el usuario selecciona un campo diferente
                 else{
-                    $q->where('nombre_campo', $campo);
+                    $q->where('nombre_campo', $campo_graficar);
                     
                 }
 
@@ -2235,16 +2235,18 @@ $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
 
 
 //AQUI VA LA CONDICIONAL QUE VA A CAMBIAR TODO LOS DATOS JOJOJOJ
-if(!empty($campo)){
 
-    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('nombre_campo', $campo)->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
+if(!empty($campo_graficar)){
+
+    
+    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('nombre_campo', $campo_graficar)->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
 
 
     $promedios = IndicadorLleno::select(
         DB::raw('YEAR(fecha_periodo) as anio'),
         DB::raw('AVG(informacion_campo) as promedio')
     )
-    ->where('nombre_campo', $campo)
+    ->where('nombre_campo', $campo_graficar)
     ->where('id_indicador', $indicador->id)
     ->groupBy(DB::raw('YEAR(fecha_periodo)'))
     ->orderBy('anio')
@@ -2255,7 +2257,7 @@ if(!empty($campo)){
 
     //Para sacar la estacionalidad
     $registros = IndicadorLleno::where('id_indicador', $indicador->id)
-        ->where('nombre_campo', $campo)
+        ->where('nombre_campo', $campo_graficar)
         ->orderBy('fecha_periodo', 'desc')
         ->get();
 
@@ -2276,7 +2278,7 @@ if(!empty($campo)){
         //para sacar el mejor y el peor mes
 
         $registros_mejor_peor_mes = IndicadorLleno::where('id_indicador', $indicador->id)
-            ->where('nombre_campo', $campo)
+            ->where('nombre_campo', $campo_graficar)
             ->orderBy('fecha_periodo', 'desc')
             ->whereBetween('fecha_periodo', [$inicio, $fin])
             ->get();
@@ -2336,29 +2338,15 @@ if(!empty($campo)){
         ])->values();
 //Para sacar la estacionalidad
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 
+
+//CARGA TODOS LOS DATOS POR DEFAULT CON EL CAMPO FINAL COMO REFERENCIA
 else{
 
     //Para mostrar los datos del indicador
     $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
-
-
-
 
     $promedios = IndicadorLleno::select(
         DB::raw('YEAR(fecha_periodo) as anio'),
@@ -2369,8 +2357,6 @@ else{
     ->groupBy(DB::raw('YEAR(fecha_periodo)'))
     ->orderBy('anio')
     ->get();
-
-
 
     //Para sacar la estacionalidad
     $registros = IndicadorLleno::where('id_indicador', $indicador->id)
@@ -2452,22 +2438,10 @@ else{
             ['anio', 'desc'],
             ['mes_num', 'desc']
         ])->values();
-//Para sacar la estacionalidad
-
-
-
-
-
-
-
+//Para sacar la estacionalidaD
 
 }
-
-
-
-
-
-
+//CARGA TODOS LOS DATOS POR DEFAULT CON EL CAMPO FINAL COMO REFERENCIA
 
 
 
@@ -2492,7 +2466,7 @@ else{
     
 
 
-    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes', 'campos_graficar')); 
+    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes', 'campos_graficar', 'campo_graficar')); 
 
 }
 

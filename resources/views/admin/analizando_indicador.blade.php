@@ -371,23 +371,29 @@
                                             <span class="text-white d-block mb-1">
                                                 <i class="fa-solid fa-calendar-days"></i>                                            
                                                 Promedio Anual
+        
                                             </span>
 
                                             <h5 class="fw-bold mb-2">
-                                                @if($indicador->unidad_medida === 'pesos')
-                                                    ${{ number_format($promedio->promedio, 2) }}
+                                                @if (empty($campo) && $campo == "Registro" )
+                                                    @if($indicador->unidad_medida === 'pesos')
+                                                        ${{ number_format($promedio->promedio, 2) }}
 
-                                                @elseif($indicador->unidad_medida === 'porcentaje')
-                                                    {{ round($promedio->promedio, 2) }}%
+                                                    @elseif($indicador->unidad_medida === 'porcentaje')
+                                                        {{ round($promedio->promedio, 2) }}%
 
-                                                @elseif($indicador->unidad_medida === 'dias')
-                                                    {{ round($promedio->promedio, 2) }} Días
+                                                    @elseif($indicador->unidad_medida === 'dias')
+                                                        {{ round($promedio->promedio, 2) }} Días
 
-                                                @elseif($indicador->unidad_medida === 'toneladas')
-                                                    {{ round($promedio->promedio, 2) }} Ton.
+                                                    @elseif($indicador->unidad_medida === 'toneladas')
+                                                        {{ round($promedio->promedio, 2) }} Ton.
 
+                                                    @else
+                                                        {{ round($promedio->promedio, 2) }}
+                                                    @endif
+                                                    
                                                 @else
-                                                    {{ round($promedio->promedio, 2) }}
+                                                       {{ round($promedio->promedio, 2) }}
                                                 @endif
 
                                             </h5>
@@ -434,21 +440,28 @@
                                         {{ $mejor_mes["mes"] }}  {{ $mejor_mes["anio"] }}
                                     </span> <br>
                                     <span class="h3 fw-bold">
-                                        @if($indicador->unidad_medida === 'pesos')
-                                            ${{ number_format($mejor_mes["valor"], 2) }}
 
-                                        @elseif($indicador->unidad_medida === 'porcentaje')
-                                            {{ number_format($mejor_mes["valor"], 2) }}%
+                                        @if (empty($campo_graficar))
+                                            @if($indicador->unidad_medida === 'pesos')
+                                                ${{ number_format($mejor_mes["valor"], 2) }}
 
-                                        @elseif($indicador->unidad_medida === 'dias')
-                                            {{ number_format($mejor_mes["valor"], 2) }} Días
+                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                {{ number_format($mejor_mes["valor"], 2) }}%
 
-                                        @elseif($indicador->unidad_medida === 'toneladas')
-                                            {{ number_format($mejor_mes["valor"], 2) }} Ton.
+                                            @elseif($indicador->unidad_medida === 'dias')
+                                                {{ number_format($mejor_mes["valor"], 2) }} Días
 
+                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                {{ number_format($mejor_mes["valor"], 2) }} Ton.
+
+                                            @else
+                                                {{ number_format($mejor_mes["valor"], 2) }}
+                                            @endif                                        
                                         @else
-                                            {{ number_format($mejor_mes["valor"], 2) }}
+                                                {{ number_format($mejor_mes["valor"], 2) }}
+                                            
                                         @endif
+                                        
                                     </span>
                                 </div>
                 
@@ -463,21 +476,26 @@
                                         {{ $peor_mes["mes"] }}  {{ $peor_mes["anio"] }}
                                     </span> <br>
                                     <span class="h3 fw-bold">
-                                        @if($indicador->unidad_medida === 'pesos')
-                                            ${{ number_format($peor_mes["valor"], 2) }}
+                                        @if (empty($campo_graficar))
+                                            @if($indicador->unidad_medida === 'pesos')
+                                                ${{ number_format($peor_mes["valor"], 2) }}
 
-                                        @elseif($indicador->unidad_medida === 'porcentaje')
-                                            {{ number_format($peor_mes["valor"], 2) }}%
+                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                {{ number_format($peor_mes["valor"], 2) }}%
 
-                                        @elseif($indicador->unidad_medida === 'dias')
-                                            {{ number_format($peor_mes["valor"], 2) }} Días
+                                            @elseif($indicador->unidad_medida === 'dias')
+                                                {{ number_format($peor_mes["valor"], 2) }} Días
 
-                                        @elseif($indicador->unidad_medida === 'toneladas')
-                                            {{ number_format($peor_mes["valor"], 2) }} Ton.
+                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                {{ number_format($peor_mes["valor"], 2) }} Ton.
 
+                                            @else
+                                                {{ number_format($peor_mes["valor"], 2) }}
+                                            @endif                                            
                                         @else
                                             {{ number_format($peor_mes["valor"], 2) }}
                                         @endif
+
                                     </span>
                                 </div>
                             </div>
@@ -509,22 +527,27 @@
                         
                         <br>
                         
-                        <span class="">
-                            @if($indicador->unidad_medida === 'pesos')
-                            ${{ number_format($info_mes->informacion_campo, 2) }}
-                            
-                            @elseif($indicador->unidad_medida === 'porcentaje')
-                            {{ round($info_mes->informacion_campo, 2) }}%
-                            
-                            @elseif($indicador->unidad_medida === 'dias')
-                            {{ round($info_mes->informacion_campo, 2) }} Días
-                            
-                            @elseif($indicador->unidad_medida === 'toneladas')
-                            {{ round($info_mes->informacion_campo, 2) }} Ton.
-                            
+                        <span class="format-number">
+
+                            @if (empty($campo_graficar))
+                                @if($indicador->unidad_medida === 'pesos')
+                                ${{ number_format($info_mes->informacion_campo, 2) }}
+                                
+                                @elseif($indicador->unidad_medida === 'porcentaje')
+                                {{ round($info_mes->informacion_campo, 2) }}%
+                                
+                                @elseif($indicador->unidad_medida === 'dias')
+                                {{ round($info_mes->informacion_campo, 2) }} Días
+                                
+                                @elseif($indicador->unidad_medida === 'toneladas')
+                                {{ round($info_mes->informacion_campo, 2) }} Ton.
+                                
+                                @else
+                                {{ round($info_mes->informacion_campo, 2) }}
+                                @endif 
                             @else
-                            {{ round($info_mes->informacion_campo, 2) }}
-                            @endif 
+                                {{ round($info_mes->informacion_campo, 2) }}
+                            @endif
                             
                         </span>
                         
@@ -614,19 +637,24 @@
                                                     <div class="card-body text-center">
 
                                                         <!-- Valor actual -->
-                                                        <h3 class="fw-bold">
-                                                            @if($indicador->unidad_medida === 'pesos')
-                                                                ${{ number_format($valor, 2) }}
+                                                        <h3 class="fw-bold format-number">
+                                                            @if (empty($campo))
+                                                                @if($indicador->unidad_medida === 'pesos')
+                                                                    ${{ number_format($valor, 2) }}
 
-                                                            @elseif($indicador->unidad_medida === 'porcentaje')
-                                                                {{ round($valor, 2) }}%
+                                                                @elseif($indicador->unidad_medida === 'porcentaje')
+                                                                    {{ round($valor, 2) }}%
 
-                                                            @elseif($indicador->unidad_medida === 'dias')
-                                                                {{ round($valor, 2) }} Días
+                                                                @elseif($indicador->unidad_medida === 'dias')
+                                                                    {{ round($valor, 2) }} Días
 
-                                                            @elseif($indicador->unidad_medida === 'toneladas')
-                                                                {{ round($valor, 2) }} Ton.
+                                                                @elseif($indicador->unidad_medida === 'toneladas')
+                                                                    {{ round($valor, 2) }} Ton.
 
+                                                                @else
+                                                                    {{ round($valor, 2) }}
+                                                                @endif
+                                                                
                                                             @else
                                                                 {{ round($valor, 2) }}
                                                             @endif
@@ -637,22 +665,29 @@
                                                             <span class="cascadia-code d-block">
                                                                 Año anterior {{ $item['anio']-1 }}: 
                                                                 <h4>
-                                                                    <div class="badge badge-secondary">
-                                                                        @if($indicador->unidad_medida === 'pesos')
-                                                                            ${{ number_format($prev, 2) }}
+                                                                    <div class="badge badge-secondary format-number">
+                                                                        @if (empty($campo))
+                                                                            @if($indicador->unidad_medida === 'pesos')
+                                                                                ${{ number_format($prev, 2) }}
 
-                                                                        @elseif($indicador->unidad_medida === 'porcentaje')
-                                                                            {{ round($prev, 2) }}%
+                                                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                                                {{ round($prev, 2) }}%
 
-                                                                        @elseif($indicador->unidad_medida === 'dias')
-                                                                            {{ round($prev, 2) }} Días
+                                                                            @elseif($indicador->unidad_medida === 'dias')
+                                                                                {{ round($prev, 2) }} Días
 
-                                                                        @elseif($indicador->unidad_medida === 'toneladas')
-                                                                            {{ round($prev, 2) }} Ton.
+                                                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                                                {{ round($prev, 2) }} Ton.
 
+                                                                            @else
+                                                                                {{ round($prev, 2) }}
+                                                                            @endif
+                                                                            
                                                                         @else
-                                                                            {{ round($prev, 2) }}
+                                                                               {{ round($prev, 2) }}
+                                                                            
                                                                         @endif
+
                                                                     </div> 
                                                                 </h4>
                                                             </span>
@@ -664,22 +699,28 @@
                                                             <div class="mt-2">
                                                                 <span class="badge bg-{{ $color }} fs-6">
                                                                     <i class="fa-solid {{ $icon }} me-1"></i>
-                                       
-                                                                        @if($indicador->unidad_medida === 'pesos')
-                                                                            ${{ $dif > 0 ? '+' : '' }}{{ $dif }}
+                                                                    <span class="format-number">
+                                                                    
+                                                                        @if (empty($campo))
+                                                                            @if($indicador->unidad_medida === 'pesos')
+                                                                                ${{ $dif > 0 ? '+ ' : '' }}{{ $dif }}
 
-                                                                        @elseif($indicador->unidad_medida === 'porcentaje')
-                                                                            {{ $dif > 0 ? '+' : '' }}{{ $dif }}%
+                                                                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                                                                {{ $dif > 0 ? '+ ' : '' }}{{ $dif }}%
 
-                                                                        @elseif($indicador->unidad_medida === 'dias')
-                                                                            {{ $dif > 0 ? '+' : '' }}{{ $dif }} Días
+                                                                            @elseif($indicador->unidad_medida === 'dias')
+                                                                                {{ $dif > 0 ? '+ ' : '' }}{{ $dif }} Días
 
-                                                                        @elseif($indicador->unidad_medida === 'toneladas')
-                                                                            {{ $dif > 0 ? '+' : '' }}{{ $dif }} Ton.
+                                                                            @elseif($indicador->unidad_medida === 'toneladas')
+                                                                                {{ $dif > 0 ? '+' : '' }}{{ $dif }} Ton.
 
+                                                                            @else
+                                                                            {{ $dif > 0 ? '+ ' : '' }}{{ $dif }}
+                                                                            @endif
                                                                         @else
-                                                                           {{ $dif > 0 ? '+' : '' }}{{ $dif }}
+                                                                            {{ $dif > 0 ? '+ ' : '' }}{{ $dif }}
                                                                         @endif
+                                                                    </span>
                                                                                                                                    
 
 
