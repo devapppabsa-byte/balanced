@@ -4,7 +4,7 @@
 
 @section('contenido')
 
-<div class="container-fluid">
+<div class="container-fluid sticky-top">
     <div class="row bg-primary d-flex align-items-center">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10  pt-2 text-white">
 
@@ -221,10 +221,111 @@
             </div>
         
         </div>
+    </div>
 
-        <div class="card-body px-4 pb-4">
 
-            @if (!$campos_unidos->isEmpty())
+    <div class="card mt-3">
+
+        @if (!$campos_vacios->isEmpty() )
+            <div class="card-body">
+                <h2>Campos Vacios</h2>
+                    
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover">
+                            <thead class="table-light border-bottom">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Campo</th>
+                                    <th>Descripción</th>
+                                    <th>Unidad Medida</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($campos_vacios as $campo_vacio)
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-secondary">
+                                                {{ $campo_vacio->id }}
+                                            </span>
+                                        </td>
+
+                                        <td class="fw-semibold">
+                                            {{ $campo_vacio->nombre }}
+                                        </td>
+
+                                        <td class="text-muted">
+                                            @if($campo_vacio->descripcion)
+                                            <span data-mdb-tooltip-init  title="{{$campo_vacio->descripcion}}">
+                                                {{ Str::limit(strip_tags($campo_vacio->descripcion), 80) }}
+
+                                            </span>
+                                            @else
+                                                <i class="fa fa-info-circle text-primary"></i>
+                                                Sin descripción
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            <span class="badge bg-light text-dark border">
+                                                {{ !$campo_vacio->unidad_medida ? 'Sin unidad de medida' : $campo_vacio->unidad_medida }}
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <button class="btn btn-outline-danger btn-sm"  data-mdb-ripple-init  data-mdb-modal-init
+                                                    data-mdb-target="#delvac{{ $campo_vacio->id }}"  data-mdb-tooltip-init  title="Eliminar campo" >
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+
+                                                <button class="btn btn-outline-warning btn-sm"  data-mdb-ripple-init  data-mdb-modal-init
+                                                    data-mdb-target="#edivac{{ $campo_vacio->id }}"  data-mdb-tooltip-init  title="Eliminar campo" >
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+        
+                    @else
+                    <!-- Empty state -->
+                    <div class="text-center py-5">
+                        <img src="{{ asset('/img/iconos/empty.png') }}" class="img-fluid mb-3" style="max-width: 180px;">
+                        <h5 class="fw-bold">
+                            <i class="fa fa-circle-exclamation text-danger me-1"></i>
+                            No hay campos vacios disponibles
+                        </h5>
+                        <p class="text-muted mb-0">
+                            Aún no se han agregado campos a este indicador.
+                        </p>
+                    </div>
+            </div>
+        @endif
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+    <div class="card mt-2">
+
+        @if (!$campos_precargados->isEmpty())
+        <div class="card-body mt-3">
+            <h2>Campos Precargados</h2>
                 <div class="table-responsive">
                     <table class="table align-middle table-hover">
                         <thead class="table-light border-bottom">
@@ -232,28 +333,28 @@
                                 <th>#</th>
                                 <th>Campo</th>
                                 <th>Descripción</th>
-                                <th>Autor</th>
+                                <th>Unidad Medida</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            @foreach ($campos_unidos as $campo)
+                            @foreach ($campos_precargados as $campo_precargado)
                                 <tr>
                                     <td>
                                         <span class="badge bg-secondary">
-                                            {{ $campo->id }}
+                                            {{ $campo_precargado->id }}
                                         </span>
                                     </td>
 
                                     <td class="fw-semibold">
-                                        {{ $campo->nombre }}
+                                        {{ $campo_precargado->nombre }}
                                     </td>
 
                                     <td class="text-muted">
-                                        @if($campo->descripcion)
-                                        <span data-mdb-tooltip-init  title="{{$campo->descripcion}}">
-                                            {{ Str::limit(strip_tags($campo->descripcion), 80) }}
+                                        @if($campo_precargado->descripcion)
+                                        <span data-mdb-tooltip-init  title="{{$campo_precargado->descripcion}}">
+                                            {{ Str::limit(strip_tags($campo_precargado->descripcion), 80) }}
 
                                         </span>
                                         @else
@@ -264,16 +365,22 @@
 
                                     <td>
                                         <span class="badge bg-light text-dark border">
-                                            <i class="fa fa-pencil me-1"></i>
-                                            {{ $campo->autor }}
+                                            {{ !$campo_precargado->unidad_medida ? 'Sin unidad de medida' : $campo_precargado->unidad_medida }}
                                         </span>
                                     </td>
 
                                     <td class="text-center">
-                                        <button class="btn btn-outline-danger btn-sm"  data-mdb-ripple-init  data-mdb-modal-init
-                                            data-mdb-target="#del{{ $campo->id_input }}"  data-mdb-tooltip-init  title="Eliminar campo" >
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+                                        <div class="btn-group">
+                                            <button class="btn btn-outline-danger btn-sm"  data-mdb-ripple-init  data-mdb-modal-init
+                                                data-mdb-target="#delpre{{ $campo_precargado->id }}"  data-mdb-tooltip-init  title="Eliminar campo" >
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+
+                                            <button class="btn btn-outline-warning btn-sm"  data-mdb-ripple-init  data-mdb-modal-init
+                                                data-mdb-target="#edipre{{ $campo_precargado->id }}"  data-mdb-tooltip-init  title="Eliminar campo" >
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -283,21 +390,419 @@
 
             @else
                 <!-- Empty state -->
-                <div class="text-center py-5">
+                <div class="text-center py-5 bg-white mt-4 rounded-3">
                     <img src="{{ asset('/img/iconos/empty.png') }}" class="img-fluid mb-3" style="max-width: 180px;">
                     <h5 class="fw-bold">
                         <i class="fa fa-circle-exclamation text-danger me-1"></i>
-                        No hay campos disponibles
+                        No hay campos precargados disponibles
                     </h5>
                     <p class="text-muted mb-0">
                         Aún no se han agregado campos a este indicador.
                     </p>
                 </div>
-            @endif
-
-        </div>
+            </div>
+        @endif
     </div>
 </div>
+
+
+    <div class="card mt-3">
+        @if (!$campos_calculados->isEmpty())
+        <div class="card-body mt-3">
+            <h2>Campos Calculados</h2>
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover">
+                        <thead class="table-light border-bottom">
+                            <tr>
+                                <th>#</th>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Unidad Medida</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach ($campos_calculados as $campo_calculado)
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            {{ $campo_calculado->id }}
+                                        </span>
+                                    </td>
+
+                                    <td class="fw-semibold">
+                                        {{ $campo_calculado->nombre }}
+                                    </td>
+
+                                    <td class="text-muted">
+                                        @if($campo_calculado->descripcion)
+                                        <span data-mdb-tooltip-init  title="{{$campo_calculado->descripcion}}">
+                                            {{ Str::limit(strip_tags($campo_calculado->descripcion), 80) }}
+
+                                        </span>
+                                        @else
+                                            <i class="fa fa-info-circle text-primary"></i>
+                                            Sin descripción
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-light text-dark border">
+                                            {{ !$campo_calculado->unidad_medida ? 'Sin unidad de medida' : $campo_calculado->unidad_medida }}
+                                        </span>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <button class="btn btn-outline-danger btn-sm"  data-mdb-ripple-init  data-mdb-modal-init
+                                                data-mdb-target="#delcal{{ $campo_calculado->id }}"  data-mdb-tooltip-init  title="Eliminar campo" >
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+
+                                            <button class="btn btn-outline-warning btn-sm"  data-mdb-ripple-init  data-mdb-modal-init
+                                                data-mdb-target="#edical{{ $campo_calculado->id }}"  data-mdb-tooltip-init  title="Eliminar campo" >
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+            @else
+                <!-- Empty state -->
+                <div class="text-center py-5 bg-white mt-4 rounded-3">
+                    <img src="{{ asset('/img/iconos/empty.png') }}" class="img-fluid mb-3" style="max-width: 180px;">
+                    <h5 class="fw-bold">
+                        <i class="fa fa-circle-exclamation text-danger me-1"></i>
+                        No hay campos caluclados disponibles
+                    </h5>
+                    <p class="text-muted mb-0">
+                        Aún no se han agregado campos a este indicador.
+                    </p>
+                </div>
+            </div>
+        @endif
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+{{-- AQUI VAN LOS CICLOS PARA OS MODALES DE LOS CAMP
+OS --}}
+
+@foreach ($campos_calculados as $campo_calculado)
+    <div class="modal fade" id="delcal{{$campo_calculado->id}}" tabindex="-1"  aria-labelledby="exampleMddodalLabel" aria-hidden="true" data-mdb-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header bg-danger py-4">
+                <h3 class="text-white" id="exampleModalLabel">¿Eliminar a {{$campo_calculado->nombre}} ?</h3>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+
+                <form action="{{route('eliminar.campo', [$campo_calculado->id, 'calculado'])}}" method="POST">
+                    @csrf @method('DELETE')
+                    
+                    <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
+                        <h6>Eliminar</h6>
+                    </button>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+            </div> 
+            </div>
+        </div>
+    </div> 
+    
+
+    <div class="modal fade" id="edical{{$campo_calculado->id}}" tabindex="-1"  aria-labelledby="exampleMddodalLabel" aria-hidden="true" data-mdb-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header bg-primary py-4">
+                <h4 class="text-white" id="exampleModalLabel">Editando unidad de medida de: <u> {{$campo_calculado->nombre}}</u> </h4>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+
+                <form action="{{route('editar.campo', [$campo_calculado->id, 'calculado'])}}" method="POST">
+                    @csrf @method('PUT')
+
+                    <div class="form-group">
+                        <select name="unidad_medida" 
+                                class="form-select form-select-lg w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
+                                id="unidad_medida{{$campo_calculado->id}}" 
+                                required>
+    
+                            <option value="" disabled {{ old('unidad_medida', $campo_calculado->unidad_medida) ? '' : 'selected' }}>
+                                Selecciona la Unidad de Medida
+                            </option>
+    
+                            <option value="dias" 
+                                {{ old('unidad_medida', $campo_calculado->unidad_medida) == 'dias' ? 'selected' : '' }}>
+                                Días
+                            </option>
+    
+                            <option value="toneladas" 
+                                {{ old('unidad_medida', $campo_calculado->unidad_medida) == 'toneladas' ? 'selected' : '' }}>
+                                Toneladas
+                            </option>
+    
+                            <option value="porcentaje" 
+                                {{ old('unidad_medida', $campo_calculado->unidad_medida) == 'porcentaje' ? 'selected' : '' }}>
+                                % Porcentaje
+                            </option>
+    
+                            <option value="pesos" 
+                                {{ old('unidad_medida', $campo_calculado->unidad_medida) == 'pesos' ? 'selected' : '' }}>
+                                $ Pesos
+                            </option>
+                            <option value="unidad" 
+                                {{ old('unidad_medida', $campo_calculado->unidad_medida) == 'unidad' ? 'selected' : '' }}>
+                                Unidad
+                            </option>
+    
+                        </select>
+                    </div>
+                    
+                    <div class="form-group mt-3">
+                        <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+                            Editar
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+
+            </div>
+        </div>
+    </div>
+
+    
+@endforeach
+
+
+
+
+
+
+
+@foreach ($campos_precargados as $campo_precargado)
+    <div class="modal fade" id="delpre{{$campo_precargado->id}}" tabindex="-1"  aria-labelledby="exampleMddodalLabel" aria-hidden="true" data-mdb-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header bg-danger py-4">
+                <h3 class="text-white" id="exampleModalLabel">¿Eliminar a {{$campo_precargado->nombre}} ?</h3>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+
+                <form action="{{route('eliminar.campo', [$campo_precargado->id, 'precargado'])}}" method="POST">
+                    @csrf @method('DELETE')
+                    
+                    <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
+                        <h6>Eliminar</h6>
+                    </button>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+            </div> 
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="modal fade" id="edipre{{$campo_precargado->id}}" tabindex="-1"  aria-labelledby="exampleMddodalLabel" aria-hidden="true" data-mdb-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header bg-primary py-4">
+                <h4 class="text-white" id="exampleModalLabel">Editando unidad de medida de: <u> {{$campo_precargado->nombre}}</u> </h4>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+
+                <form action="{{route('editar.campo', [$campo_precargado->id, 'precargado'])}}" method="POST">
+                    @csrf @method('PUT')
+
+                    <div class="form-group">
+                        <select name="unidad_medida" 
+                                class="form-select form-select-lg w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
+                                id="unidad_medida{{$campo_precargado->id}}" 
+                                required>
+    
+                            <option value="" disabled {{ old('unidad_medida', $campo_precargado->unidad_medida) ? '' : 'selected' }}>
+                                Selecciona la Unidad de Medida
+                            </option>
+    
+                            <option value="dias" 
+                                {{ old('unidad_medida', $campo_precargado->unidad_medida) == 'dias' ? 'selected' : '' }}>
+                                Días
+                            </option>
+    
+                            <option value="toneladas" 
+                                {{ old('unidad_medida', $campo_precargado->unidad_medida) == 'toneladas' ? 'selected' : '' }}>
+                                Toneladas
+                            </option>
+    
+                            <option value="porcentaje" 
+                                {{ old('unidad_medida', $campo_precargado->unidad_medida) == 'porcentaje' ? 'selected' : '' }}>
+                                % Porcentaje
+                            </option>
+    
+                            <option value="pesos" 
+                                {{ old('unidad_medida', $campo_precargado->unidad_medida) == 'pesos' ? 'selected' : '' }}>
+                                $ Pesos
+                            </option>
+                            <option value="unidad" 
+                                {{ old('unidad_medida', $campo_precargado->unidad_medida) == 'unidad' ? 'selected' : '' }}>
+                                Unidad
+                            </option>
+    
+                        </select>
+                    </div>
+                    
+                    <div class="form-group mt-3">
+                        <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+                            Editar
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+            </div> 
+            </div>
+        </div>
+    </div>
+
+
+
+
+@endforeach
+
+
+
+@foreach ($campos_vacios as $campo_vacio)
+    <div class="modal fade" id="delvac{{$campo_vacio->id}}" tabindex="-1"  aria-labelledby="exampleMddodalLabel" aria-hidden="true" data-mdb-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header bg-danger py-4">
+                <h3 class="text-white" id="exampleModalLabel">¿Eliminar a {{$campo_vacio->nombre}} ?</h3>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+
+                <form action="{{route('eliminar.campo', [$campo_vacio->id, 'vacio'])}}" method="POST">
+                    @csrf @method('DELETE')
+                    
+                    <button  class="btn btn-danger w-100 py-3" data-mdb-ripple-init>
+                        <h6>Eliminar</h6>
+                    </button>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+            </div> 
+            </div>
+        </div>
+    </div> 
+    
+    
+
+    <div class="modal fade" id="edivac{{$campo_vacio->id}}" tabindex="-1"  aria-labelledby="exampleMddodalLabel" aria-hidden="true" data-mdb-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header bg-primary py-4">
+                <h4 class="text-white" id="exampleModalLabel">Editando unidad de medida de: <u> {{$campo_vacio->nombre}}</u> </h4>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+
+                <form action="{{route('editar.campo', [$campo_vacio->id, 'vacio'])}}" method="POST">
+                    @csrf @method('PUT')
+
+                    <div class="form-group">
+                        <select name="unidad_medida" 
+                                class="form-select form-select-lg w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
+                                id="unidad_medida{{$campo_vacio->id}}" 
+                                required>
+    
+                            <option value="" disabled {{ old('unidad_medida', $campo_vacio->unidad_medida) ? '' : 'selected' }}>
+                                Selecciona la Unidad de Medida
+                            </option>
+    
+                            <option value="dias" 
+                                {{ old('unidad_medida', $campo_vacio->unidad_medida) == 'dias' ? 'selected' : '' }}>
+                                Días
+                            </option>
+    
+                            <option value="toneladas" 
+                                {{ old('unidad_medida', $campo_vacio->unidad_medida) == 'toneladas' ? 'selected' : '' }}>
+                                Toneladas
+                            </option>
+    
+                            <option value="porcentaje" 
+                                {{ old('unidad_medida', $campo_vacio->unidad_medida) == 'porcentaje' ? 'selected' : '' }}>
+                                % Porcentaje
+                            </option>
+    
+                            <option value="pesos" 
+                                {{ old('unidad_medida', $campo_vacio->unidad_medida) == 'pesos' ? 'selected' : '' }}>
+                                $ Pesos
+                            </option>
+                            <option value="unidad" 
+                                {{ old('unidad_medida', $campo_vacio->unidad_medida) == 'unidad' ? 'selected' : '' }}>
+                                Unidad
+                            </option>
+    
+                        </select>
+                    </div>
+                    
+                    <div class="form-group mt-3">
+                        <button  class="btn btn-primary w-100 py-3" data-mdb-ripple-init>
+                            Editar
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+            </div> 
+            </div>
+        </div>
+    </div>
+
+
+
+
+@endforeach
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -431,6 +936,44 @@
                         <input type="text" id="nombre_campo_multiplicacion" class="form-control form-control-lg no-drop {{ $errors->first('nombre_campo_multiplicacion') ? 'is-invalid' : '' }}" form="multiplicacion_container" name="nombre_campo_multiplicacion">
                         <label class="form-label" for="nombre_campo_multiplicacion" >Nombre nuevo campo </label>
                     </div>
+
+                    <div class="form-group my-3">
+                        <select name="unidad_medida" 
+                                class="form-select form-select-lg w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
+                                id="unidad_medida{{$campo_vacio->id}}" 
+                                form="multiplicacion_container"
+                                required>
+    
+                            <option value="" disabled >
+                                Selecciona la Unidad de Medida
+                            </option>
+
+                            <option value="" disabled selected>Selecciona un tipo de dato</option>
+    
+                            <option value="dias">
+                                Días
+                            </option>
+    
+                            <option value="toneladas" >
+                            
+                                Toneladas
+                            </option>
+    
+                            <option value="porcentaje">
+                                % Porcentaje
+                            </option>
+    
+                            <option value="pesos">
+                                $ Pesos
+                            </option>
+                            <option value="unidad">
+                                Unidad
+                            </option>
+    
+                        </select>
+                    </div>
+
+
                     <div class="form-outline no-drop mt-3" data-mdb-input-init>
                         <textarea class="w-100 form-control" id="descripcion_multiplicacion" name="descripcion" form="multiplicacion_container" id=""></textarea>
                         <label class="form-label" for="descripcion_multiplicacion">Descripción del campo</label>
@@ -706,6 +1249,42 @@
                         <label class="form-label" for="nombre_campo_resta" >Nombre nuevo campo </label>
                     </div>
 
+                    <div class="form-group my-3">
+                        <select name="unidad_medida" 
+                                class="form-select form-select-lg w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
+                                id="unidad_medida{{$campo_vacio->id}}" 
+                                form="resta_container"
+                                required>
+    
+                            <option value="" disabled >
+                                Selecciona la Unidad de Medida
+                            </option>
+
+                            <option value="" disabled selected>Selecciona un tipo de dato</option>
+    
+                            <option value="dias">
+                                Días
+                            </option>
+    
+                            <option value="toneladas" >
+                            
+                                Toneladas
+                            </option>
+    
+                            <option value="porcentaje">
+                                % Porcentaje
+                            </option>
+    
+                            <option value="pesos">
+                                $ Pesos
+                            </option>
+                            <option value="unidad">
+                                Unidad
+                            </option>
+    
+                        </select>
+                    </div>
+
 
                     <div class="form-outline no-drop mt-3" data-mdb-input-init>
                         <textarea class="w-100 form-control" id="descripcion_resta" name="descripcion" form="resta_container"></textarea>
@@ -800,6 +1379,7 @@
                 <div class="form-group mt-5 mx-4 no-drop">
                     <h4>Datos Nuevo Campo</h4>
 
+                    
         
                     <div class="form-outline no-drop" data-mdb-input-init>
                         <input type="text" id="nombre_campo_porcentaje" class="form-control form-control-lg no-drop w-100 {{ $errors->first('nombre_campo_porcentaje') ? 'is-invalid' : '' }}" form="porcentaje_container" name="nombre" required>
@@ -955,9 +1535,46 @@
                         </div>
                     </div>
 
+                    <div class="col-12 my-2">
+                        <div class="form-group">
+                            <select name="unidad_medida" 
+                                    class="form-select form-select-lg w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
+                                    id="unidad_medida{{$campo_vacio->id}}" 
+                                    required>
+        
+                                <option value="" disabled {{ old('unidad_medida', $campo_vacio->unidad_medida) ? '' : 'selected' }}>
+                                    Selecciona la Unidad de Medida
+                                </option>
+
+                                <option value="" disabled selected>Selecciona un tipo de dato</option>
+        
+                                <option value="dias">
+                                    Días
+                                </option>
+        
+                                <option value="toneladas" >
+                                
+                                    Toneladas
+                                </option>
+        
+                                <option value="porcentaje">
+                                    % Porcentaje
+                                </option>
+        
+                                <option value="pesos">
+                                    $ Pesos
+                                </option>
+                                <option value="unidad">
+                                    Unidad
+                                </option>
+        
+                            </select>
+                        </div>
+                    </div>
+
 
                     <div class="col-12">
-                        <div class="form-group mt-3">
+                        <div class="form-group mt-2">
                             <div class="form-outline" data-mdb-input-init>
                                 {{-- <input type="text" class="form-control form-control-lg w-100" id="nombre_campo_vacio" name="nombre_campo_vacio" required> --}}
                                 <textarea name="descripcion" class="form-control w-100 " id="descripcion"></textarea>
@@ -986,8 +1603,7 @@
 
 
 
-
-@forelse ($campos_unidos as $campo)
+{{-- @forelse ($campos_unidos as $campo)
 
 <div class="modal fade" id="del{{$campo->id_input}}" tabindex="-1"  aria-labelledby="exampleMddodalLabel" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -1017,14 +1633,14 @@
 
         </div>
         {{-- <div class="modal-footer">
-        </div> --}}
+        </div> 
         </div>
     </div>
 </div>
 
 @empty
 
-@endforelse
+@endforelse --}}
 
 
 @endsection

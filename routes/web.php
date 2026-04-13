@@ -146,7 +146,9 @@ Route::post('/perfil_admin/informacion_foranea/cargando_excel', [CamposForaneosI
 //PRUEBAS CON EL ARCHIVO DE EXCEL
 
 //Eliminando campos la ctm
-Route::delete('/perfil_admin/agregar_indicadores/indicador/campo_borrado/{campo}', [indicadorController::class, 'borrar_campo'])->name('eliminar.campo')->middleware('auth:admin');
+Route::delete('/perfil_admin/agregar_indicadores/indicador/campo_borrado/{campo}/{tipo_campo}', [indicadorController::class, 'borrar_campo'])->name('eliminar.campo')->middleware('auth:admin');
+
+Route::put('/perfil_admin/agregar_indicadores/indicador/campo_editado/{campo}/{tipo_campo}', [indicadorController::class, 'editar_campo'])->name('editar.campo')->middleware('auth:admin');
 
 //Creando el campo promedio
 Route::post("/perfil_admin/agregar_indicadores/indicador/crear_campo_promedio/{indicador}", [indicadorController::class, "input_promedio_guardar"])->name("input.promedio.guardar")->middleware('auth:admin');

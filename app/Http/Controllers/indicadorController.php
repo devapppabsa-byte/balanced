@@ -257,7 +257,7 @@ public function indicador_index(Indicador $indicador){
 
 
     //verificar si ya hay un campo_final en este indicador.
-        $campo_final = CampoCalculado::where('id_indicador', $indicador->id)->where('resultado_final', 'on')->get();
+    $campo_final = CampoCalculado::where('id_indicador', $indicador->id)->where('resultado_final', 'on')->get();
 
     //consultar el campo de referencia.
     $campo_referencia = CampoCalculado::where('id_indicador', $indicador->id)->where('referencia', 'on')->get();
@@ -267,7 +267,6 @@ public function indicador_index(Indicador $indicador){
 
     $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
     $campos_precargados = CampoPrecargado::where('id_indicador', $indicador->id)->get();
-
     $campos_calculados = CampoCalculado::where('id_indicador', $indicador->id)->get();
     
     //DEspues de obtener los capos calculados correspondientes a este Indicador
@@ -280,8 +279,6 @@ public function indicador_index(Indicador $indicador){
 
 
     // $campos_unidos = $campos_vacios->union($campos_precargados)->orderBy('created_at', 'desc')->get();
-
-
     $campos_unidos = $campos_vacios
     ->concat($campos_precargados)
     ->concat($campos_calculados)
@@ -298,7 +295,7 @@ public function indicador_index(Indicador $indicador){
     //Llamar a la informacion 
     $informacion_foranea = CampoForaneo::get();
 
-    return view('admin.indicador', compact('indicador', 'campos_vacios','campos_precargados', 'informacion_foranea', 'campos_unidos', 'campo_final', 'campo_referencia'));
+    return view('admin.indicador', compact('indicador', 'campos_vacios','campos_precargados','campos_calculados', 'informacion_foranea', 'campos_unidos', 'campo_final', 'campo_referencia'));
 
 }
 
@@ -307,12 +304,9 @@ public function indicador_index(Indicador $indicador){
 
 
 
-public function borrar_campo(Request $request, $campo){
+public function borrar_campo(Request $request, $campo, $tipo_campo){
 
         
-
-        $autor = 'Id: '.auth()->guard('admin')->user()->id.' - '.auth()->guard('admin')->user()->nombre .' - '. $puesto_autor = auth()->guard('admin')->user()->puesto;
-
         //vamos a buscar el id_input en la base de datos de los campos involucrados.
         $id_indicador = CampoInvolucrado::where('id_input',$request->id_input)->first();
 
@@ -326,37 +320,24 @@ public function borrar_campo(Request $request, $campo){
 
 
     
-        if($request->campo_calculado && $request->campo_vacio){
+        if($tipo_campo == "calculado"){
             
             $campo_delete = CampoCalculado::findOrFail($campo);
             $nombre_campo = $campo_delete->nombre;
             $campo_delete->delete();
             
-            LogBalanced::create([
-                'autor' => $autor,
-                'accion' => "deleted",
-                'descripcion' => "Se elimino el campo calculado: ".$nombre_campo." (ID: ".$campo.") del indicador",
-                'ip' => request()->ip() 
-            ]);
-            
+
             return back()->with("deleted", "El campo fue eliminado del indicador!.");
         }
         
 
-
    
-        if($request->campo_vacio){
+        if($tipo_campo == "vacio"){
 
            $campo_delete = CampoVacio::findOrFail($campo);
            $nombre_campo = $campo_delete->nombre;
            $campo_delete->delete();
            
-           LogBalanced::create([
-               'autor' => $autor,
-               'accion' => "deleted",
-               'descripcion' => "Se elimino el campo vacio: ".$nombre_campo." (ID: ".$campo.") del indicador",
-               'ip' => request()->ip() 
-           ]);
            
            return back()->with("deleted", "El campo fue eliminado del indicador!.");
  
@@ -364,18 +345,12 @@ public function borrar_campo(Request $request, $campo){
 
 
 
-        if($request->campo_precargado){
+        if($tipo_campo == "precargado"){
 
             $campo_delete = CampoPrecargado::findOrFail($campo);
             $nombre_campo = $campo_delete->nombre;
             $campo_delete->delete();
             
-            LogBalanced::create([
-                'autor' => $autor,
-                'accion' => "deleted",
-                'descripcion' => "Se elimino el campo precargado: ".$nombre_campo." (ID: ".$campo.") del indicador",
-                'ip' => request()->ip() 
-            ]);
             
             return back()->with("deleted", "El campo fue eliminado del indicador");
 
@@ -387,13 +362,7 @@ public function borrar_campo(Request $request, $campo){
             $campo_delete = CampoVacio::where('id_input', $request->id_input)->first();
             $nombre_campo = $campo_delete->nombre;
             $campo_delete->delete();
-            
-            LogBalanced::create([
-                'autor' => $autor,
-                'accion' => "deleted",
-                'descripcion' => "Se elimino el campo precargado: ".$nombre_campo." (ID: ".$campo.") del indicador",
-                'ip' => request()->ip() 
-            ]);
+
             
             return back()->with("deleted", "El campo fue eliminado del indicador");         
 
@@ -407,6 +376,50 @@ public function borrar_campo(Request $request, $campo){
 
 
 }
+
+
+
+
+public function editar_campo(Request $request, $campo, $tipo_campo){
+    
+    if($tipo_campo == "precargado"){
+
+        $precargado = CampoPrecargado::findOrFail($campo);
+        $precargado->unidad_medida = $request->unidad_medida;
+        $precargado->update();
+        return back()->with('editado', 'El campo fue editado');
+
+    }
+
+    if($tipo_campo == "vacio"){
+
+        $vacio = CampoVacio::findOrFail($campo);
+        $vacio->unidad_medida = $request->unidad_medida;
+        $vacio->update();
+        return back()->with('editado', 'El campo fue editado');
+
+    }
+
+    if($tipo_campo == "calculado"){
+        $calculado = CampoCalculado::findOrFail($campo);
+        $calculado->unidad_medida = $request->unidad_medida;
+        $calculado->update();
+        return back()->with('editado', 'El campo fue editado');
+    }
+
+
+    return back()->with('error', 'Ocurrio un error desconocido');
+
+
+
+}
+
+
+
+
+
+
+
 
 
 
@@ -589,11 +602,9 @@ public function input_porcentaje_guardar(Request $request, Indicador $indicador)
         "referencia" => $request->referencia,
         "id_indicador" => $indicador->id,
         "descripcion" => $request->descripcion,
+        "unidad_medida" => 'porcentaje'
 
     ]);
-
-
-
 
 
 
@@ -608,9 +619,6 @@ public function input_porcentaje_guardar(Request $request, Indicador $indicador)
         ]);
 
     }
-
-
-
 
 
 
@@ -659,6 +667,7 @@ public function input_resta_guardar(Request $request, Indicador $indicador){
             "resultado_final" => $request->resultado_final,
             "referencia" => $request->referencia,
             "id_indicador" => $indicador->id,
+            "unidad_medida" => $request->unidad_medida,
             "descripcion" => $request->descripcion
 
     ]);
@@ -900,7 +909,6 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
     //se crea el nuevo campo calculado, este campo contendra la informacion de todos los campos que los componen, es decir, despues de crear este campo vamos a  crear los registros de los campos involucrados con este campo calculado.
 
     
-    
     $campo_calculado = CampoCalculado::create([
 
         "nombre" => $request->nombre_campo_multiplicacion,
@@ -911,6 +919,7 @@ public function input_multiplicacion_guardar(Request $request, Indicador $indica
         "referencia" => $request->referencia,
         "resultado_final" => $request->resultado_final,
         "id_indicador" => $indicador->id,
+        "unidad_medida" => $request->unidad_medida,
         "descripcion" => $request->descripcion
 
     ]);

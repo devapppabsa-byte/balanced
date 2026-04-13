@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('autor')->nullable();
             $table->string('descripcion');
-
+            $table->string('unidad_medida');
             $table->unsignedBigInteger('id_indicador');
             $table->foreign('id_indicador')
                   ->references('id')
