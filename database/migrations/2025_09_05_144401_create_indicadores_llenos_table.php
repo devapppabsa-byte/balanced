@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('final')->nullable();
             $table->string('referencia')->nullable();
             $table->string('fecha_periodo');
+            $table->string('unidad_medida');
 
             $table->foreign('id_indicador')
                   ->references('id')

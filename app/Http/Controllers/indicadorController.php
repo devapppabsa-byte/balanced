@@ -387,25 +387,93 @@ public function editar_campo(Request $request, $campo, $tipo_campo){
         $precargado = CampoPrecargado::findOrFail($campo);
         $precargado->unidad_medida = $request->unidad_medida;
         $precargado->update();
+
+
+        $existe = DB::table('indicadores_llenos')
+            ->where('nombre_campo', $precargado->nombre)
+            ->exists();
+
+        if (!$existe) {
+            return back()->with("error", "No se encontró el campo en Indicadores Llenos");
+        }
+
+
+        $updated = DB::table('indicadores_llenos')
+            ->where('nombre_campo', $precargado->nombre)
+            ->update([
+                'unidad_medida' => $request->unidad_medida
+        ]);
+
+
         return back()->with('editado', 'El campo fue editado');
 
     }
+
+
+
+
 
     if($tipo_campo == "vacio"){
 
         $vacio = CampoVacio::findOrFail($campo);
         $vacio->unidad_medida = $request->unidad_medida;
         $vacio->update();
+        
+        
+        $existe = DB::table('indicadores_llenos')
+            ->where('nombre_campo', $vacio->nombre)
+            ->exists();
+
+        if (!$existe) {
+            return back()->with("error", "No se encontró el campo en Indicadores Llenos");
+        }
+
+        DB::table('indicadores_llenos')
+            ->where('nombre_campo', $vacio->nombre)
+            ->update([
+                'unidad_medida' => $request->unidad_medida
+        ]);
+
+        
         return back()->with('editado', 'El campo fue editado');
 
     }
 
+
+
+
     if($tipo_campo == "calculado"){
+
+
+        
         $calculado = CampoCalculado::findOrFail($campo);
         $calculado->unidad_medida = $request->unidad_medida;
         $calculado->update();
+
+
+        $existe = DB::table('indicadores_llenos')
+            ->where('nombre_campo', $calculado->nombre)
+            ->exists();
+
+        if (!$existe) {
+            return back()->with("error", "No se encontró el campo en Indicadores Llenos");
+        }
+
+        DB::table('indicadores_llenos')
+            ->where('nombre_campo', $calculado->nombre)
+            ->update([
+                'unidad_medida' => $request->unidad_medida
+        ]);
+
+
+
+
         return back()->with('editado', 'El campo fue editado');
+    
     }
+
+
+
 
 
     return back()->with('error', 'Ocurrio un error desconocido');
@@ -757,6 +825,7 @@ public function input_division_guardar(Request $request, Indicador $indicador){
         "referencia" => $request->referencia,
         "resultado_final" => $request->resultado_final,
         "id_indicador" => $indicador->id,
+        "unidad_medida" => $request->unidad_medida,
         "descripcion" => $request->descripcion
 
     ]);
@@ -840,6 +909,7 @@ if( count($request->input_suma) < 2) return back()->with('error', 'Se debe agreg
         "referencia" => $request->referencia,
         "resultado_final" => $request->resultado_final,
         "id_indicador" => $indicador->id,
+        "unidad_medida" => $request->unidad_medida,
         "descripcion" => $request->descripcion
 
 
@@ -1007,6 +1077,7 @@ public function input_promedio_guardar(Request $request, Indicador $indicador){
             "resultado_final" => $request->resultado_final, 
             "referencia" => $request->referencia,
             "id_indicador" => $indicador->id,
+            "unidad_medida" => $request->unidad_medida,
             "descripcion" => $request->descripcion,
         ]);
 

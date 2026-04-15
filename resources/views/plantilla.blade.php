@@ -431,5 +431,27 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const scrollPos = localStorage.getItem("scrollPos");
+    if (scrollPos !== null) {
+        window.scrollTo(0, parseInt(scrollPos));
+        localStorage.removeItem("scrollPos");
+    }
+
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", function () {
+            localStorage.setItem("scrollPos", window.scrollY);
+        });
+    });
+
+});
+</script>
+
 </body>
 </html>
