@@ -2229,12 +2229,9 @@ public function analizar_indicador(Request $request, Indicador $indicador){
         ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
             ->startOfDay()
             ->utc()
-        : Carbon::now(config('app.timezone'))
-            //->subMonth()
-            ->startOfYear()
-            ->utc();
+        : "2025-01-01T06:00:00.000000Z";
 
-    $inicio = "2025-01-01T06:00:00.000000Z";
+
 
     $fin = request()->filled('fecha_fin')
         ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
@@ -2250,7 +2247,15 @@ public function analizar_indicador(Request $request, Indicador $indicador){
 
     //datos para graficar...
     $campo_graficar = $request->campos_a_graficar;
+    
+
     $datos_campo_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->where('nombre_campo', $campo_graficar)->first();
+
+    if(!$datos_campo_graficar){
+        $datos_campo_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->first();
+
+    }
+
 
     $campo_final = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->first();
     $campos_referencia = IndicadorLleno::where('id_indicador', $indicador->id)->where('referencia', 'on')->pluck('nombre_campo');
@@ -2305,9 +2310,8 @@ $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
         }
 
     })
-
-    ->orderBy('fecha_periodo', 'asc')
-    ->get();
+->orderBy('fecha_periodo', 'asc')
+->get();
 
 
 
@@ -2528,8 +2532,19 @@ else{
 
 
 
+//Aqui va a ir el codigo que me permite consultar los datos del ultimo mes
+ $fechas_seleccionar = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->pluck('fecha_periodo');
+ 
+
+ if($request->mostrar_mes){
+     $ultimo_mes = IndicadorLleno::where('id_indicador', $indicador->id)->where('fecha_periodo', $request->mostrar_mes)->where('final', 'on')->first();   
+ }
+ else{
+     $ultimo_mes = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->latest()->first();
+ }
 
 
+//Aqui va a ir el codigo que me permite consultar los datos del ultimo mes
 
 
 
@@ -2543,10 +2558,9 @@ else{
 //parece que no hace nda
 
 
-    
 
 
-    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes', 'campos_graficar', 'campo_graficar','datos_campo_graficar')); 
+    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes', 'campos_graficar', 'campo_graficar','datos_campo_graficar', 'ultimo_mes', 'fechas_seleccionar')); 
 
 }
 

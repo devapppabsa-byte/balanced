@@ -57,6 +57,7 @@
     @include('admin.assets.nav')
 
     <div class="row">
+        
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-body py-3 px-4">
 
@@ -93,12 +94,32 @@
                                     onchange="this.form.submit()">
                             </div>
                         </div>
-                    </div>
-                    <button type="submit" id="btn-trigger-form" style="display: none;"></button>
 
-                    <div class="col-12 py-3">
-                        <div class="form-outline">
-                            <select class="form-select form-select-lg select-grande" form="filtro_analisis_datos" name="campos_a_graficar" id="campos_graficar">
+                        <div>
+                    
+                            <label class="form-label small text-muted fw-semibold mb-1">
+                                <i class="fa fa-calendar"></i>
+                                Selecciona un mes para mostrar</label>
+                            <select class="form-select form-select-sm fw-bold" form="filtro_analisis_datos"  name="mostrar_mes" onchange="this.form.submit()">
+                                <option value="" disabled {{ request('mostrar_mes') ? '' : 'selected' }}>
+                                    Selecciona un mes.
+                                </option>
+                                @foreach ($fechas_seleccionar as $fecha)
+                                    <option value="{{ $fecha }}" {{ request('mostrar_mes') == $fecha ? 'selected' : '' }}>
+                                        {{Carbon::parse($fecha)->translatedFormat('F Y') }}
+                                    </option>
+                                @endforeach
+                                
+                            </select>
+        
+                        </div>
+
+                        <div>
+                    
+                            <label class="form-label small text-muted fw-semibold mb-1">
+                                <i class="fa fa-table"></i>
+                                Selecciona un campo para graficar</label>
+                            <select class="form-select form-select-sm fw-bold" form="filtro_analisis_datos" name="campos_a_graficar" onchange="this.form.submit()">
                                 <option value="" disabled {{ request('campos_a_graficar') ? '' : 'selected' }}>
                                     Selecciona un campo a graficar.
                                 </option>
@@ -114,15 +135,95 @@
                                     <option value="">No hay datos</option>
                                 @endforelse
                             </select>
+        
                         </div>
-                    </div>
 
+
+
+                    </div>
+                    {{-- <button type="submit" id="btn-trigger-form" style="display: none;"></button> --}}
                 </form>
 
             </div>
         </div>
     </div>
 </div>
+
+
+{{-- Datos de los indicadores, solo el numerito final y se agregara un modal  para ver los detalles --}}
+
+@php
+    $semaforo="";
+    if($indicador->tipo_indicador == "riesgo"){
+
+        if($indicador->meta_esperada <= $ultimo_mes->informacion_campo){
+            $semaforo = "bg-danger";
+        }
+        if($indicador->meta_esperada >= $ultimo_mes->informacion_campo){
+            $semaforo = "bg-success";
+        }
+    }
+
+    if($indicador->tipo_indicador == "normal"){
+
+        if($indicador->meta_esperada < $ultimo_mes->informacion_campo){
+            $semaforo = "bg-success";
+        }
+        if($indicador->meta_esperada >= $ultimo_mes->informacion_campo){
+            $semaforo = "bg-danger";
+
+        }
+    }
+
+
+@endphp
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <a href="#">
+                <div class="card {{ $semaforo }}">
+                    <div class="card-body py-1">
+                        <h4 class="text-center fw-bold text-white">
+                            {{ $ultimo_mes->nombre_campo }}
+                        </h4>
+
+                        <h1 class="text-center fw-bold text-white">
+                    
+
+                            @if($indicador->unidad_medida === 'pesos')
+                                ${{ number_format($ultimo_mes->informacion_campo, 2) }}
+
+                            @elseif($indicador->unidad_medida === 'porcentaje')
+                                {{ round($ultimo_mes->informacion_campo, 2) }}%
+
+                            @elseif($indicador->unidad_medida === 'dias')
+                                {{ round($ultimo_mes->informacion_campo, 2) }} Días
+
+                            @elseif($indicador->unidad_medida === 'toneladas')
+                                {{ round($ultimo_mes->informacion_campo, 2) }} Ton.
+
+                            @else
+                                {{ round($ultimo_mes->informacion_campo, 2) }}
+                            @endif
+
+
+                        </h1>
+                        <h5 class="text-center fw-bold text-white text-capitalize">
+                            {{Carbon::parse($ultimo_mes->fecha_periodo)->translatedFormat('F Y') }}
+                        </h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+            
+    </div>
+</div>
+
+
+{{-- Datos de los indicadores, solo el numerito final y se agregara un modal  para ver los detalles --}}
+
+
 
 
 
@@ -247,9 +348,7 @@
                                                     @else
                                                         {{ round($promedio->promedio, 2) }}
                                                     @endif                                             
-                                                
-                                                
-                                                
+                                                                                                
                                                 @endif
 
                                             </h5>
@@ -880,20 +979,7 @@
 
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const select = document.getElementById('campos_graficar');
-        const form = document.getElementById('filtro_analisis_datos');
 
-        if (select && form) {
-            select.addEventListener('change', function() {
-
-                form.requestSubmit();
-                console.log('Enviando formulario...'); // Para que verifiques en consola
-            });
-        }
-    });
-</script>
 
 
 
@@ -941,6 +1027,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const LIMITE_SUPERIOR = VARIACION_ON ? META_ESPERADA + VARIACION : null;
 
     const UNIDAD_MEDIDA = "{{ $indicador->unidad_medida }}";
+    const UNIDAD_MEDIDA_CAMPO   = "{{ $datos_campo_graficar->unidad_medida  }}"
 
     // ============================
     // DATASET PRINCIPAL (BARRAS)
@@ -1051,7 +1138,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (value === null) return '';
 
                 if (MODO_DINAMICO) {
+
+                    switch (UNIDAD_MEDIDA_CAMPO) {
+                        case 'pesos':
+                            return '$' + Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 });
+                        case 'porcentaje':
+                            return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '%';
+                        case 'dias':
+                            return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Días';
+                        case 'toneladas':
+                            return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Ton.';
+                        default:
+                            return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 });
+                    }
+
                     return Number(value).toLocaleString('es-MX');
+
                 }
 
                 switch (UNIDAD_MEDIDA) {
@@ -1226,6 +1328,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const TIPO_INDICADOR = "{{ $indicador->tipo_indicador }}";
     const UNIDAD_MEDIDA = "{{ $indicador->unidad_medida }}";
+    const UNIDAD_MEDIDA_CAMPO   = "{{ $datos_campo_graficar->unidad_medida }}"
 
     const MODO_DINAMICO = !datos.some(d => d.final === "on");
 
@@ -1322,21 +1425,41 @@ document.addEventListener("DOMContentLoaded", function () {
         if (valor === null) return '';
 
         if (MODO_DINAMICO) {
+
+            switch (UNIDAD_MEDIDA_CAMPO) {
+                case 'pesos':
+                    return '$' + Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
+                case 'porcentaje':
+                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '%';
+                case 'dias':
+                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Días';
+                case 'toneladas':
+                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Ton.';
+                default:
+                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
+            }
+
             return Number(valor).toLocaleString('es-MX');
+
         }
 
-        switch (UNIDAD_MEDIDA) {
-            case 'pesos':
-                return '$' + Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
-            case 'porcentaje':
-                return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '%';
-            case 'dias':
-                return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Días';
-            case 'toneladas':
-                return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Ton.';
-            default:
-                return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
+        else{
+            
+            switch (UNIDAD_MEDIDA) {
+                case 'pesos':
+                    return '$' + Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
+                case 'porcentaje':
+                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '%';
+                case 'dias':
+                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Días';
+                case 'toneladas':
+                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Ton.';
+                default:
+                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
+            }
+
         }
+
     }
 
     const ctxLine = document.getElementById("graficoLine");
