@@ -2221,11 +2221,9 @@ public function analizar_indicador_usuario(Indicador $indicador){
 
 public function analizar_indicador(Request $request, Indicador $indicador){
 
-
-
-
+    //este es para mostrar los datos en el select
    $campos_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->distinct()->pluck('nombre_campo');
-
+  
 
    $inicio = request()->filled('fecha_inicio')
         ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
@@ -2252,6 +2250,8 @@ public function analizar_indicador(Request $request, Indicador $indicador){
 
     //datos para graficar...
     $campo_graficar = $request->campos_a_graficar;
+    $datos_campo_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->where('nombre_campo', $campo_graficar)->first();
+
     $campo_final = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->first();
     $campos_referencia = IndicadorLleno::where('id_indicador', $indicador->id)->where('referencia', 'on')->pluck('nombre_campo');
 
@@ -2546,7 +2546,7 @@ else{
     
 
 
-    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes', 'campos_graficar', 'campo_graficar')); 
+    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes', 'campos_graficar', 'campo_graficar','datos_campo_graficar')); 
 
 }
 
