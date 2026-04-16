@@ -493,6 +493,12 @@ public function editar_campo(Request $request, $campo, $tipo_campo){
 
 
 public function show_indicador_robusto_user(Request $request, Indicador $indicador){
+
+
+    //aqui vamos a poner la redirección alv
+
+
+
     //este es para mostrar los datos en el select
    $campos_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->distinct()->pluck('nombre_campo');
   
@@ -816,7 +822,14 @@ else{
     
  }
 
- $campos_llenos = IndicadorLleno::where('id_movimiento', $ultimo_mes->id_movimiento)->get();
+
+
+if(!empty($ultimo_mes)){
+    $campos_llenos = IndicadorLleno::where('id_movimiento', $ultimo_mes->id_movimiento)->get();
+}
+else{
+    $campos_llenos = [];
+}
 
 
 //Aqui va a ir el codigo que me permite consultar los datos del ultimo mes

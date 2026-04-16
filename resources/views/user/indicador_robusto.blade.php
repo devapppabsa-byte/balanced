@@ -304,6 +304,7 @@
 {{-- boton flotante y modal de llenado de indicadores --}}
 
 
+@if (!empty($ultimo_mes))
 {{-- Datos de los indicadores, solo el numerito final y se agregara un modal  para ver los detalles --}}
 
 @php
@@ -523,6 +524,9 @@
 
 
 {{-- Datos de los indicadores, solo el numerito final y se agregara un modal  para ver los detalles --}}
+@endif
+
+
 
 
 
@@ -1343,6 +1347,7 @@
 
 
 
+@if (!empty($ultimo_mes))
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -1674,9 +1679,6 @@ datasets: [
 
 });
 </script>
-
-
-
 
 
 {{-- los otros graficos  --}}
@@ -2115,6 +2117,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 {{-- Aqui yacen os scripts de la estacionalidad --}}
+@endif
+
 
 
 

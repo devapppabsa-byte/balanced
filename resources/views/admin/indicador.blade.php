@@ -734,7 +734,7 @@ OS --}}
                     <div class="form-group">
                         <select name="unidad_medida" 
                                 class="form-select form-select-lg w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
-                                id="unidad_medida{{$campo_vacio->id}}" 
+                                id="""" 
                                 required>
     
                             <option value="" disabled {{ old('unidad_medida', $campo_vacio->unidad_medida) ? '' : 'selected' }}>
@@ -970,7 +970,7 @@ OS --}}
                     <div class="form-group my-3">
                         <select name="unidad_medida" 
                                 class="form-select form-select-lg w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
-                                id="unidad_medida{{$campo_vacio->id}}" 
+                                id="""" 
                                 form="multiplicacion_container"
                                 required>
     
@@ -1349,7 +1349,7 @@ OS --}}
                     <div class="form-group my-3">
                         <select name="unidad_medida" 
                                 class="form-select form-select-lg w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
-                                id="unidad_medida{{$campo_vacio->id}}" 
+                                id="""" 
                                 form="resta_container"
                                 required>
     
@@ -1636,10 +1636,10 @@ OS --}}
                         <div class="form-group">
                             <select name="unidad_medida" 
                                     class="form-select form-select-lg w-100 {{ $errors->first('unidad_medida') ? 'is-invalid' : '' }}"  
-                                    id="unidad_medida{{$campo_vacio->id}}" 
+                                    id="" 
                                     required>
         
-                                <option value="" disabled {{ old('unidad_medida', $campo_vacio->unidad_medida) ? '' : 'selected' }}>
+                                <option value="" disabled }>
                                     Selecciona la Unidad de Medida
                                 </option>
 
