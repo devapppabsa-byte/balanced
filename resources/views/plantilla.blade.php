@@ -392,12 +392,37 @@ ClassicEditor
 
 {{-- FORMAEANDO LOS NUMEROS QUE SE MUESTRAN --}}
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.format-number').forEach(el => {
-        const n = el.textContent.replace(/,/g, '');
-        if (!isNaN(n) && n !== '') {
-        el.textContent = Number(n).toLocaleString('en-US');
+
+        let texto = el.textContent.trim();
+
+        // Detectar signo
+        let signo = texto.includes('+') ? '+ ' : '';
+
+        // Detectar unidad
+        let unidad = '';
+        if (texto.includes('$')) unidad = '$';
+        else if (texto.includes('%')) unidad = '%';
+        else if (texto.toLowerCase().includes('días')) unidad = ' Días';
+        else if (texto.toLowerCase().includes('ton')) unidad = ' Ton.';
+
+        // Extraer número (solo dígitos y punto)
+        let numero = texto.replace(/[^0-9.-]/g, '');
+
+        if (!isNaN(numero) && numero !== '') {
+            let formateado = Number(numero).toLocaleString('es-MX', {
+                maximumFractionDigits: 2
+            });
+
+            // Reconstruir
+            if (unidad === '$') {
+                el.textContent = signo + '$' + formateado;
+            } else {
+                el.textContent = signo + formateado + unidad;
+            }
         }
+
     });
 });
 </script>

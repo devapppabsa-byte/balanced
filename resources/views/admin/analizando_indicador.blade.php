@@ -10,7 +10,7 @@
 
     <div class="row bg-primary d-flex align-items-center justify-content-start">
         <div class="col-12 col-sm-12 col-md-6 col-lg-10 pt-2">
-            <h2 class="text-white league-spartan">{{$indicador->nombre}}</h2>
+            <h1 class="text-white league-spartan">{{$indicador->nombre}}</h1>
 
             @if (session('success'))
                 <div class="text-white fw-bold ">
@@ -178,10 +178,117 @@
 
 @endphp
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="campos_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Datos del mes de 
+            {{ request('mostrar_mes') ? Carbon::parse(request('mostrar_mes'))->translatedFormat('F Y')  : Carbon::parse($ultimo_mes->fecha_periodo)->translatedFormat('F Y')   }}</h5>
+        <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @php
+            $registro = "";
+            $nombre_registro = "";
+        @endphp
+        @forelse ($campos_llenos as $campo_lleno)
+        <div class="row p-2 justify-content-center">
+            @if ($campo_lleno->nombre_campo == 'comentario')
+            <div class="col-12 bg-light table-responsive ck-content">
+                <i class="fa-solid fa-circle-info"></i>Información Extra
+                <p>
+                    {!!  $campo_lleno->informacion_campo !!}
+                </p>
+            </div>
+
+            @elseif( $campo_lleno->nombre_campo == "Registro")
+            @php
+                $nombre_registro = $campo_lleno->nombre_campo;
+                $registro = $campo_lleno->informacion_campo;
+            @endphp
+            @else
+                @if ($campo_lleno->final == "on")
+                    
+                @else
+                    
+               
+                <div class="col-10 border boder-3 p-2 ">
+                    <h5>
+                        {{ $campo_lleno->nombre_campo }}
+                    </h5>
+                    <h6>
+
+                        @if($campo_lleno->unidad_medida === 'pesos')
+                            <div class="format-number">
+                                $ {{ number_format($campo_lleno->informacion_campo, 2) }}
+                            </div>
+
+                        @elseif($campo_lleno->unidad_medida === 'porcentaje')
+                            <div class="format-number">
+                                {{ number_format($campo_lleno->informacion_campo, 2) }} %
+                            </div>
+
+                        @elseif($campo_lleno->unidad_medida === 'dias')
+                            <div class="format-number">
+                                {{ number_format($campo_lleno->informacion_campo, 2) }} Días
+                            </div>
+
+                        @elseif($campo_lleno->unidad_medida === 'toneladas')
+                            <div class="format-number">
+                                {{ number_format($campo_lleno->informacion_campo, 2) }} Ton.
+                            </div>
+
+                        @else
+                            <div class="format-number">
+                                {{ round($campo_lleno->informacion_campo, 2) }}
+                            </div>
+                        @endif 
+
+                    </h6>
+                </div>
+             @endif
+            @endif
+
+        </div>
+
+        @empty
+            
+        @endforelse
+      </div>
+      <div class="modal-footer bg-primary text-white">
+        <div class="row  w-100 d-flex align-items-center">
+            <div class="col-6 text-left ">
+                <small class="fw-bold">
+                    <i class="fa fa-edit"></i>
+                    {{ $nombre_registro }}
+                </small>
+                <span>
+                    {{ $registro }}
+                </span>
+            </div>
+            <div class="col-6 text-end ">
+                <button type="button" class="btn btn-secondary" data-mdb-ripple-init data-mdb-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <div class="container-fluid mt-3">
     <div class="row justify-content-center">
-        <div class="col-8">
-            <a href="#">
+        <div class="col-10">
+            <button type="button"
+                    class="w-100 border-0 bg-transparent p-0"
+                    data-mdb-ripple-init
+                    data-mdb-modal-init
+                    data-mdb-target="#campos_indicador">
+
                 <div class="card {{ $semaforo }}">
                     <div class="card-body py-1">
                         <h4 class="text-center fw-bold text-white">
@@ -189,32 +296,25 @@
                         </h4>
 
                         <h1 class="text-center fw-bold text-white">
-                    
-
                             @if($indicador->unidad_medida === 'pesos')
                                 ${{ number_format($ultimo_mes->informacion_campo, 2) }}
-
                             @elseif($indicador->unidad_medida === 'porcentaje')
                                 {{ round($ultimo_mes->informacion_campo, 2) }}%
-
                             @elseif($indicador->unidad_medida === 'dias')
                                 {{ round($ultimo_mes->informacion_campo, 2) }} Días
-
                             @elseif($indicador->unidad_medida === 'toneladas')
                                 {{ round($ultimo_mes->informacion_campo, 2) }} Ton.
-
                             @else
                                 {{ round($ultimo_mes->informacion_campo, 2) }}
                             @endif
-
-
                         </h1>
+
                         <h5 class="text-center fw-bold text-white text-capitalize">
-                            {{Carbon::parse($ultimo_mes->fecha_periodo)->translatedFormat('F Y') }}
+                            {{ Carbon::parse($ultimo_mes->fecha_periodo)->translatedFormat('F Y') }}
                         </h5>
                     </div>
                 </div>
-            </a>
+            </button>
         </div>
             
     </div>
@@ -270,18 +370,55 @@
 
                 <div class="col-12 p-1 bg-white mt-3 p-3">
         <!-- BOTÓN + GRAFICA 1 -->
-                    <h5>Barras + Linea</h5>
+                        {{--esto afecta a todos los nombre de las graficas --}}
+                              @php
+                                    $tipos = [
+                                        "g" => "<i class='fa-solid fa-city'></i> Indicador General",
+                                        "p" => "<i class='fa-solid fa-cow'></i> Pecuarios",
+                                        "m" => "<i class='fa-solid fa-dog'></i> Mascotas",
+                                    ];
+                            @endphp
+
+                    <h4>{{ request('campos_a_graficar') ? request('campos_a_graficar') : 'Gráfico de Barras + Linea'  }} |
+
+                        {!!  
+                            empty($indicador->planta)
+                                ? "<i class='fa-solid fa-circle-exclamation'></i> Sin asignación"
+                                : ($tipos[strtolower($indicador->planta)] 
+                                    ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
+                        !!}
+                        
+                    </h4>
                     <canvas id="grafico"></canvas>
 
                 </div>
 
                 <div class="col-12 p-1 bg-white mt-3 p-3">
-                    <h5>Tendencia</h5>
+                    <h4>{{ request('campos_a_graficar') ? request('campos_a_graficar') : 'Gráfico de Tendencia'  }} |
+
+                        {!!  
+                            empty($indicador->planta)
+                                ? "<i class='fa-solid fa-circle-exclamation'></i> Sin asignación"
+                                : ($tipos[strtolower($indicador->planta)] 
+                                    ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
+                        !!}
+                        
+                    </h4>
                     <canvas id="graficoLine"></canvas>
                 </div>
 
                 <div class="col-12 p-1 bg-white mt-3 p-3">
-                    <h5>Pie</h5>
+
+                    <h4>{{ request('campos_a_graficar') ? request('campos_a_graficar') : 'Gráfico de Dona'  }} |
+
+                        {!!  
+                            empty($indicador->planta)
+                                ? "<i class='fa-solid fa-circle-exclamation'></i> Sin asignación"
+                                : ($tipos[strtolower($indicador->planta)] 
+                                    ?? " <i class='fa-solid fa-industry'></i> Planta {$indicador->planta}")
+                        !!}
+                        
+                    </h4>
                     <canvas id="graficoPie"></canvas>
                 </div>
 
@@ -316,10 +453,10 @@
                                                 @if (empty($campo_graficar) )
 
                                                     @if($indicador->unidad_medida === 'pesos')
-                                                        ${{ number_format($promedio->promedio, 2) }}
+                                                        $ {{ number_format($promedio->promedio, 2) }}
 
                                                     @elseif($indicador->unidad_medida === 'porcentaje')
-                                                        {{ round($promedio->promedio, 2) }}%
+                                                        {{ round($promedio->promedio, 2) }} %
 
                                                     @elseif($indicador->unidad_medida === 'dias')
                                                         {{ round($promedio->promedio, 2) }} Días
@@ -334,10 +471,10 @@
                                                 @else
 
                                                     @if($datos_campo_graficar->unidad_medida === 'pesos')
-                                                        ${{ number_format($promedio->promedio, 2) }}
+                                                        $ {{ number_format($promedio->promedio, 2) }}
 
                                                     @elseif($datos_campo_graficar->unidad_medida === 'porcentaje')
-                                                        {{ round($promedio->promedio, 2) }}%
+                                                        {{ round($promedio->promedio, 2) }} %
 
                                                     @elseif($datos_campo_graficar->unidad_medida === 'dias')
                                                         {{ round($promedio->promedio, 2) }} Días
@@ -398,10 +535,10 @@
 
                                         @if (empty($campo_graficar))
                                             @if($indicador->unidad_medida === 'pesos')
-                                                ${{ number_format($mejor_mes["valor"], 2) }}
+                                                $ {{ number_format($mejor_mes["valor"], 2) }}
 
                                             @elseif($indicador->unidad_medida === 'porcentaje')
-                                                {{ number_format($mejor_mes["valor"], 2) }}%
+                                                {{ number_format($mejor_mes["valor"], 2) }} %
 
                                             @elseif($indicador->unidad_medida === 'dias')
                                                 {{ number_format($mejor_mes["valor"], 2) }} Días
@@ -415,10 +552,10 @@
                                         @else
 
                                             @if($datos_campo_graficar->unidad_medida === 'pesos')
-                                               ${{ number_format($mejor_mes["valor"], 2) }}
+                                               $ {{ number_format($mejor_mes["valor"], 2) }}
 
                                             @elseif($datos_campo_graficar->unidad_medida === 'porcentaje')
-                                               {{ number_format($mejor_mes["valor"], 2) }}%
+                                               {{ number_format($mejor_mes["valor"], 2) }} %
 
                                             @elseif($datos_campo_graficar->unidad_medida === 'dias')
                                                {{ number_format($mejor_mes["valor"], 2) }} Días
@@ -449,10 +586,10 @@
                                     <span class="h3 fw-bold">
                                         @if (empty($campo_graficar))
                                             @if($indicador->unidad_medida === 'pesos')
-                                                ${{ number_format($peor_mes["valor"], 2) }}
+                                                $ {{ number_format($peor_mes["valor"], 2) }}
 
                                             @elseif($indicador->unidad_medida === 'porcentaje')
-                                                {{ number_format($peor_mes["valor"], 2) }}%
+                                                {{ number_format($peor_mes["valor"], 2) }} %
 
                                             @elseif($indicador->unidad_medida === 'dias')
                                                 {{ number_format($peor_mes["valor"], 2) }} Días
@@ -462,14 +599,15 @@
 
                                             @else
                                                 {{ number_format($peor_mes["valor"], 2) }}
-                                            @endif                                            
+                                            @endif  
+
                                         @else
 
                                             @if($datos_campo_graficar->unidad_medida === 'pesos')
-                                              ${{ number_format($peor_mes["valor"], 2) }}
+                                              $ {{ number_format($peor_mes["valor"], 2) }}
 
                                             @elseif($datos_campo_graficar->unidad_medida === 'porcentaje')
-                                               {{ number_format($peor_mes["valor"], 2) }}%
+                                               {{ number_format($peor_mes["valor"], 2) }} %
 
                                             @elseif($datos_campo_graficar->unidad_medida === 'dias')
                                                {{ number_format($peor_mes["valor"], 2) }} Días
@@ -519,10 +657,10 @@
 
                             @if (empty($campo_graficar))
                                 @if($indicador->unidad_medida === 'pesos')
-                                ${{ number_format($info_mes->informacion_campo, 2) }}
+                                $ {{ number_format($info_mes->informacion_campo, 2) }}
                                 
                                 @elseif($indicador->unidad_medida === 'porcentaje')
-                                {{ round($info_mes->informacion_campo, 2) }}%
+                                {{ round($info_mes->informacion_campo, 2) }} %
                                 
                                 @elseif($indicador->unidad_medida === 'dias')
                                 {{ round($info_mes->informacion_campo, 2) }} Días
@@ -538,10 +676,10 @@
 
 
                                 @if($datos_campo_graficar->unidad_medida === 'pesos')
-                                    ${{ number_format($info_mes->informacion_campo, 2) }}
+                                    $ {{ number_format($info_mes->informacion_campo, 2) }}
 
                                 @elseif($datos_campo_graficar->unidad_medida === 'porcentaje')
-                                     {{ round($info_mes->informacion_campo, 2) }}%
+                                     {{ round($info_mes->informacion_campo, 2) }} %
 
                                 @elseif($datos_campo_graficar->unidad_medida === 'dias')
                                     {{ round($info_mes->informacion_campo, 2) }} Días
@@ -747,11 +885,12 @@
                                                                     <i class="fa-solid {{ $icon }} me-1"></i>
                                                                     
                                                                         @if (empty($campo_graficar))
+                                                                        
                                                                             @if($indicador->unidad_medida === 'pesos')
                                                                                 ${{ $dif > 0 ? '+ ' : '' }}{{ $dif }}
 
                                                                             @elseif($indicador->unidad_medida === 'porcentaje')
-                                                                                {{ $dif > 0 ? '+ ' : '' }}{{ $dif }}%
+                                                                                {{ $dif > 0 ? '+ ' : '' }}{{ $dif }} %
 
                                                                             @elseif($indicador->unidad_medida === 'dias')
                                                                                 {{ $dif > 0 ? '+ ' : '' }}{{ $dif }} Días
@@ -762,8 +901,29 @@
                                                                             @else
                                                                             {{ $dif > 0 ? '+ ' : '' }}{{ $dif }}
                                                                             @endif
+
                                                                         @else
-                                                                            {{ $dif > 0 ? '+ ' : '' }}{{ $dif }}
+
+                                                                    
+            
+                                                                            @if($datos_campo_graficar->unidad_medida === 'pesos')
+                                                                                $ {{ $dif > 0 ? '+ ' : '' }}{{ $dif }}
+
+                                                                            @elseif($datos_campo_graficar->unidad_medida === 'porcentaje')
+                                                                                {{ $dif > 0 ? '+ ' : '' }}{{ $dif }} %
+
+                                                                            @elseif($datos_campo_graficar->unidad_medida === 'dias')
+                                                                                {{ $dif > 0 ? '+ ' : '' }}{{ $dif }} Días
+
+                                                                            @elseif($datos_campo_graficar->unidad_medida === 'toneladas')
+                                                                                {{ $dif > 0 ? '+ ' : '' }}{{ $dif }} Ton.
+
+                                                                            @else
+                                                                                {{ $dif > 0 ? '+ ' : '' }}{{ $dif }}
+                                                                            @endif                                                                        
+
+
+                                                                         
                                                                         @endif
                                                                                                                                 
                                                                 </span>
@@ -1052,7 +1212,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             if (MODO_DINAMICO) {
-                return "rgba(25, 128, 11, 0.7)"; // azul tipo Chart.js
+                return "rgba(143, 193, 76, .8)";
             }
 
             if (VARIACION_ON) {
@@ -1141,13 +1301,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     switch (UNIDAD_MEDIDA_CAMPO) {
                         case 'pesos':
-                            return '$' + Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 });
+                            return '$ ' + Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 });
                         case 'porcentaje':
-                            return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '%';
+                            return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' %';
                         case 'dias':
                             return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Días';
                         case 'toneladas':
-                            return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Ton.';
+                            return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '   Ton.';
                         default:
                             return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 });
                     }
@@ -1158,9 +1318,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 switch (UNIDAD_MEDIDA) {
                     case 'pesos':
-                        return '$' + Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 });
+                        return '$ ' + Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 });
                     case 'porcentaje':
-                        return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '%';
+                        return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' %';
                     case 'dias':
                         return Number(value).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Días';
                     case 'toneladas':
@@ -1291,7 +1451,7 @@ datasets: [
 
                             const dataset = chart.datasets[item.datasetIndex];
 
-                            return dataset.type !== 'bar'; // 👈 oculta solo barras
+                            return dataset.type !== 'bar'; 
                         }
                     }
                 },
@@ -1395,7 +1555,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (valor === null) return "rgba(200,200,200,0.3)";
 
         if (MODO_DINAMICO) {
-            return "rgba(25,128,11,0.7)";
+             return "rgba(143, 193, 76, .8)";
         }
 
         if (VARIACION_ON) {
@@ -1428,9 +1588,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             switch (UNIDAD_MEDIDA_CAMPO) {
                 case 'pesos':
-                    return '$' + Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
+                    return '$ ' + Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
                 case 'porcentaje':
-                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '%';
+                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' %';
                 case 'dias':
                     return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Días';
                 case 'toneladas':
@@ -1447,9 +1607,9 @@ document.addEventListener("DOMContentLoaded", function () {
             
             switch (UNIDAD_MEDIDA) {
                 case 'pesos':
-                    return '$' + Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
+                    return '$ ' + Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 });
                 case 'porcentaje':
-                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + '%';
+                    return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' %';
                 case 'dias':
                     return Number(valor).toLocaleString('es-MX', { maximumFractionDigits:2 }) + ' Días';
                 case 'toneladas':
@@ -1481,10 +1641,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: dataValores,
                     borderWidth: 3,
                     tension: 0.2,
-                    fill: false,
+                    fill: true,
+                    backgroundColor:"rgba(54, 162, 235, .15)",
                     borderColor: MODO_DINAMICO 
-                        ? "rgba(25,128,11,1)" 
-                        : "rgba(54,162,235,1)",
+                        ? "rgba(143, 193, 76, .8)" 
+                        : "rgba(143, 19, 176, .8)",
                     pointBackgroundColor: ctx => obtenerColor(ctx.raw),
                     pointRadius: 6
                 },
@@ -1538,11 +1699,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 legend: {
                     display: !MODO_DINAMICO
                 },
-                datalabels: {
-                    formatter: value => formatear(value),
-                    color: '#000',
-                    font: { weight: 'bold', size: 14 }
-                }
+datalabels: {
+
+    // 👇 SOLO mostrar en la línea principal
+    display: (ctx) => ctx.datasetIndex === 0,
+
+    formatter: (value, ctx) => formatear(value),
+
+    color: '#000',
+
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    borderRadius: 4,
+    padding: 6,
+
+    borderColor: 'rgba(0,0,0,0.2)',
+    borderWidth: 1,
+
+    font: { weight: 'bold', size: 14 }
+}
             }
         },
 
@@ -1631,7 +1805,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-
+    const UNIDAD_MEDIDA_CAMPO   = "{{ $datos_campo_graficar->unidad_medida }}"
     if (!window.datos || window.datos.length === 0) return;
 
     let dataPie;
@@ -1642,7 +1816,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         dataPie = dataValores;
         labelsPie = labels;
-        coloresPie = "rgba(25,128,11,0.7)";
+        coloresPie = "rgba(143, 193, 76, 1)";
 
     } else {
 
@@ -1699,17 +1873,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 datalabels: {
                     formatter: (value, ctx) => {
-
+                   
                         if (!MODO_DINAMICO) {
                             const total = ctx.chart._metasets[0].total;
                             const porcentaje = (value / total * 100).toFixed(1);
                             return porcentaje + "%";
                         }
+                        else{
+                            const label = ctx.chart.data.labels[ctx.dataIndex];
+                            let valorFormateado = Number(value).toLocaleString('es-MX');
+    
+          
+                            if (UNIDAD_MEDIDA_CAMPO === "pesos") {
+                                valorFormateado = "$" + valorFormateado;
+                            } else if (UNIDAD_MEDIDA_CAMPO === "porcentaje") {
+                                valorFormateado = valorFormateado + "%";
+                            } else if (UNIDAD_MEDIDA_CAMPO === "dias") {
+                                valorFormateado = valorFormateado + " días";
+                            } else if (UNIDAD_MEDIDA_CAMPO) {
+                                valorFormateado = valorFormateado + " " + UNIDAD_MEDIDA_CAMPO;
+                            }
+                            return label + '\n' + valorFormateado;
 
-                        const label = ctx.chart.data.labels[ctx.dataIndex];
-                        return label + '\n' + Number(value).toLocaleString('es-MX');
+                        }
+
+
                     },
-                    color: '#fff',
+                    color: '#000000',
                     font: { weight: 'bold', size: 12 }
                 }
             }

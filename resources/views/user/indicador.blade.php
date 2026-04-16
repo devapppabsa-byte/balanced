@@ -639,6 +639,14 @@ use Carbon\Carbon;
     </div>
 </div>
 
+
+
+
+
+
+
+
+
 <div class="modal fade" id="grafico_indicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
     <div class="modal-dialog  modal-xl modal-dialog-centered">
         <div class="modal-content">
@@ -943,12 +951,7 @@ use Carbon\Carbon;
 
 
 {{-- DATOS DEL INDICADOR PARA EL ENVIO DEL CORREO ELECTRONICO. --}}
-<div id="data-indicador"
-    data-user = "{{Auth::user()->name}}"
-    data-correos = '@json($correos)''
-     data-indicador="{{ $indicador->nombre }}"
-     data-departamento="{{ Auth::user()->departamento->nombre }}">
-</div>
+
 
 @endsection
 

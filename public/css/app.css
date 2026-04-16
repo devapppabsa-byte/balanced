@@ -225,7 +225,8 @@ body{
   bottom: 10px;
   right: 10px;
   padding: 10px;
-  font-size: 10px;
+  font-size: 20px;
+  z-index: 1000;
 
 }
 

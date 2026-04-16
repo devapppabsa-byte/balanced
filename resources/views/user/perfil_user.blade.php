@@ -70,10 +70,11 @@
 
      {{-- esta es la row de llos indicadores --}}
     <div class="row">
-
+      
       @if ($ponderacion == 100)
        
-          
+        {{--
+        Aqui YACEN los ShortCuts de los antiguos ibndicadores
         @forelse ($indicadores_list as $indicador)
         @php
 
@@ -83,8 +84,6 @@
         @endphp     
 
         @if ($carga_indicador === $ahora)
-
-
 
             @if ($carga_indicador === $ahora)
               <div class="col-auto m-2">
@@ -104,12 +103,56 @@
           </div>
         @endif
 
+        @empty
+          <li>No hay datos </li>
+        @endforelse --}}
 
+
+
+
+
+
+
+
+
+        @forelse ($indicadores_list as $indicador)
+        @php
+
+                $ultima_carga_indicador = IndicadorLleno::where('id_indicador', $indicador->id)->latest()->first();  
+                $carga_indicador = $ultima_carga_indicador?->created_at?->format('Y-m') ?? '0000-00';
+                $ahora = now()->format('Y-m');
+        @endphp     
+
+        @if ($carga_indicador === $ahora)
+
+
+
+          @if ($carga_indicador === $ahora)
+            <div class="col-auto m-2">
+              
+              <a href="{{route('show.indicador.robusto.user', $indicador->id)}}" class="btn btn-primary btn-sm">
+                <i class="fa fa-check"></i>  {{$indicador->nombre}}
+              </a>
+            </div>
+          @endif
+
+
+        @else
+          <div class="col-auto m-2">
+            <a href="{{route('show.indicador.robusto.user', $indicador->id)}}" class="btn btn-outline-primary btn-sm">
+              {{$indicador->nombre}}
+            </a>
+          </div>
+        @endif
 
 
         @empty
           <li>No hay datos </li>
         @endforelse
+
+
+
+
 
       @else
 

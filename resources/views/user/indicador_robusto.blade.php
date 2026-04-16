@@ -54,7 +54,8 @@
             </form>
         </div>
     </div>
-    @include('user.assets.nav')
+
+     @include('user.assets.nav')
 
     <div class="row">
         
@@ -148,6 +149,159 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+{{-- boton flotante y modal de llenado de indicadores --}}
+@php
+
+    if(empty($ultima_carga_excel)){
+
+        $fecha_excel = Carbon::parse("2026-01-20 12:51:28");
+    }
+
+    else{
+        
+        $fecha_excel = Carbon::parse($ultima_carga_excel->created_at);
+    }
+
+
+    if(empty($ultima_carga_indicador)){
+        $fecha_indicador = Carbon::parse("2026-01-20 12:51:28");
+    }
+    else{
+        $fecha_indicador = Carbon::parse($ultima_carga_indicador->fecha_periodo)->addMonth();
+    }
+
+
+    $carga_excel = $fecha_excel->format('Y-m') ?? '0000-00';    
+    $carga_indicador = $fecha_indicador->format('Y-m') ?? '0000-00';
+    $ahora = now()->format('Y-m') ?? '0000-00';
+@endphp
+
+
+
+@if ($carga_excel !== $ahora  || $carga_indicador === $ahora)
+
+    @if ($carga_indicador === $ahora)
+
+            <button class="btn btn-danger  flotante" onclick="toastr.warning('{{'Ya se registro la información de este mes '}}', 'Aviso!')">
+                <i class="fa fa-plus"></i>
+                Ya se lleno el indicador este mes
+            </button>
+
+    @endif
+    @if ($carga_excel !== $ahora)
+
+            <button class="btn btn-primary  flotante" onclick="toastr.error('{{'El indicador aún no se puede llenar. Falta cargar información por parte del admin'}}', 'Error!')">
+                <i class="fa fa-plus"></i>
+                Llenar este Indicador (Aún no se carga el excel)
+            </button>
+
+    @endif
+
+
+@else
+  
+    <button class="btn btn-success flotante rounded btn-lg p-3" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#llenado_indicadores">
+        <i class="fa fa-edit"></i>
+        Llenar indicador del mes
+    </button>
+
+@endif
+
+
+
+<div class="modal fade" id="llenado_indicadores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary py-4">
+                <h3 class="text-white" id="exampleModalLabel">{{$indicador->nombre}}</h3>
+                <button type="button" class="btn-close " data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Cloeesdasdse"></button>
+            </div>
+            <div class="modal-body py-4">
+
+                <form id="formulario_llenado_indicadores" method="POST" action="{{route('llenado.informacion.indicadores', $indicador->id)}}" class="row gap-4 p-2 justify-content-center form-loader">
+                    @csrf
+                    @forelse ($campos_vacios as $campo_vacio)
+
+                    <div class="col-11 col-sm-11 col-md-4 col-lg-3 mb-4">
+
+                        <div class="p-3 rounded-4 shadow-sm border bg-white campos_vacios h-100">
+
+                            {{-- Nombre del campo --}}
+                            <label class="fw-semibold mb-2 text-dark">
+                                {{$campo_vacio->nombre}}
+                            </label>
+
+                            {{-- Input --}}
+                            <input  type="number" step="0.0001"  class="form-control form-control-sm" name="informacion_indicador[]" id="{{$campo_vacio->id_input}}" placeholder="Ingrese {{$campo_vacio->nombre}}" required min="-999999" >
+
+                            {{-- Campos ocultos (NO se tocan) --}}
+                            <input type="hidden" name="id_input[]" value="{{$campo_vacio->id}}">
+                            <input type="hidden" name="tipo_input[]" value="{{$campo_vacio->tipo}}">
+                            <input type="hidden" name="id_input_vacio[]" value="{{$campo_vacio->id_input}}">
+                            <input type="hidden" name="nombre_input_vacio[]" value="{{$campo_vacio->nombre}}">
+
+                            {{-- Descripción --}}
+                            <div class="mt-2 p-2 bg-light rounded-3">
+                                <small class="text-muted">
+                                    {{$campo_vacio->descripcion}}
+                                </small>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    @empty
+                        <div class="col-11 border border-4 p-5 text-center">
+                            <h2>
+                                <i class="fa fa-exclamation-circle text-danger"></i>
+                                No se encontraron datos
+                            </h2>
+                        </div>
+                    @endforelse
+
+
+
+                    @if (!$campos_vacios->isEmpty() )
+                        <div class="col-12 bg-light p-3 rounded ql-toolbar">
+                            <label> <i class="fa fa-table"></i> Información extra para el Indicador: </label>
+
+                        <div class="form-group">
+                            <div id="editor_info_extra"></div>
+                            <input type="hidden" name="info_extra" id="info_extra">
+                        </div>
+
+                        </div>
+                </form>
+
+                <div class="row justify-content-center bg-light  rounded p-4">
+                    <div class="col-12">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <span class="fw-bold">Descripción:</span>
+                    </div>
+                    <div class="col-12">
+                        <span>{{$indicador->descripcion}}</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+                <button  class="btn btn-primary w-100 py-3" form="formulario_llenado_indicadores" data-mdb-ripple-init>
+                    <h6>Guardar</h6>
+                </button>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- boton flotante y modal de llenado de indicadores --}}
 
 
 {{-- Datos de los indicadores, solo el numerito final y se agregara un modal  para ver los detalles --}}
@@ -316,6 +470,53 @@
                 </div>
             </button>
         </div>
+
+
+        {{-- <div class="col-10 text-center">
+            <button class="btn btn-dark btn-sm">
+                <i class="fa fa-trash"></i>
+                {{ $campo_lleno->id_movimiento }} | {{ $campo_lleno->created_at }} |  {{ now() }}
+            </button>
+        </div> --}}
+
+
+        <div class="col-10 text-center">
+
+            @php
+                $fechaRegistro = $campo_lleno->created_at;
+                $mismoMes = $fechaRegistro->isSameMonth(now());
+            @endphp
+
+            <button class="btn btn-dark w-20 btn-sm"  data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#e{{$campo_lleno->id_movimiento}}"
+                    @if(!$mismoMes)" disabled onclick="alert('No se pueden eliminar registros de meses anteriores')" @endif>
+                <i class="fa fa-trash"></i> 
+            </button>
+
+            <div class="modal fade" id="e{{$campo_lleno->id_movimiento}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h2>¿Eliminar Registro?</h2>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{route('borrar.info.indicador', $campo_lleno->id_movimiento)}}" method="POST">
+                                @csrf @method('DELETE')
+                                <h2>
+                                    <button class="btn btn-danger w-100 py-3">
+                                        Eliminar
+                                    </button>
+                                </h2>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            
+        </div>
+
+
             
     </div>
 </div>

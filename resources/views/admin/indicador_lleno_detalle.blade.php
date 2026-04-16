@@ -530,7 +530,7 @@
                                         <h4 class="modal-title">{{ $indicador->nombre }}</h4>
                                         <button class="btn-close" data-mdb-dismiss="modal"></button>
                                     </div>
-                                    <div class="modal-body small ck-content">
+                                    <div class="modal-body small ck-content table-responsive">
                                         <h4>{!! $item->informacion_campo !!}</h4>
                                     </div>
                                 </div>

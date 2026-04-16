@@ -31,6 +31,9 @@ Route::get('/perfil_usuario', [userController::class, 'perfil_user'])->name('per
 
 //Rutas del llenado de los indicadores
 Route::get('/perfil_usuario/indicador/{indicador}', [indicadorController::class, 'show_indicador_user'])->name('show.indicador.user')->middleware('auth');
+Route::get('/perfil_usuario/indicador_robusto/{indicador}', [indicadorController::class, 'show_indicador_robusto_user'])->name('show.indicador.robusto.user')->middleware('auth');
+
+
 
 Route::get('/perfil_usuario/cumplimiento_normativo/', [normaController::class, 'cumplimiento_normativo_user'])->name('cumplimiento.normativo.user')->middleware('auth');
 

@@ -491,10 +491,392 @@ public function editar_campo(Request $request, $campo, $tipo_campo){
 
 
 
+
+public function show_indicador_robusto_user(Request $request, Indicador $indicador){
+    //este es para mostrar los datos en el select
+   $campos_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->distinct()->pluck('nombre_campo');
+  
+
+   $inicio = request()->filled('fecha_inicio')
+        ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
+            ->startOfDay()
+            ->utc()
+        : "2025-01-01T06:00:00.000000Z";
+
+
+
+    $fin = request()->filled('fecha_fin')
+        ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
+            //->subMonth()    
+            ->endOfDay()
+            ->utc()
+
+        : Carbon::now(config('app.timezone'))
+            ->endOfYear()
+            ->utc();
+
+
+
+    //datos para graficar...
+    $campo_graficar = $request->campos_a_graficar;
+    
+
+    $datos_campo_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->where('nombre_campo', $campo_graficar)->first();
+
+    if(!$datos_campo_graficar){
+        $datos_campo_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->first();
+
+    }
+
+
+    $campo_final = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->first();
+    $campos_referencia = IndicadorLleno::where('id_indicador', $indicador->id)->where('referencia', 'on')->pluck('nombre_campo');
+
+
+
+    // De aqui se obtienen los datos del analisis de datos
+    $resultado = $this->calcularTendenciaKPI( $indicador->id, $indicador->meta_esperada, $indicador->tipo_indicador, $inicio, $fin); // o 'mayor_mejor'
+
+
+    
+
+
+
+$graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+    ->whereBetween('fecha_periodo', [$inicio, $fin])
+    ->where(function ($q) use ($campo_graficar, $campo_final, $campos_referencia) {
+
+        //si el usuario hizo un cambio de campo 
+        if (!empty($campo_graficar)) {
+
+            //si el usuario seleccion el campo que se grafica por default
+            if($campo_graficar === $campo_final->nombre_campo){
+
+                $q->where('final', 'on')
+                ->orWhere('referencia', 'on');
+
+            }
+
+            else{
+
+                if(in_array($campo_graficar, json_decode($campos_referencia))){
+                    $q->where('nombre_campo', $campo_graficar);
+                }
+    
+                //si el usuario selecciona un campo diferente
+                else{
+                    $q->where('nombre_campo', $campo_graficar);
+                    
+                }
+
+            }
+            
+        }
+         
+        //si no hay campo seleccionado, es decir,, lo que se muestra desde el inicio.
+        else {
+
+            $q->where('final', 'on')
+            ->orWhere('referencia', 'on');
+
+        }
+
+    })
+->orderBy('fecha_periodo', 'asc')
+->get();
+
+
+
+
+
+
+//AQUI VA LA CONDICIONAL QUE VA A CAMBIAR TODO LOS DATOS JOJOJOJ
+
+if(!empty($campo_graficar)){
+
+    
+    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('nombre_campo', $campo_graficar)->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
+
+
+    $promedios = IndicadorLleno::select(
+        DB::raw('YEAR(fecha_periodo) as anio'),
+        DB::raw('AVG(informacion_campo) as promedio')
+    )
+    ->where('nombre_campo', $campo_graficar)
+    ->where('id_indicador', $indicador->id)
+    ->groupBy(DB::raw('YEAR(fecha_periodo)'))
+    ->orderBy('anio')
+    ->get();
+
+
+
+
+    //Para sacar la estacionalidad
+    $registros = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->where('nombre_campo', $campo_graficar)
+        ->orderBy('fecha_periodo', 'desc')
+        ->get();
+
+
+    $historico = $registros->map(function ($item) {
+            return [
+                'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                'valor' => (float) $item->informacion_campo
+            ];
+        })
+        ->sortBy('mes_num')
+        ->sortBy('anio')
+        ->values();
+
+
+        //para sacar el mejor y el peor mes
+
+        $registros_mejor_peor_mes = IndicadorLleno::where('id_indicador', $indicador->id)
+            ->where('nombre_campo', $campo_graficar)
+            ->orderBy('fecha_periodo', 'desc')
+            ->whereBetween('fecha_periodo', [$inicio, $fin])
+            ->get();
+
+
+        $historico_mejor_peor_mes = $registros_mejor_peor_mes->map(function ($item) {
+                return [
+                    'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                    'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                    'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                    'valor' => (float) $item->informacion_campo
+                ];
+            })
+            ->sortBy('mes_num')
+            ->sortBy('anio')
+            ->values();
+
+        if($indicador->tipo_indicador == "riesgo"){
+
+            $peor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+            $mejor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+        }
+
+        if($indicador->tipo_indicador == "normal"){
+
+            $mejor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+            $peor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+
+        }
+
+        
+        
+        //para sacar el mejor y el peor mes
+
+
+
+// Para sacar la estacionalidad
+        $historico = $historico->map(function ($item) use ($historico) {
+
+            $prev = $historico->first(function ($i) use ($item) {
+                return $i['mes_num'] === $item['mes_num']
+                    && $i['anio'] === ($item['anio'] - 1);
+            });
+
+            $item['valor_anterior'] = $prev['valor'] ?? null;
+
+            $item['diferencia'] = $prev
+                ? round($item['valor'] - $prev['valor'], 2)
+                : null;
+
+            return $item;
+        });
+
+        $historico = $historico->sortBy([
+            ['anio', 'desc'],
+            ['mes_num', 'desc']
+        ])->values();
+//Para sacar la estacionalidad
+
+}
+
+
+
+//CARGA TODOS LOS DATOS POR DEFAULT CON EL CAMPO FINAL COMO REFERENCIA
+else{
+
+    //Para mostrar los datos del indicador
+    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
+
+    $promedios = IndicadorLleno::select(
+        DB::raw('YEAR(fecha_periodo) as anio'),
+        DB::raw('AVG(informacion_campo) as promedio')
+    )
+    ->where('final', 'on')
+    ->where('id_indicador', $indicador->id)
+    ->groupBy(DB::raw('YEAR(fecha_periodo)'))
+    ->orderBy('anio')
+    ->get();
+
+    //Para sacar la estacionalidad
+    $registros = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->where('final', 'on')
+        ->orderBy('fecha_periodo', 'desc')
+        ->get();
+
+
+    $historico = $registros->map(function ($item) {
+            return [
+                'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                'valor' => (float) $item->informacion_campo
+            ];
+        })
+        ->sortBy('mes_num')
+        ->sortBy('anio')
+        ->values();
+
+
+        //para sacar el mejor y el peor mes
+
+        $registros_mejor_peor_mes = IndicadorLleno::where('id_indicador', $indicador->id)
+            ->where('final', 'on')
+            ->orderBy('fecha_periodo', 'desc')
+            ->whereBetween('fecha_periodo', [$inicio, $fin])
+            ->get();
+
+
+        $historico_mejor_peor_mes = $registros_mejor_peor_mes->map(function ($item) {
+                return [
+                    'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                    'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                    'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                    'valor' => (float) $item->informacion_campo
+                ];
+            })
+            ->sortBy('mes_num')
+            ->sortBy('anio')
+            ->values();
+
+        if($indicador->tipo_indicador == "riesgo"){
+
+            $peor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+            $mejor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+        }
+
+        if($indicador->tipo_indicador == "normal"){
+
+            $mejor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+            $peor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+
+        }
+
+        
+
+
+
+
+// Para sacar la estacionalidad
+        $historico = $historico->map(function ($item) use ($historico) {
+
+            $prev = $historico->first(function ($i) use ($item) {
+                return $i['mes_num'] === $item['mes_num']
+                    && $i['anio'] === ($item['anio'] - 1);
+            });
+
+            $item['valor_anterior'] = $prev['valor'] ?? null;
+
+            $item['diferencia'] = $prev
+                ? round($item['valor'] - $prev['valor'], 2)
+                : null;
+
+            return $item;
+        });
+
+        $historico = $historico->sortBy([
+            ['anio', 'desc'],
+            ['mes_num', 'desc']
+        ])->values();
+//Para sacar la estacionalidaD
+
+}
+//CARGA TODOS LOS DATOS POR DEFAULT CON EL CAMPO FINAL COMO REFERENCIA
+
+
+
+
+
+
+//Aqui va a ir el codigo que me permite consultar los datos del ultimo mes
+ $fechas_seleccionar = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->pluck('fecha_periodo');
+ 
+
+ if($request->mostrar_mes){
+     $ultimo_mes = IndicadorLleno::where('id_indicador', $indicador->id)->where('fecha_periodo', $request->mostrar_mes)->where('final', 'on')->first();   
+ }
+ else{
+     $ultimo_mes = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->latest()->first();
+    
+ }
+
+ $campos_llenos = IndicadorLleno::where('id_movimiento', $ultimo_mes->id_movimiento)->get();
+
+
+//Aqui va a ir el codigo que me permite consultar los datos del ultimo mes
+
+
+
+
+//parece que no hace nda
+   $registros_tendencia = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->where('final', 'on')
+        ->orderBy('fecha_periodo', 'asc')
+        ->whereBetween('fecha_periodo', [$inicio, $fin])
+        ->get();
+//parece que no hace nda
+
+
+
+
+
+
+
+//variables para el llenado y borrado de los indicadores
+
+    $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
+
+    //obtenemos la ultima fecha en la que se cargo el excel
+    $ultima_carga_excel = CampoForaneoInformacion::latest()->first();
+    $ultima_carga_indicador = IndicadorLleno::where('id_indicador', $indicador->id)->latest()->first();
+
+
+//variuables para el llenado y borrado de los indicadores
+
+
+
+
+
+    return view('user.indicador_robusto', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes', 'campos_graficar', 'campo_graficar','datos_campo_graficar', 'ultimo_mes', 'fechas_seleccionar', 'campos_llenos','campos_vacios', 'ultima_carga_excel', 'ultima_carga_indicador' ));
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //retornando los indicadores a la 
     
     
-public function show_indicador_user(Indicador $indicador){
+public function show_indicador_user(Request $request,  Indicador $indicador){
+
 
     $inicio = request()->filled('fecha_inicio')
         ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
@@ -520,24 +902,18 @@ public function show_indicador_user(Indicador $indicador){
 
     
     //obtenemos la ultima fecha en la que se cargo el excel
- $ultima_carga_excel = CampoForaneoInformacion::latest()->first();
- $ultima_carga_indicador = IndicadorLleno::where('id_indicador', $indicador->id)->latest()->first();
-
-
-
-
+    $ultima_carga_excel = CampoForaneoInformacion::latest()->first();
+    $ultima_carga_indicador = IndicadorLleno::where('id_indicador', $indicador->id)->latest()->first();
 
 
     //le mandamos los admins para que les envie el correo de que ya se lleno el indicador
     //$correos = Admin::pluck('email')->toArray();
-    $correos = ["arturo.resendiz@grupopabsa.com"];
-
+    
     //array_push($correos, Auth::user()->email);
-
 
     //CONSULTA DE LOS CAMPOS
     //se consultan en la vista para que el usuario los rellene
-    $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
+   $campos_vacios = CampoVacio::where('id_indicador', $indicador->id)->get();
 
     //se consultan en la vista para que el usuario los vea
    $campos_llenos = CampoPrecargado::with('InformacionInputPrecargado')->where('id_indicador', $indicador->id)->get();
@@ -609,9 +985,7 @@ public function show_indicador_user(Indicador $indicador){
     $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
         
 
-    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'correos', 'meta_minima_general', 'meta_maxima_general', 'tipo_indicador', 'ultima_carga_excel', 'ultima_carga_indicador', 'promedios', 'info_meses'));
-
-
+    return view('user.indicador', compact('indicador', 'campos_calculados', 'campos_llenos', 'campos_unidos', 'campo_resultado_final', 'campos_vacios', 'grupos', 'graficar', 'meta_minima_general', 'meta_maxima_general', 'tipo_indicador', 'ultima_carga_excel', 'ultima_carga_indicador', 'promedios', 'info_meses'));
 
     
 }//cierra el metodo de show_indicador_user
@@ -2054,18 +2428,20 @@ public function indicador_lleno_show_user_foraneo(Indicador $indicador){
 
 
 
-public function analizar_indicador_usuario(Indicador $indicador){
 
-    $inicio = request()->filled('fecha_inicio')
+public function analizar_indicador_usuario(Request $request, Indicador $indicador){
+
+    //este es para mostrar los datos en el select
+   $campos_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->distinct()->pluck('nombre_campo');
+  
+
+   $inicio = request()->filled('fecha_inicio')
         ? Carbon::parse(request('fecha_inicio'), config('app.timezone'))
             ->startOfDay()
             ->utc()
-        : Carbon::now(config('app.timezone'))
-            //->subMonth()
-            ->startOfYear()
-            ->utc();
+        : "2025-01-01T06:00:00.000000Z";
 
-    //$inicio = "2025-01-01T06:00:00.000000Z";
+
 
     $fin = request()->filled('fecha_fin')
         ? Carbon::parse(request('fecha_fin'), config('app.timezone'))
@@ -2080,26 +2456,91 @@ public function analizar_indicador_usuario(Indicador $indicador){
 
 
     //datos para graficar...
-    $graficar = IndicadorLleno::where('id_indicador', $indicador->id)
-        ->whereBetween('fecha_periodo', [$inicio, $fin])
-        ->where(function ($q) {
+    $campo_graficar = $request->campos_a_graficar;
+    
+
+    $datos_campo_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->where('nombre_campo', $campo_graficar)->first();
+
+    if(!$datos_campo_graficar){
+        $datos_campo_graficar = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->first();
+
+    }
+
+
+    $campo_final = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->first();
+    $campos_referencia = IndicadorLleno::where('id_indicador', $indicador->id)->where('referencia', 'on')->pluck('nombre_campo');
+
+
+
+    // De aqui se obtienen los datos del analisis de datos
+    $resultado = $this->calcularTendenciaKPI( $indicador->id, $indicador->meta_esperada, $indicador->tipo_indicador, $inicio, $fin); // o 'mayor_mejor'
+
+
+    
+
+
+
+$graficar = IndicadorLleno::where('id_indicador', $indicador->id)
+    ->whereBetween('fecha_periodo', [$inicio, $fin])
+    ->where(function ($q) use ($campo_graficar, $campo_final, $campos_referencia) {
+
+        //si el usuario hizo un cambio de campo 
+        if (!empty($campo_graficar)) {
+
+            //si el usuario seleccion el campo que se grafica por default
+            if($campo_graficar === $campo_final->nombre_campo){
+
+                $q->where('final', 'on')
+                ->orWhere('referencia', 'on');
+
+            }
+
+            else{
+
+                if(in_array($campo_graficar, json_decode($campos_referencia))){
+                    $q->where('nombre_campo', $campo_graficar);
+                }
+    
+                //si el usuario selecciona un campo diferente
+                else{
+                    $q->where('nombre_campo', $campo_graficar);
+                    
+                }
+
+            }
+            
+        }
+         
+        //si no hay campo seleccionado, es decir,, lo que se muestra desde el inicio.
+        else {
+
             $q->where('final', 'on')
             ->orWhere('referencia', 'on');
-        })
-        ->orderBy('fecha_periodo', 'asc')
-        ->get();
+
+        }
+
+    })
+->orderBy('fecha_periodo', 'asc')
+->get();
 
 
-    //Para mostrar los datos del indicador
-    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
 
+
+
+
+//AQUI VA LA CONDICIONAL QUE VA A CAMBIAR TODO LOS DATOS JOJOJOJ
+
+if(!empty($campo_graficar)){
+
+    
+    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('nombre_campo', $campo_graficar)->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
 
 
     $promedios = IndicadorLleno::select(
         DB::raw('YEAR(fecha_periodo) as anio'),
         DB::raw('AVG(informacion_campo) as promedio')
     )
-    ->where('final', 'on')
+    ->where('nombre_campo', $campo_graficar)
     ->where('id_indicador', $indicador->id)
     ->groupBy(DB::raw('YEAR(fecha_periodo)'))
     ->orderBy('anio')
@@ -2107,20 +2548,10 @@ public function analizar_indicador_usuario(Indicador $indicador){
 
 
 
-//para calcular 
-    $registros_tendencia = IndicadorLleno::where('id_indicador', $indicador->id)
-        ->where('final', 'on')
-        ->orderBy('fecha_periodo', 'asc')
-        ->whereBetween('fecha_periodo', [$inicio, $fin])
-        ->get();
 
-
-    //Le mandamos los datos a mi funcion que calcula la desviacion estandar.
-    $resultado = $this->calcularTendenciaKPI($indicador->id, $indicador->meta_esperada, $indicador->tipo_indicador, $inicio, $fin); // o 'mayor_mejor'
-       
     //Para sacar la estacionalidad
     $registros = IndicadorLleno::where('id_indicador', $indicador->id)
-        ->where('final', 'on')
+        ->where('nombre_campo', $campo_graficar)
         ->orderBy('fecha_periodo', 'desc')
         ->get();
 
@@ -2140,37 +2571,37 @@ public function analizar_indicador_usuario(Indicador $indicador){
 
         //para sacar el mejor y el peor mes
 
-            $registros_mejor_peor_mes = IndicadorLleno::where('id_indicador', $indicador->id)
-                ->where('final', 'on')
-                ->orderBy('fecha_periodo', 'desc')
-                ->whereBetween('fecha_periodo', [$inicio, $fin])
-                ->get();
+        $registros_mejor_peor_mes = IndicadorLleno::where('id_indicador', $indicador->id)
+            ->where('nombre_campo', $campo_graficar)
+            ->orderBy('fecha_periodo', 'desc')
+            ->whereBetween('fecha_periodo', [$inicio, $fin])
+            ->get();
 
 
-            $historico_mejor_peor_mes = $registros_mejor_peor_mes->map(function ($item) {
-                    return [
-                        'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
-                        'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
-                        'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
-                        'valor' => (float) $item->informacion_campo
-                    ];
-                })
-                ->sortBy('mes_num')
-                ->sortBy('anio')
-                ->values();
+        $historico_mejor_peor_mes = $registros_mejor_peor_mes->map(function ($item) {
+                return [
+                    'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                    'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                    'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                    'valor' => (float) $item->informacion_campo
+                ];
+            })
+            ->sortBy('mes_num')
+            ->sortBy('anio')
+            ->values();
 
-            if($indicador->tipo_indicador == "riesgo"){
+        if($indicador->tipo_indicador == "riesgo"){
 
-                 $peor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
-                 $mejor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
-            }
+            $peor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+            $mejor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+        }
 
-            if($indicador->tipo_indicador == "normal"){
+        if($indicador->tipo_indicador == "normal"){
 
-                $mejor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
-                $peor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+            $mejor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+            $peor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
 
-            }
+        }
 
         
         
@@ -2178,7 +2609,7 @@ public function analizar_indicador_usuario(Indicador $indicador){
 
 
 
-        // Agregar comparación
+// Para sacar la estacionalidad
         $historico = $historico->map(function ($item) use ($historico) {
 
             $prev = $historico->first(function ($i) use ($item) {
@@ -2201,14 +2632,150 @@ public function analizar_indicador_usuario(Indicador $indicador){
         ])->values();
 //Para sacar la estacionalidad
 
-
-
-
-
-    return view('user.analizando_indicador_user', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes'));
-
 }
 
+
+
+//CARGA TODOS LOS DATOS POR DEFAULT CON EL CAMPO FINAL COMO REFERENCIA
+else{
+
+    //Para mostrar los datos del indicador
+    $info_meses = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->whereBetween('fecha_periodo', [$inicio, $fin])->orderBy('fecha_periodo', 'desc')->get();
+
+    $promedios = IndicadorLleno::select(
+        DB::raw('YEAR(fecha_periodo) as anio'),
+        DB::raw('AVG(informacion_campo) as promedio')
+    )
+    ->where('final', 'on')
+    ->where('id_indicador', $indicador->id)
+    ->groupBy(DB::raw('YEAR(fecha_periodo)'))
+    ->orderBy('anio')
+    ->get();
+
+    //Para sacar la estacionalidad
+    $registros = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->where('final', 'on')
+        ->orderBy('fecha_periodo', 'desc')
+        ->get();
+
+
+    $historico = $registros->map(function ($item) {
+            return [
+                'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                'valor' => (float) $item->informacion_campo
+            ];
+        })
+        ->sortBy('mes_num')
+        ->sortBy('anio')
+        ->values();
+
+
+        //para sacar el mejor y el peor mes
+
+        $registros_mejor_peor_mes = IndicadorLleno::where('id_indicador', $indicador->id)
+            ->where('final', 'on')
+            ->orderBy('fecha_periodo', 'desc')
+            ->whereBetween('fecha_periodo', [$inicio, $fin])
+            ->get();
+
+
+        $historico_mejor_peor_mes = $registros_mejor_peor_mes->map(function ($item) {
+                return [
+                    'mes_num' => Carbon::parse($item->fecha_periodo)->format('m'),
+                    'mes' => Carbon::parse($item->fecha_periodo)->locale('es')->translatedFormat('F'),
+                    'anio' => (int) Carbon::parse($item->fecha_periodo)->format('Y'),
+                    'valor' => (float) $item->informacion_campo
+                ];
+            })
+            ->sortBy('mes_num')
+            ->sortBy('anio')
+            ->values();
+
+        if($indicador->tipo_indicador == "riesgo"){
+
+            $peor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+            $mejor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+        }
+
+        if($indicador->tipo_indicador == "normal"){
+
+            $mejor_mes = $historico_mejor_peor_mes->sortByDesc('valor')->first();
+            $peor_mes = $historico_mejor_peor_mes->sortBy('valor')->first();  
+
+        }
+
+        
+
+
+
+
+// Para sacar la estacionalidad
+        $historico = $historico->map(function ($item) use ($historico) {
+
+            $prev = $historico->first(function ($i) use ($item) {
+                return $i['mes_num'] === $item['mes_num']
+                    && $i['anio'] === ($item['anio'] - 1);
+            });
+
+            $item['valor_anterior'] = $prev['valor'] ?? null;
+
+            $item['diferencia'] = $prev
+                ? round($item['valor'] - $prev['valor'], 2)
+                : null;
+
+            return $item;
+        });
+
+        $historico = $historico->sortBy([
+            ['anio', 'desc'],
+            ['mes_num', 'desc']
+        ])->values();
+//Para sacar la estacionalidaD
+
+}
+//CARGA TODOS LOS DATOS POR DEFAULT CON EL CAMPO FINAL COMO REFERENCIA
+
+
+
+
+
+
+//Aqui va a ir el codigo que me permite consultar los datos del ultimo mes
+ $fechas_seleccionar = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->pluck('fecha_periodo');
+ 
+
+ if($request->mostrar_mes){
+     $ultimo_mes = IndicadorLleno::where('id_indicador', $indicador->id)->where('fecha_periodo', $request->mostrar_mes)->where('final', 'on')->first();   
+ }
+ else{
+     $ultimo_mes = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->latest()->first();
+    
+ }
+
+ $campos_llenos = IndicadorLleno::where('id_movimiento', $ultimo_mes->id_movimiento)->get();
+
+
+//Aqui va a ir el codigo que me permite consultar los datos del ultimo mes
+
+
+
+
+//parece que no hace nda
+   $registros_tendencia = IndicadorLleno::where('id_indicador', $indicador->id)
+        ->where('final', 'on')
+        ->orderBy('fecha_periodo', 'asc')
+        ->whereBetween('fecha_periodo', [$inicio, $fin])
+        ->get();
+//parece que no hace nda
+
+    //return view('user.analizando_indicador_user', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes'));
+
+
+    return view('user.analizando_indicador_user', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes', 'campos_graficar', 'campo_graficar','datos_campo_graficar', 'ultimo_mes', 'fechas_seleccionar', 'campos_llenos')); 
+
+}
 
 
 
@@ -2541,7 +3108,10 @@ else{
  }
  else{
      $ultimo_mes = IndicadorLleno::where('id_indicador', $indicador->id)->where('final', 'on')->latest()->first();
+    
  }
+
+ $campos_llenos = IndicadorLleno::where('id_movimiento', $ultimo_mes->id_movimiento)->get();
 
 
 //Aqui va a ir el codigo que me permite consultar los datos del ultimo mes
@@ -2560,7 +3130,7 @@ else{
 
 
 
-    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes', 'campos_graficar', 'campo_graficar','datos_campo_graficar', 'ultimo_mes', 'fechas_seleccionar')); 
+    return view('admin.analizando_indicador', compact('indicador', 'info_meses', 'promedios', 'graficar', 'historico', 'resultado', 'mejor_mes', 'peor_mes', 'campos_graficar', 'campo_graficar','datos_campo_graficar', 'ultimo_mes', 'fechas_seleccionar', 'campos_llenos')); 
 
 }
 
