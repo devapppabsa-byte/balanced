@@ -314,7 +314,7 @@
         if($indicador->meta_esperada <= $ultimo_mes->informacion_campo){
             $semaforo = "bg-danger";
         }
-        if($indicador->meta_esperada >= $ultimo_mes->informacion_campo){
+        if($indicador->meta_esperada > $ultimo_mes->informacion_campo){
             $semaforo = "bg-success";
         }
     }
